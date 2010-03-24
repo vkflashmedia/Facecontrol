@@ -59,8 +59,8 @@ package com.flashmedia.gui
 //			graphics.drawRect(0, 0, width, height);
 			
 //			_textField.x = 0;
-//			_textField.y = (height - _textField.height) / 2;
-//			_textField.width = width;
+			_textField.y = (height - _textField.height) / 2;
+			_textField.width = width;
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {
@@ -75,12 +75,11 @@ package com.flashmedia.gui
 		}
 		
 		protected function mouseUpListener(event: MouseEvent): void {
-//			_state = STATE_UP;
-//			update();
+			_state = STATE_UP;
+			update();
 		}
 
 		protected override function mouseClickListener(event: MouseEvent): void {
-			_textField.text = "click";
 			super.mouseClickListener(event);
 			_state = STATE_UP;
 			update();
