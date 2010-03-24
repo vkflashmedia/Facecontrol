@@ -16,7 +16,6 @@ package com.flashmedia.gui
 		private static const VERTICAL_INDENT:uint = 5;
 		
 		protected var _state:uint = STATE_UP;
-		protected var _textField:TextField = new TextField();
 		
 		protected var _upColor:uint = 0xa0a0a0;
 		protected var _downColor:uint = 0x808080;
@@ -24,19 +23,15 @@ package com.flashmedia.gui
 		public function Button(value:GameScene, aLabel:String=null, aX:uint=0, aY:uint=0, aWidth:uint=0, aHeight:uint=0)
 		{
 			super(value);
-			_textField.text = aLabel;
-			_textField.autoSize = TextFieldAutoSize.CENTER;
-			_textField.selectable = false;
-			addChild(_textField);
-			
-			var minWidth:uint = _textField.width + HORIZONTAL_INDENT*2;
-			var minHeight:uint = _textField.height + VERTICAL_INDENT*2;
-			
-			this.debug = true;
+			this.label = aLabel;
 			this.selectable = true;
 			
 			this.x = aX;
 			this.y = aY;
+			
+			var minWidth:uint = _textField.width + HORIZONTAL_INDENT*2;
+			var minHeight:uint = _textField.height + VERTICAL_INDENT*2;
+			
 			this.width = (aWidth < minWidth) ? minWidth : aWidth;
 			this.height = (aHeight < minHeight) ? minHeight : aHeight;
 			
@@ -44,6 +39,23 @@ package com.flashmedia.gui
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
 			
 			update();
+		}
+		
+		public function set label(text: String): void {
+			if (!textField) {
+				textField = new TextField();
+				textField.autoSize = TextFieldAutoSize.LEFT;
+				textField.selectable = false;
+			}
+			textField.text = text;
+		}
+		
+		public function get label(): String {
+			return textField.text;
+		}
+		
+		public override function set width(value: Number):void {
+			super.width = value;
 		}
 		
 		private function update():void {
@@ -55,12 +67,9 @@ package com.flashmedia.gui
 					fillBackground(_downColor, 1.0);
 				break;
 			}
-//			graphics.lineStyle(1);
-//			graphics.drawRect(0, 0, width, height);
 			
-//			_textField.x = 0;
-//			_textField.y = (height - _textField.height) / 2;
-//			_textField.width = width;
+			textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
+			textVerticalAlign = VERTICAL_ALIGN_CENTER;
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {
@@ -75,12 +84,11 @@ package com.flashmedia.gui
 		}
 		
 		protected function mouseUpListener(event: MouseEvent): void {
-//			_state = STATE_UP;
-//			update();
+			_state = STATE_UP;
+			update();
 		}
 
 		protected override function mouseClickListener(event: MouseEvent): void {
-			_textField.text = "click";
 			super.mouseClickListener(event);
 			_state = STATE_UP;
 			update();
