@@ -10,13 +10,33 @@ package com.flashmedia.basics
 		public static const TYPE_MOUSE_CLICK: String = 'type_mouse_click';
 		public static const TYPE_MOUSE_MOVE: String = 'type_mouse_move';
 		public static const TYPE_ANIMATION_COMPLETED: String = 'type_animation_completed';
+		public static const TYPE_SET_FOCUS: String = 'type_set_focus';
+		public static const TYPE_LOST_FOCUS: String = 'type_lost_focus';
+		public static const TYPE_SET_HOVER: String = 'type_set_hover';
+		public static const TYPE_LOST_HOVER: String = 'type_lost_hover';
 		
-		public var gameObject: GameObject;
-		public var keyCode: uint;
+		private var _gameObject: GameObject;
+		private var _keyCode: uint;
 		
 		public function GameObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
+		}
+		
+		public function get gameObject(): GameObject {
+			return _gameObject;
+		}
+		
+		public function set gameObject(value: GameObject): void {
+			_gameObject = value;
+		}
+		
+		public function get keyCode(): uint {
+			return _keyCode;
+		}
+		
+		public function set keyCode(value: uint): void {
+			_keyCode = value;
 		}
 	}
 }

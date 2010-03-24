@@ -10,7 +10,7 @@ package com.flashmedia.gui
 
 	public class LinkButton extends GameObject
 	{
-		private var _textField:TextField = new TextField();
+//		private var _textField:TextField = new TextField();
 		
 		protected var _baseTextFormat:TextFormat = new TextFormat();
 		protected var _overTextFormat:TextFormat = new TextFormat();
@@ -27,11 +27,17 @@ package com.flashmedia.gui
 			setDownTextStyle();
 			_textFormat = _baseTextFormat;
 			
-			_textField.defaultTextFormat = _textFormat;
-			_textField.autoSize = TextFieldAutoSize.LEFT;
-			_textField.selectable = false;
-			_textField.mouseEnabled = false;
-			addChild(_textField);
+			var tf: TextField = new TextField();
+			tf.defaultTextFormat = _textFormat;
+			tf.autoSize = TextFieldAutoSize.LEFT;
+			tf.selectable = false;
+			tf.mouseEnabled = false;
+			textField = tf;
+//			_textField.defaultTextFormat = _textFormat;
+//			_textField.autoSize = TextFieldAutoSize.LEFT;
+//			_textField.selectable = false;
+//			_textField.mouseEnabled = false;
+//			addChild(_textField);
 			
 			this.selectable = true;
 			this.x = x;

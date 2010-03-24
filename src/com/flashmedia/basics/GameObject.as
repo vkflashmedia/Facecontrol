@@ -17,6 +17,13 @@ package com.flashmedia.basics
 	 */
 	public class GameObject extends Sprite
 	{
+		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
+		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
+		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
+		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
+		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
+		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
+		
 		public static const HOVER_INDENT: uint = 7;
 		public static const HOVER_COLOR: uint = 0x57c8d5;
 		public static const HOVER_ALPHA: Number = 0.2;
@@ -28,6 +35,9 @@ package com.flashmedia.basics
 		public static const BORDERS_COLOR: uint = 0x0000ff;
 		public static const MAX_Z_ORDER: int = 9999;
 		
+		public static const SIZE_MODE_BORDER: String = 'size_mode_border';
+		public static const SIZE_MODE_SELECT: String = 'size_mode_select';
+		
 //		protected var _speedX: int;
 //		protected var _speedY: int;
 //		protected var _stationary: Boolean; //
@@ -38,7 +48,7 @@ package com.flashmedia.basics
 
 		protected var _width: uint;
 		protected var _height: uint;
-		// ширина и высота определяются автоматически по графическому содержимому
+		// ширина и высота определяются автоматически по графическомуу содержимому
 		protected var _autoSize: Boolean;
 		protected var _zOrder: int;
 		protected var _type: String; // произвольный пользовательский тип
@@ -51,6 +61,9 @@ package com.flashmedia.basics
 		// графическое содержимое
 		protected var _bitmap: Bitmap;
 		//потом сделать более сложное выделение - произвольную область, а по умолчанию по границам.
+		
+		// текстовое содержимое
+		protected var _textField: TextField;
 		// область выделения
 		protected var _select: Sprite;
 		// объект маска для выделения. Позволяет задать выделению форму, отличную от прямоугольника.
@@ -70,6 +83,8 @@ package com.flashmedia.basics
 		protected var _hoverEnabled: Boolean;
 		protected var _focus: Sprite;
 		protected var _hover: Sprite;
+		protected var _focusSizeMode: String;
+		protected var _hoverSizeMode: String;
 		// цвет фона
 		protected var _fillBackground: Boolean;
 		protected var _backgroundColor: uint;
@@ -86,6 +101,8 @@ package com.flashmedia.basics
 			_selectAutosize = true;
 			_hoverEnabled = false;
 			_focusEnabled = false;
+			_focusSizeMode = SIZE_MODE_BORDER;
+			_hoverSizeMode = SIZE_MODE_BORDER;
 			_type = 'GameObject';
 			_backgroundColor = BACKGROUNG_COLOR;
 			_backgroundAlpha = 1.0;
@@ -110,6 +127,10 @@ package com.flashmedia.basics
 			if (_bitmapMask) {
 				removeChild(_bitmapMask);
 				_bitmapMask = null;
+			}
+			if (_textField) {
+				removeChild(_textField);
+				_textField = null;
 			}
 			if (_select) {
 				_select.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardListener);
@@ -151,6 +172,8 @@ package com.flashmedia.basics
 				_selectRect = new Rectangle(0, 0, _width, _height);
 	    		updateSelection();
 	  		}
+	  		updateFocus();
+	  		updateHover();
 	    	drawDebugInfo();
 	    	sortSprites();
 		}
@@ -166,6 +189,8 @@ package com.flashmedia.basics
 	    		_selectRect = new Rectangle(0, 0, _width, _height);
 	    		updateSelection();
 	  		}
+	  		updateFocus();
+	  		updateHover();
 	    	drawDebugInfo();
 	    	sortSprites();
 		}
@@ -224,7 +249,7 @@ package com.flashmedia.basics
 				removeChild(_bitmap);
 			}
 			_bitmap = value;
-			addChildAt(_bitmap, 0);
+			addChild(_bitmap);
 			if (_bitmapMask) {
 				_bitmap.mask = _bitmapMask;
 			}
@@ -234,6 +259,43 @@ package com.flashmedia.basics
 			}
 			drawDebugInfo();
 			sortSprites();
+		}
+		
+		public function set textField(value: TextField): void {
+			if (_textField) {
+				removeChild(_textField);
+			}
+			_textField = value;
+			addChild(_textField);
+			sortSprites();
+		}
+		
+		public function set textHorizontalAlign(value: String): void {
+			switch (value) {
+				case HORIZONTAL_ALIGN_LEFT:
+					_textField.x = 0;
+				break;
+				case HORIZONTAL_ALIGN_RIGHT:
+					_textField.x = width - _textField.width;
+				break;
+				case HORIZONTAL_ALIGN_CENTER:
+				default:
+					_textField.x = (width - _textField.width) / 2;
+			}
+		}
+		
+		public function set textVerticalAlign(value: String): void {
+			switch (value) {
+				case VERTICAL_ALIGN_TOP:
+					_textField.y = 0;
+				break;
+				case VERTICAL_ALIGN_BOTTOM:
+					_textField.y = height - _textField.height;
+				break;
+				case VERTICAL_ALIGN_CENTER:
+				default:
+					_textField.y = (height - _textField.height) / 2;
+			}
 		}
 		
 		public function set autoSize(value: Boolean): void {
@@ -247,6 +309,8 @@ package com.flashmedia.basics
 		public function set selectable(value: Boolean): void {
 			_selectable = value;
 			updateSelection();
+			updateFocus();
+	  		updateHover();
 			drawDebugInfo();
 			sortSprites();
 		}
@@ -263,6 +327,8 @@ package com.flashmedia.basics
 			if (_selectAutosize) {
 				_selectRect = new Rectangle(0, 0, _width, _height);
 				updateSelection();
+				updateFocus();
+	  			updateHover();
 				drawDebugInfo();
 			}
 			sortSprites();
@@ -276,6 +342,8 @@ package com.flashmedia.basics
 				_selectMask.y = _selectRect.y;
 			}
 			updateSelection();
+			updateFocus();
+	  		updateHover();
 			drawDebugInfo();
 			sortSprites();
 		}
@@ -314,6 +382,19 @@ package com.flashmedia.basics
 		
 		public function set focus(value: Boolean): void {
 			_focus.visible = value;
+			var eventType: String = GameObjectEvent.TYPE_LOST_FOCUS;
+			if (_focus.visible) {
+				eventType = GameObjectEvent.TYPE_SET_FOCUS;
+			}
+			var goEvent: GameObjectEvent = new GameObjectEvent(eventType);
+			goEvent.gameObject = this;
+			dispatchEvent(goEvent);
+		}
+		
+		public function set focusSizeMode(value: String): void {
+			_focusSizeMode = value;
+			updateFocus();
+			sortSprites();
 		}
 		
 		public function set canHover(value: Boolean): void {
@@ -334,6 +415,12 @@ package com.flashmedia.basics
 		
 		public function set hover(value: Boolean): void {
 			_hover.visible = value;
+		}
+		
+		public function set hoverSizeMode(value: String): void {
+			_hoverSizeMode = value;
+			updateHover();
+			sortSprites();
 		}
 		
 		public function get gameLayer(): GameLayer {
@@ -456,12 +543,21 @@ package com.flashmedia.basics
 			if (_focusEnabled) {
 				if (!_focus) {
 					_focus = new Sprite();
-					_focus.visible = false;
-					_focus.graphics.lineStyle(1, FOCUS_COLOR);
-					_focus.graphics.beginFill(FOCUS_COLOR, FOCUS_ALPHA);
-					_focus.graphics.drawRect(-FOCUS_INDENT, - FOCUS_INDENT, _width + 2 * FOCUS_INDENT, _height + 2 * FOCUS_INDENT);
-					_focus.graphics.endFill();
 				}
+				_focus.visible = false;
+				_focus.graphics.clear();
+				_focus.graphics.lineStyle(1, FOCUS_COLOR);
+				_focus.graphics.beginFill(FOCUS_COLOR, FOCUS_ALPHA);
+				switch (_focusSizeMode) {
+					case SIZE_MODE_SELECT:
+						if (_select) {
+							_focus.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
+							break;
+						}
+					default:
+						_focus.graphics.drawRect(-FOCUS_INDENT, - FOCUS_INDENT, _width + 2 * FOCUS_INDENT, _height + 2 * FOCUS_INDENT);						
+				}
+				_focus.graphics.endFill();
 				if (!contains(_focus)) {
 					addChild(_focus);
 				}
@@ -478,12 +574,21 @@ package com.flashmedia.basics
 			if (_hoverEnabled) {
 				if (!_hover) {
 					_hover = new Sprite();
-					_hover.visible = false;
-					_hover.graphics.lineStyle(1, HOVER_COLOR);
-					_hover.graphics.beginFill(HOVER_COLOR, HOVER_ALPHA);
-					_hover.graphics.drawRect(-HOVER_INDENT, - HOVER_INDENT, _width + 2 * HOVER_INDENT, _height + 2 * HOVER_INDENT);
-					_hover.graphics.endFill();
 				}
+				_hover.visible = false;
+				_hover.graphics.clear();
+				_hover.graphics.lineStyle(1, HOVER_COLOR);
+				_hover.graphics.beginFill(HOVER_COLOR, HOVER_ALPHA);
+				switch (_hoverSizeMode) {
+					case SIZE_MODE_SELECT:
+						if (_select) {
+							_hover.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
+							break;
+						}
+					default:
+						_hover.graphics.drawRect(-HOVER_INDENT, - HOVER_INDENT, _width + 2 * HOVER_INDENT, _height + 2 * HOVER_INDENT);						
+				}
+				_hover.graphics.endFill();
 				if (!contains(_hover)) {
 					addChild(_hover);
 				}
@@ -502,6 +607,7 @@ package com.flashmedia.basics
 		 * bitmap - bitmapMask - border - debugContainer - select - selectMask
 		 */
 		private function sortSprites(): void {
+			//front
 			if (_selectMask) {
 				setChildIndex(_selectMask, 0);
 			}
@@ -510,6 +616,9 @@ package com.flashmedia.basics
 			}
 			if (_debugContainer) {
 				setChildIndex(_debugContainer, 0);
+			}
+			if (_textField) {
+				setChildIndex(_textField, 0);
 			}
 			if (_border) {
 				setChildIndex(_border, 0);
@@ -526,6 +635,7 @@ package com.flashmedia.basics
 			if (_hover) {
 				setChildIndex(_hover, 0);
 			}
+			//back
 		}
 		
 		protected function keyboardListener(event: KeyboardEvent): void {
@@ -548,12 +658,18 @@ package com.flashmedia.basics
 		protected function mouseOverListener(event: MouseEvent): void {
 			if (_selectable && _hoverEnabled) {
 				_hover.visible = true;
+				var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_SET_HOVER);
+				goEvent.gameObject = this;
+				dispatchEvent(goEvent);
 			}
 		}
 		
 		protected function mouseOutListener(event: MouseEvent): void {
 			if (_selectable && _hoverEnabled) {
 				_hover.visible = false;
+				var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_LOST_HOVER);
+				goEvent.gameObject = this;
+				dispatchEvent(goEvent);
 			}
 		}
 	}
