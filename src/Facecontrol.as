@@ -1,9 +1,11 @@
 package {
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.LinkButton;
+	import com.flashmedia.gui.MessageBox;
 	import com.flashmedia.gui.Pagination;
 	
 	import flash.events.Event;
@@ -27,6 +29,20 @@ package {
 			
 			var b:Button = new Button(this, "Button", 50, 50);
 			addChild(b);
+			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
+		}
+		
+		private function onButtonClicked(e: GameObjectEvent): void {
+			var cancelButton:Button = new Button(this, "Ok");
+			cancelButton.x = 40;
+			cancelButton.y = 50;
+			cancelButton.width = 50;
+			var otherButton:Button = new Button(this, "Other");
+			otherButton.x = 110;
+			otherButton.y = 50;
+			otherButton.width = 50;
+			var msg: MessageBox = new MessageBox(this, "Message", cancelButton, otherButton);
+			msg.show();
 		}
 		
 		private function changeListener(e:Event):void {
