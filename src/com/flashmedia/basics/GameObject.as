@@ -265,9 +265,15 @@ package com.flashmedia.basics
 			if (_textField) {
 				removeChild(_textField);
 			}
-			_textField = value;
-			addChild(_textField);
-			sortSprites();
+			if (value) {
+				_textField = value;
+				addChild(_textField);
+				sortSprites();
+			}
+		}
+		
+		public function get textField(): TextField {
+			return _textField;
 		}
 		
 		public function set textHorizontalAlign(value: String): void {
