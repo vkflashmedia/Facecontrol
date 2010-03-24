@@ -16,7 +16,7 @@ package com.flashmedia.gui
 		private static const VERTICAL_INDENT:uint = 5;
 		
 		protected var _state:uint = STATE_UP;
-		protected var _textField:TextField = new TextField();
+//		protected var _textField:TextField = new TextField();
 		
 		protected var _upColor:uint = 0xa0a0a0;
 		protected var _downColor:uint = 0x808080;
@@ -24,10 +24,11 @@ package com.flashmedia.gui
 		public function Button(value:GameScene, aLabel:String=null, aX:uint=0, aY:uint=0, aWidth:uint=0, aHeight:uint=0)
 		{
 			super(value);
-			_textField.text = aLabel;
-			_textField.autoSize = TextFieldAutoSize.CENTER;
-			_textField.selectable = false;
-			addChild(_textField);
+			var tf: TextField = new TextField();
+			tf.text = aLabel;
+			tf.autoSize = TextFieldAutoSize.CENTER;
+			tf.selectable = false;
+			textField = tf;
 			
 			var minWidth:uint = _textField.width + HORIZONTAL_INDENT*2;
 			var minHeight:uint = _textField.height + VERTICAL_INDENT*2;
