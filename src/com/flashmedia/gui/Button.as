@@ -32,7 +32,7 @@ package com.flashmedia.gui
 		protected var _useHighlightedStateTextFormat:Boolean = false;
 		
 		protected var _normalStateBackgroundImage:Bitmap;
-		protected var _useHighlightedStateBackgroundImage:Boolean = true;
+		protected var _useHighlightedStateBackgroundImage:Boolean = false;
 		protected var _highlightedStateBackgroundImage:Bitmap;
 		
 		public function Button(value:GameScene, aX:uint=0, aY:uint=0, aWidth:uint=50, aHeight:uint=20)

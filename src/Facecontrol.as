@@ -15,19 +15,13 @@ package {
 
 	public class Facecontrol extends GameScene {
 		private var textField: TextField = new TextField();
-		private var p:Pagination;
+//		private var p:Pagination;
 		private var linkButton:LinkButton;
 		
 		public function Facecontrol() {
-			linkButton = new LinkButton(this, "My link button", 0, 0, 50);
-			addChild(linkButton);
-			linkButton.wordWrap = true;
-			linkButton.label = "This is my first label";
-			
-			p = new Pagination(this, 100, 0, 10, 1);
-			addChild(p);
-			
-			p.addEventListener(Event.CHANGE, changeListener);
+//			p = new Pagination(this, 100, 0, 10, 1);
+//			addChild(p);
+//			p.addEventListener(Event.CHANGE, changeListener);
 			
 			var myBitmapDataObject:BitmapData = new BitmapData(50, 20, false, 0x80FF3300); 
 			var bitmap:Bitmap = new Bitmap(myBitmapDataObject); 
@@ -54,7 +48,7 @@ package {
 			var msg: MessageBox = new MessageBox(this, "Message", cancelButton, otherButton);
 			msg.show();
 		}
-		
+		/*
 		private function changeListener(e:Event):void {
 			p.clear();
 			p.update();
@@ -82,5 +76,6 @@ package {
 				textField.text = e.message;
 			}
 		}
+		*/
 	}
 }
