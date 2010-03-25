@@ -27,20 +27,24 @@ package {
 			
 			p.addEventListener(Event.CHANGE, changeListener);
 			
-			var b:Button = new Button(this, "Button", 50, 50);
+			var b:Button = new Button(this, 50, 50);
+			b.setTitleForState("Button", Button.STATE_NORMAL);
 			addChild(b);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
 		}
 		
 		private function onButtonClicked(e: GameObjectEvent): void {
-			var cancelButton:Button = new Button(this, "Ok");
+			var cancelButton:Button = new Button(this);
 			cancelButton.x = 40;
 			cancelButton.y = 50;
 			cancelButton.width = 50;
-			var otherButton:Button = new Button(this, "Other");
+			cancelButton.setTitleForState("Ok", Button.STATE_NORMAL);
+			
+			var otherButton:Button = new Button(this);
 			otherButton.x = 110;
 			otherButton.y = 50;
 			otherButton.width = 50;
+			otherButton.setTitleForState("Other", Button.STATE_NORMAL);
 			var msg: MessageBox = new MessageBox(this, "Message", cancelButton, otherButton);
 			msg.show();
 		}
