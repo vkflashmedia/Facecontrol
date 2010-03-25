@@ -3,6 +3,7 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
 	
+	import flash.display.Bitmap;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -30,6 +31,10 @@ package com.flashmedia.gui
 		protected var _highlightedStateTextFormat:TextFormat;
 		protected var _useHighlightedStateTextFormat:Boolean = false;
 		
+		protected var _normalStateBackgroundImage:Bitmap;
+		protected var _useHighlightedStateBackgroundImage:Boolean = true;
+		protected var _highlightedStateBackgroundImage:Bitmap;
+		
 		public function Button(value:GameScene, aX:uint=0, aY:uint=0, aWidth:uint=50, aHeight:uint=20)
 		{
 			super(value);
@@ -50,6 +55,29 @@ package com.flashmedia.gui
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownListener);
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
+		}
+		
+		public function setBackgroundImageForState(image:Bitmap, state:uint):void {
+			switch (state) {
+				case STATE_NORMAL:
+					_normalStateBackgroundImage = image;
+				break;
+				case STATE_HIGHLIGHTED:
+					_useHighlightedStateBackgroundImage = true;
+					_highlightedStateBackgroundImage = image;
+				break;
+			}
+			update();
+		}
+		
+		public function backgroundImageForState(state:uint):Bitmap {
+			switch (state) {
+				case STATE_HIGHLIGHTED:
+					return _highlightedStateBackgroundImage;
+				case STATE_NORMAL:
+				default:
+					return _normalStateBackgroundImage;
+			}
 		}
 		
 		public function setBackgroundColorForState(color:uint, state:uint):void {
@@ -122,6 +150,7 @@ package com.flashmedia.gui
 		public function setTextFormatForState(format:TextFormat, state:uint):void {
 			switch (state) {
 				case STATE_NORMAL:
+					autoSize = true;
 					_normalStateTextFormat = format;
 				break;
 				case STATE_HIGHLIGHTED:
@@ -145,17 +174,34 @@ package com.flashmedia.gui
 		private function update():void {
 			switch (_state) {
 				case STATE_NORMAL:
-					fillBackground(_normalStateBackgroundColor, 1.0);
+//					if (_normalStateBackgroundImage) {
+						bitmap = _normalStateBackgroundImage;
+//					}
+//					else {
+//						fillBackground(_normalStateBackgroundColor, 1.0);
+//					}
+					
 					textField.text = _normalStateTitle;
 					textField.setTextFormat(_normalStateTextFormat);
 				break;
 				case STATE_HIGHLIGHTED:
-					if (_useHighlightedStateBackgroundColor) {
-						fillBackground(_highlightedStateBackgroundColor, 1.0);
+					if (_highlightedStateBackgroundImage || _normalStateBackgroundImage) {
+						if (_useHighlightedStateBackgroundImage) {
+							bitmap = _highlightedStateBackgroundImage;
+						}
+						else {
+							bitmap = _normalStateBackgroundImage;
+						}
 					}
 					else {
-						fillBackground(_normalStateBackgroundColor, 1.0);
+						if (_useHighlightedStateBackgroundColor) {
+							fillBackground(_highlightedStateBackgroundColor, 1.0);
+						}
+						else {
+							fillBackground(_normalStateBackgroundColor, 1.0);
+						}
 					}
+					
 					textField.text = (_useHighlightedStateTitle) ? _highlightedStateTitle : _normalStateTitle;
 					textField.setTextFormat((_useHighlightedStateTextFormat) ? _highlightedStateTextFormat : _normalStateTextFormat);
 				break;

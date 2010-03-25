@@ -8,6 +8,8 @@ package {
 	import com.flashmedia.gui.MessageBox;
 	import com.flashmedia.gui.Pagination;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.text.TextField;
 
@@ -27,9 +29,21 @@ package {
 			
 			p.addEventListener(Event.CHANGE, changeListener);
 			
+//			var ldr:Loader = new Loader();
+////			ldr.mask = rect;
+//			var url:String = "02.png";
+//			var urlReq:URLRequest = new URLRequest(url);
+//			ldr.load(urlReq);
+//			var bitmap:Bitmap = Bitmap(ldr.content);
+
+			var myBitmapDataObject:BitmapData = new BitmapData(150, 150, false, 0x80FF3300); 
+			var bitmap:Bitmap = new Bitmap(myBitmapDataObject); 
+//			addChild(bitmap);
+			
 			var b:Button = new Button(this, 50, 50);
 			b.setTitleForState("Button", Button.STATE_NORMAL);
 			addChild(b);
+			b.setBackgroundImageForState(bitmap, Button.STATE_NORMAL);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
 		}
 		
