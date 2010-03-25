@@ -58,7 +58,11 @@ package com.flashmedia.gui
 		}
 		
 		public function setBackgroundImageForState(image:Bitmap, state:uint):void {
-			switch (state) {
+			if (image) {
+				autoSize = true;
+				clearBackground();
+				
+				switch (state) {
 				case STATE_NORMAL:
 					_normalStateBackgroundImage = image;
 				break;
@@ -68,6 +72,7 @@ package com.flashmedia.gui
 				break;
 			}
 			update();
+			}
 		}
 		
 		public function backgroundImageForState(state:uint):Bitmap {
@@ -150,7 +155,6 @@ package com.flashmedia.gui
 		public function setTextFormatForState(format:TextFormat, state:uint):void {
 			switch (state) {
 				case STATE_NORMAL:
-					autoSize = true;
 					_normalStateTextFormat = format;
 				break;
 				case STATE_HIGHLIGHTED:
@@ -174,12 +178,12 @@ package com.flashmedia.gui
 		private function update():void {
 			switch (_state) {
 				case STATE_NORMAL:
-//					if (_normalStateBackgroundImage) {
+					if (_normalStateBackgroundImage) {
 						bitmap = _normalStateBackgroundImage;
-//					}
-//					else {
-//						fillBackground(_normalStateBackgroundColor, 1.0);
-//					}
+					}
+					else {
+						fillBackground(_normalStateBackgroundColor, 1.0);
+					}
 					
 					textField.text = _normalStateTitle;
 					textField.setTextFormat(_normalStateTextFormat);
