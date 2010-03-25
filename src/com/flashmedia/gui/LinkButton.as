@@ -10,7 +10,7 @@ package com.flashmedia.gui
 
 	public class LinkButton extends GameObject
 	{
-		private var _textField:TextField = new TextField();
+//		private var _textField:TextField = new TextField();
 		
 		protected var _baseTextFormat:TextFormat = new TextFormat();
 		protected var _overTextFormat:TextFormat = new TextFormat();
@@ -27,11 +27,17 @@ package com.flashmedia.gui
 			setDownTextStyle();
 			_textFormat = _baseTextFormat;
 			
-			_textField.defaultTextFormat = _textFormat;
-			_textField.autoSize = TextFieldAutoSize.LEFT;
-			_textField.selectable = false;
-			_textField.mouseEnabled = false;
-			addChild(_textField);
+			var tf: TextField = new TextField();
+			tf.defaultTextFormat = _textFormat;
+			tf.autoSize = TextFieldAutoSize.LEFT;
+			tf.selectable = false;
+			tf.mouseEnabled = false;
+			textField = tf;
+//			_textField.defaultTextFormat = _textFormat;
+//			_textField.autoSize = TextFieldAutoSize.LEFT;
+//			_textField.selectable = false;
+//			_textField.mouseEnabled = false;
+//			addChild(_textField);
 			
 			this.selectable = true;
 			this.x = x;
@@ -66,27 +72,33 @@ package com.flashmedia.gui
 		
 		public override function set width(value: Number):void {
 			super.width = value;
-			if (_textField.wordWrap) update();
+			if (textField && textField.wordWrap) update();
 		}
 		
 		public override function destroy(): void {
 			super.destroy();
-			removeChild(_textField);
+			//removeChild(_textField);
 		}
 		
 		public function set wordWrap(wrap:Boolean): void {
-			_textField.wordWrap = wrap;
+			//_textField.wordWrap = wrap;
+			textField.wordWrap = wrap;
 			update();
 		}
 		
 		public function get label():String {
-			return _textField.text;
+			//return _textField.text;
+			return textField.text;
 		}
 		
 		public function set label(text:String):void {
-			var format:TextFormat = _textField.getTextFormat();
-			_textField.text = text;
-			_textField.setTextFormat(format);
+//			var format:TextFormat = _textField.getTextFormat();
+//			_textField.text = text;
+//			_textField.setTextFormat(format);
+//			update();
+			var format:TextFormat = textField.getTextFormat();
+			textField.text = text;
+			textField.setTextFormat(format);
 			update();
 		}
 		
@@ -118,9 +130,12 @@ package com.flashmedia.gui
 		}
 		
 		public function setUnderline(underline:Boolean):void {
-			var format:TextFormat = _textField.getTextFormat();
+//			var format:TextFormat = _textField.getTextFormat();
+//			format.underline = _baseTextFormat.underline = _overTextFormat.underline = _downTextFormat.underline = underline;
+//			_textField.setTextFormat(format);
+			var format:TextFormat = textField.getTextFormat();
 			format.underline = _baseTextFormat.underline = _overTextFormat.underline = _downTextFormat.underline = underline;
-			_textField.setTextFormat(format);
+			textField.setTextFormat(format);
 		}
 		
 		public function setBold(bold:Boolean):void {
@@ -130,7 +145,8 @@ package com.flashmedia.gui
 		protected override function mouseOverListener(event: MouseEvent): void {
 			super.mouseOutListener(event);
 			if (_enabled) {
-				_textField.setTextFormat(_overTextFormat);
+				//_textField.setTextFormat(_overTextFormat);
+				textField.setTextFormat(_overTextFormat);
 				update();
 			}
 		}
@@ -138,7 +154,8 @@ package com.flashmedia.gui
 		protected override function mouseOutListener(event: MouseEvent): void {
 			super.mouseOutListener(event);
 			if (_enabled) {
-				_textField.setTextFormat(_textFormat);
+				//_textField.setTextFormat(_textFormat);
+				textField.setTextFormat(_textFormat);
 				update();
 			}
 		}
