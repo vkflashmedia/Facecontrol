@@ -1,11 +1,11 @@
-package ru.flashmedia.gui
+package com.flashmedia.gui
 {
-	import flash.geom.Rectangle;
+	import com.flashmedia.basics.GameLayer;
+	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameObjectEvent;
+	import com.flashmedia.basics.GameScene;
 	
-	import ru.flashmedia.basics.GameLayer;
-	import ru.flashmedia.basics.GameObject;
-	import ru.flashmedia.basics.GameObjectEvent;
-	import ru.flashmedia.basics.GameScene;
+	import flash.geom.Rectangle;
 
 	public class GridBox extends GameLayer
 	{
@@ -13,6 +13,11 @@ package ru.flashmedia.gui
 		public static const ROW_HEIGHT_POLICY_ALL_SAME: String = 'row_height_policy_all_same';
 		public static const COLUMN_WIDTH_POLICY_BY_MAX_CELL: String = 'column_width_policy_by_max_size';
 		public static const COLUMN_WIDTH_POLICY_ALL_SAME: String = 'column_width_policy_all_same';
+		
+		public static const WIDTH_POLICY_AUTO_SIZE: String = 'width_policy_auto_size';
+		public static const WIDTH_POLICY_STRETCH_BY_WIDTH: String = 'width_policy_stretch_by_width';
+		public static const HEIGHT_POLICY_AUTO_SIZE: String = 'height_policy_auto_size';
+		public static const HEIGHT_POLICY_STRETCH_BY_HEIGHT: String = 'height_policy_stretch_by_height';
 		
 		private static const PADDING_ITEM: uint = 5;
 		private static const INDENT_BETWEEN_ITEMS: uint = 5;
@@ -34,9 +39,13 @@ package ru.flashmedia.gui
 		private var _verticalItemsAlign: String;
 		private var _rowHeightPolicy: String;
 		private var _columnWidthPolicy: String;
+		private var _widthPolicy: String;
+		private var _heightPolicy: String;
 		
 		private var _items: Array;
 		private var _gameObjects: Array;
+		private var _originGameObjectWidth: Array;
+		private var _originGameObjectHeight: Array;
 		private var _columnsWidth: Array;
 		private var _rowsHeight: Array;
 		
@@ -45,6 +54,8 @@ package ru.flashmedia.gui
 			super(value);
 			_items = new Array();
 			_gameObjects = new Array();
+			_originGameObjectWidth = new Array();
+			_originGameObjectHeight = new Array();
 			_columnsWidth = new Array();
 			_rowsHeight = new Array();
 			_selectedColumnIndex = undefined;
@@ -59,6 +70,8 @@ package ru.flashmedia.gui
 			_verticalItemsAlign = VERTICAL_ALIGN_CENTER;
 			_rowHeightPolicy = ROW_HEIGHT_POLICY_BY_MAX_CELL;
 			_columnWidthPolicy = COLUMN_WIDTH_POLICY_BY_MAX_CELL;
+			_widthPolicy = WIDTH_POLICY_AUTO_SIZE;
+			_heightPolicy = HEIGHT_POLICY_AUTO_SIZE;
 		}
 		
 		public function addItem(value: String): void {
@@ -73,7 +86,9 @@ package ru.flashmedia.gui
 			label.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
 			label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 			_gameObjects.push(label);
-			updateLayout();
+			_originGameObjectWidth.push(label.width);
+			_originGameObjectHeight.push(label.height);
+			updateLayout(true, true);
 		}
 		
 		public function get selectedItem(): * {
@@ -125,40 +140,51 @@ package ru.flashmedia.gui
 		
 		public function set padding(value: uint): void {
 			_paddingItem = value;
-			updateLayout();
+			updateLayout(true, true);
 		}
 		
 		public function set indentBetweenItems(value: uint): void {
 			_indentBetweenItems = value;
-			updateLayout();
+			updateLayout(true, true);
 		}
 		
 		public function set horizontalItemsAlign(value: String): void {
 			_horizontalItemsAlign = value;
-			updateLayout();
+			updateLayout(true, true);
 		}
 		
 		public function set verticalItemsAlign(value: String): void {
 			_verticalItemsAlign = value;
-			updateLayout();
+			updateLayout(true, true);
 		}
 		
 		public function set columnWidthPolicy(value: String): void {
 			_columnWidthPolicy = value;
-			updateLayout();
+			updateLayout(true, true);
 		}
 		
 		public function set rowHeightPolicy(value: String): void {
 			_rowHeightPolicy = value;
-			updateLayout();
+			updateLayout(true, true);
 		}
 		
-		private function updateLayout(): void {
+		public function set widthPolicy(value: String): void {
+			_widthPolicy = value;
+			updateLayout(true, false);
+		}
+		
+		public function set heightPolicy(value: String): void {
+			_heightPolicy = value;
+			updateLayout(false, true);
+		}
+		
+		private function updateLayout(updWidthPolicy: Boolean = false, updHeightPolicy: Boolean = false): void {
 			_columnsWidth = new Array();
 			_rowsHeight = new Array();
 			var curCol: uint = 0;
 			var curRow: uint = 0;
-			for each(var go: GameObject in _gameObjects) {
+			// рассчет размеров колонок и рядов
+			for (var i: uint; i < _gameObjects.length; i++) {
 				if (_maxColumnsCount && curCol >= _maxColumnsCount) {
 					curCol = 0;
 					curRow++;
@@ -176,9 +202,9 @@ package ru.flashmedia.gui
 								_columnsWidth[curCol] = _columnsWidth[0];
 							}
 						}
-						if (go.width > _columnsWidth[0]) {
+						if (_originGameObjectWidth[i] > _columnsWidth[0]) {
 							for (var c: uint = 0; c < columnsCount; c++) {
-								_columnsWidth[c] = go.width;
+								_columnsWidth[c] = _originGameObjectWidth[i];
 							}
 						}
 					break;
@@ -187,8 +213,8 @@ package ru.flashmedia.gui
 						if (!_columnsWidth[curCol]) {
 							_columnsWidth[curCol] = 0;
 						}
-						if (go.width > _columnsWidth[curCol]) {
-							_columnsWidth[curCol] = go.width;
+						if (_originGameObjectWidth[i] > _columnsWidth[curCol]) {
+							_columnsWidth[curCol] = _originGameObjectWidth[i];
 						}
 					break;
 				}
@@ -202,9 +228,9 @@ package ru.flashmedia.gui
 								_rowsHeight[curRow] = _rowsHeight[0];
 							}
 						}
-						if (go.height > _rowsHeight[0]) {
+						if (_originGameObjectHeight[i] > _rowsHeight[0]) {
 							for (var r: uint = 0; r < rowsCount; r++) {
-								_rowsHeight[r] = go.height;
+								_rowsHeight[r] = _originGameObjectHeight[i];
 							}
 						}
 					break;
@@ -213,31 +239,78 @@ package ru.flashmedia.gui
 						if (!_rowsHeight[curRow]) {
 							_rowsHeight[curRow] = 0;
 						}
-						if (go.height > _rowsHeight[curRow]) {
-							_rowsHeight[curRow] = go.height;
+						if (_originGameObjectHeight[i] > _rowsHeight[curRow]) {
+							_rowsHeight[curRow] = _originGameObjectHeight[i];
 						}
 					break;
 				}
 				curCol++;
 			}
-//			var maxItemWidth: uint = 0;
-//			var maxItemHeight: uint = 0;
-//			for each(go in _gameObjects) {
-//				if (go.width > maxItemWidth) {
-//					maxItemWidth = go.width;
-//				}
-//				if (go.height > maxItemHeight) {
-//					maxItemHeight = go.height;
-//				}
-//			}
-//			_maxItemWidth = maxItemWidth;
-//			_maxItemHeight = maxItemHeight;
+			// рассчет width и height на основе получившихся размеров ячеек
+			var w: uint = 0;
+			for (i = 0; i < columnsCount; i++) {
+				w += getColumnWidth(i);
+				if (i < columnsCount - 1) {
+					w += _indentBetweenItems;
+				}
+			}
+			var newWidth: uint = w;
+			var h: uint = 0;
+			for (i = 0; i < rowsCount; i++) {
+				h += getRowHeight(i);
+				if (i < rowsCount - 1) {
+					h += _indentBetweenItems;
+				}
+			}
+			var newHeight: uint = h;
+			//изменение _rowsHeight _columnsWidth в соответствии с _widthPolicy _heightPolicy
+			if (updWidthPolicy && _columnsWidth.length > 0) {
+				switch (_widthPolicy) {
+					case WIDTH_POLICY_STRETCH_BY_WIDTH:
+						var k: Number = width / newWidth;
+						var realWidth: uint = 0;
+						for (i = 0; i < _columnsWidth.length; i++) {
+							_columnsWidth[i] = Math.round(_columnsWidth[i] * k);
+							realWidth += _columnsWidth[i];
+						}
+						if (realWidth != width) {
+							var l: uint = _columnsWidth.length - 1;
+							_columnsWidth[l] = _columnsWidth[l] + (width - realWidth);
+						}
+					break;
+					case WIDTH_POLICY_AUTO_SIZE:
+					default:
+						width = newWidth;
+					break;
+				}
+			}
+			if (updHeightPolicy && _rowsHeight.length > 0) {
+				switch (_heightPolicy) {
+					case HEIGHT_POLICY_STRETCH_BY_HEIGHT:
+						k = height / newHeight;
+						var realHeight: uint = 0;
+						for (i = 0; i < _rowsHeight.length; i++) {
+							_rowsHeight[i] = Math.round(_rowsHeight[i] * k);
+							realHeight += _rowsHeight[i];
+						}
+						if (realHeight != height) {
+							l = _rowsHeight.length - 1;
+							_rowsHeight[l] = _rowsHeight[l] + (height - realHeight);
+						}
+					break;
+					case HEIGHT_POLICY_AUTO_SIZE:
+					default:
+						height = newHeight;
+					break;
+				}
+			}
 			//_debugContainer.graphics.clear();
-			for each(go in _gameObjects) {
+			for each(var go: GameObject in _gameObjects) {
 				if (contains(go)) {
 					removeChild(go);
 				}
 			}
+			// заполнение объектами
 			curCol = 0;
 			curRow = 0;
 			var cellRectX: uint = 0;
@@ -252,12 +325,8 @@ package ru.flashmedia.gui
 				if (_maxRowsCount && curRow >= _maxRowsCount) {
 					return;
 				}
-//				var cellRectX: uint = curCol * (cellWidth + _indentBetweenItems);
-//				var cellRectY: uint = curRow * (cellHeight + _indentBetweenItems);
 //				_debugContainer.graphics.lineStyle(1, BORDERS_COLOR);
 //				_debugContainer.graphics.drawRect(cellRectX, cellRectY, cellWidth, cellHeight);
-//				var x: uint = curCol * (cellWidth + _indentBetweenItems) + _paddingItem;
-//				var y: uint = curRow * (cellHeight + _indentBetweenItems) + _paddingItem;// + (_maxItemHeight - go.height) / 2;
 				go.x = cellRectX + _paddingItem;
 				go.y = cellRectY + _paddingItem;
 				go.width = _columnsWidth[curCol];
@@ -269,22 +338,6 @@ package ru.flashmedia.gui
 				cellRectX += _columnsWidth[curCol] + 2 * _paddingItem + _indentBetweenItems;
 				curCol++;
 			}
-			var w: uint = 0;
-			for (var i: uint = 0; i < columnsCount; i++) {
-				w += getColumnWidth(i);
-				if (i < columnsCount - 1) {
-					w += _indentBetweenItems;
-				}
-			}
-			width = w;
-			var h: uint = 0;
-			for (i = 0; i < rowsCount; i++) {
-				h += getRowHeight(i);
-				if (i < rowsCount - 1) {
-					h += _indentBetweenItems;
-				}
-			}
-			height = h;
 		}
 		
 		private function itemMouseClickListener(event: GameObjectEvent): void {

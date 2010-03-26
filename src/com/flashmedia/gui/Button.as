@@ -51,7 +51,7 @@ package com.flashmedia.gui
 			this.height = aHeight;
 			
 			setTextFormatForState(new TextFormat("Times New Roman", 12), STATE_NORMAL);
-			setBackgroundColorForState(0xa0a0a0, STATE_NORMAL);
+			setBackgroundColorForState(0xa0a0ff, STATE_NORMAL);
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownListener);
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
