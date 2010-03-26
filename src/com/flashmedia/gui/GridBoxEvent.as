@@ -1,6 +1,6 @@
-package ru.flashmedia.gui
+package com.flashmedia.gui
 {
-	import ru.flashmedia.basics.GameObjectEvent;
+	import com.flashmedia.basics.GameObjectEvent;
 
 	public class GridBoxEvent extends GameObjectEvent
 	{

@@ -51,7 +51,7 @@ package com.flashmedia.gui
 			this.height = aHeight;
 			
 			setTextFormatForState(new TextFormat("Times New Roman", 12), STATE_NORMAL);
-			setBackgroundColorForState(0xa0a0a0, STATE_NORMAL);
+			setBackgroundColorForState(0xa0a0ff, STATE_NORMAL);
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownListener);
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
@@ -174,12 +174,12 @@ package com.flashmedia.gui
 		private function update():void {
 			switch (_state) {
 				case STATE_NORMAL:
-//					if (_normalStateBackgroundImage) {
+					if (_normalStateBackgroundImage) {
 						bitmap = _normalStateBackgroundImage;
-//					}
-//					else {
-//						fillBackground(_normalStateBackgroundColor, 1.0);
-//					}
+					}
+					else {
+						fillBackground(_normalStateBackgroundColor, 1.0);
+					}
 					
 					textField.text = _normalStateTitle;
 					textField.setTextFormat(_normalStateTextFormat);

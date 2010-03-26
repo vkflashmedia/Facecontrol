@@ -1,16 +1,18 @@
-package ru.flashmedia.gui
+package com.flashmedia.gui
 {
+	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameScene;
+	
+	import flash.display.Bitmap;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
-	
-	import ru.flashmedia.basics.GameObject;
-	import ru.flashmedia.basics.GameScene;
 
 	//TODO сделать чтобы можно было добавлять любой объект. Сейчас только текст.
 	public class ComboBox extends GameObject
 	{
 		private var _dropList: GridBox;
+		private var _dropIcon: Bitmap;
 		
 		public function ComboBox(value:GameScene)
 		{
@@ -26,6 +28,7 @@ package ru.flashmedia.gui
 			_dropList.visible = false;
 			_dropList.x = x;
 			_dropList.y = y + height;
+			_dropList.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
 			_dropList.width = width;
 			_dropList.padding = 0;
 			_dropList.indentBetweenItems = 1;
@@ -51,6 +54,19 @@ package ru.flashmedia.gui
 		
 		public function get selectedItem(): * {
 			return _dropList.selectedItem;
+		}
+		
+		public override function set focus(value: Boolean): void {
+			super.focus = value;
+			_dropList.visible = false;
+		}
+		
+		public function set dropIcon(value: Bitmap): void {
+			_dropIcon = value;
+			_dropIcon.x = width - _dropIcon.width;
+			_dropIcon.y = 0;
+			_dropIcon.addEventListener(MouseEvent.CLICK, super.mouseClickListener);
+			addChild(_dropIcon);
 		}
 		
 		private function updateComboBox(): void {

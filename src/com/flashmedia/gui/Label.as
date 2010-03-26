@@ -1,11 +1,11 @@
-package ru.flashmedia.gui
+package com.flashmedia.gui
 {
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
-	import ru.flashmedia.basics.GameObject;
-	import ru.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameScene;
 
 	public class Label extends GameObject
 	{
