@@ -32,7 +32,7 @@ package com.flashmedia.gui
 		protected var _useHighlightedStateTextFormat:Boolean = false;
 		
 		protected var _normalStateBackgroundImage:Bitmap;
-		protected var _useHighlightedStateBackgroundImage:Boolean = true;
+		protected var _useHighlightedStateBackgroundImage:Boolean = false;
 		protected var _highlightedStateBackgroundImage:Bitmap;
 		
 		public function Button(value:GameScene, aX:uint=0, aY:uint=0, aWidth:uint=50, aHeight:uint=20)
@@ -58,7 +58,11 @@ package com.flashmedia.gui
 		}
 		
 		public function setBackgroundImageForState(image:Bitmap, state:uint):void {
-			switch (state) {
+			if (image) {
+				autoSize = true;
+				clearBackground();
+				
+				switch (state) {
 				case STATE_NORMAL:
 					_normalStateBackgroundImage = image;
 				break;
@@ -68,6 +72,7 @@ package com.flashmedia.gui
 				break;
 			}
 			update();
+			}
 		}
 		
 		public function backgroundImageForState(state:uint):Bitmap {
@@ -150,7 +155,6 @@ package com.flashmedia.gui
 		public function setTextFormatForState(format:TextFormat, state:uint):void {
 			switch (state) {
 				case STATE_NORMAL:
-					autoSize = true;
 					_normalStateTextFormat = format;
 				break;
 				case STATE_HIGHLIGHTED:

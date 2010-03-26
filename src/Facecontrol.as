@@ -20,7 +20,7 @@ package {
 
 	public class Facecontrol extends GameScene {
 		private var textField: TextField = new TextField();
-		private var p:Pagination;
+//		private var p:Pagination;
 		private var linkButton:LinkButton;
 		private var cb: ComboBox;
 		private static var _multiLoader: MultiLoader;
@@ -33,24 +33,14 @@ package {
 			addChild(linkButton);
 			linkButton.wordWrap = true;
 			linkButton.label = "This is my first label";
+//			p = new Pagination(this, 100, 0, 10, 1);
+//			addChild(p);
+//			p.addEventListener(Event.CHANGE, changeListener);
 			
-			p = new Pagination(this, 100, 0, 10, 1);
-			addChild(p);
-			
-			p.addEventListener(Event.CHANGE, changeListener);
-			
-//			var ldr:Loader = new Loader();
-////			ldr.mask = rect;
-//			var url:String = "02.png";
-//			var urlReq:URLRequest = new URLRequest(url);
-//			ldr.load(urlReq);
-//			var bitmap:Bitmap = Bitmap(ldr.content);
-
-			var myBitmapDataObject:BitmapData = new BitmapData(150, 150, false, 0x80FF3300); 
+			var myBitmapDataObject:BitmapData = new BitmapData(50, 20, false, 0x80FF3300); 
 			var bitmap:Bitmap = new Bitmap(myBitmapDataObject); 
-//			addChild(bitmap);
 			
-			var b:Button = new Button(this, 50, 50);
+			var b:Button = new Button(this, 50, 20);
 			b.setTitleForState("Button", Button.STATE_NORMAL);
 			addChild(b);
 			b.setBackgroundImageForState(bitmap, Button.STATE_NORMAL);
@@ -135,11 +125,10 @@ package {
 			var msg: MessageBox = new MessageBox(this, "Message", cancelButton, otherButton);
 			msg.show();
 		}
-		
+		/*
 		private function changeListener(e:Event):void {
 			p.clear();
 			p.update();
-//			linkButton.label = "change";
 		}
 		
 		private function request():void {
@@ -164,5 +153,6 @@ package {
 				textField.text = e.message;
 			}
 		}
+		*/
 	}
 }
