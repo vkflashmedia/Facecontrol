@@ -1,8 +1,6 @@
 package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.api.Api;
-	import com.facecontrol.api.ApiEvent;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
@@ -13,58 +11,81 @@ package {
 	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.MessageBox;
+	import com.flashmedia.gui.Pagination;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Loader;
 	import flash.events.Event;
-	import flash.events.HTTPStatusEvent;
-	import flash.events.IEventDispatcher;
-	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
+	import flash.text.Font;
 	import flash.text.TextField;
-
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	
 	public class Facecontrol extends GameScene {
+		[Embed(
+			source="d:\\dev\\web\\flex\\workspace\\Facecontrol\\bin-debug\\frame01\\font\\14049.ttf",
+			fontFamily="MenuFont",
+			unicodeRange = "U+0020-U+0040,U+0041-U+005A,U+005B-U+0060,U+0061-U+007A,U+007B-U+007E",
+			mimeType="application/x-font-truetype")]
+		private var MenuFontClass:Class;
+		private var MenuFont:Font = new MenuFontClass();
+		[Embed(
+			source="d:\\dev\\web\\flex\\workspace\\Facecontrol\\bin-debug\\frame01\\font\\OpiumBold.ttf",
+			fontName="OpiumBold",
+			fontWeight="bold",
+			unicodeRange = "U+0020-U+0040,U+0041-U+005A,U+005B-U+0060,U+0061-U+007A,U+007B-U+007E",
+			mimeType="application/x-font-truetype")]
+		private var OpiumBold:Class;
+		private var OpiumBoldFont:Font = new OpiumBold();
+		
 		private var textField: TextField = new TextField();
-//		private var p:Pagination;
+		private var p:Pagination;
 		private var linkButton:LinkButton;
 		private var cb: ComboBox;
 		private static var _multiLoader: MultiLoader;
 		
+		private var b:Button;
+		
 		public function Facecontrol() {
 			_multiLoader = new MultiLoader();
-			testComponents();
-			/*
-			linkButton = new LinkButton(this, "My link button", 0, 0, 50);
-			addChild(linkButton);
-			linkButton.wordWrap = true;
-			linkButton.label = "This is my first label";
+//			testComponents();
+			
+			aliFunction();
+		}
+		
+		private function aliFunction():void {
+			var format:TextFormat = new TextFormat();
+			format.font = OpiumBoldFont.fontName;
+			
+			var field:TextField = new TextField();
+			field.autoSize = TextFieldAutoSize.LEFT;
+			field.text = "Prosto text Просто текст";
+			field.embedFonts = true;
+			field.setTextFormat(format);
+			addChild(field);
+			
+//			linkButton = new LinkButton(this, "My link button", 0, 0, 50);
+//			addChild(linkButton);
+//			linkButton.wordWrap = true;
+//			linkButton.label = "This is my first label";
+//			
 //			p = new Pagination(this, 100, 0, 10, 1);
 //			addChild(p);
 //			p.addEventListener(Event.CHANGE, changeListener);
 			
-			var myBitmapDataObject:BitmapData = new BitmapData(50, 20, false, 0x80FF3300); 
-			var bitmap:Bitmap = new Bitmap(myBitmapDataObject); 
-			
-			var loader:URLLoader = new URLLoader();
-//			var loader:Loader = new Loader();
-			configureListeners(loader);
-			var request:URLRequest = new URLRequest("02.png");
-			try {
-                loader.load(request);
-            } catch (error:Error) {
-                trace("Unable to load requested document.");
-            }
-			
-			var b:Button = new Button(this, 50, 20);
-			b.setTitleForState("Button", Button.STATE_NORMAL);
+			b = new Button(this, 0, 50);
+			b.setTitleForState("главная", Button.STATE_NORMAL);
+			b.setTextFormatForState(new TextFormat(MenuFont.fontName, 14), Button.STATE_NORMAL);
+			b.textField.embedFonts = true;
 			addChild(b);
-			b.setBackgroundImageForState(bitmap, Button.STATE_NORMAL);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
-			*/
+			
+			MultiLoader.testing = true;
+			_multiLoader.load("frame01\\head\\02.png", "Button", "Bitmap");
+			_multiLoader.addEventListener(
+				MultiLoaderEvent.COMPLETE,
+				function (event: MultiLoaderEvent): void {
+					b.setBackgroundImageForState(_multiLoader.get("Button"), Button.STATE_NORMAL);
+					b.setTextPosition(20, 10);
+			});
 		}
 		
 		private function testComponents(): void {
@@ -129,42 +150,6 @@ package {
 			addChild(gb);
 		}
 		
-		private function configureListeners(dispatcher:IEventDispatcher):void {
-            dispatcher.addEventListener(Event.COMPLETE, completeHandler);
-            dispatcher.addEventListener(Event.OPEN, openHandler);
-            dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-            dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-            dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-            dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-        }
-
-        private function completeHandler(event:Event):void {
-			var loader:URLLoader = URLLoader(event.target);
-			trace("completeHandler: " + loader.data);
-//			var image:Bitmap = Bitmap(event.target.content);
-//			addChild(image);
-        }
-
-        private function openHandler(event:Event):void {
-            trace("openHandler: " + event);
-        }
-
-        private function progressHandler(event:ProgressEvent):void {
-            trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
-        }
-
-        private function securityErrorHandler(event:SecurityErrorEvent):void {
-            trace("securityErrorHandler: " + event);
-        }
-
-        private function httpStatusHandler(event:HTTPStatusEvent):void {
-            trace("httpStatusHandler: " + event);
-        }
-
-        private function ioErrorHandler(event:IOErrorEvent):void {
-            trace("ioErrorHandler: " + event);
-        }
-		
 		private function onButtonClicked(e: GameObjectEvent): void {
 			var cancelButton:Button = new Button(this);
 			cancelButton.x = 40;
@@ -180,12 +165,12 @@ package {
 			var msg: MessageBox = new MessageBox(this, "Message", cancelButton, otherButton);
 			msg.show();
 		}
-		/*
+		
 		private function changeListener(e:Event):void {
 			p.clear();
 			p.update();
 		}
-		
+		/*
 		private function request():void {
 			this.addChild(textField);
 			var api:Api = new Api(textField);

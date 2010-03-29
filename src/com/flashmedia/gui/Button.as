@@ -35,7 +35,7 @@ package com.flashmedia.gui
 		protected var _useHighlightedStateBackgroundImage:Boolean = false;
 		protected var _highlightedStateBackgroundImage:Bitmap;
 		
-		public function Button(value:GameScene, aX:uint=0, aY:uint=0, aWidth:uint=50, aHeight:uint=20)
+		public function Button(value:GameScene, x:uint=0, y:uint=0, width:uint=50, height:uint=20)
 		{
 			super(value);
 			
@@ -45,16 +45,29 @@ package com.flashmedia.gui
 			textField.autoSize = TextFieldAutoSize.LEFT;
 			textField.selectable = false;
 			
-			this.x = aX;
-			this.y = aY;
-			this.width = aWidth;
-			this.height = aHeight;
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
 			
 			setTextFormatForState(new TextFormat("Times New Roman", 12), STATE_NORMAL);
 			setBackgroundColorForState(0xa0a0ff, STATE_NORMAL);
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownListener);
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
+		}
+		
+		public function setTextPosition(x:uint, y:uint):void {
+			var textWidth:uint = textField.width;
+			var textHeight:uint = textField.height;
+			textField.autoSize = TextFieldAutoSize.NONE;
+			
+			textField.x = x;
+			textField.y = y;
+			textField.width = width;
+			textField.height = height;
+			
+			update();
 		}
 		
 		public function setBackgroundImageForState(image:Bitmap, state:uint):void {
@@ -211,8 +224,10 @@ package com.flashmedia.gui
 				break;
 			}
 			
-			textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
-			textVerticalAlign = VERTICAL_ALIGN_CENTER;
+			if (textField.autoSize == TextFieldAutoSize.LEFT) {
+				textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
+				textVerticalAlign = VERTICAL_ALIGN_CENTER;
+			}
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {
