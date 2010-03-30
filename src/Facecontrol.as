@@ -16,19 +16,18 @@ package {
 	import flash.events.Event;
 	import flash.text.Font;
 	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
 	public class Facecontrol extends GameScene {
 		[Embed(
-			source="d:\\dev\\web\\flex\\workspace\\Facecontrol\\bin-debug\\frame01\\font\\14049.ttf",
+			source="font\\14049.ttf",
 			fontFamily="MenuFont",
 			unicodeRange = "U+0020-U+0040,U+0041-U+005A,U+005B-U+0060,U+0061-U+007A,U+007B-U+007E",
 			mimeType="application/x-font-truetype")]
 		private var MenuFontClass:Class;
 		private var MenuFont:Font = new MenuFontClass();
 		[Embed(
-			source="d:\\dev\\web\\flex\\workspace\\Facecontrol\\bin-debug\\frame01\\font\\OpiumBold.ttf",
+			source="font\\OpiumBold.ttf",
 			fontName="OpiumBold",
 			fontWeight="bold",
 			unicodeRange = "U+0020-U+0040,U+0041-U+005A,U+005B-U+0060,U+0061-U+007A,U+007B-U+007E",
@@ -53,33 +52,19 @@ package {
 		
 		private function aliFunction():void {
 			var format:TextFormat = new TextFormat();
-			format.font = OpiumBoldFont.fontName;
-			
-			var field:TextField = new TextField();
-			field.autoSize = TextFieldAutoSize.LEFT;
-			field.text = "Prosto text Просто текст";
-			field.embedFonts = true;
-			field.setTextFormat(format);
-			addChild(field);
-			
-//			linkButton = new LinkButton(this, "My link button", 0, 0, 50);
-//			addChild(linkButton);
-//			linkButton.wordWrap = true;
-//			linkButton.label = "This is my first label";
-//			
-//			p = new Pagination(this, 100, 0, 10, 1);
-//			addChild(p);
-//			p.addEventListener(Event.CHANGE, changeListener);
+			format.font = MenuFont.fontName;
+			format.size = 18;
 			
 			b = new Button(this, 0, 50);
-			b.setTitleForState("главная", Button.STATE_NORMAL);
-			b.setTextFormatForState(new TextFormat(MenuFont.fontName, 14), Button.STATE_NORMAL);
+			b.setTitleForState("Main меню", Button.STATE_NORMAL);
+			b.setTextFormatForState(format, Button.STATE_NORMAL);
 			b.textField.embedFonts = true;
+			b.setTextPosition(100, 50);
 			addChild(b);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
 			
 			MultiLoader.testing = true;
-			_multiLoader.load("frame01\\head\\02.png", "Button", "Bitmap");
+			_multiLoader.load("images\\head\\02.png", "Button", "Bitmap");
 			_multiLoader.addEventListener(
 				MultiLoaderEvent.COMPLETE,
 				function (event: MultiLoaderEvent): void {
