@@ -76,15 +76,15 @@ package com.flashmedia.gui
 				clearBackground();
 				
 				switch (state) {
-				case STATE_NORMAL:
-					_normalStateBackgroundImage = image;
-				break;
-				case STATE_HIGHLIGHTED:
-					_useHighlightedStateBackgroundImage = true;
-					_highlightedStateBackgroundImage = image;
-				break;
-			}
-			update();
+					case STATE_NORMAL:
+						_normalStateBackgroundImage = image;
+					break;
+					case STATE_HIGHLIGHTED:
+						_useHighlightedStateBackgroundImage = true;
+						_highlightedStateBackgroundImage = image;
+					break;
+				}
+				update();
 			}
 		}
 		
@@ -188,7 +188,7 @@ package com.flashmedia.gui
 			}
 		}
 		
-		private function update():void {
+		public function update():void {
 			switch (_state) {
 				case STATE_NORMAL:
 					if (_normalStateBackgroundImage) {
