@@ -43,8 +43,6 @@ package {
 		private static var _multiLoader: MultiLoader;
 		
 		private var b:Button;
-		private var b1:Button;
-		private var b2:Button;
 		private var menu:MainMenu;
 		
 		public function Facecontrol() {
@@ -52,23 +50,33 @@ package {
 //			testComponents();
 			
 			aliFunction();
-			MultiLoader.testing = true;
-			_multiLoader.load("images\\head\\02.png", "Button1", "Bitmap");
-			_multiLoader.load("images\\head\\03.png", "Button2", "Bitmap");
-			_multiLoader.addEventListener(
-				MultiLoaderEvent.COMPLETE,
-				function (event: MultiLoaderEvent): void {
+			_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, onLoad);
+			_multiLoader.load("images\\head\\01.png", "Button1", "Bitmap");
+			_multiLoader.load("images\\head\\02.png", "Button2", "Bitmap");
+			_multiLoader.load("images\\head\\03.png", "Button3", "Bitmap");
+			_multiLoader.load("images\\head\\04.png", "Button4", "Bitmap");
+			_multiLoader.load("images\\head\\05.png", "Button5", "Bitmap");
+		}
+		
+		private function onLoad(event: MultiLoaderEvent): void {
 					switch (event.entry) {
 						case 'Button1':
-							b1.setBackgroundImageForState(_multiLoader.get("Button1"), Button.STATE_NORMAL);
+							menu.buttonAtIndex(0).setBackgroundImageForState(_multiLoader.get("Button1"), Button.STATE_NORMAL);
 						break;
-						
 						case 'Button2':
-							b2.setBackgroundImageForState(_multiLoader.get("Button2"), Button.STATE_NORMAL);
+							menu.buttonAtIndex(1).setBackgroundImageForState(_multiLoader.get("Button2"), Button.STATE_NORMAL);
+						break;
+						case 'Button3':
+							menu.buttonAtIndex(2).setBackgroundImageForState(_multiLoader.get("Button3"), Button.STATE_NORMAL);
+						break;
+						case 'Button4':
+							menu.buttonAtIndex(3).setBackgroundImageForState(_multiLoader.get("Button4"), Button.STATE_NORMAL);
+						break;
+						case 'Button5':
+							menu.buttonAtIndex(4).setBackgroundImageForState(_multiLoader.get("Button5"), Button.STATE_NORMAL);
 						break;
 					}
-			});
-		}
+			}
 		
 		private function aliFunction():void {
 			var format:TextFormat = new TextFormat();
@@ -84,33 +92,37 @@ package {
 //			addChild(b);
 //			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
 			
-			b1 = new Button(this, 0, 0);
+			var b1:Button = new Button(this, 0, 0);
 			b1.setTitleForState("main", Button.STATE_NORMAL);
 			b1.setTextFormatForState(format, Button.STATE_NORMAL);
 			b1.textField.embedFonts = true;
-			b1.setTextPosition(30, 10);
+			b1.setTextPosition(50, 10);
 			
-			b2 = new Button(this, 108, 0);
+			var b2:Button = new Button(this, 149, 0);
 			b2.setTitleForState("my photos", Button.STATE_NORMAL);
 			b2.setTextFormatForState(format, Button.STATE_NORMAL);
 			b2.textField.embedFonts = true;
 			b2.setTextPosition(35, 10);
-			/*
-			var b3:Button = new Button(this, 0, 50);
-			b3.setTitleForState("Main меню", Button.STATE_NORMAL);
+			
+			var b3:Button = new Button(this, 257, 0);
+			b3.setTitleForState("top100", Button.STATE_NORMAL);
 			b3.setTextFormatForState(format, Button.STATE_NORMAL);
 			b3.textField.embedFonts = true;
-			b3.setTextPosition(100, 50);
-			b3.setBackgroundImageForState(_multiLoader.get("Button"), Button.STATE_NORMAL);
+			b3.setTextPosition(30, 10);
 			
-			var b4:Button = new Button(this, 0, 50);
-			b4.setTitleForState("Main меню", Button.STATE_NORMAL);
+			var b4:Button = new Button(this, 364, 0);
+			b4.setTitleForState("bottom100", Button.STATE_NORMAL);
 			b4.setTextFormatForState(format, Button.STATE_NORMAL);
 			b4.textField.embedFonts = true;
-			b4.setTextPosition(100, 50);
-			b4.setBackgroundImageForState(_multiLoader.get("Button"), Button.STATE_NORMAL);
-			*/
-			var buttons:Array = new Array(b1, b2);
+			b4.setTextPosition(30, 10);
+			
+			var b5:Button = new Button(this, 483, 0);
+			b5.setTitleForState("friends", Button.STATE_NORMAL);
+			b5.setTextFormatForState(format, Button.STATE_NORMAL);
+			b5.textField.embedFonts = true;
+			b5.setTextPosition(30, 10);
+			
+			var buttons:Array = new Array(b1, b2, b3, b4, b5);
 			menu = new MainMenu(this);
 			menu.buttons = buttons;
 			addChild(menu);
