@@ -13,7 +13,9 @@ package {
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.MessageBox;
 	import com.flashmedia.gui.Pagination;
+	import com.flashmedia.util.BitmapUtil;
 	
+	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.text.Font;
 	import flash.text.TextField;
@@ -50,35 +52,45 @@ package {
 //			testComponents();
 			
 			aliFunction();
-			_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, onLoad);
-			_multiLoader.load("images\\head\\01.png", "Button1", "Bitmap");
-			_multiLoader.load("images\\head\\02.png", "Button2", "Bitmap");
-			_multiLoader.load("images\\head\\03.png", "Button3", "Bitmap");
-			_multiLoader.load("images\\head\\04.png", "Button4", "Bitmap");
-			_multiLoader.load("images\\head\\05.png", "Button5", "Bitmap");
 		}
 		
 		private function onLoad(event: MultiLoaderEvent): void {
-					switch (event.entry) {
-						case 'Button1':
-							menu.buttonAtIndex(0).setBackgroundImageForState(_multiLoader.get("Button1"), Button.STATE_NORMAL);
-						break;
-						case 'Button2':
-							menu.buttonAtIndex(1).setBackgroundImageForState(_multiLoader.get("Button2"), Button.STATE_NORMAL);
-						break;
-						case 'Button3':
-							menu.buttonAtIndex(2).setBackgroundImageForState(_multiLoader.get("Button3"), Button.STATE_NORMAL);
-						break;
-						case 'Button4':
-							menu.buttonAtIndex(3).setBackgroundImageForState(_multiLoader.get("Button4"), Button.STATE_NORMAL);
-						break;
-						case 'Button5':
-							menu.buttonAtIndex(4).setBackgroundImageForState(_multiLoader.get("Button5"), Button.STATE_NORMAL);
-						break;
+			switch (event.entry) {
+				case 'Button1':
+					menu.buttonAtIndex(0).setBackgroundImageForState(_multiLoader.get("Button1"), Button.STATE_NORMAL);
+				break;
+				case 'Button2':
+					menu.buttonAtIndex(1).setBackgroundImageForState(_multiLoader.get("Button2"), Button.STATE_NORMAL);
+				break;
+				case 'Button3':
+					menu.buttonAtIndex(2).setBackgroundImageForState(_multiLoader.get("Button3"), Button.STATE_NORMAL);
+				break;
+				case 'Button4':
+					menu.buttonAtIndex(3).setBackgroundImageForState(_multiLoader.get("Button4"), Button.STATE_NORMAL);
+				break;
+				case 'Button5':
+					menu.buttonAtIndex(4).setBackgroundImageForState(_multiLoader.get("Button5"), Button.STATE_NORMAL);
+				break;
+				case 'scroll_up':
+				case 'scroll_body':
+				case 'scroll_down':
+					if (_multiLoader.hasLoaded('scroll_up') &&
+						_multiLoader.hasLoaded('scroll_body') &&
+						_multiLoader.hasLoaded('scroll_down')) {
+						var image:Bitmap = BitmapUtil.createImage(
+							_multiLoader.get('scroll_up'),
+							_multiLoader.get('scroll_body'),
+							_multiLoader.get('scroll_down'),
+							100);
+						addChild(image);
 					}
+				break;
 			}
+		}
 		
 		private function aliFunction():void {
+			_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, onLoad);
+			/*
 			var format:TextFormat = new TextFormat();
 			format.font = MenuFont.fontName;
 			format.size = 18;
@@ -91,7 +103,7 @@ package {
 //			b.setBackgroundImageForState(_multiLoader.get("Button"), Button.STATE_NORMAL);
 //			addChild(b);
 //			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
-			
+			/*
 			var b1:Button = new Button(this, 0, 0);
 			b1.setTitleForState("main", Button.STATE_NORMAL);
 			b1.setTextFormatForState(format, Button.STATE_NORMAL);
@@ -126,6 +138,16 @@ package {
 			menu = new MainMenu(this);
 			menu.buttons = buttons;
 			addChild(menu);
+			
+			_multiLoader.load("images\\head\\01.png", "Button1", "Bitmap");
+			_multiLoader.load("images\\head\\02.png", "Button2", "Bitmap");
+			_multiLoader.load("images\\head\\03.png", "Button3", "Bitmap");
+			_multiLoader.load("images\\head\\04.png", "Button4", "Bitmap");
+			_multiLoader.load("images\\head\\05.png", "Button5", "Bitmap");
+			*/
+			_multiLoader.load("images\\scroll_up.png", "scroll_up", "Bitmap");
+			_multiLoader.load("images\\scroll_body.png", "scroll_body", "Bitmap");
+			_multiLoader.load("images\\scroll_down.png", "scroll_down", "Bitmap");
 		}
 		
 		private function testComponents(): void {
