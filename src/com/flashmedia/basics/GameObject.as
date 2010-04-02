@@ -64,6 +64,8 @@ package com.flashmedia.basics
 		
 		// текстовое содержимое
 		protected var _textField: TextField;
+		protected var _textHorizontalAlign: String;
+		protected var _textVerticalAlign: String;
 		// область выделения
 		protected var _select: Sprite;
 		// объект маска для выделения. Позволяет задать выделению форму, отличную от прямоугольника.
@@ -107,8 +109,8 @@ package com.flashmedia.basics
 			_backgroundColor = BACKGROUNG_COLOR;
 			_backgroundAlpha = 1.0;
 			_fillBackground = false;
-//			_speedX = 0;
-//			_speedY = 0;
+			_textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
+			_textVerticalAlign = VERTICAL_ALIGN_CENTER;
 			_zOrder = 1;
 			// границы объекта
 			width = 100;
@@ -137,6 +139,7 @@ package com.flashmedia.basics
 				_select.removeEventListener(MouseEvent.CLICK, mouseClickListener);
 				_select.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 				_select.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
+				_select.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
 				removeChild(_select);
 				_select = null;
 			}
@@ -174,6 +177,7 @@ package com.flashmedia.basics
 	  		}
 	  		updateFocus();
 	  		updateHover();
+	  		updateTextFieldAlign();
 	    	drawDebugInfo();
 	    	sortSprites();
 		}
@@ -191,6 +195,7 @@ package com.flashmedia.basics
 	  		}
 	  		updateFocus();
 	  		updateHover();
+	  		updateTextFieldAlign();
 	    	drawDebugInfo();
 	    	sortSprites();
 		}
@@ -274,6 +279,7 @@ package com.flashmedia.basics
 			}
 			if (value) {
 				_textField = value;
+				updateTextFieldAlign();
 				addChild(_textField);
 				sortSprites();
 			}
@@ -284,31 +290,13 @@ package com.flashmedia.basics
 		}
 		
 		public function set textHorizontalAlign(value: String): void {
-			switch (value) {
-				case HORIZONTAL_ALIGN_LEFT:
-					_textField.x = 0;
-				break;
-				case HORIZONTAL_ALIGN_RIGHT:
-					_textField.x = width - _textField.width;
-				break;
-				case HORIZONTAL_ALIGN_CENTER:
-				default:
-					_textField.x = (width - _textField.width) / 2;
-			}
+			_textHorizontalAlign = value;
+			updateTextFieldAlign();
 		}
 		
 		public function set textVerticalAlign(value: String): void {
-			switch (value) {
-				case VERTICAL_ALIGN_TOP:
-					_textField.y = 0;
-				break;
-				case VERTICAL_ALIGN_BOTTOM:
-					_textField.y = height - _textField.height;
-				break;
-				case VERTICAL_ALIGN_CENTER:
-				default:
-					_textField.y = (height - _textField.height) / 2;
-			}
+			_textVerticalAlign = value;
+			updateTextFieldAlign();
 		}
 		
 		public function set autoSize(value: Boolean): void {
@@ -525,6 +513,7 @@ package com.flashmedia.basics
 					_select.addEventListener(MouseEvent.CLICK, mouseClickListener);
 					_select.addEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 					_select.addEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
+					_select.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
 				}
 				_select.tabEnabled = true;
 				_select.graphics.clear();
@@ -542,6 +531,7 @@ package com.flashmedia.basics
 					_select.removeEventListener(MouseEvent.CLICK, mouseClickListener);
 					_select.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 					_select.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
+					_select.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
 					removeChild(_select);
 					_select = null;
 				}
@@ -610,6 +600,33 @@ package com.flashmedia.basics
 				if (_hover) {
 					removeChild(_hover);
 					_hover = null;
+				}
+			}
+		}
+		
+		private function updateTextFieldAlign(): void {
+			if (_textField) {
+				switch (_textHorizontalAlign) {
+					case HORIZONTAL_ALIGN_LEFT:
+						_textField.x = 0;
+					break;
+					case HORIZONTAL_ALIGN_RIGHT:
+						_textField.x = width - _textField.width;
+					break;
+					case HORIZONTAL_ALIGN_CENTER:
+					default:
+						_textField.x = (width - _textField.width) / 2;
+				}
+				switch (_textVerticalAlign) {
+					case VERTICAL_ALIGN_TOP:
+						_textField.y = 0;
+					break;
+					case VERTICAL_ALIGN_BOTTOM:
+						_textField.y = height - _textField.height;
+					break;
+					case VERTICAL_ALIGN_CENTER:
+					default:
+						_textField.y = (height - _textField.height) / 2;
 				}
 			}
 		}
@@ -684,6 +701,14 @@ package com.flashmedia.basics
 				goEvent.gameObject = this;
 				dispatchEvent(goEvent);
 			}
+		}
+		
+		protected function mouseMoveListener(event: MouseEvent): void {
+			var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_MOUSE_MOVE);
+			goEvent.gameObject = this;
+			goEvent.mouseX = event.localX;
+			goEvent.mouseY = event.localY;
+			dispatchEvent(goEvent);
 		}
 	}
 }

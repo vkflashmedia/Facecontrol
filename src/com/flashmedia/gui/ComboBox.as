@@ -4,7 +4,9 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.GameScene;
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 
@@ -20,18 +22,18 @@ package com.flashmedia.gui
 			width = 100;
 			height = 20;
 			selectable = true;
-			canFocus = true;
-			canHover = true;
-			fillBackground(0xfafaff, 1.0);
+//			canFocus = true;
+//			canHover = true;
+			//fillBackground(0xfafaff, 1.0);
 			_dropList = new GridBox(value, 1);
 			_dropList.fillBackground(0xffffff, 1.0);
 			_dropList.visible = false;
-			_dropList.x = x;
-			_dropList.y = y + height;
+			_dropList.x = 0;
+			_dropList.y = height;
 			_dropList.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
 			_dropList.width = width;
 			_dropList.padding = 0;
-			_dropList.indentBetweenItems = 1;
+			_dropList.indentBetweenItems = 0;
 			_dropList.horizontalItemsAlign = GameObject.HORIZONTAL_ALIGN_LEFT;
 			_dropList.verticalItemsAlign = GameObject.VERTICAL_ALIGN_CENTER;
 			_dropList.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onItemClickListener);
@@ -39,8 +41,20 @@ package com.flashmedia.gui
 			updateComboBox();
 		}
 		
+		public override function set height(value: Number): void {
+			super.height = value;
+			if (_dropList) {
+				_dropList.y = height;
+			}
+		}
+		
 		public function addItem(value: String): void {
 			_dropList.addItem(value);
+		}
+		
+		public override function set bitmap(value: Bitmap): void {
+			clearBackground();
+			super.bitmap = value;
 		}
 		
 		public function get selectedIndex(): uint {
@@ -62,11 +76,39 @@ package com.flashmedia.gui
 		}
 		
 		public function set dropIcon(value: Bitmap): void {
-			_dropIcon = value;
-			_dropIcon.x = width - _dropIcon.width;
-			_dropIcon.y = 0;
-			_dropIcon.addEventListener(MouseEvent.CLICK, super.mouseClickListener);
-			addChild(_dropIcon);
+			var bd: BitmapData = null;
+			var b: Bitmap = null;
+			if (_bitmap) {
+				bd = _bitmap.bitmapData;
+				b = _bitmap;
+			}
+			else {
+				bd = new BitmapData(width, height, true, undefined);
+				b = new Bitmap(bd);
+			}
+			var m: Matrix = new Matrix(1, 0, 0, 1, width - value.width, 0);
+			bd.draw(value, m);
+			bitmap = b;
+//			if (_dropIcon) {
+////				_dropIcon.removeEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDropIconClickListener);
+//				removeChild(_dropIcon);
+//				_dropIcon = null;
+//			}
+//			_dropIcon = value;
+//			_dropIcon.x = width - _dropIcon.width;
+//			_dropIcon.y = 0;
+//			addChild(_dropIcon);
+			
+//			_dropIcon = new GameObject(scene);
+//			_dropIcon.selectable = true;
+//			_dropIcon.canHover = true;
+//			_dropIcon.bitmap = value;
+//			_dropIcon.x = width - _dropIcon.width;
+//			_dropIcon.y = 0;
+//			_dropIcon.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDropIconClickListener);
+//			_dropIcon.addEventListener(GameObjectEvent.TYPE_SET_HOVER, onDropIconMouseHoverListener);
+//			_dropIcon.addEventListener(GameObjectEvent.TYPE_LOST_HOVER, onDropIconMouseLostListener);
+//			addChild(_dropIcon);
 		}
 		
 		private function updateComboBox(): void {
@@ -92,5 +134,18 @@ package com.flashmedia.gui
 			_dropList.visible = false;
 			updateComboBox();
 		}
+		
+//		private function onDropIconClickListener(event: GameObjectEvent): void {
+//			focus = true;
+//			_dropList.visible = !_dropList.visible;
+//		}
+//		
+//		private function onDropIconMouseHoverListener(event: GameObjectEvent): void {
+//			hover = true;
+//		}
+//		
+//		private function onDropIconMouseLostListener(event: GameObjectEvent): void {
+//			hover = false;
+//		}
 	}
 }
