@@ -261,6 +261,13 @@ package com.flashmedia.basics
 			sortSprites();
 		}
 		
+		public function get bitmap(): Bitmap {
+			if (_bitmap) {
+				return _bitmap;
+			}
+			return null
+		}
+		
 		public function set textField(value: TextField): void {
 			if (_textField) {
 				removeChild(_textField);

@@ -1,9 +1,9 @@
-package ru.flashmedia.managers
+package com.flashmedia.managers
 {
 	import flash.events.EventDispatcher;
 	
-	import ru.flashmedia.basics.GameLayer;
-	import ru.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.GameLayer;
+	import com.flashmedia.basics.GameScene;
 	
 	//TODO впоследствии следует добавить функционал для управления заргузкой
 	// Грузить или нет каждый раз слой при его показе
