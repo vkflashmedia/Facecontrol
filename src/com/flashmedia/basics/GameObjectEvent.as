@@ -17,6 +17,8 @@ package com.flashmedia.basics
 		
 		private var _gameObject: GameObject;
 		private var _keyCode: uint;
+		private var _mouseX: int;
+		private var _mouseY: int;
 		
 		public function GameObjectEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
@@ -37,6 +39,22 @@ package com.flashmedia.basics
 		
 		public function set keyCode(value: uint): void {
 			_keyCode = value;
+		}
+		
+		public function get mouseX(): int {
+			return _mouseX;
+		}
+		
+		public function set mouseX(value: int): void {
+			_mouseX = value;
+		}
+		
+		public function get mouseY(): int {
+			return mouseY;
+		}
+		
+		public function set mouseY(value: int): void {
+			_mouseY = value;
 		}
 	}
 }

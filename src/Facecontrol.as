@@ -1,8 +1,6 @@
 package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.api.Api;
-	import com.facecontrol.api.ApiEvent;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
@@ -13,16 +11,20 @@ package {
 	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.MessageBox;
-	import com.flashmedia.gui.Pagination;
+	import com.flashmedia.gui.RatingBar;
 	
-	import flash.events.Event;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.text.TextField;
 
 	public class Facecontrol extends GameScene {
 		private var textField: TextField = new TextField();
 //		private var p:Pagination;
 		private var linkButton:LinkButton;
+		private var gb: GridBox;
 		private var cb: ComboBox;
+		private var rateBar: RatingBar;
 		private static var _multiLoader: MultiLoader;
 		
 		public function Facecontrol() {
@@ -50,15 +52,49 @@ package {
 		
 		private function testComponents(): void {
 			//multiLoader.load("http://cs1256.vkontakte.ru/u7776141/17008570/x_b07e69c3.jpg", "Photo1", "Bitmap");
-			_multiLoader.load("c:\\choose_button.png", "dropIcon", "Bitmap");
+			_multiLoader.load("c:\\img\\choose_button.png", "dropIcon", "Bitmap");
+			_multiLoader.load("c:\\img\\rating_bgr.png", "ratingBack", "Bitmap");
+			_multiLoader.load("c:\\img\\rating_star_active.png", "ratingIconOn", "Bitmap");
+			_multiLoader.load("c:\\img\\rating_star_off.png", "ratingIconOff", "Bitmap");
 			_multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, function (event: MultiLoaderEvent): void {
 			
 			});
 			_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, function (event: MultiLoaderEvent): void {
-				cb.dropIcon = _multiLoader.get("dropIcon");
+				switch (event.entry) {
+					case 'dropIcon':
+						cb.dropIcon = _multiLoader.get("dropIcon");
+						gb.addItem(_multiLoader.get("dropIcon"));
+						gb.addItem(cb);
+					break;
+					case 'ratingBack':
+						rateBar.bitmap = _multiLoader.get("ratingBack");
+						gb.addItem(rateBar);
+					break;
+					case 'ratingIconOff':
+						rateBar.rateIconOff = _multiLoader.get("ratingIconOff");
+						gb.addItem(_multiLoader.get("ratingIconOff"));
+					break;
+					case 'ratingIconOn':
+						rateBar.rateIconOn = _multiLoader.get("ratingIconOn");
+					break;
+				}
 			});
 			
+			rateBar = new RatingBar(this, 10);
+			rateBar.x = 550;
+			rateBar.y = 300;
+			rateBar.setLayout(5, 13, 26, 21);
+			addChild(rateBar);
+
+			var spr: Sprite = new Sprite();
+			spr.graphics.beginFill(0xffffff);
+			spr.graphics.drawRoundRect(0, 0, 100, 15, 12);
+			spr.graphics.endFill();
+			var bd: BitmapData = new BitmapData(100, 15, true, undefined);
+			bd.draw(spr);
+			var cbBack: Bitmap = new Bitmap(bd);
 			cb = new ComboBox(this);
+			cb.bitmap = cbBack;
 			cb.x = 400;
 			cb.y = 400;
 			cb.height = 15;
@@ -67,11 +103,12 @@ package {
 			cb.addItem('Item3');
 			cb.addItem('Item4');
 			cb.addItem('Item5');
+			cb.selectedItem = 'Item1';
 			addChild(cb);
 			
 			var label: Label = new Label(this, 'TestLabel');
 			label.x = 300;
-			label.y = 200;
+			label.y = 250;
 			//label.debug = true;
 			label.fillBackground(0xffffff, 1.0);
 			label.selectable = true;
@@ -79,20 +116,20 @@ package {
 			label.canFocus = true;
 			addChild(label);
 			
-			var gb: GridBox = new GridBox(this, 4);
+			gb = new GridBox(this, 4);
 			gb.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, function (event: GridBoxEvent) : void {
 				trace((event.item as String) + ' ' + event.columnIndex + ' ' + event.rowIndex);
 			});
 			gb.x = 50;
-			gb.y = 10;
-			gb.width = 400;
+			gb.y = 3;
+			gb.width = 500;
 			gb.height = 300;
-			gb.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
-			gb.heightPolicy = GridBox.HEIGHT_POLICY_STRETCH_BY_HEIGHT;
+			gb.widthPolicy = GridBox.WIDTH_POLICY_AUTO_SIZE;
+			gb.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
 //			gb.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
 //			gb.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
 			gb.horizontalItemsAlign = GameObject.HORIZONTAL_ALIGN_LEFT;
-			gb.verticalItemsAlign = GameObject.VERTICAL_ALIGN_CENTER;
+			gb.verticalItemsAlign = GameObject.VERTICAL_ALIGN_TOP;
 			gb.fillBackground(0xffffff, 1.0);
 			gb.indentBetweenItems = 0;
 			gb.padding = 0;

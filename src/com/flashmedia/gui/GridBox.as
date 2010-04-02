@@ -5,6 +5,7 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	
+	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
 
 	public class GridBox extends GameLayer
@@ -74,20 +75,51 @@ package com.flashmedia.gui
 			_heightPolicy = HEIGHT_POLICY_AUTO_SIZE;
 		}
 		
-		public function addItem(value: String): void {
+		public function addItem(value: *): void {
 			//TODO сделать произвольный тип
 			_items.push(value);
-			var label: Label = new Label(scene, value);
-			//label.debug = true;
-			label.selectable = true;
-			label.canHover = true;
-			label.canFocus = true;
-			label.focusSizeMode = GameObject.SIZE_MODE_SELECT;
-			label.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
-			label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
-			_gameObjects.push(label);
-			_originGameObjectWidth.push(label.width);
-			_originGameObjectHeight.push(label.height);
+			if (value is String) {
+				var label: Label = new Label(scene, value);
+				label.selectable = true;
+				label.canHover = true;
+				label.canFocus = true;
+				label.focusSizeMode = GameObject.SIZE_MODE_SELECT;
+				label.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
+				label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
+				_gameObjects.push(label);
+				_originGameObjectWidth.push(label.width);
+				_originGameObjectHeight.push(label.height);
+			}
+			else if (value is Bitmap) {
+				var go: GameObject = new GameObject(scene);
+				go.bitmap = value;
+				go.width = value.width;
+				go.height = value.height;
+				go.selectable = true;
+				go.canHover = true;
+				go.canFocus = true;
+				go.focusSizeMode = GameObject.SIZE_MODE_SELECT;
+				go.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
+				go.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
+				_gameObjects.push(go);
+				_originGameObjectWidth.push(go.width);
+				_originGameObjectHeight.push(go.height);
+			}
+			else if (value is GameObject) {
+				value.selectable = true;
+				value.canFocus = true;
+				value.canHover = true;
+				value.focusSizeMode = GameObject.SIZE_MODE_SELECT;
+				value.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
+				value.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
+				_gameObjects.push(value);
+				//TODO теперь можно отказаться от  _originGameObjectWidth
+				_originGameObjectWidth.push(value.width);
+				_originGameObjectHeight.push(value.height);
+			}
+			else {
+				throw ArgumentError('Illegal argument type');
+			}
 			updateLayout(true, true);
 		}
 		
@@ -271,7 +303,10 @@ package com.flashmedia.gui
 						var realWidth: uint = 0;
 						for (i = 0; i < _columnsWidth.length; i++) {
 							_columnsWidth[i] = Math.round(_columnsWidth[i] * k);
-							realWidth += _columnsWidth[i];
+							realWidth += _columnsWidth[i] + 2 * _paddingItem;
+							if (i < _columnsWidth.length - 1) {
+								realWidth += _indentBetweenItems;
+							}
 						}
 						if (realWidth != width) {
 							var l: uint = _columnsWidth.length - 1;
@@ -291,7 +326,10 @@ package com.flashmedia.gui
 						var realHeight: uint = 0;
 						for (i = 0; i < _rowsHeight.length; i++) {
 							_rowsHeight[i] = Math.round(_rowsHeight[i] * k);
-							realHeight += _rowsHeight[i];
+							realHeight += _rowsHeight[i] + 2 * _paddingItem;
+							if (i < _rowsHeight.length - 1) {
+								realHeight += _indentBetweenItems;
+							}
 						}
 						if (realHeight != height) {
 							l = _rowsHeight.length - 1;
@@ -325,15 +363,38 @@ package com.flashmedia.gui
 				if (_maxRowsCount && curRow >= _maxRowsCount) {
 					return;
 				}
-//				_debugContainer.graphics.lineStyle(1, BORDERS_COLOR);
-//				_debugContainer.graphics.drawRect(cellRectX, cellRectY, cellWidth, cellHeight);
-				go.x = cellRectX + _paddingItem;
-				go.y = cellRectY + _paddingItem;
-				go.width = _columnsWidth[curCol];
-				go.height = _rowsHeight[curRow];
-				go.textHorizontalAlign = _horizontalItemsAlign;
-				go.textVerticalAlign = _verticalItemsAlign;
-				go.selectRect = new Rectangle(-(_columnsWidth[curCol] - go.width) / 2, -(_rowsHeight[curRow] - go.height) / 2, _columnsWidth[curCol] - 1, _rowsHeight[curRow]);
+				//go.x = cellRectX + _paddingItem;
+				//go.y = cellRectY + _paddingItem;
+				//go.width = _columnsWidth[curCol];
+				//go.height = _rowsHeight[curRow];
+//				go.textHorizontalAlign = _horizontalItemsAlign;
+//				go.textVerticalAlign = _verticalItemsAlign;
+				switch (_horizontalItemsAlign) {
+					case HORIZONTAL_ALIGN_LEFT:
+						go.x = cellRectX + _paddingItem;
+					break;
+					case HORIZONTAL_ALIGN_RIGHT:
+						go.x = cellRectX + _paddingItem + _columnsWidth[curCol] - go.width;
+					break;
+					default:
+					case HORIZONTAL_ALIGN_CENTER:
+						go.x = cellRectX + _paddingItem + (_columnsWidth[curCol] - go.width) / 2;
+					break;
+				}
+				switch (_verticalItemsAlign) {
+					case VERTICAL_ALIGN_TOP:
+						go.y = cellRectY + _paddingItem;
+					break;
+					case VERTICAL_ALIGN_BOTTOM:
+						go.y = cellRectY + _paddingItem + _rowsHeight[curRow] - go.height;
+					break;
+					default:
+					case VERTICAL_ALIGN_CENTER:
+						go.y = cellRectY + _paddingItem + (_rowsHeight[curRow] - go.height) / 2;
+					break;
+				}
+				//go.selectRect = new Rectangle(-(_columnsWidth[curCol] - go.width) / 2, -(_rowsHeight[curRow] - go.height) / 2, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1);
+				go.selectRect = new Rectangle(cellRectX - go.x + _paddingItem, cellRectY - go.y + _paddingItem, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1);
 				addChild(go);
 				cellRectX += _columnsWidth[curCol] + 2 * _paddingItem + _indentBetweenItems;
 				curCol++;
