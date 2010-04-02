@@ -59,6 +59,7 @@ package com.flashmedia.gui
 		}
 		
 		private function onOtherButtonClicked(e:GameObjectEvent):void {
+			_scene.resetModal(this);
 			dispatchEvent(new MessageBoxEvent(MessageBoxEvent.OTHER_BUTTON_CLICKED));
 		}
 	}

@@ -1,6 +1,7 @@
 package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.gui.MainMenu;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
@@ -12,42 +13,131 @@ package {
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.MessageBox;
 	import com.flashmedia.gui.RatingBar;
-	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import com.flashmedia.gui.Pagination;
+	import com.flashmedia.util.BitmapUtil;
+	
+	import flash.display.Bitmap;
+	import flash.events.Event;
+	import flash.text.Font;
 	import flash.text.TextField;
-
+	import flash.text.TextFormat;
+	
 	public class Facecontrol extends GameScene {
 		private var textField: TextField = new TextField();
-//		private var p:Pagination;
+		private var p:Pagination;
 		private var linkButton:LinkButton;
 		private var gb: GridBox;
 		private var cb: ComboBox;
 		private var rateBar: RatingBar;
 		private static var _multiLoader: MultiLoader;
 		
+		private var b:Button;
+		private var menu:MainMenu;
+		
 		public function Facecontrol() {
 			_multiLoader = new MultiLoader();
-			testComponents();
+//			testComponents();
+			
+			aliFunction();
+		}
+		
+		private function onLoad(event: MultiLoaderEvent): void {
+			switch (event.entry) {
+				case 'Button1':
+					menu.buttonAtIndex(0).setBackgroundImageForState(_multiLoader.get("Button1"), Button.STATE_NORMAL);
+				break;
+				case 'Button2':
+					menu.buttonAtIndex(1).setBackgroundImageForState(_multiLoader.get("Button2"), Button.STATE_NORMAL);
+				break;
+				case 'Button3':
+					menu.buttonAtIndex(2).setBackgroundImageForState(_multiLoader.get("Button3"), Button.STATE_NORMAL);
+				break;
+				case 'Button4':
+					menu.buttonAtIndex(3).setBackgroundImageForState(_multiLoader.get("Button4"), Button.STATE_NORMAL);
+				break;
+				case 'Button5':
+					menu.buttonAtIndex(4).setBackgroundImageForState(_multiLoader.get("Button5"), Button.STATE_NORMAL);
+				break;
+				case 'scroll_up':
+				case 'scroll_body':
+				case 'scroll_down':
+					if (_multiLoader.hasLoaded('scroll_up') &&
+						_multiLoader.hasLoaded('scroll_body') &&
+						_multiLoader.hasLoaded('scroll_down')) {
+						var image:Bitmap = BitmapUtil.createImage(
+							_multiLoader.get('scroll_up'),
+							_multiLoader.get('scroll_body'),
+							_multiLoader.get('scroll_down'),
+							100);
+						addChild(image);
+					}
+				break;
+			}
+		}
+		
+		private function aliFunction():void {
+			_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, onLoad);
 			/*
-			linkButton = new LinkButton(this, "My link button", 0, 0, 50);
-			addChild(linkButton);
-			linkButton.wordWrap = true;
-			linkButton.label = "This is my first label";
-//			p = new Pagination(this, 100, 0, 10, 1);
-//			addChild(p);
-//			p.addEventListener(Event.CHANGE, changeListener);
+			var format:TextFormat = new TextFormat();
+			format.font = MenuFont.fontName;
+			format.size = 18;
 			
-			var myBitmapDataObject:BitmapData = new BitmapData(50, 20, false, 0x80FF3300); 
-			var bitmap:Bitmap = new Bitmap(myBitmapDataObject); 
+//			b = new Button(this, 0, 50);
+//			b.setTitleForState("Main меню", Button.STATE_NORMAL);
+//			b.setTextFormatForState(format, Button.STATE_NORMAL);
+//			b.textField.embedFonts = true;
+//			b.setTextPosition(100, 50);
+//			b.setBackgroundImageForState(_multiLoader.get("Button"), Button.STATE_NORMAL);
+//			addChild(b);
+//			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
+			/*
+			var b1:Button = new Button(this, 0, 0);
+			b1.setTitleForState("main", Button.STATE_NORMAL);
+			b1.setTextFormatForState(format, Button.STATE_NORMAL);
+			b1.textField.embedFonts = true;
+			b1.setTextPosition(50, 10);
 			
-			var b:Button = new Button(this, 50, 20);
-			b.setTitleForState("Button", Button.STATE_NORMAL);
-			addChild(b);
-			b.setBackgroundImageForState(bitmap, Button.STATE_NORMAL);
-			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
+			var b2:Button = new Button(this, 149, 0);
+			b2.setTitleForState("my photos", Button.STATE_NORMAL);
+			b2.setTextFormatForState(format, Button.STATE_NORMAL);
+			b2.textField.embedFonts = true;
+			b2.setTextPosition(35, 10);
+			
+			var b3:Button = new Button(this, 257, 0);
+			b3.setTitleForState("top100", Button.STATE_NORMAL);
+			b3.setTextFormatForState(format, Button.STATE_NORMAL);
+			b3.textField.embedFonts = true;
+			b3.setTextPosition(30, 10);
+			
+			var b4:Button = new Button(this, 364, 0);
+			b4.setTitleForState("bottom100", Button.STATE_NORMAL);
+			b4.setTextFormatForState(format, Button.STATE_NORMAL);
+			b4.textField.embedFonts = true;
+			b4.setTextPosition(30, 10);
+			
+			var b5:Button = new Button(this, 483, 0);
+			b5.setTitleForState("friends", Button.STATE_NORMAL);
+			b5.setTextFormatForState(format, Button.STATE_NORMAL);
+			b5.textField.embedFonts = true;
+			b5.setTextPosition(30, 10);
+			
+			var buttons:Array = new Array(b1, b2, b3, b4, b5);
+			menu = new MainMenu(this);
+			menu.buttons = buttons;
+			addChild(menu);
+			
+			_multiLoader.load("images\\head\\01.png", "Button1", "Bitmap");
+			_multiLoader.load("images\\head\\02.png", "Button2", "Bitmap");
+			_multiLoader.load("images\\head\\03.png", "Button3", "Bitmap");
+			_multiLoader.load("images\\head\\04.png", "Button4", "Bitmap");
+			_multiLoader.load("images\\head\\05.png", "Button5", "Bitmap");
 			*/
+			_multiLoader.load("images\\scroll_up.png", "scroll_up", "Bitmap");
+			_multiLoader.load("images\\scroll_body.png", "scroll_body", "Bitmap");
+			_multiLoader.load("images\\scroll_down.png", "scroll_down", "Bitmap");
 		}
 		
 		private function testComponents(): void {
@@ -162,12 +252,12 @@ package {
 			var msg: MessageBox = new MessageBox(this, "Message", cancelButton, otherButton);
 			msg.show();
 		}
-		/*
+		
 		private function changeListener(e:Event):void {
 			p.clear();
 			p.update();
 		}
-		
+		/*
 		private function request():void {
 			this.addChild(textField);
 			var api:Api = new Api(textField);
