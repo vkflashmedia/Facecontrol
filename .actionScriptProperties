@@ -18,7 +18,7 @@
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/framework.swc" useDefaultLinkType="false"/>
 </excludedEntries>
 </libraryPathEntry>
-<libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/FontLibrary/bin/FontLibrary.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="FontLibrary.swc" useDefaultLinkType="false"/>
 </libraryPath>
 <sourceAttachmentPath/>
 </compiler>
