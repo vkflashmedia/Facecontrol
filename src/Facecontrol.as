@@ -5,6 +5,7 @@ package {
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.GridBox;
@@ -12,18 +13,19 @@ package {
 	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.MessageBox;
-	import com.flashmedia.gui.RatingBar;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Sprite;
 	import com.flashmedia.gui.Pagination;
+	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
+	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.text.Font;
+	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	import flash.text.TextField;
-	import flash.text.TextFormat;
+	import flash.text.TextFieldAutoSize;
 	
 	public class Facecontrol extends GameScene {
 		private var textField: TextField = new TextField();
@@ -42,6 +44,7 @@ package {
 //			testComponents();
 			
 			aliFunction();
+//			artemFunction();
 		}
 		
 		private function onLoad(event: MultiLoaderEvent): void {
@@ -154,7 +157,7 @@ package {
 					case 'dropIcon':
 						cb.dropIcon = _multiLoader.get("dropIcon");
 						gb.addItem(_multiLoader.get("dropIcon"));
-						gb.addItem(cb);
+						//gb.addItem(cb);
 					break;
 					case 'ratingBack':
 						rateBar.bitmap = _multiLoader.get("ratingBack");
@@ -166,6 +169,7 @@ package {
 					break;
 					case 'ratingIconOn':
 						rateBar.rateIconOn = _multiLoader.get("ratingIconOn");
+						label.icon = _multiLoader.get("ratingIconOn");
 					break;
 				}
 			});
@@ -199,11 +203,11 @@ package {
 			var label: Label = new Label(this, 'TestLabel');
 			label.x = 300;
 			label.y = 250;
-			//label.debug = true;
+			label.debug = true;
 			label.fillBackground(0xffffff, 1.0);
-			label.selectable = true;
-			label.canHover = true;
-			label.canFocus = true;
+			label.setSelect(true);
+			label.setHover(true);
+			label.setFocus(true);
 			addChild(label);
 			
 			gb = new GridBox(this, 4);
@@ -281,5 +285,65 @@ package {
 			}
 		}
 		*/
+		
+		public function artemFunction(): void {
+			var go: GameObject = new GameObject(this);
+			go.debug = true;
+			go.x = 120;
+			go.y = 80;
+			go.width = 150;
+			go.setFocus(true);
+			
+			go.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
+				trace('click');
+			});
+			var selectMask: Sprite = new Sprite();
+			selectMask.graphics.beginFill(0xffffff, 1);
+			selectMask.graphics.drawCircle(go.width / 2, go.width/ 2, 50); 
+			selectMask.graphics.endFill();
+			go.setSelect(true, false, selectMask, new Rectangle(-20,-20,100,100));
+			//go.setSelect(false);
+			
+			var backMask: Sprite = new Sprite();
+			backMask.graphics.beginFill(0xffffff, 1);
+			backMask.graphics.drawRoundRect(0, 0, go.width, go.height, 20, 20); 
+			backMask.graphics.endFill();
+			go.bitmapMask = backMask;
+			
+			var back: Bitmap = new Bitmap(new BitmapData(go.width, go.height, true, 0x50fafff2), PixelSnapping.ALWAYS, true);
+			go.bitmap = back;
+			var tf: TextField = new TextField();
+			tf.autoSize = TextFieldAutoSize.LEFT;
+			tf.selectable = false;
+			tf.text = 'MainText';
+			go.setTextField(tf, View.ALIGN_HOR_CENTER | View.ALIGN_VER_BOTTOM);
+			
+			var spr: Sprite = new Sprite();
+			spr.name = 'Sprite1';
+			spr.graphics.beginFill(0xffffff);
+			spr.graphics.drawRoundRect(0, 0, 100, 15, 12);
+			spr.graphics.endFill();
+			spr.addEventListener(MouseEvent.CLICK, function (event: MouseEvent): void {
+				trace('sprite click');
+			});
+			
+			var b: Bitmap = new Bitmap(new BitmapData(50, 50, false, 0x00ff22), PixelSnapping.ALWAYS, true);
+			b.name = 'Bitmap1';
+			
+			//TODO проблема с выравниванием
+			go.view.addDisplayObject(b, 'Bitmap1', 1, View.ALIGN_HOR_CENTER | View.ALIGN_VER_CENTER);
+			go.view.addDisplayObject(spr, 'Spritik', GameObject.VISUAL_SELECT_MASK_Z_ORDER + 1, View.ALIGN_HOR_CENTER);
+			go.view.removeDisplayObject('');
+			
+			addChild(go);
+			
+			var go2: GameObject = new GameObject(this);
+			go2.x = 300;
+			go2.y = 20;
+			go2.debug = true;
+			go2.setSelect(true);
+			go2.setFocus(true);
+			addChild(go2);
+		}
 	}
 }

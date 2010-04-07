@@ -2,6 +2,7 @@ package com.flashmedia.gui
 {
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	
 	import flash.display.Bitmap;
 	import flash.text.TextField;
@@ -10,6 +11,8 @@ package com.flashmedia.gui
 
 	public class Label extends GameObject
 	{
+		public static const ICON_TEXT_DX: int = 5;
+		
 		private var _icon: Bitmap;
 		private var _tf: TextField;
 		private var _text: String;
@@ -17,13 +20,13 @@ package com.flashmedia.gui
 		public function Label(value: GameScene, text: String = '')
 		{
 			super(value);
-			debug = true;
+//			debug = true;
 			this.text = text;
 		}
 		
 		public function set icon(value: Bitmap): void {
 			if (!value && _icon) {
-				removeChild(_icon);
+				_view.removeDisplayObject('icon');
 			}
 			_icon = value;
 			update();
@@ -31,7 +34,7 @@ package com.flashmedia.gui
 		
 		public function set text(value: String): void {
 			if (!value && _tf) {
-				removeChild(_tf);
+				_view.removeDisplayObject('text');
 			}
 			_text = value;
 			update();
@@ -46,33 +49,33 @@ package com.flashmedia.gui
 		}
 		
 		private function update(): void {
-			var xx: uint = 0;
+			//var xx: uint = 0;
 			var w: uint = 0;
 			var h: uint = 0;
 			if (_icon) {
-				if (!contains(_icon)) {
-					addChild(_icon);
+				if (!_view.contains('icon')) {
+					_view.addDisplayObject(_icon, 'icon', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_CENTER | View.ALIGN_HOR_LEFT);
 				}
-				xx += _icon.width;
-				w += _icon.width;
+				//xx += _icon.width;
+				w += _icon.width + ICON_TEXT_DX;
 				h = _icon.height;
 			}
 			if (_text) {
 				if (!_tf) {
 					_tf = new TextField();
-				}
-				if (!contains(_tf)) {
-					addChild(_tf);
+					_tf.selectable = false;
+					_tf.autoSize = TextFieldAutoSize.LEFT;
 				}
 				_tf.text = _text;
-				_tf.x = xx;
-				if (h < _tf.textHeight) {
-					h = _tf.textHeight;
+				if (!_view.contains('text')) {
+					_view.addDisplayObject(_tf, 'text', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_CENTER | View.ALIGN_HOR_RIGHT);
 				}
-				_tf.y = (h - _tf.textHeight) / 2;
-				_tf.selectable = false;
-				_tf.autoSize = TextFieldAutoSize.LEFT;
-				w += _tf.textWidth;
+				//_tf.x = xx;
+				if (h < _tf.height) {
+					h = _tf.height;
+				}
+				//_tf.y = (h - _tf.textHeight) / 2;
+				w += _tf.width;
 			}
 			width = w;
 			height = h;

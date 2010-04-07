@@ -2,6 +2,7 @@ package com.flashmedia.gui
 {
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -21,7 +22,7 @@ package com.flashmedia.gui
 			super(value);
 			width = 100;
 			height = 20;
-			selectable = true;
+			setSelect(true);
 //			canFocus = true;
 //			canHover = true;
 			//fillBackground(0xfafaff, 1.0);
@@ -121,7 +122,7 @@ package com.flashmedia.gui
 				tf.autoSize = TextFieldAutoSize.LEFT;
 				tf.width = width;
 				tf.height = height;
-				textField = tf;
+				setTextField(tf, View.ALIGN_HOR_LEFT | View.ALIGN_VER_CENTER);
 			}
 		}
 		

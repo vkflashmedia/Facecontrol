@@ -80,11 +80,9 @@ package com.flashmedia.gui
 			_items.push(value);
 			if (value is String) {
 				var label: Label = new Label(scene, value);
-				label.selectable = true;
-				label.canHover = true;
-				label.canFocus = true;
-				label.focusSizeMode = GameObject.SIZE_MODE_SELECT;
-				label.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
+				label.setSelect(true);
+				label.setHover(true, null, GameObject.SIZE_MODE_SELECT);
+				label.setFocus(true, null, GameObject.SIZE_MODE_SELECT);
 				label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(label);
 				_originGameObjectWidth.push(label.width);
@@ -95,22 +93,18 @@ package com.flashmedia.gui
 				go.bitmap = value;
 				go.width = value.width;
 				go.height = value.height;
-				go.selectable = true;
-				go.canHover = true;
-				go.canFocus = true;
-				go.focusSizeMode = GameObject.SIZE_MODE_SELECT;
-				go.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
+				go.setSelect(true);
+				go.setHover(true, null, GameObject.SIZE_MODE_SELECT);
+				go.setFocus(true, null, GameObject.SIZE_MODE_SELECT);
 				go.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(go);
 				_originGameObjectWidth.push(go.width);
 				_originGameObjectHeight.push(go.height);
 			}
 			else if (value is GameObject) {
-				value.selectable = true;
-				value.canFocus = true;
-				value.canHover = true;
-				value.focusSizeMode = GameObject.SIZE_MODE_SELECT;
-				value.hoverSizeMode = GameObject.SIZE_MODE_SELECT;
+				value.setSelect(true);
+				value.setFocus(true, null, GameObject.SIZE_MODE_SELECT);
+				value.setHover(true, null, GameObject.SIZE_MODE_SELECT);
 				value.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(value);
 				//TODO теперь можно отказаться от  _originGameObjectWidth
@@ -394,7 +388,7 @@ package com.flashmedia.gui
 					break;
 				}
 				//go.selectRect = new Rectangle(-(_columnsWidth[curCol] - go.width) / 2, -(_rowsHeight[curRow] - go.height) / 2, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1);
-				go.selectRect = new Rectangle(cellRectX - go.x + _paddingItem, cellRectY - go.y + _paddingItem, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1);
+				go.setSelect(true, false, null, new Rectangle(cellRectX - go.x + _paddingItem, cellRectY - go.y + _paddingItem, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1));
 				addChild(go);
 				cellRectX += _columnsWidth[curCol] + 2 * _paddingItem + _indentBetweenItems;
 				curCol++;

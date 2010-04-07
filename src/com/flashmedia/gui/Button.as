@@ -39,11 +39,12 @@ package com.flashmedia.gui
 		{
 			super(value);
 			
-			this.selectable = true;
+			setSelect(true);
 			
-			textField = new TextField();
-			textField.autoSize = TextFieldAutoSize.LEFT;
-			textField.selectable = false;
+			var tf: TextField = new TextField();
+			tf.autoSize = TextFieldAutoSize.LEFT;
+			tf.selectable = false;
+			setTextField(tf);
 			
 			this.x = x;
 			this.y = y;
@@ -57,18 +58,18 @@ package com.flashmedia.gui
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
 		}
 		
-		public function setTextPosition(x:uint, y:uint):void {
-			var textWidth:uint = textField.width;
-			var textHeight:uint = textField.height;
-			textField.autoSize = TextFieldAutoSize.NONE;
-			
-			textField.x = x;
-			textField.y = y;
-			textField.width = width;
-			textField.height = height;
-			
-			update();
-		}
+//		public function setTextPosition(x:uint, y:uint):void {
+//			var textWidth:uint = textField.width;
+//			var textHeight:uint = textField.height;
+//			textField.autoSize = TextFieldAutoSize.NONE;
+//			
+//			textField.x = x;
+//			textField.y = y;
+//			textField.width = width;
+//			textField.height = height;
+//			
+//			update();
+//		}
 		
 		public function setBackgroundImageForState(image:Bitmap, state:uint):void {
 			if (image) {
@@ -224,10 +225,11 @@ package com.flashmedia.gui
 				break;
 			}
 			
-			if (textField.autoSize == TextFieldAutoSize.LEFT) {
-				textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
-				textVerticalAlign = VERTICAL_ALIGN_CENTER;
-			}
+			//TODO
+//			if (textField.autoSize == TextFieldAutoSize.LEFT) {
+//				textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
+//				textVerticalAlign = VERTICAL_ALIGN_CENTER;
+//			}
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {

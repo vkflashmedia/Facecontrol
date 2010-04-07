@@ -32,14 +32,14 @@ package com.flashmedia.gui
 			tf.autoSize = TextFieldAutoSize.LEFT;
 			tf.selectable = false;
 			tf.mouseEnabled = false;
-			textField = tf;
+			setTextField(tf);
 //			_textField.defaultTextFormat = _textFormat;
 //			_textField.autoSize = TextFieldAutoSize.LEFT;
 //			_textField.selectable = false;
 //			_textField.mouseEnabled = false;
 //			addChild(_textField);
 			
-			this.selectable = true;
+			this.setSelect(true);
 			this.x = x;
 			this.y = y;
 			this.width = width;
