@@ -1,37 +1,34 @@
 package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.forms.MainForm;
+	import com.facecontrol.forms.Menu;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameScene;
-	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.GridBox;
-	import com.flashmedia.gui.GridBoxEvent;
-	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
-	import com.flashmedia.gui.MessageBox;
-	import com.flashmedia.gui.RatingBar;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Sprite;
 	import com.flashmedia.gui.Pagination;
-	import com.flashmedia.util.BitmapUtil;
+	import com.flashmedia.gui.RatingBar;
 	
-	import flash.system.System;
-	import flash.text.Font;
+	import flash.text.TextField;
 	
 	public class Facecontrol extends GameScene {
 		
 		private static var _images:Images;
+		private static var _multiLoader: MultiLoader;
+		
 		private var textField: TextField = new TextField();
 		private var p:Pagination;
 		private var linkButton:LinkButton;
 		private var gb: GridBox;
 		private var cb: ComboBox;
 		private var rateBar: RatingBar;
-		private static var _multiLoader: MultiLoader;
+		
+		private var _menu:Menu;
+		private var _main:MainForm;
 		
 		public function Facecontrol() {
 			_images = new Images();
@@ -41,8 +38,9 @@ package {
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 			
+			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
+			
 			load();
-//			testComponents();
 		}
 		
 		private function load():void {
@@ -62,6 +60,10 @@ package {
 			Util.multiLoader.load(Images.BIG_STAR_PATH, Images.BIG_STAR, 'Bitmap');
 			Util.multiLoader.load(Images.LINE_PATH, Images.LINE, 'Bitmap');
 			Util.multiLoader.load(Images.FILTER_BACKGROUND_PATH, Images.FILTER_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.CHOOSE_BUTTON_PATH, Images.CHOOSE_BUTTON, 'Bitmap');
+			Util.multiLoader.load(Images.RATING_BACKGROUND_PATH, Images.RATING_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
+			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
 					
 			Util.multiLoader.load(Images.IM_PATH, Images.IM, 'Bitmap');
 		}
@@ -75,24 +77,44 @@ package {
 				_images[event.entry] = Util.multiLoader.get(event.entry);
 			}
 			
-			if (isLoadCompleted()) {
-				var main:MainForm = new MainForm(this);
-				addChild(main);
+			if (Util.multiLoader.isLoaded) {
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+				
+				_menu = new Menu(this);
+				addChild(_menu);
+				_main = new MainForm(this);
+				addChild(_main);
+				_main.visible = false;
+				
+				Util.api.loadSettings(Util.userId);
 			}
 		}
 		
-		private function isLoadCompleted():Boolean {
-			var result:Boolean = true;
-			var count:int = _images.names.length;
-			
-			for (var i:uint = 0; i < count; ++i) {
-				if (!Util.multiLoader.hasLoaded(_images.names[i])) {
-					result = false;
+		private function onRequestComplited(event:ApiEvent):void {
+			var response:Object = event.response;
+			try {
+				switch (response["method"]) {
+					case "load_settings":
+						_main.filterSex = response["sex"];
+						_main.filterMinAge = response["age_min"];
+						_main.filterMaxAge = response["age_max"];
+//						_main.filterCountry = response["country_country_id"];
+//						_main.filterCity = response["city_city_id"];
+						
+						_main.visible = true;
+					break;
+					case "next_photo":
+						_main.nextPhoto(response);
+					break;
+					
+					case "vote":
+						_main.vote(response);
 					break;
 				}
 			}
-			
-			return result;
+			catch (e:Error) {
+			}
 		}
 		
 		/*

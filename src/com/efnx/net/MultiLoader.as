@@ -370,9 +370,5 @@ package com.efnx.net
 		{
 			throw new Error("MultiLoader::ERROR #4: loading error: " + event);
 		}
-		/**
-		*
-		*/
-		
 	}
 }

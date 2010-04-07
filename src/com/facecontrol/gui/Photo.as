@@ -11,6 +11,8 @@ package com.facecontrol.gui
 	{
 		private var _photo:Bitmap;
 		private var _thumbnail:Bitmap;
+		private var _transparentSquare:Sprite;
+		private var _squareMask:Sprite;
 		
 		public function Photo(value:GameScene, image:Bitmap, x:int, y:int, width:int, height:int)
 		{
@@ -26,27 +28,39 @@ package com.facecontrol.gui
 		}
 		
 		private function update():void {
+			if (_thumbnail) {
+				removeChild(_thumbnail);
+			}
+			
 			_thumbnail = new Bitmap(_photo.bitmapData);
 			var matrix:Matrix = new Matrix();
 			var s:Number = width / _thumbnail.width;
 			matrix.scale(s, s);
 			_thumbnail.transform.matrix = matrix;
-			
-			var transparentSquare:Sprite = new Sprite();
-			transparentSquare.graphics.beginFill(0x0, 0.5);
-			transparentSquare.graphics.drawRoundRect(-2, -2, _thumbnail.width + 4, _thumbnail.height + 4, 15, 15);
-			addChild(transparentSquare);
-			
-			
-//			bitmap = thumbnail;
+			if (_thumbnail.height > height) {
+				s = height / _thumbnail.height;
+				matrix.scale(s, s);
+				_thumbnail.transform.matrix = matrix;
+			}
+				
+			if (_transparentSquare) {
+				removeChild(_transparentSquare);
+			}
+			_transparentSquare = new Sprite();
+			_transparentSquare.graphics.beginFill(0x0, 0.5);
+			_transparentSquare.graphics.drawRoundRect(-2, -2, _thumbnail.width + 4, _thumbnail.height + 4, 15, 15);
+			addChild(_transparentSquare);
 			addChild(_thumbnail);
 			
-			var square:Sprite = new Sprite();
-			square.graphics.beginFill(0x0);
-			square.graphics.drawRoundRect(0, 0, _thumbnail.width, _thumbnail.height, 15, 15);
-//			bitmapMask = square;
-			addChild(square);
-			_thumbnail.mask = square;
+			if (_squareMask) {
+				removeChild(_squareMask);
+			}
+			_squareMask = new Sprite();
+			_squareMask.graphics.beginFill(0x0);
+			_squareMask.graphics.drawRoundRect(0, 0, _thumbnail.width, _thumbnail.height, 15, 15);
+			addChild(_squareMask);
+			_thumbnail.mask = _squareMask;
+			
 		}
 		
 		public function set photo(value:Bitmap):void {
@@ -63,5 +77,13 @@ package com.facecontrol.gui
 		public override function get bitmap():Bitmap {
 			return _thumbnail;
 		}
+		
+//		public override function destroy():void {
+//			if (_thumbnail) {
+//				removeChild(_thumbnail);
+//				_thumbnail.bitmapData.dispose();
+//			}
+//			super.destroy();
+//		}
 	}
 }

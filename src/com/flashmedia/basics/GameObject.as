@@ -17,9 +17,11 @@ package com.flashmedia.basics
 	 */
 	public class GameObject extends Sprite
 	{
+		public static const HORIZONTAL_ALIGN_NONE: String = 'hor_align_none';
 		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
 		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
 		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
+		public static const VERTICAL_ALIGN_NONE: String = 'vert_align_none';
 		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
 		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
 		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
@@ -614,7 +616,7 @@ package com.flashmedia.basics
 						_textField.x = width - _textField.width;
 					break;
 					case HORIZONTAL_ALIGN_CENTER:
-					default:
+//					default:
 						_textField.x = (width - _textField.width) / 2;
 				}
 				switch (_textVerticalAlign) {
@@ -625,7 +627,7 @@ package com.flashmedia.basics
 						_textField.y = height - _textField.height;
 					break;
 					case VERTICAL_ALIGN_CENTER:
-					default:
+//					default:
 						_textField.y = (height - _textField.height) / 2;
 				}
 			}

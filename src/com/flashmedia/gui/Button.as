@@ -57,15 +57,13 @@ package com.flashmedia.gui
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
 		}
 		
-		public function setTextPosition(x:uint, y:uint):void {
-			var textWidth:uint = textField.width;
-			var textHeight:uint = textField.height;
-			textField.autoSize = TextFieldAutoSize.NONE;
+		public function setTextPosition(x:int, y:int):void {
+			textHorizontalAlign = HORIZONTAL_ALIGN_NONE;
+			textVerticalAlign = VERTICAL_ALIGN_NONE;
+			textField.autoSize = TextFieldAutoSize.LEFT;
 			
 			textField.x = x;
 			textField.y = y;
-			textField.width = width;
-			textField.height = height;
 			
 			update();
 		}
@@ -218,16 +216,15 @@ package com.flashmedia.gui
 							fillBackground(_normalStateBackgroundColor, 1.0);
 						}
 					}
-					
 					textField.text = (_useHighlightedStateTitle) ? _highlightedStateTitle : _normalStateTitle;
 					textField.setTextFormat((_useHighlightedStateTextFormat) ? _highlightedStateTextFormat : _normalStateTextFormat);
 				break;
 			}
 			
-			if (textField.autoSize == TextFieldAutoSize.LEFT) {
-				textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
-				textVerticalAlign = VERTICAL_ALIGN_CENTER;
-			}
+//			if (textField.autoSize == TextFieldAutoSize.LEFT) {
+//				textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
+//				textVerticalAlign = VERTICAL_ALIGN_CENTER;
+//			}
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {

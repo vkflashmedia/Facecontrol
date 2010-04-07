@@ -66,7 +66,7 @@ package com.flashmedia.gui
 		
 		private function addButton(label:String, isCurrent:Boolean):void {
 			var b:LinkButton = new LinkButton(_scene, label, _currentX);
-			b.setUnderline(isCurrent);
+//			b.setUnderline(isCurrent);
 			addChild(b);
 			if (isCurrent) b.enabled = false;
 			if (!isCurrent) b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);

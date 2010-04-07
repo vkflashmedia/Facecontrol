@@ -17,6 +17,10 @@ package com.facecontrol.util
 		public static const BIG_STAR:String = 'bigStar';
 		public static const LINE:String = 'line';
 		public static const FILTER_BACKGROUND:String = 'filterBackground';
+		public static const CHOOSE_BUTTON:String = 'chooseButton';
+		public static const RATING_BACKGROUND:String = 'ratingBackground';
+		public static const RATING_OFF:String = 'ratingOff';
+		public static const RATING_ON:String = 'ratingOn';
 		
 		public static const IM:String = 'im';
 		
@@ -33,6 +37,10 @@ package com.facecontrol.util
 		public static const BIG_STAR_PATH:String = 'images\\big_star.png';
 		public static const LINE_PATH:String = 'images\\line.png';
 		public static const FILTER_BACKGROUND_PATH:String = 'images\\form02.png';
+		public static const CHOOSE_BUTTON_PATH:String = 'images\\choose_button.png';
+		public static const RATING_BACKGROUND_PATH:String = 'images\\rating_bgr.png';
+		public static const RATING_OFF_PATH:String = 'images\\rating_star_off.png';
+		public static const RATING_ON_PATH:String = 'images\\rating_star_active.png';
 		
 		public static const IM_PATH:String = 'images\\1.jpg';
 		
@@ -49,6 +57,10 @@ package com.facecontrol.util
 		public var bigStar:Bitmap;
 		public var line:Bitmap;
 		public var filterBackground:Bitmap;
+		public var chooseButton:Bitmap;
+		public var ratingBackground:Bitmap;
+		public var ratingOff:Bitmap;
+		public var ratingOn:Bitmap;
 		
 		public var im:Bitmap;
 		
@@ -70,6 +82,10 @@ package com.facecontrol.util
 				BIG_STAR,
 				LINE,
 				FILTER_BACKGROUND,
+				CHOOSE_BUTTON,
+				RATING_BACKGROUND,
+				RATING_OFF,
+				RATING_ON,
 				IM
 			);
 		}
