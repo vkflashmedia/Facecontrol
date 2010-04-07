@@ -1,16 +1,16 @@
 package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.gui.MainMenu;
-	import com.flashmedia.basics.GameObject;
-	import com.flashmedia.basics.GameObjectEvent;
+	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.forms.MainForm;
+	import com.facecontrol.forms.Menu;
+	import com.facecontrol.util.Images;
+	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.GridBox;
-	import com.flashmedia.gui.GridBoxEvent;
-	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.MessageBox;
 	import com.flashmedia.gui.Pagination;
@@ -26,27 +26,116 @@ package {
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import com.flashmedia.gui.Pagination;
+	import com.flashmedia.gui.RatingBar;
+	
+	import flash.text.TextField;
 	
 	public class Facecontrol extends GameScene {
+		
+		private static var _images:Images;
+		private static var _multiLoader: MultiLoader;
+		
 		private var textField: TextField = new TextField();
 		private var p:Pagination;
 		private var linkButton:LinkButton;
 		private var gb: GridBox;
 		private var cb: ComboBox;
 		private var rateBar: RatingBar;
-		private static var _multiLoader: MultiLoader;
 		
-		private var b:Button;
-		private var menu:MainMenu;
+		private var _menu:Menu;
+		private var _main:MainForm;
 		
 		public function Facecontrol() {
-			_multiLoader = new MultiLoader();
-//			testComponents();
+			_images = new Images();
 			
-			aliFunction();
-//			artemFunction();
+//			MultiLoader.testing = true;
+			Util.multiLoader = new MultiLoader();
+			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+			
+			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
+			
+			load();
 		}
 		
+		private function load():void {
+			Util.multiLoader.load(Images.HEAD_BUTTON1_PATH, Images.HEAD_BUTTON1, 'Bitmap');
+			Util.multiLoader.load(Images.HEAD_BUTTON2_PATH, Images.HEAD_BUTTON2, 'Bitmap');
+			Util.multiLoader.load(Images.HEAD_BUTTON3_PATH, Images.HEAD_BUTTON3, 'Bitmap');
+			Util.multiLoader.load(Images.HEAD_BUTTON4_PATH, Images.HEAD_BUTTON4, 'Bitmap');
+			Util.multiLoader.load(Images.HEAD_BUTTON5_PATH, Images.HEAD_BUTTON5, 'Bitmap');
+			
+			Util.multiLoader.load(Images.BACKGROUND_PATH, Images.BACKGROUND, 'Bitmap');
+			
+//			aliFunction();
+//			artemFunction();
+			Util.multiLoader.load(Images.SUPER_ICON_PATH, Images.SUPER_ICON, 'Bitmap');
+			Util.multiLoader.load(Images.JUNK_ICON_PATH, Images.JUNK_ICON, 'Bitmap');
+
+			Util.multiLoader.load(Images.BIG_MASK_PATH, Images.BIG_MASK, 'Bitmap');
+			Util.multiLoader.load(Images.SMALL_MASK_PATH, Images.SMALL_MASK, 'Bitmap');
+			Util.multiLoader.load(Images.BIG_STAR_PATH, Images.BIG_STAR, 'Bitmap');
+			Util.multiLoader.load(Images.LINE_PATH, Images.LINE, 'Bitmap');
+			Util.multiLoader.load(Images.FILTER_BACKGROUND_PATH, Images.FILTER_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.CHOOSE_BUTTON_PATH, Images.CHOOSE_BUTTON, 'Bitmap');
+			Util.multiLoader.load(Images.RATING_BACKGROUND_PATH, Images.RATING_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
+			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
+					
+			Util.multiLoader.load(Images.IM_PATH, Images.IM, 'Bitmap');
+		}
+		
+		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
+			
+		}
+		
+		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
+			if (event.entry != "") {
+				_images[event.entry] = Util.multiLoader.get(event.entry);
+			}
+			
+			if (Util.multiLoader.isLoaded) {
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+				
+				_menu = new Menu(this);
+				addChild(_menu);
+				_main = new MainForm(this);
+				addChild(_main);
+				_main.visible = false;
+				
+				Util.api.loadSettings(Util.userId);
+			}
+		}
+		
+		private function onRequestComplited(event:ApiEvent):void {
+			var response:Object = event.response;
+			try {
+				switch (response["method"]) {
+					case "load_settings":
+						_main.filterSex = response["sex"];
+						_main.filterMinAge = response["age_min"];
+						_main.filterMaxAge = response["age_max"];
+//						_main.filterCountry = response["country_country_id"];
+//						_main.filterCity = response["city_city_id"];
+						
+						_main.visible = true;
+					break;
+					case "next_photo":
+						_main.nextPhoto(response);
+					break;
+					
+					case "vote":
+						_main.vote(response);
+					break;
+				}
+			}
+			catch (e:Error) {
+			}
+		}
+		
+		/*
 		private function onLoad(event: MultiLoaderEvent): void {
 			switch (event.entry) {
 				case 'Button1':
@@ -96,7 +185,7 @@ package {
 //			b.setBackgroundImageForState(_multiLoader.get("Button"), Button.STATE_NORMAL);
 //			addChild(b);
 //			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClicked);
-			/*
+
 			var b1:Button = new Button(this, 0, 0);
 			b1.setTitleForState("main", Button.STATE_NORMAL);
 			b1.setTextFormatForState(format, Button.STATE_NORMAL);
@@ -137,7 +226,7 @@ package {
 			_multiLoader.load("images\\head\\03.png", "Button3", "Bitmap");
 			_multiLoader.load("images\\head\\04.png", "Button4", "Bitmap");
 			_multiLoader.load("images\\head\\05.png", "Button5", "Bitmap");
-			*/
+			
 			_multiLoader.load("images\\scroll_up.png", "scroll_up", "Bitmap");
 			_multiLoader.load("images\\scroll_body.png", "scroll_body", "Bitmap");
 			_multiLoader.load("images\\scroll_down.png", "scroll_down", "Bitmap");

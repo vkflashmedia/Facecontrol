@@ -70,6 +70,16 @@ package com.flashmedia.gui
 //			
 //			update();
 //		}
+		public function setTextPosition(x:int, y:int):void {
+			textHorizontalAlign = HORIZONTAL_ALIGN_NONE;
+			textVerticalAlign = VERTICAL_ALIGN_NONE;
+			textField.autoSize = TextFieldAutoSize.LEFT;
+			
+			textField.x = x;
+			textField.y = y;
+			
+			update();
+		}
 		
 		public function setBackgroundImageForState(image:Bitmap, state:uint):void {
 			if (image) {
@@ -219,7 +229,6 @@ package com.flashmedia.gui
 							fillBackground(_normalStateBackgroundColor, 1.0);
 						}
 					}
-					
 					textField.text = (_useHighlightedStateTitle) ? _highlightedStateTitle : _normalStateTitle;
 					textField.setTextFormat((_useHighlightedStateTextFormat) ? _highlightedStateTextFormat : _normalStateTextFormat);
 				break;

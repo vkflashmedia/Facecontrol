@@ -1,4 +1,4 @@
-package ru.facecontrol
+package com.facecontrol
 {
 	/**
 	 * ===================================

@@ -1,8 +1,8 @@
-package ru.flashmedia.managers
+package com.flashmedia.managers
 {
 	import flash.events.Event;
 	
-	import ru.flashmedia.basics.GameLayer;
+	import com.flashmedia.basics.GameLayer;
 
 	public class GameLayerManagerEvent extends Event
 	{

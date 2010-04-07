@@ -40,9 +40,11 @@ package com.flashmedia.basics
 		public static const NAME_HOVER: String = 'game_object_hover';
 		
 		//TODO remove
+		public static const HORIZONTAL_ALIGN_NONE: String = 'hor_align_none';
 		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
 		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
 		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
+		public static const VERTICAL_ALIGN_NONE: String = 'vert_align_none';
 		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
 		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
 		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
@@ -307,17 +309,33 @@ package com.flashmedia.basics
 		
 		public function setTextField(value: TextField, layoutMode: int = View.ALIGN_NONE): void {
 			if (_textField) {
-//				removeChild(_textField);
 				_view.removeDisplayObject(NAME_TEXT_FIELD);
 			}
 			if (value) {
 				_textField = value;
-//				updateTextFieldAlign();
-//				addChild(_textField);
 				_view.addDisplayObject(_textField, NAME_TEXT_FIELD, VISUAL_TEXT_FIELD_Z_ORDER, layoutMode);
-//				sortSprites();
 			}
 		}
+//		public function get bitmap(): Bitmap {
+//			if (_bitmap) {
+//				return _bitmap;
+//			}
+//			return null
+//		}
+		
+//		public function set textField(value: TextField): void {
+//			if (_textField) {
+////				removeChild(_textField);
+//				_view.removeDisplayObject(NAME_TEXT_FIELD);
+//			}
+//			if (value) {
+//				_textField = value;
+////				updateTextFieldAlign();
+////				addChild(_textField);
+//				_view.addDisplayObject(_textField, NAME_TEXT_FIELD, VISUAL_TEXT_FIELD_Z_ORDER, layoutMode);
+////				sortSprites();
+//			}
+//		}
 		
 		public function get textField(): TextField {
 			return _textField;
@@ -733,6 +751,32 @@ package com.flashmedia.basics
 //					break;
 //					case VERTICAL_ALIGN_CENTER:
 //					default:
+//						_textField.y = (height - _textField.height) / 2;
+//				}
+//			}
+//		}
+//		private function updateTextFieldAlign(): void {
+//			if (_textField) {
+//				switch (_textHorizontalAlign) {
+//					case HORIZONTAL_ALIGN_LEFT:
+//						_textField.x = 0;
+//					break;
+//					case HORIZONTAL_ALIGN_RIGHT:
+//						_textField.x = width - _textField.width;
+//					break;
+//					case HORIZONTAL_ALIGN_CENTER:
+////					default:
+//						_textField.x = (width - _textField.width) / 2;
+//				}
+//				switch (_textVerticalAlign) {
+//					case VERTICAL_ALIGN_TOP:
+//						_textField.y = 0;
+//					break;
+//					case VERTICAL_ALIGN_BOTTOM:
+//						_textField.y = height - _textField.height;
+//					break;
+//					case VERTICAL_ALIGN_CENTER:
+////					default:
 //						_textField.y = (height - _textField.height) / 2;
 //				}
 //			}

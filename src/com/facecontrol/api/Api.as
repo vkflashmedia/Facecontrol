@@ -12,13 +12,11 @@ package com.facecontrol.api
 	
 	public class Api extends EventDispatcher
 	{
-		private static const FC_API_SERVER:String = "http://facecontroll/";
+		private static const FC_API_SERVER:String = "http://facecontrol/";
 		private const loader:URLLoader = new URLLoader();
-		private var textField:TextField;
 		
-		public function Api(textField:TextField)
+		public function Api()
 		{
-			this.textField = textField;
 			loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			loader.addEventListener(Event.COMPLETE, completeHandler);
 		}

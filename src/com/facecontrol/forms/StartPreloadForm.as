@@ -1,4 +1,4 @@
-package ru.facecontrol.forms
+package com.facecontrol.forms
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -8,10 +8,10 @@ package ru.facecontrol.forms
 	import flash.text.TextFormat;
 	import flash.utils.Timer;
 	
-	import ru.facecontrol.FaceControl;
-	import ru.flashmedia.basics.GameLayer;
-	import ru.flashmedia.basics.GameObject;
-	import ru.flashmedia.basics.GameScene;
+	import com.facecontrol.FaceControl;
+	import com.flashmedia.basics.GameLayer;
+	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameScene;
 
 	public class StartPreloadForm extends GameLayer
 	{

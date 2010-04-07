@@ -1,6 +1,6 @@
-package ru.facecontrol.forms
+package com.facecontrol.forms
 {
-		import ru.facecontrol.FaceControl;
+		import com.facecontrol.FaceControl;
 		
 		import flash.display.Bitmap;
 		import flash.display.BitmapData;
@@ -9,10 +9,10 @@ package ru.facecontrol.forms
 		import flash.text.TextFieldAutoSize;
 		import flash.text.TextFormat;
 		
-		import ru.flashmedia.basics.GameLayer;
-		import ru.flashmedia.basics.GameObject;
-		import ru.flashmedia.basics.GameObjectEvent;
-		import ru.flashmedia.basics.GameScene;
+		import com.flashmedia.basics.GameLayer;
+		import com.flashmedia.basics.GameObject;
+		import com.flashmedia.basics.GameObjectEvent;
+		import com.flashmedia.basics.GameScene;
 
 	public class UserProfileForm extends GameLayer
 	{
