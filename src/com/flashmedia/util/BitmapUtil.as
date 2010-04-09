@@ -16,6 +16,10 @@ package com.flashmedia.util
 		public function BitmapUtil()
 		{
 		}
+		
+		public static function clone(image:Bitmap):Bitmap {
+			return new Bitmap(image.bitmapData);
+		}
 
 		public static function scaleImage(bitmap: Bitmap, width: uint, height: uint, ... attrs): void {
 			var result: Bitmap = new Bitmap();

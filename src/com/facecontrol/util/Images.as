@@ -22,7 +22,7 @@ package com.facecontrol.util
 		public static const RATING_OFF:String = 'ratingOff';
 		public static const RATING_ON:String = 'ratingOn';
 		
-		public static const IM:String = 'im';
+		public static const ADVERTISING_FORM:String = 'advertisingForm';
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
 		public static const HEAD_BUTTON2_PATH:String = 'images\\head\\02.png';
@@ -42,52 +42,10 @@ package com.facecontrol.util
 		public static const RATING_OFF_PATH:String = 'images\\rating_star_off.png';
 		public static const RATING_ON_PATH:String = 'images\\rating_star_active.png';
 		
-		public static const IM_PATH:String = 'images\\1.jpg';
-		
-		public var headButton1:Bitmap;
-		public var headButton2:Bitmap;
-		public var headButton3:Bitmap;
-		public var headButton4:Bitmap;
-		public var headButton5:Bitmap;
-		public var background:Bitmap;
-		public var superIcon:Bitmap;
-		public var junkIcon:Bitmap;
-		public var bigMask:Bitmap;
-		public var smallMask:Bitmap;
-		public var bigStar:Bitmap;
-		public var line:Bitmap;
-		public var filterBackground:Bitmap;
-		public var chooseButton:Bitmap;
-		public var ratingBackground:Bitmap;
-		public var ratingOff:Bitmap;
-		public var ratingOn:Bitmap;
-		
-		public var im:Bitmap;
-		
-		public var names:Array;
+		public static const ADVERTISING_FORM_PATH:String = 'images\\advertising_form.png';
 		
 		public function Images()
 		{
-			names = new Array(
-				HEAD_BUTTON1,
-				HEAD_BUTTON2,
-				HEAD_BUTTON3,
-				HEAD_BUTTON4,
-				HEAD_BUTTON5,
-				BACKGROUND,
-				SUPER_ICON,
-				JUNK_ICON,
-				BIG_MASK,
-				SMALL_MASK,
-				BIG_STAR,
-				LINE,
-				FILTER_BACKGROUND,
-				CHOOSE_BUTTON,
-				RATING_BACKGROUND,
-				RATING_OFF,
-				RATING_ON,
-				IM
-			);
 		}
 
 	}
