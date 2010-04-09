@@ -1,22 +1,26 @@
 package com.facecontrol.forms
 {
 	import com.facecontrol.gui.MainMenu;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
 	
+	import flash.display.Bitmap;
+	import flash.text.AntiAliasType;
 	import flash.text.Font;
 	import flash.text.TextFormat;
 
-	public class Menu extends GameLayer
+	public class Back extends GameLayer
 	{
-		public function Menu(value:GameScene)
+		public var menu:MainMenu;
+		public function Back(value:GameScene)
 		{
 			super(value);
 			bitmap = Util.multiLoader.get(Images.BACKGROUND);
-			var menu:MainMenu = new MainMenu(scene);
+			menu = new MainMenu(scene);
 				
 			menu.x = 1;
 			menu.y = 1;
@@ -32,6 +36,7 @@ package com.facecontrol.forms
 			b1.setTitleForState("главная", Button.STATE_NORMAL);
 			b1.setTextFormatForState(format, Button.STATE_NORMAL);
 			b1.textField.embedFonts = true;
+			b1.textField.antiAliasType = AntiAliasType.ADVANCED;
 			b1.textField.rotation = -2;
 			b1.setTextPosition(66, 16);
 			
@@ -40,6 +45,7 @@ package com.facecontrol.forms
 			b2.setTitleForState("мои фото", Button.STATE_NORMAL);
 			b2.setTextFormatForState(format, Button.STATE_NORMAL);
 			b2.textField.embedFonts = true;
+			b2.textField.antiAliasType = AntiAliasType.ADVANCED;
 			b2.setTextPosition(23, 7);
 			
 			var b3:Button = new Button(scene, 257, 0);
@@ -47,6 +53,7 @@ package com.facecontrol.forms
 			b3.setTitleForState("top100", Button.STATE_NORMAL);
 			b3.setTextFormatForState(format, Button.STATE_NORMAL);
 			b3.textField.embedFonts = true;
+			b3.textField.antiAliasType = AntiAliasType.ADVANCED;
 			b3.textField.rotation = 3
 			b3.setTextPosition(30, 11);
 			
@@ -55,6 +62,7 @@ package com.facecontrol.forms
 			b4.setTitleForState("bottom100", Button.STATE_NORMAL);
 			b4.setTextFormatForState(format, Button.STATE_NORMAL);
 			b4.textField.embedFonts = true;
+			b4.textField.antiAliasType = AntiAliasType.ADVANCED;
 			b4.textField.rotation = -3;
 			b4.setTextPosition(23, 19);
 			
@@ -63,10 +71,16 @@ package com.facecontrol.forms
 			b5.setTitleForState("друзья", Button.STATE_NORMAL);
 			b5.setTextFormatForState(format, Button.STATE_NORMAL);
 			b5.textField.embedFonts = true;
+			b5.textField.antiAliasType = AntiAliasType.ADVANCED;
 			b5.setTextPosition(25, 7);
 			
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
 			addChild(menu);
+			
+			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
+			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
+			ad.y = Constants.APP_HEIGHT - ad.height;
+			addChild(ad);
 		}
 		
 	}

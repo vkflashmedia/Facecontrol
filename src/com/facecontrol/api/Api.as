@@ -137,7 +137,7 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
-		public function vote(uid:int, pid:int, rating:int=1):void
+		public function vote(uid:int, pid:String, rating:int=1):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars["method"] = "vote";

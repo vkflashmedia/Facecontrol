@@ -2,8 +2,10 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.forms.Back;
 	import com.facecontrol.forms.MainForm;
-	import com.facecontrol.forms.Menu;
+	import com.facecontrol.forms.MyPhotoForm;
+	import com.facecontrol.gui.MainMenuEvent;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameScene;
@@ -27,20 +29,21 @@ package {
 		private var cb: ComboBox;
 		private var rateBar: RatingBar;
 		
-		private var _menu:Menu;
-		private var _main:MainForm;
+		private var _back:Back;
+		private var _mainForm:MainForm;
+		private var _myPhotoForm:MyPhotoForm;
 		
 		public function Facecontrol() {
 			_images = new Images();
 			
 //			MultiLoader.testing = true;
 			Util.multiLoader = new MultiLoader();
+			load();
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 			
 			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
-			
-			load();
+			Util.api.addEventListener(ApiEvent.ERROR, onRequestError);
 		}
 		
 		private function load():void {
@@ -65,7 +68,7 @@ package {
 			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
 			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
 					
-			Util.multiLoader.load(Images.IM_PATH, Images.IM, 'Bitmap');
+			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -73,47 +76,80 @@ package {
 		}
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
-			if (event.entry != "") {
-				_images[event.entry] = Util.multiLoader.get(event.entry);
-			}
-			
 			if (Util.multiLoader.isLoaded) {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
-				_menu = new Menu(this);
-				addChild(_menu);
-				_main = new MainForm(this);
-				addChild(_main);
-				_main.visible = false;
+				_back = new Back(this);
+				_back.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
+				_back.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
+				addChild(_back);
+				
+				_mainForm = new MainForm(this);
+				addChild(_mainForm);
+				_mainForm.visible = false;
+				
+				_myPhotoForm = new MyPhotoForm(this);
+				addChild(_myPhotoForm);
+				_myPhotoForm.visible = false;
 				
 				Util.api.loadSettings(Util.userId);
+			}
+		}
+		
+		private function onFirstMenuButtonClick(event:MainMenuEvent):void {
+			_mainForm.visible = true;
+			_myPhotoForm.visible = false;
+		}
+		
+		private function onSecondMenuButtonClick(event:MainMenuEvent):void {
+			Util.api.getPhotos(Util.userId);
+		}
+		
+		private function onRequestError(event:ApiEvent):void {
+			try {
+				switch (event.errorCode) {
+					case 10:
+						_mainForm.updateFilter();
+					break;
+				}
+			}
+			catch (e:Error) {
+				trace(e.message);
 			}
 		}
 		
 		private function onRequestComplited(event:ApiEvent):void {
 			var response:Object = event.response;
 			try {
-				switch (response["method"]) {
+				switch (response.method) {
 					case "load_settings":
-						_main.filterSex = response["sex"];
-						_main.filterMinAge = response["age_min"];
-						_main.filterMaxAge = response["age_max"];
-//						_main.filterCountry = response["country_country_id"];
-//						_main.filterCity = response["city_city_id"];
-						
-						_main.visible = true;
+						_mainForm.filter = response;
+						_mainForm.visible = true;
 					break;
 					case "next_photo":
-						_main.nextPhoto(response);
+						_mainForm.nextPhoto(response);
 					break;
 					
 					case "vote":
-						_main.vote(response);
+						_mainForm.vote(response);
+					break;
+					
+					case "get_photos":
+						_myPhotoForm.photos = response.photos;
+						_myPhotoForm.visible = true;
+						_mainForm.visible = false;
 					break;
 				}
 			}
 			catch (e:Error) {
+				trace(e.message);
+			}
+			
+			switch (response["err_code"]) {
+				case 10:
+					_mainForm.updateFilter();
+				break;
 			}
 		}
 		

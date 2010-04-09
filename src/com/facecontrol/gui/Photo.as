@@ -2,6 +2,7 @@ package com.facecontrol.gui
 {
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -9,6 +10,7 @@ package com.facecontrol.gui
 
 	public class Photo extends GameObject
 	{
+		public var border:int = 2;
 		private var _photo:Bitmap;
 		private var _thumbnail:Bitmap;
 		private var _transparentSquare:Sprite;
@@ -33,12 +35,13 @@ package com.facecontrol.gui
 			}
 			
 			_thumbnail = new Bitmap(_photo.bitmapData);
+			
 			var matrix:Matrix = new Matrix();
-			var s:Number = width / _thumbnail.width;
+			var s:Number = (width - border*2) / _thumbnail.width;
 			matrix.scale(s, s);
 			_thumbnail.transform.matrix = matrix;
-			if (_thumbnail.height > height) {
-				s = height / _thumbnail.height;
+			if (_thumbnail.height > (height - border*2)) {
+				s = (height - border*2) / _thumbnail.height;
 				matrix.scale(s, s);
 				_thumbnail.transform.matrix = matrix;
 			}
@@ -48,7 +51,7 @@ package com.facecontrol.gui
 			}
 			_transparentSquare = new Sprite();
 			_transparentSquare.graphics.beginFill(0x0, 0.5);
-			_transparentSquare.graphics.drawRoundRect(-2, -2, _thumbnail.width + 4, _thumbnail.height + 4, 15, 15);
+			_transparentSquare.graphics.drawRoundRect(0, 0, _thumbnail.width + border*2, _thumbnail.height + border*2, 15, 15);
 			addChild(_transparentSquare);
 			addChild(_thumbnail);
 			
@@ -57,15 +60,18 @@ package com.facecontrol.gui
 			}
 			_squareMask = new Sprite();
 			_squareMask.graphics.beginFill(0x0);
-			_squareMask.graphics.drawRoundRect(0, 0, _thumbnail.width, _thumbnail.height, 15, 15);
+			_squareMask.graphics.drawRoundRect(border, border, _thumbnail.width, _thumbnail.height, 15, 15);
 			addChild(_squareMask);
+			
+			_thumbnail.x = border;
+			_thumbnail.y = border;
 			_thumbnail.mask = _squareMask;
 			
 		}
 		
 		public function set photo(value:Bitmap):void {
 			if (value != null) {
-				_photo = value;
+				_photo = BitmapUtil.clone(value);
 				update();
 			}
 		}
@@ -77,13 +83,5 @@ package com.facecontrol.gui
 		public override function get bitmap():Bitmap {
 			return _thumbnail;
 		}
-		
-//		public override function destroy():void {
-//			if (_thumbnail) {
-//				removeChild(_thumbnail);
-//				_thumbnail.bitmapData.dispose();
-//			}
-//			super.destroy();
-//		}
 	}
 }
