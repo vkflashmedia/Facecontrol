@@ -4,10 +4,11 @@ package com.flashmedia.basics
 	
 	public final class View
 	{
-		public static const ALIGN_NONE: int = 0;
+		public static const ALIGN_HOR_NONE: int = 0;
 		public static const ALIGN_HOR_LEFT: int = 1;
 		public static const ALIGN_HOR_CENTER: int = 2;
 		public static const ALIGN_HOR_RIGHT: int = 4;
+		public static const ALIGN_VER_NONE: int = 0;
 		public static const ALIGN_VER_TOP: int = 8;
 		public static const ALIGN_VER_CENTER: int = 16;
 		public static const ALIGN_VER_BOTTOM: int = 32;

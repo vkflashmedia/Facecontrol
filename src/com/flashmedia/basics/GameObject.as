@@ -40,14 +40,14 @@ package com.flashmedia.basics
 		public static const NAME_HOVER: String = 'game_object_hover';
 		
 		//TODO remove
-		public static const HORIZONTAL_ALIGN_NONE: String = 'hor_align_none';
-		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
-		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
-		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
-		public static const VERTICAL_ALIGN_NONE: String = 'vert_align_none';
-		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
-		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
-		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
+//		public static const HORIZONTAL_ALIGN_NONE: String = 'hor_align_none';
+//		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
+//		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
+//		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
+//		public static const VERTICAL_ALIGN_NONE: String = 'vert_align_none';
+//		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
+//		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
+//		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
 		
 		public static const HOVER_INDENT: uint = 7;
 		public static const HOVER_COLOR: uint = 0x57c8d5;
@@ -105,12 +105,15 @@ package com.flashmedia.basics
 		protected var _selectRect: Rectangle;
 		// настройка свойств фокуса
 		protected var _focusEnabled: Boolean;
-		protected var _hoverEnabled: Boolean;
+		protected var _viewFocus: Boolean;
 		protected var _isDefaultFocus: Boolean;
 		protected var _focus: DisplayObject;
-		protected var _hover: DisplayObject;
-		protected var _isDefaultHover: Boolean;
 		protected var _focusSizeMode: String;
+		// настройка свойств рамки при наведении
+		protected var _hoverEnabled: Boolean;
+		protected var _viewHover: Boolean;
+		protected var _isDefaultHover: Boolean;
+		protected var _hover: DisplayObject;
 		protected var _hoverSizeMode: String;
 		// цвет фона
 		protected var _fillBackground: Boolean;
@@ -128,8 +131,8 @@ package com.flashmedia.basics
 			_debug = false;
 			_autoSize = true;
 			setSelect(false, true);
-			setFocus(false, null, SIZE_MODE_BORDER);
-			setHover(false, null, SIZE_MODE_BORDER);
+			setFocus(false, true, null, SIZE_MODE_BORDER);
+			setHover(false, true, null, SIZE_MODE_BORDER);
 			_type = 'GameObject';
 			_backgroundColor = BACKGROUNG_COLOR;
 			_backgroundAlpha = 1.0;
@@ -307,7 +310,7 @@ package com.flashmedia.basics
 //			sortSprites();
 		}
 		
-		public function setTextField(value: TextField, layoutMode: int = View.ALIGN_NONE): void {
+		public function setTextField(value: TextField, layoutMode: int = 0): void {
 			if (_textField) {
 				_view.removeDisplayObject(NAME_TEXT_FIELD);
 			}
@@ -316,12 +319,12 @@ package com.flashmedia.basics
 				_view.addDisplayObject(_textField, NAME_TEXT_FIELD, VISUAL_TEXT_FIELD_Z_ORDER, layoutMode);
 			}
 		}
-//		public function get bitmap(): Bitmap {
-//			if (_bitmap) {
-//				return _bitmap;
-//			}
-//			return null
-//		}
+		public function get bitmap(): Bitmap {
+			if (_bitmap) {
+				return _bitmap;
+			}
+			return null
+		}
 		
 //		public function set textField(value: TextField): void {
 //			if (_textField) {
@@ -447,10 +450,11 @@ package com.flashmedia.basics
 ////			sortSprites();
 //		}
 		
-		public function setFocus(enabled: Boolean, focusView: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
+		public function setFocus(enabled: Boolean, viewFocus: Boolean = true, focusDisplayObject: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
 			_focusEnabled = enabled;
-			_isDefaultFocus = !focusView;
-			_focus = focusView;
+			_viewFocus = viewFocus;
+			_isDefaultFocus = !focusDisplayObject;
+			_focus = focusDisplayObject;
 			_focusSizeMode = sizeMode;
 			updateFocus();
 		}
@@ -474,9 +478,11 @@ package com.flashmedia.basics
 		
 		public function set focus(value: Boolean): void {
 			if (_focusEnabled) {
-				_focus.visible = value;
+				if (_viewFocus) {
+					_focus.visible = value;
+				}
 				var eventType: String = GameObjectEvent.TYPE_LOST_FOCUS;
-				if (_focus.visible) {
+				if (value) {
 					eventType = GameObjectEvent.TYPE_SET_FOCUS;
 				}
 				var goEvent: GameObjectEvent = new GameObjectEvent(eventType);
@@ -491,10 +497,11 @@ package com.flashmedia.basics
 //			//sortSprites();
 //		}
 		
-		public function setHover(enabled: Boolean, hoverView: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
+		public function setHover(enabled: Boolean, viewHover: Boolean = true, hoverDisplayObject: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
 			_hoverEnabled = enabled;
-			_isDefaultHover = !hoverView;
-			_hover = hoverView;
+			_viewHover = viewHover;
+			_isDefaultHover = !hoverDisplayObject;
+			_hover = hoverDisplayObject;
 			_hoverSizeMode = sizeMode;
 			updateHover();
 		}
@@ -516,7 +523,7 @@ package com.flashmedia.basics
 		}
 		
 		public function set hover(value: Boolean): void {
-			if (_hoverEnabled) {
+			if (_hoverEnabled && _viewHover) {
 				_hover.visible = value;
 			}
 		}
@@ -595,7 +602,7 @@ package com.flashmedia.basics
 		private function updateBorder(): void {
 			if (!_border) {
 	    		_border = new Sprite();
-	    		_view.addDisplayObject(_border, NAME_BORDER, VISUAL_BORDER_Z_ORDER, View.ALIGN_NONE, null, true);
+	    		_view.addDisplayObject(_border, NAME_BORDER, VISUAL_BORDER_Z_ORDER, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, null, true);
 	  		}
 	  		_border.graphics.clear();
 			_border.graphics.lineStyle(1, BORDERS_COLOR, 0.0);
@@ -672,7 +679,6 @@ package com.flashmedia.basics
 							(_focus as Sprite).graphics.drawRect(-FOCUS_INDENT, - FOCUS_INDENT, _width + 2 * FOCUS_INDENT - 1, _height + 2 * FOCUS_INDENT - 1);						
 					}
 					(_focus as Sprite).graphics.endFill();
-					
 				}
 				if (!_view.contains(NAME_FOCUS)) {
 					_view.addDisplayObject(_focus, NAME_FOCUS, VISUAL_FOCUS_Z_ORDER);
@@ -839,7 +845,9 @@ package com.flashmedia.basics
 		
 		protected function mouseOverListener(event: MouseEvent): void {
 			if (_selectable && _hoverEnabled) {
-				_hover.visible = true;
+				if (_viewHover) {
+					_hover.visible = true;
+				}
 				var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_SET_HOVER);
 				goEvent.gameObject = this;
 				dispatchEvent(goEvent);
@@ -848,7 +856,9 @@ package com.flashmedia.basics
 		
 		protected function mouseOutListener(event: MouseEvent): void {
 			if (_selectable && _hoverEnabled) {
-				_hover.visible = false;
+				if (_viewHover) {
+					_hover.visible = false;
+				}
 				var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_LOST_HOVER);
 				goEvent.gameObject = this;
 				dispatchEvent(goEvent);

@@ -16,6 +16,7 @@ package com.flashmedia.gui
 	{
 		private var _dropList: GridBox;
 		private var _dropIcon: Bitmap;
+		private var _savedZOrder: int;
 		
 		public function ComboBox(value:GameScene)
 		{
@@ -23,7 +24,7 @@ package com.flashmedia.gui
 			width = 100;
 			height = 20;
 			setSelect(true);
-//			canFocus = true;
+			setFocus(true, false);
 //			canHover = true;
 			//fillBackground(0xfafaff, 1.0);
 			_dropList = new GridBox(value, 1);
@@ -35,11 +36,18 @@ package com.flashmedia.gui
 			_dropList.width = width;
 			_dropList.padding = 0;
 			_dropList.indentBetweenItems = 0;
-			_dropList.horizontalItemsAlign = GameObject.HORIZONTAL_ALIGN_LEFT;
-			_dropList.verticalItemsAlign = GameObject.VERTICAL_ALIGN_CENTER;
+			_dropList.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
+			_dropList.verticalItemsAlign = View.ALIGN_VER_CENTER;
 			_dropList.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onItemClickListener);
 			addChild(_dropList);
 			updateComboBox();
+		}
+		
+		public override function set width(value: Number): void {
+			super.width = value;
+			if (_dropList) {
+				_dropList.width = width;
+			}
 		}
 		
 		public override function set height(value: Number): void {
@@ -73,7 +81,12 @@ package com.flashmedia.gui
 		
 		public override function set focus(value: Boolean): void {
 			super.focus = value;
-			_dropList.visible = false;
+			if (!value) {
+				_dropList.visible = false;
+				if (zOrder == GameObject.MAX_Z_ORDER) {
+					zOrder = _savedZOrder;
+				}
+			}
 		}
 		
 		public function set dropIcon(value: Bitmap): void {
@@ -91,7 +104,7 @@ package com.flashmedia.gui
 			bd.draw(value, m);
 			bitmap = b;
 //			if (_dropIcon) {
-////				_dropIcon.removeEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDropIconClickListener);
+////			_dropIcon.removeEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDropIconClickListener);
 //				removeChild(_dropIcon);
 //				_dropIcon = null;
 //			}
@@ -129,10 +142,18 @@ package com.flashmedia.gui
 		protected override function mouseClickListener(event: MouseEvent): void {
 			super.mouseClickListener(event);
 			_dropList.visible = !_dropList.visible;
+			if (_dropList.visible) {
+				_savedZOrder = zOrder;
+				zOrder = GameObject.MAX_Z_ORDER;
+			}
+			else {
+				zOrder = _savedZOrder;
+			}
 		}
 		
 		private function onItemClickListener(event: GridBoxEvent): void {
 			_dropList.visible = false;
+			zOrder = _savedZOrder;
 			updateComboBox();
 		}
 		

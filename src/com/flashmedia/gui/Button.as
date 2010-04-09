@@ -2,6 +2,7 @@ package com.flashmedia.gui
 {
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	
 	import flash.display.Bitmap;
 	import flash.events.MouseEvent;
@@ -70,13 +71,16 @@ package com.flashmedia.gui
 //			
 //			update();
 //		}
+
 		public function setTextPosition(x:int, y:int):void {
-			textHorizontalAlign = HORIZONTAL_ALIGN_NONE;
-			textVerticalAlign = VERTICAL_ALIGN_NONE;
-			textField.autoSize = TextFieldAutoSize.LEFT;
+//			textHorizontalAlign = HORIZONTAL_ALIGN_NONE;
+//			textVerticalAlign = VERTICAL_ALIGN_NONE;
+//			textField.autoSize = TextFieldAutoSize.LEFT;
 			
-			textField.x = x;
-			textField.y = y;
+			setTextField(_textField, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE);
+			_textField.autoSize = TextFieldAutoSize.LEFT;
+			_textField.x = x;
+			_textField.y = y;
 			
 			update();
 		}

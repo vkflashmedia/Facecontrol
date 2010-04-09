@@ -4,6 +4,7 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
@@ -36,8 +37,8 @@ package com.flashmedia.gui
 		private var _maxItemHeight: uint;
 		private var _paddingItem: uint;
 		private var _indentBetweenItems: uint;
-		private var _horizontalItemsAlign: String;
-		private var _verticalItemsAlign: String;
+		private var _horizontalItemsAlign: int;
+		private var _verticalItemsAlign: int;
 		private var _rowHeightPolicy: String;
 		private var _columnWidthPolicy: String;
 		private var _widthPolicy: String;
@@ -67,8 +68,8 @@ package com.flashmedia.gui
 			_maxItemHeight = undefined;
 			_paddingItem = PADDING_ITEM;
 			_indentBetweenItems = INDENT_BETWEEN_ITEMS;
-			_horizontalItemsAlign = HORIZONTAL_ALIGN_CENTER;
-			_verticalItemsAlign = VERTICAL_ALIGN_CENTER;
+			_horizontalItemsAlign = View.ALIGN_HOR_CENTER;
+			_verticalItemsAlign = View.ALIGN_VER_CENTER;
 			_rowHeightPolicy = ROW_HEIGHT_POLICY_BY_MAX_CELL;
 			_columnWidthPolicy = COLUMN_WIDTH_POLICY_BY_MAX_CELL;
 			_widthPolicy = WIDTH_POLICY_AUTO_SIZE;
@@ -81,8 +82,8 @@ package com.flashmedia.gui
 			if (value is String) {
 				var label: Label = new Label(scene, value);
 				label.setSelect(true);
-				label.setHover(true, null, GameObject.SIZE_MODE_SELECT);
-				label.setFocus(true, null, GameObject.SIZE_MODE_SELECT);
+				label.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
+				label.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
 				label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(label);
 				_originGameObjectWidth.push(label.width);
@@ -94,8 +95,8 @@ package com.flashmedia.gui
 				go.width = value.width;
 				go.height = value.height;
 				go.setSelect(true);
-				go.setHover(true, null, GameObject.SIZE_MODE_SELECT);
-				go.setFocus(true, null, GameObject.SIZE_MODE_SELECT);
+				go.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
+				go.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
 				go.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(go);
 				_originGameObjectWidth.push(go.width);
@@ -103,8 +104,8 @@ package com.flashmedia.gui
 			}
 			else if (value is GameObject) {
 				value.setSelect(true);
-				value.setFocus(true, null, GameObject.SIZE_MODE_SELECT);
-				value.setHover(true, null, GameObject.SIZE_MODE_SELECT);
+				value.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
+				value.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
 				value.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(value);
 				//TODO теперь можно отказаться от  _originGameObjectWidth
@@ -174,12 +175,12 @@ package com.flashmedia.gui
 			updateLayout(true, true);
 		}
 		
-		public function set horizontalItemsAlign(value: String): void {
+		public function set horizontalItemsAlign(value: int): void {
 			_horizontalItemsAlign = value;
 			updateLayout(true, true);
 		}
 		
-		public function set verticalItemsAlign(value: String): void {
+		public function set verticalItemsAlign(value: int): void {
 			_verticalItemsAlign = value;
 			updateLayout(true, true);
 		}
@@ -364,26 +365,26 @@ package com.flashmedia.gui
 //				go.textHorizontalAlign = _horizontalItemsAlign;
 //				go.textVerticalAlign = _verticalItemsAlign;
 				switch (_horizontalItemsAlign) {
-					case HORIZONTAL_ALIGN_LEFT:
+					case View.ALIGN_HOR_LEFT:
 						go.x = cellRectX + _paddingItem;
 					break;
-					case HORIZONTAL_ALIGN_RIGHT:
+					case View.ALIGN_HOR_RIGHT:
 						go.x = cellRectX + _paddingItem + _columnsWidth[curCol] - go.width;
 					break;
 					default:
-					case HORIZONTAL_ALIGN_CENTER:
+					case View.ALIGN_HOR_CENTER:
 						go.x = cellRectX + _paddingItem + (_columnsWidth[curCol] - go.width) / 2;
 					break;
 				}
 				switch (_verticalItemsAlign) {
-					case VERTICAL_ALIGN_TOP:
+					case View.ALIGN_VER_TOP:
 						go.y = cellRectY + _paddingItem;
 					break;
-					case VERTICAL_ALIGN_BOTTOM:
+					case View.ALIGN_VER_BOTTOM:
 						go.y = cellRectY + _paddingItem + _rowsHeight[curRow] - go.height;
 					break;
 					default:
-					case VERTICAL_ALIGN_CENTER:
+					case View.ALIGN_VER_CENTER:
 						go.y = cellRectY + _paddingItem + (_rowsHeight[curRow] - go.height) / 2;
 					break;
 				}

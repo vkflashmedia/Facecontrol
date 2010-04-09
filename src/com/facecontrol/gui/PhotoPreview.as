@@ -2,6 +2,8 @@ package com.facecontrol.gui
 {
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Label;
 	
 	import flash.display.Bitmap;
 	
@@ -11,9 +13,8 @@ package com.facecontrol.gui
 		private const TEXT_TOP_INDENT: uint = 5;
 		
 		private var _photo: Bitmap;
-		private var _rating: String;
-		private var _rateIcon: Bitmap;
-		private var _votesCount: uint;
+		private var _ratingLabel: Label;
+		//private var _votesCount: uint;
 		private var _text: String;
 		/**
 		 * Стикеры для размещения на фото
@@ -28,6 +29,7 @@ package com.facecontrol.gui
 		{
 			super(scene);
 			_stickers = new Array();
+			_ratingLabel = new Label();
 		}
 
 		public function set photo(value: Bitmap): void {
@@ -36,19 +38,24 @@ package com.facecontrol.gui
 		}
 		
 		public function set rating(value: String): void {
-			_rating = value;
+			_ratingLabel.text = value;
 			update();
 		}
 		
 		public function set rateIcon(value: Bitmap): void {
-			_rateIcon = value;
+			_ratingLabel.icon = value;
 			update();
 		}
 		
-		public function set votesCount(value: uint): void {
-			_votesCount = value;
+		public function set text(value: String): void {
+			_text = value;
 			update();
 		}
+		
+//		public function set votesCount(value: uint): void {
+//			_votesCount = value;
+//			update();
+//		}
 		
 		public function setSticker(name: String, icon: Bitmap, dX: int = 0, dY: int = 0): void {
 			var sticker: Object = new Object();
@@ -78,35 +85,58 @@ package com.facecontrol.gui
 		}
 		
 		private function update(): void {
-			var xx: int = 0;
-			var yy: int = 0;
+			var w: int = 0;
+			var h: int = 0;
+			if (!_view.contains('rating')) {
+				_view.addDisplayObject(_ratingLabel, 'rating', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_HOR_RIGHT | View.ALIGN_VER_TOP);
+			}
+			w += _ratingLabel.width;
+			h += _ratingLabel.height;
 			if (_photo) {
-				_photo.x = xx;
-				_photo.y = yy;
-				if (!contains(_photo)) {
-					addChild(_photo);
+				if (!_view.contains('photo')) {
+					_view.addDisplayObject(_ratingLabel, 'photo', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_HOR_LEFT | View.ALIGN_VER_TOP);
 				}
-				xx += _photo.width + PHOTO_RIGHT_INDENT;
+				w += _photo.width;
+				if (_photo.height > h) {
+					h = _photo.height;
+				}
 			}
 			else {
-				if (contains(_photo)) {
-					removeChild(_photo);
-				}
+				_view.removeDisplayObject('photo');
 			}
-			yy += TEXT_TOP_INDENT;
-			if (_rateIcon) {
-				_rateIcon.x = xx;
-				_rateIcon.y = yy;
-				if (!contains(_rateIcon)) {
-					addChild(_rateIcon);
-				}
-				xx += _rateIcon.width;
+			if (_text) {
+				var
+				setTextField()
 			}
-			else {
-				if (contains(_rateIcon)) {
-					removeChild(_rateIcon);
-				}
-			}
+//			var xx: int = 0;
+//			var yy: int = 0;
+//			if (_photo) {
+//				_photo.x = xx;
+//				_photo.y = yy;
+//				if (!contains(_photo)) {
+//					addChild(_photo);
+//				}
+//				xx += _photo.width + PHOTO_RIGHT_INDENT;
+//			}
+//			else {
+//				if (contains(_photo)) {
+//					removeChild(_photo);
+//				}
+//			}
+//			yy += TEXT_TOP_INDENT;
+//			if (_rateIcon) {
+//				_rateIcon.x = xx;
+//				_rateIcon.y = yy;
+//				if (!contains(_rateIcon)) {
+//					addChild(_rateIcon);
+//				}
+//				xx += _rateIcon.width;
+//			}
+//			else {
+//				if (contains(_rateIcon)) {
+//					removeChild(_rateIcon);
+//				}
+//			}
 			
 		}
 	}

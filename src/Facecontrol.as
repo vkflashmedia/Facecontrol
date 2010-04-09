@@ -6,30 +6,28 @@ package {
 	import com.facecontrol.forms.Menu;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
+	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
-	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
+	import com.flashmedia.gui.GridBoxEvent;
+	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
-	import com.flashmedia.gui.MessageBox;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.gui.RatingBar;
-	import com.flashmedia.util.BitmapUtil;
+	import com.flashmedia.gui.ScrollBar;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.PixelSnapping;
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
-	import com.flashmedia.gui.Pagination;
-	import com.flashmedia.gui.RatingBar;
-	
-	import flash.text.TextField;
 	
 	public class Facecontrol extends GameScene {
 		
@@ -41,22 +39,28 @@ package {
 		private var linkButton:LinkButton;
 		private var gb: GridBox;
 		private var cb: ComboBox;
+		private var scroll: ScrollBar;
 		private var rateBar: RatingBar;
+		private var form: Form;
 		
 		private var _menu:Menu;
 		private var _main:MainForm;
 		
 		public function Facecontrol() {
-			_images = new Images();
-			
-//			MultiLoader.testing = true;
-			Util.multiLoader = new MultiLoader();
-			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-			
-			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
-			
-			load();
+//			aliFunction();
+//			artemFunction();
+			testComponents();
+
+//			_images = new Images();
+//			
+////			MultiLoader.testing = true;
+//			Util.multiLoader = new MultiLoader();
+//			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+//			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+//			
+//			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
+//			
+//			load();
 		}
 		
 		private function load():void {
@@ -68,8 +72,6 @@ package {
 			
 			Util.multiLoader.load(Images.BACKGROUND_PATH, Images.BACKGROUND, 'Bitmap');
 			
-//			aliFunction();
-//			artemFunction();
 			Util.multiLoader.load(Images.SUPER_ICON_PATH, Images.SUPER_ICON, 'Bitmap');
 			Util.multiLoader.load(Images.JUNK_ICON_PATH, Images.JUNK_ICON, 'Bitmap');
 
@@ -83,7 +85,7 @@ package {
 			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
 			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
 					
-			Util.multiLoader.load(Images.IM_PATH, Images.IM, 'Bitmap');
+//			Util.multiLoader.load(Images.IM_PATH, Images.IM, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -103,9 +105,9 @@ package {
 				addChild(_menu);
 				_main = new MainForm(this);
 				addChild(_main);
-				_main.visible = false;
+				_main.visible = true;
 				
-				Util.api.loadSettings(Util.userId);
+				//Util.api.loadSettings(Util.userId);
 			}
 		}
 		
@@ -231,8 +233,9 @@ package {
 			_multiLoader.load("images\\scroll_body.png", "scroll_body", "Bitmap");
 			_multiLoader.load("images\\scroll_down.png", "scroll_down", "Bitmap");
 		}
-		
+		*/
 		private function testComponents(): void {
+			_multiLoader = new MultiLoader();
 			//multiLoader.load("http://cs1256.vkontakte.ru/u7776141/17008570/x_b07e69c3.jpg", "Photo1", "Bitmap");
 			_multiLoader.load("c:\\img\\choose_button.png", "dropIcon", "Bitmap");
 			_multiLoader.load("c:\\img\\rating_bgr.png", "ratingBack", "Bitmap");
@@ -311,8 +314,8 @@ package {
 			gb.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
 //			gb.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
 //			gb.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
-			gb.horizontalItemsAlign = GameObject.HORIZONTAL_ALIGN_LEFT;
-			gb.verticalItemsAlign = GameObject.VERTICAL_ALIGN_TOP;
+			gb.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
+			gb.verticalItemsAlign = View.ALIGN_VER_TOP;
 			gb.fillBackground(0xffffff, 1.0);
 			gb.indentBetweenItems = 0;
 			gb.padding = 0;
@@ -328,8 +331,33 @@ package {
 				gb.addItem(str);
 			}
 			addChild(gb);
+			
+			
+			scroll = new ScrollBar(this, 200, 300, 15, 200);
+			addChild(scroll);
+			
+			var tf1: TextField = new TextField();
+			tf1.autoSize = TextFieldAutoSize.LEFT;
+			tf1.selectable = false;
+			tf1.text = 'sd d4r3 4r q4rw';
+			var tf2: TextField = new TextField();
+			tf2.y = 250;
+			tf2.autoSize = TextFieldAutoSize.LEFT;
+			tf2.selectable = false;
+			tf2.text = 'Maidfrfrf rfsr nText';
+			var tf3: TextField = new TextField();
+			tf3.y = 170;
+			tf3.autoSize = TextFieldAutoSize.LEFT;
+			tf3.selectable = false;
+			tf3.text = 'gggggggggggyyyyyyyyy 3';
+			
+			form = new Form(this, 20, 300, 120, 250);
+			form.addComponent(tf1);
+			form.addComponent(tf2);
+			form.addComponent(tf3);
+			addChild(form);
 		}
-		
+		/*
 		private function onButtonClicked(e: GameObjectEvent): void {
 			var cancelButton:Button = new Button(this);
 			cancelButton.x = 40;
@@ -350,7 +378,7 @@ package {
 			p.clear();
 			p.update();
 		}
-		/*
+		
 		private function request():void {
 			this.addChild(textField);
 			var api:Api = new Api(textField);
