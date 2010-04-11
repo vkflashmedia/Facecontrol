@@ -1,6 +1,7 @@
 package com.flashmedia.basics
 {
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -17,14 +18,36 @@ package com.flashmedia.basics
 	 */
 	public class GameObject extends Sprite
 	{
-		public static const HORIZONTAL_ALIGN_NONE: String = 'hor_align_none';
-		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
-		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
-		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
-		public static const VERTICAL_ALIGN_NONE: String = 'vert_align_none';
-		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
-		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
-		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
+		public static const VISUAL_SELECT_MASK_Z_ORDER: int = 1200;
+		public static const VISUAL_SELECT_Z_ORDER: int = 1100;
+		public static const VISUAL_DEBUG_CONTAINER_Z_ORDER: int = 1000;
+		public static const VISUAL_DISPLAY_OBJECT_Z_ORDER: int = 801;
+		public static const VISUAL_TEXT_FIELD_Z_ORDER: int = 800;
+		public static const VISUAL_BORDER_Z_ORDER: int = 700;
+		public static const VISUAL_BITMAP_MASK_Z_ORDER: int = 500;
+		public static const VISUAL_BITMAP_Z_ORDER: int = 400;
+		public static const VISUAL_FOCUS_Z_ORDER: int = 300;
+		public static const VISUAL_HOVER_Z_ORDER: int = 200;
+		
+		public static const NAME_SELECT_MASK: String = 'game_object_select_mask';
+		public static const NAME_SELECT: String = 'game_object_select';
+		public static const NAME_DEBUG_CONTAINER: String = 'game_object_debug_container';
+		public static const NAME_TEXT_FIELD: String = 'game_object_text_field';
+		public static const NAME_BORDER: String = 'game_object_border';
+		public static const NAME_BITMAP_MASK: String = 'game_object_bitmap_mask';
+		public static const NAME_BITMAP: String = 'game_object_bitmap';
+		public static const NAME_FOCUS: String = 'game_object_focus';
+		public static const NAME_HOVER: String = 'game_object_hover';
+		
+		//TODO remove
+//		public static const HORIZONTAL_ALIGN_NONE: String = 'hor_align_none';
+//		public static const HORIZONTAL_ALIGN_LEFT: String = 'hor_align_left';
+//		public static const HORIZONTAL_ALIGN_CENTER: String = 'hor_align_center';
+//		public static const HORIZONTAL_ALIGN_RIGHT: String = 'hor_align_right';
+//		public static const VERTICAL_ALIGN_NONE: String = 'vert_align_none';
+//		public static const VERTICAL_ALIGN_TOP: String = 'vert_align_top';
+//		public static const VERTICAL_ALIGN_CENTER: String = 'vert_align_center';
+//		public static const VERTICAL_ALIGN_BOTTOM: String = 'vert_align_bottom';
 		
 		public static const HOVER_INDENT: uint = 7;
 		public static const HOVER_COLOR: uint = 0x57c8d5;
@@ -66,8 +89,6 @@ package com.flashmedia.basics
 		
 		// текстовое содержимое
 		protected var _textField: TextField;
-		protected var _textHorizontalAlign: String;
-		protected var _textVerticalAlign: String;
 		// область выделения
 		protected var _select: Sprite;
 		// объект маска для выделения. Позволяет задать выделению форму, отличную от прямоугольника.
@@ -84,35 +105,38 @@ package com.flashmedia.basics
 		protected var _selectRect: Rectangle;
 		// настройка свойств фокуса
 		protected var _focusEnabled: Boolean;
-		protected var _hoverEnabled: Boolean;
-		protected var _focus: Sprite;
-		protected var _hover: Sprite;
+		protected var _viewFocus: Boolean;
+		protected var _isDefaultFocus: Boolean;
+		protected var _focus: DisplayObject;
 		protected var _focusSizeMode: String;
+		// настройка свойств рамки при наведении
+		protected var _hoverEnabled: Boolean;
+		protected var _viewHover: Boolean;
+		protected var _isDefaultHover: Boolean;
+		protected var _hover: DisplayObject;
 		protected var _hoverSizeMode: String;
 		// цвет фона
 		protected var _fillBackground: Boolean;
 		protected var _backgroundColor: uint;
 		protected var _backgroundAlpha: Number;
+		// слои игрового обекта
+		protected var _view: View;
 		
 		
 		public function GameObject(value: GameScene)
 		{
 			super();
 			_scene = value;
+			_view = new View(this);
 			_debug = false;
 			_autoSize = true;
-			_selectable = false;
-			_selectAutosize = true;
-			_hoverEnabled = false;
-			_focusEnabled = false;
-			_focusSizeMode = SIZE_MODE_BORDER;
-			_hoverSizeMode = SIZE_MODE_BORDER;
+			setSelect(false, true);
+			setFocus(false, true, null, SIZE_MODE_BORDER);
+			setHover(false, true, null, SIZE_MODE_BORDER);
 			_type = 'GameObject';
 			_backgroundColor = BACKGROUNG_COLOR;
 			_backgroundAlpha = 1.0;
 			_fillBackground = false;
-			_textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
-			_textVerticalAlign = VERTICAL_ALIGN_CENTER;
 			_zOrder = 1;
 			// границы объекта
 			width = 100;
@@ -120,20 +144,28 @@ package com.flashmedia.basics
 		}
 		
 		public function destroy(): void {
+			if (_focus) {
+				_view.removeDisplayObject(NAME_FOCUS);
+				_focus = null;
+			}
+			if (_hover) {
+				_view.removeDisplayObject(NAME_HOVER);
+				_hover = null;
+			}
 			if (_border) {
-				removeChild(_border);
+				_view.removeDisplayObject(NAME_BORDER);
 				_border = null;
 			}
 			if (_bitmap) {
-				removeChild(_bitmap);
+				_view.removeDisplayObject(NAME_BITMAP);
 				_bitmap = null;
 			}
 			if (_bitmapMask) {
-				removeChild(_bitmapMask);
+				_view.removeDisplayObject(NAME_BITMAP_MASK);
 				_bitmapMask = null;
 			}
 			if (_textField) {
-				removeChild(_textField);
+				_view.removeDisplayObject(NAME_TEXT_FIELD);
 				_textField = null;
 			}
 			if (_select) {
@@ -142,24 +174,28 @@ package com.flashmedia.basics
 				_select.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 				_select.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
 				_select.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
-				removeChild(_select);
+				_view.removeDisplayObject(NAME_SELECT);
 				_select = null;
 			}
 			if (_selectMask) {
-				removeChild(_selectMask);
+				_view.removeDisplayObject(NAME_SELECT_MASK);
 				_selectMask = null;
 			}
 			if (_debugContainer) {
-				removeChild(_debugContainer);
+				_view.removeDisplayObject(NAME_DEBUG_CONTAINER);
 				_debugContainer = null;
 			}
 			_gameLayer = null;
 		}
 		
+		public function get view(): View {
+			return _view;
+		}
+		
 		public function set debug(value: Boolean): void {
 			_debug = value;
 			drawDebugInfo();
-			sortSprites();
+//			sortSprites();
 		}
 		
 		public function get debug(): Boolean {
@@ -179,9 +215,10 @@ package com.flashmedia.basics
 	  		}
 	  		updateFocus();
 	  		updateHover();
-	  		updateTextFieldAlign();
+//	  		updateTextFieldAlign();
 	    	drawDebugInfo();
-	    	sortSprites();
+//	    	sortSprites();
+			_view.layoutVisuals();
 		}
 		
 		public override function get height(): Number {
@@ -197,9 +234,10 @@ package com.flashmedia.basics
 	  		}
 	  		updateFocus();
 	  		updateHover();
-	  		updateTextFieldAlign();
+//	  		updateTextFieldAlign();
 	    	drawDebugInfo();
-	    	sortSprites();
+//	    	sortSprites();
+			_view.layoutVisuals();
 		}
 		
 		public function get zOrder(): int {
@@ -230,33 +268,37 @@ package com.flashmedia.basics
 			_backgroundColor = valueColor;
 			_backgroundAlpha = valueAlpha;
 			updateBorder();
-			sortSprites();
+//			sortSprites();
 		}
 		
 		public function clearBackground(): void {
 			_fillBackground = false;
 			updateBorder();
-			sortSprites();
+//			sortSprites();
 		}
 		
 		public function set bitmapMask(value: Sprite): void {
 			if (_bitmapMask) {
-				removeChild(_bitmapMask);
+//				removeChild(_bitmapMask);
+				_view.removeDisplayObject(NAME_BITMAP_MASK);
 			}
 			_bitmapMask = value;
-			addChild(_bitmapMask);
+			_view.addDisplayObject(_bitmapMask, NAME_BITMAP_MASK, VISUAL_BITMAP_MASK_Z_ORDER);
+//			addChild(_bitmapMask);
 			if (_bitmap) {
 				_bitmap.mask = _bitmapMask;
 			}
-			sortSprites();
+//			sortSprites();
 		}
 		
 		public function set bitmap(value: Bitmap): void {
 			if (_bitmap) {
-				removeChild(_bitmap);
+//				removeChild(_bitmap);
+				_view.removeDisplayObject(NAME_BITMAP);
 			}
 			_bitmap = value;
-			addChild(_bitmap);
+			_view.addDisplayObject(_bitmap, NAME_BITMAP, VISUAL_BITMAP_Z_ORDER);
+//			addChild(_bitmap);
 			if (_bitmapMask) {
 				_bitmap.mask = _bitmapMask;
 			}
@@ -265,9 +307,18 @@ package com.flashmedia.basics
 				height = _bitmap.height;
 			}
 			drawDebugInfo();
-			sortSprites();
+//			sortSprites();
 		}
 		
+		public function setTextField(value: TextField, layoutMode: int = 0): void {
+			if (_textField) {
+				_view.removeDisplayObject(NAME_TEXT_FIELD);
+			}
+			if (value) {
+				_textField = value;
+				_view.addDisplayObject(_textField, NAME_TEXT_FIELD, VISUAL_TEXT_FIELD_Z_ORDER, layoutMode);
+			}
+		}
 		public function get bitmap(): Bitmap {
 			if (_bitmap) {
 				return _bitmap;
@@ -275,31 +326,33 @@ package com.flashmedia.basics
 			return null
 		}
 		
-		public function set textField(value: TextField): void {
-			if (_textField) {
-				removeChild(_textField);
-			}
-			if (value) {
-				_textField = value;
-				updateTextFieldAlign();
-				addChild(_textField);
-				sortSprites();
-			}
-		}
+//		public function set textField(value: TextField): void {
+//			if (_textField) {
+////				removeChild(_textField);
+//				_view.removeDisplayObject(NAME_TEXT_FIELD);
+//			}
+//			if (value) {
+//				_textField = value;
+////				updateTextFieldAlign();
+////				addChild(_textField);
+//				_view.addDisplayObject(_textField, NAME_TEXT_FIELD, VISUAL_TEXT_FIELD_Z_ORDER, layoutMode);
+////				sortSprites();
+//			}
+//		}
 		
 		public function get textField(): TextField {
 			return _textField;
 		}
 		
-		public function set textHorizontalAlign(value: String): void {
-			_textHorizontalAlign = value;
-			updateTextFieldAlign();
-		}
-		
-		public function set textVerticalAlign(value: String): void {
-			_textVerticalAlign = value;
-			updateTextFieldAlign();
-		}
+//		public function set textHorizontalAlign(value: String): void {
+//			_textHorizontalAlign = value;
+//			updateTextFieldAlign();
+//		}
+//		
+//		public function set textVerticalAlign(value: String): void {
+//			_textVerticalAlign = value;
+//			updateTextFieldAlign();
+//		}
 		
 		public function set autoSize(value: Boolean): void {
 			_autoSize = value;
@@ -309,14 +362,41 @@ package com.flashmedia.basics
 			return _autoSize;
 		}
 		
-		public function set selectable(value: Boolean): void {
-			_selectable = value;
+		public function setSelect(selectable: Boolean, autoSize: Boolean = true, selectMask: Sprite = null, selectRect: Rectangle = null): void {
+			_selectable = selectable;
+			if (_selectable) {
+				_selectAutosize = autoSize;
+				_selectRect = selectRect;
+				if (_selectAutosize || !_selectRect) {
+					_selectRect = new Rectangle(0, 0, _width, _height);
+				}
+				if (_selectMask) {
+					_view.removeDisplayObject(NAME_SELECT_MASK);
+				}
+				_selectMask = selectMask;
+				if (_selectMask) {
+					_view.addDisplayObject(_selectMask, NAME_SELECT_MASK, VISUAL_SELECT_MASK_Z_ORDER);
+				}
+				if (_selectRect && _selectMask) {
+					_selectMask.x = _selectRect.x;
+					_selectMask.y = _selectRect.y;
+				}
+			}
 			updateSelection();
 			updateFocus();
 	  		updateHover();
 			drawDebugInfo();
-			sortSprites();
+//			sortSprites();
 		}
+		
+//		public function set selectable(value: Boolean): void {
+//			_selectable = value;
+//			updateSelection();
+//			updateFocus();
+//	  		updateHover();
+//			drawDebugInfo();
+//			sortSprites();
+//		}
 		
 		public function get selectable(): Boolean {
 			return _selectable;
@@ -325,106 +405,134 @@ package com.flashmedia.basics
 		/**
 		 * Если сбросить свойство selectAutosize, выделение не будет следить за изменением габаритов объекта
 		 */
-		public function set selectAutosize(value: Boolean): void {
-			_selectAutosize = value;
-			if (_selectAutosize) {
-				_selectRect = new Rectangle(0, 0, _width, _height);
-				updateSelection();
-				updateFocus();
-	  			updateHover();
-				drawDebugInfo();
-			}
-			sortSprites();
-		}
+//		public function set selectAutosize(value: Boolean): void {
+//			_selectAutosize = value;
+//			if (_selectAutosize) {
+//				_selectRect = new Rectangle(0, 0, _width, _height);
+//				updateSelection();
+//				updateFocus();
+//	  			updateHover();
+//				drawDebugInfo();
+//			}
+//			sortSprites();
+//		}
+//		
+//		public function set selectRect(value: Rectangle): void {
+//			_selectAutosize = false;
+//			_selectRect = value;
+//			if (_selectMask) {
+//				_selectMask.x = _selectRect.x;
+//				_selectMask.y = _selectRect.y;
+//			}
+//			updateSelection();
+//			updateFocus();
+//	  		updateHover();
+//			drawDebugInfo();
+//			sortSprites();
+//		}
+//		
+//		public function set selectMask(value: Sprite): void {
+//			if (_selectMask) {
+////				removeChild(_selectMask);
+//				removeDisplayObject(NAME_SELECT_MASK);
+//			}
+//			_selectMask = value;
+//			_selectMask.name = NAME_SELECT_MASK;
+//			if (_selectRect) {
+//				_selectMask.x = _selectRect.x;
+//				_selectMask.y = _selectRect.y;
+//			}
+////			addChild(_selectMask);
+//			if (_select) {
+//				_select.mask = _selectMask;
+//				addDisplayObject(_selectMask, VISUAL_SELECT_MASK_Z_ORDER);
+//			}
+////			sortSprites();
+//		}
 		
-		public function set selectRect(value: Rectangle): void {
-			_selectAutosize = false;
-			_selectRect = value;
-			if (_selectMask) {
-				_selectMask.x = _selectRect.x;
-				_selectMask.y = _selectRect.y;
-			}
-			updateSelection();
+		public function setFocus(enabled: Boolean, viewFocus: Boolean = true, focusDisplayObject: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
+			_focusEnabled = enabled;
+			_viewFocus = viewFocus;
+			_isDefaultFocus = !focusDisplayObject;
+			_focus = focusDisplayObject;
+			_focusSizeMode = sizeMode;
 			updateFocus();
-	  		updateHover();
-			drawDebugInfo();
-			sortSprites();
 		}
 		
-		public function set selectMask(value: Sprite): void {
-			if (_selectMask) {
-				removeChild(_selectMask);
-			}
-			_selectMask = value;
-			if (_selectRect) {
-				_selectMask.x = _selectRect.x;
-				_selectMask.y = _selectRect.y;
-			}
-			addChild(_selectMask);
-			if (_select) {
-				_select.mask = _selectMask;
-			}
-			sortSprites();
-		}
-		
-		public function set canFocus(value: Boolean): void {
-			_focusEnabled = value;
-			updateFocus();
-			sortSprites();
-		}
+//		public function set canFocus(value: Boolean): void {
+//			_focusEnabled = value;
+//			updateFocus();
+//			sortSprites();
+//		}
 		
 		public function get canFocus(): Boolean {
 			return _focusEnabled;
 		}
 		
-		public function set focusSprite(value: Sprite): void {
-			_focus = value;
-			updateFocus();
-			sortSprites();
-		}
+//		public function set focusSprite(value: Sprite): void {
+//			_focus = value;
+//			//_view.addDisplayObject(_focus, NAME_FOCUS, VISUAL_FOCUS_Z_ORDER);
+//			updateFocus();
+//			//sortSprites();
+//		}
 		
 		public function set focus(value: Boolean): void {
-			_focus.visible = value;
-			var eventType: String = GameObjectEvent.TYPE_LOST_FOCUS;
-			if (_focus.visible) {
-				eventType = GameObjectEvent.TYPE_SET_FOCUS;
+			if (_focusEnabled) {
+				if (_viewFocus) {
+					_focus.visible = value;
+				}
+				var eventType: String = GameObjectEvent.TYPE_LOST_FOCUS;
+				if (value) {
+					eventType = GameObjectEvent.TYPE_SET_FOCUS;
+				}
+				var goEvent: GameObjectEvent = new GameObjectEvent(eventType);
+				goEvent.gameObject = this;
+				dispatchEvent(goEvent);
 			}
-			var goEvent: GameObjectEvent = new GameObjectEvent(eventType);
-			goEvent.gameObject = this;
-			dispatchEvent(goEvent);
 		}
 		
-		public function set focusSizeMode(value: String): void {
-			_focusSizeMode = value;
-			updateFocus();
-			sortSprites();
-		}
+//		public function set focusSizeMode(value: String): void {
+//			_focusSizeMode = value;
+//			updateFocus();
+//			//sortSprites();
+//		}
 		
-		public function set canHover(value: Boolean): void {
-			_hoverEnabled = value;
+		public function setHover(enabled: Boolean, viewHover: Boolean = true, hoverDisplayObject: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
+			_hoverEnabled = enabled;
+			_viewHover = viewHover;
+			_isDefaultHover = !hoverDisplayObject;
+			_hover = hoverDisplayObject;
+			_hoverSizeMode = sizeMode;
 			updateHover();
-			sortSprites();
 		}
 		
-		public function set hoverSprite(value: Sprite): void {
-			_hover = value;
-			updateHover();
-			sortSprites();
-		}
+//		public function set canHover(value: Boolean): void {
+//			_hoverEnabled = value;
+//			updateHover();
+////			sortSprites();
+//		}
+		
+//		public function set hoverSprite(value: Sprite): void {
+//			_hover = value;
+//			updateHover();
+//			sortSprites();
+//		}
 		
 		public function get canHover(): Boolean {
 			return _hoverEnabled;
 		}
 		
 		public function set hover(value: Boolean): void {
-			_hover.visible = value;
+			if (_hoverEnabled && _viewHover) {
+				_hover.visible = value;
+			}
 		}
 		
-		public function set hoverSizeMode(value: String): void {
-			_hoverSizeMode = value;
-			updateHover();
-			sortSprites();
-		}
+//		public function set hoverSizeMode(value: String): void {
+//			_hoverSizeMode = value;
+//			updateHover();
+//			sortSprites();
+//		}
 		
 		public function get gameLayer(): GameLayer {
 			return _gameLayer;
@@ -449,7 +557,8 @@ package com.flashmedia.basics
 			if (_debug) {
 				if (!_debugContainer) {
 					_debugContainer = new Sprite();
-					addChild(_debugContainer);
+//					addChild(_debugContainer);
+					_view.addDisplayObject(_debugContainer, NAME_DEBUG_CONTAINER);
 				}
 				_debugContainer.graphics.clear();
 				if (!_debugText) {
@@ -493,18 +602,19 @@ package com.flashmedia.basics
 		private function updateBorder(): void {
 			if (!_border) {
 	    		_border = new Sprite();
+	    		_view.addDisplayObject(_border, NAME_BORDER, VISUAL_BORDER_Z_ORDER, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, null, true);
 	  		}
 	  		_border.graphics.clear();
 			_border.graphics.lineStyle(1, BORDERS_COLOR, 0.0);
-			_border.graphics.drawRect(0, 0, _width, _height);
+			_border.graphics.drawRect(0, 0, _width - 1, _height - 1);
 			if (_fillBackground) {
 				_border.graphics.beginFill(_backgroundColor, _backgroundAlpha);
-				_border.graphics.drawRect(0, 0, _width, _height);
+				_border.graphics.drawRect(0, 0, _width - 1, _height - 1);
 				_border.graphics.endFill();	
 			}
-			if (!contains(_border)) {
-				addChild(_border);
-			}
+//			if (!contains(_border)) {
+//				addChild(_border);
+//			}
 		}
 		
 		private function updateSelection(): void {
@@ -516,16 +626,23 @@ package com.flashmedia.basics
 					_select.addEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 					_select.addEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
 					_select.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
+					_view.addDisplayObject(_select, NAME_SELECT, VISUAL_SELECT_Z_ORDER);
 				}
 				_select.tabEnabled = true;
 				_select.graphics.clear();
 				_select.graphics.beginFill(SELECT_COLOR);
-				_select.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
+				_select.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width - 1, _selectRect.height - 1);
 				_select.graphics.endFill();
 				_select.alpha = 0.0;
-				if (!contains(_select)) {
-					addChild(_select);
+				if (_selectMask) {
+					_select.mask = _selectMask;
 				}
+				else {
+					_select.mask = null
+				}
+//				if (!contains(_select)) {
+//					addChild(_select);
+//				}
 			}
 			else {
 				if (_select) {
@@ -534,42 +651,46 @@ package com.flashmedia.basics
 					_select.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 					_select.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
 					_select.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
-					removeChild(_select);
+					//removeChild(_select);
+					_view.removeDisplayObject(NAME_SELECT);
 					_select = null;
-				}
-				if (_selectMask) {
-					removeChild(_selectMask);
-					_selectMask = null;
 				}
 			}
 		}
 		
 		private function updateFocus(): void {
 			if (_focusEnabled) {
-				if (!_focus) {
-					_focus = new Sprite();
+				if (_isDefaultFocus) {
+					if (!_focus) {
+						var s: Sprite = new Sprite();
+						s.visible = false;
+						_focus = s;
+					}
+					(_focus as Sprite).graphics.clear();
+					(_focus as Sprite).graphics.lineStyle(1, FOCUS_COLOR);
+					(_focus as Sprite).graphics.beginFill(FOCUS_COLOR, FOCUS_ALPHA);
+					switch (_focusSizeMode) {
+						case SIZE_MODE_SELECT:
+							if (_select) {
+								(_focus as Sprite).graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width - 1, _selectRect.height - 1);
+								break;
+							}
+						default:
+							(_focus as Sprite).graphics.drawRect(-FOCUS_INDENT, - FOCUS_INDENT, _width + 2 * FOCUS_INDENT - 1, _height + 2 * FOCUS_INDENT - 1);						
+					}
+					(_focus as Sprite).graphics.endFill();
 				}
-				_focus.visible = false;
-				_focus.graphics.clear();
-				_focus.graphics.lineStyle(1, FOCUS_COLOR);
-				_focus.graphics.beginFill(FOCUS_COLOR, FOCUS_ALPHA);
-				switch (_focusSizeMode) {
-					case SIZE_MODE_SELECT:
-						if (_select) {
-							_focus.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
-							break;
-						}
-					default:
-						_focus.graphics.drawRect(-FOCUS_INDENT, - FOCUS_INDENT, _width + 2 * FOCUS_INDENT, _height + 2 * FOCUS_INDENT);						
+				if (!_view.contains(NAME_FOCUS)) {
+					_view.addDisplayObject(_focus, NAME_FOCUS, VISUAL_FOCUS_Z_ORDER);
 				}
-				_focus.graphics.endFill();
-				if (!contains(_focus)) {
-					addChild(_focus);
-				}
+//				if (!contains(_focus)) {
+//					addChild(_focus);
+//				}
 			}
 			else {
 				if (_focus) {
-					removeChild(_focus);
+//					removeChild(_focus);
+					_view.removeDisplayObject(NAME_FOCUS);
 					_focus = null;
 				}
 			}
@@ -577,98 +698,133 @@ package com.flashmedia.basics
 		
 		private function updateHover(): void {
 			if (_hoverEnabled) {
-				if (!_hover) {
-					_hover = new Sprite();
+				if (_isDefaultHover) {
+					if (!_hover) {
+						var s: Sprite = new Sprite();
+						s.visible = false;
+						_hover = s;
+					}
+					(_hover as Sprite).visible = false;
+					(_hover as Sprite).graphics.clear();
+					(_hover as Sprite).graphics.lineStyle(1, HOVER_COLOR);
+					(_hover as Sprite).graphics.beginFill(HOVER_COLOR, HOVER_ALPHA);
+					switch (_hoverSizeMode) {
+						case SIZE_MODE_SELECT:
+							if (_select) {
+								(_hover as Sprite).graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width - 1, _selectRect.height - 1);
+								break;
+							}
+						default:
+							(_hover as Sprite).graphics.drawRect(-HOVER_INDENT, - HOVER_INDENT, _width + 2 * HOVER_INDENT - 1, _height + 2 * HOVER_INDENT - 1);						
+					}
+					(_hover as Sprite).graphics.endFill();
+//					if (!contains(_hover)) {
+//						addChild(_hover);
+//					}
 				}
-				_hover.visible = false;
-				_hover.graphics.clear();
-				_hover.graphics.lineStyle(1, HOVER_COLOR);
-				_hover.graphics.beginFill(HOVER_COLOR, HOVER_ALPHA);
-				switch (_hoverSizeMode) {
-					case SIZE_MODE_SELECT:
-						if (_select) {
-							_hover.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
-							break;
-						}
-					default:
-						_hover.graphics.drawRect(-HOVER_INDENT, - HOVER_INDENT, _width + 2 * HOVER_INDENT, _height + 2 * HOVER_INDENT);						
-				}
-				_hover.graphics.endFill();
-				if (!contains(_hover)) {
-					addChild(_hover);
+				if (!_view.contains(NAME_HOVER)) {
+					_view.addDisplayObject(_hover, NAME_HOVER, VISUAL_HOVER_Z_ORDER);
 				}
 			}
 			else {
 				if (_hover) {
-					removeChild(_hover);
+					_view.removeDisplayObject(NAME_HOVER);
+//					removeChild(_hover);
 					_hover = null;
 				}
 			}
 		}
 		
-		private function updateTextFieldAlign(): void {
-			if (_textField) {
-				switch (_textHorizontalAlign) {
-					case HORIZONTAL_ALIGN_LEFT:
-						_textField.x = 0;
-					break;
-					case HORIZONTAL_ALIGN_RIGHT:
-						_textField.x = width - _textField.width;
-					break;
-					case HORIZONTAL_ALIGN_CENTER:
+//		private function updateTextFieldAlign(): void {
+//			if (_textField) {
+//				switch (_textHorizontalAlign) {
+//					case HORIZONTAL_ALIGN_LEFT:
+//						_textField.x = 0;
+//					break;
+//					case HORIZONTAL_ALIGN_RIGHT:
+//						_textField.x = width - _textField.width;
+//					break;
+//					case HORIZONTAL_ALIGN_CENTER:
 //					default:
-						_textField.x = (width - _textField.width) / 2;
-				}
-				switch (_textVerticalAlign) {
-					case VERTICAL_ALIGN_TOP:
-						_textField.y = 0;
-					break;
-					case VERTICAL_ALIGN_BOTTOM:
-						_textField.y = height - _textField.height;
-					break;
-					case VERTICAL_ALIGN_CENTER:
+//						_textField.x = (width - _textField.width) / 2;
+//				}
+//				switch (_textVerticalAlign) {
+//					case VERTICAL_ALIGN_TOP:
+//						_textField.y = 0;
+//					break;
+//					case VERTICAL_ALIGN_BOTTOM:
+//						_textField.y = height - _textField.height;
+//					break;
+//					case VERTICAL_ALIGN_CENTER:
 //					default:
-						_textField.y = (height - _textField.height) / 2;
-				}
-			}
-		}
+//						_textField.y = (height - _textField.height) / 2;
+//				}
+//			}
+//		}
+//		private function updateTextFieldAlign(): void {
+//			if (_textField) {
+//				switch (_textHorizontalAlign) {
+//					case HORIZONTAL_ALIGN_LEFT:
+//						_textField.x = 0;
+//					break;
+//					case HORIZONTAL_ALIGN_RIGHT:
+//						_textField.x = width - _textField.width;
+//					break;
+//					case HORIZONTAL_ALIGN_CENTER:
+////					default:
+//						_textField.x = (width - _textField.width) / 2;
+//				}
+//				switch (_textVerticalAlign) {
+//					case VERTICAL_ALIGN_TOP:
+//						_textField.y = 0;
+//					break;
+//					case VERTICAL_ALIGN_BOTTOM:
+//						_textField.y = height - _textField.height;
+//					break;
+//					case VERTICAL_ALIGN_CENTER:
+////					default:
+//						_textField.y = (height - _textField.height) / 2;
+//				}
+//			}
+//		}
 		
 		/**
 		 * Сортировка составляющих игрового объекта. Каждый спрайт должен находиться на своем месте.
 		 * Например выделение с его маской выше всех, чтобы обрабатывать действия пользователя.
 		 * bitmap - bitmapMask - border - debugContainer - select - selectMask
 		 */
-		private function sortSprites(): void {
+//		private function sortSprites(): void {
+			//_view.sortVisuals();
 			//front
-			if (_selectMask) {
-				setChildIndex(_selectMask, 0);
-			}
-			if (_select) {
-				setChildIndex(_select, 0);
-			}
-			if (_debugContainer) {
-				setChildIndex(_debugContainer, 0);
-			}
-			if (_textField) {
-				setChildIndex(_textField, 0);
-			}
-			if (_border) {
-				setChildIndex(_border, 0);
-			}
-			if (_bitmapMask) {
-				setChildIndex(_bitmapMask, 0);
-			}
-			if (_bitmap) {
-				setChildIndex(_bitmap, 0);
-			}
-			if (_focus) {
-				setChildIndex(_focus, 0);
-			}
-			if (_hover) {
-				setChildIndex(_hover, 0);
-			}
+//			if (_selectMask) {
+//				setChildIndex(_selectMask, 0);
+//			}
+//			if (_select) {
+//				setChildIndex(_select, 0);
+//			}
+//			if (_debugContainer) {
+//				setChildIndex(_debugContainer, 0);
+//			}
+//			if (_textField) {
+//				setChildIndex(_textField, 0);
+//			}
+//			if (_border) {
+//				setChildIndex(_border, 0);
+//			}
+//			if (_bitmapMask) {
+//				setChildIndex(_bitmapMask, 0);
+//			}
+//			if (_bitmap) {
+//				setChildIndex(_bitmap, 0);
+//			}
+//			if (_focus) {
+//				setChildIndex(_focus, 0);
+//			}
+//			if (_hover) {
+//				setChildIndex(_hover, 0);
+//			}
 			//back
-		}
+//		}
 		
 		protected function keyboardListener(event: KeyboardEvent): void {
 			var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_KEY_DOWN);
@@ -689,7 +845,9 @@ package com.flashmedia.basics
 		
 		protected function mouseOverListener(event: MouseEvent): void {
 			if (_selectable && _hoverEnabled) {
-				_hover.visible = true;
+				if (_viewHover) {
+					_hover.visible = true;
+				}
 				var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_SET_HOVER);
 				goEvent.gameObject = this;
 				dispatchEvent(goEvent);
@@ -698,7 +856,9 @@ package com.flashmedia.basics
 		
 		protected function mouseOutListener(event: MouseEvent): void {
 			if (_selectable && _hoverEnabled) {
-				_hover.visible = false;
+				if (_viewHover) {
+					_hover.visible = false;
+				}
 				var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_LOST_HOVER);
 				goEvent.gameObject = this;
 				dispatchEvent(goEvent);

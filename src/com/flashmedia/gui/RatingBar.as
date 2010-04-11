@@ -29,7 +29,7 @@ package com.flashmedia.gui
 			super(value);
 			width = 100;
 			height = 20;
-			selectable = true;
+			setSelect(true);
 			_rating = 0;
 			_hoverRating = 0;
 			_pointsCount = pointsCount;

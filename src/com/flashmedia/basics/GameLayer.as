@@ -23,8 +23,8 @@ package com.flashmedia.basics
 		protected var _rightScrollIndent: Number;
 		protected var _bottomScrollIndent: Number;
 		// позиция прокрутки по горизонтали и вертикали в процентах от (0.0 - 1.0)
-		protected var _horizontalPosition: uint;
-		protected var _verticalPosition: uint;
+//		protected var _horizontalPosition: uint;
+//		protected var _verticalPosition: uint;
 		
 		public function GameLayer(value: GameScene)
 		{
@@ -54,8 +54,17 @@ package com.flashmedia.basics
 			super.addChild(child);
 			if (child is GameObject) {
 				(child as GameObject).setGameLayer(this);
+				sortChildsByZ();
 			}
-			sortChildsByZ();
+			return child;
+		}
+		
+		public override function addChildAt(child: DisplayObject, index: int): DisplayObject {
+			super.addChildAt(child, index);
+			if (child is GameObject) {
+				(child as GameObject).setGameLayer(this);
+				sortChildsByZ();
+			}
 			return child;
 		}
 		
@@ -131,16 +140,44 @@ package com.flashmedia.basics
 				if (rect.y < _topScrollIndent) {
 					rect.y = _topScrollIndent;
 				}
-				if (rect.y > _height - rect.height - _bottomScrollIndent) {
-					rect.y = _height - rect.height - _bottomScrollIndent;
+				if (_height > rect.height) {
+					if (rect.y > _height - rect.height - _bottomScrollIndent) {
+						rect.y = _height - rect.height - _bottomScrollIndent;
+					}
+				}
+				else {
+					if (rect.y > 0) {
+						rect.y = 0;
+					}
 				}
 				if (rect.x < _leftScrollIndent) {
 					rect.x = _leftScrollIndent;
 				}
-				if (rect.x > _width - rect.width - _rightScrollIndent) {
-					rect.x = _width - rect.width - _rightScrollIndent;
+				if (_width > rect.width) {
+					if (rect.x > _width - rect.width - _rightScrollIndent) {
+						rect.x = _width - rect.width - _rightScrollIndent;
+					}
 				}
-				scrollRect = rect;
+				else {
+					if (rect.x > 0) {
+						rect.x = 0;
+					}
+				}
+				if (scrollRect.x != rect.x || scrollRect.y != rect.y) {
+					scrollRect = rect;
+					var event: GameLayerEvent = new GameLayerEvent(GameLayerEvent.TYPE_SCROLL);
+					event.gameObject = this;
+					event.verticalPosition = verticalPosition;
+					event.horizontalPosition = horizontalPosition;
+					dispatchEvent(event);
+				}
+			}
+		}
+		
+		public function set verticalPosition(value: Number): void {
+			if (scrollRect) {
+				var y: int = value * (_height - _topScrollIndent - _bottomScrollIndent - scrollRect.height) + _topScrollIndent;
+				scroll(0, y - scrollRect.y);
 			}
 		}
 		
