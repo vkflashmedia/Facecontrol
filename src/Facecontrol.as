@@ -69,6 +69,7 @@ package {
 			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
 					
 			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {

@@ -148,8 +148,6 @@ package com.facecontrol.forms
 				var i:uint;
 				
 				for (i = 0; i < value.length; ++i) {
-//					var photo:PhotoObject = new PhotoObject(value[i]["photo"]);
-//					_photos[i] = photo;
 					_photos[i] = value[i].photo;
 					
 					if (_photos[i].main == 1) {

@@ -23,6 +23,7 @@ package com.facecontrol.util
 		public static const RATING_ON:String = 'ratingOn';
 		
 		public static const ADVERTISING_FORM:String = 'advertisingForm';
+		public static const MY_PHOTO_BACKGROUND:String = 'myPhotoBackground';
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
 		public static const HEAD_BUTTON2_PATH:String = 'images\\head\\02.png';
@@ -43,10 +44,7 @@ package com.facecontrol.util
 		public static const RATING_ON_PATH:String = 'images\\rating_star_active.png';
 		
 		public static const ADVERTISING_FORM_PATH:String = 'images\\advertising_form.png';
-		
-		public function Images()
-		{
-		}
+		public static const MY_PHOTO_BACKGROUND_PATH:String = 'images\\My_photo\\photo_form.png';
 
 	}
 }
