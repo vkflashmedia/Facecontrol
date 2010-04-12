@@ -100,6 +100,9 @@ package {
 					
 			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
 			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_RED_PATH, Images.MY_PHOTO_BUTTON_RED, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -129,7 +132,7 @@ package {
 				addChild(_myPhotoForm);
 				_myPhotoForm.visible = false;
 				
-				//Util.api.loadSettings(Util.userId);
+				Util.api.loadSettings(Util.userId);
 			}
 		}
 		
