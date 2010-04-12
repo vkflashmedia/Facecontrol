@@ -36,7 +36,8 @@ package com.flashmedia.gui
 		private var _maxItemWidth: uint;
 		private var _maxItemHeight: uint;
 		private var _paddingItem: uint;
-		private var _indentBetweenItems: uint;
+		private var _indentBetweenCols: uint;
+		private var _indentBetweenRows: uint;
 		private var _horizontalItemsAlign: int;
 		private var _verticalItemsAlign: int;
 		private var _rowHeightPolicy: String;
@@ -67,7 +68,8 @@ package com.flashmedia.gui
 			_maxItemWidth = undefined;
 			_maxItemHeight = undefined;
 			_paddingItem = PADDING_ITEM;
-			_indentBetweenItems = INDENT_BETWEEN_ITEMS;
+			_indentBetweenCols = INDENT_BETWEEN_ITEMS;
+			_indentBetweenRows = INDENT_BETWEEN_ITEMS;
 			_horizontalItemsAlign = View.ALIGN_HOR_CENTER;
 			_verticalItemsAlign = View.ALIGN_VER_CENTER;
 			_rowHeightPolicy = ROW_HEIGHT_POLICY_BY_MAX_CELL;
@@ -170,8 +172,13 @@ package com.flashmedia.gui
 			updateLayout(true, true);
 		}
 		
-		public function set indentBetweenItems(value: uint): void {
-			_indentBetweenItems = value;
+		public function set indentBetweenCols(value: uint): void {
+			_indentBetweenCols = value;
+			updateLayout(true, true);
+		}
+		
+		public function set indentBetweenRows(value: uint): void {
+			_indentBetweenRows = value;
 			updateLayout(true, true);
 		}
 		
@@ -278,7 +285,7 @@ package com.flashmedia.gui
 			for (i = 0; i < columnsCount; i++) {
 				w += getColumnWidth(i);
 				if (i < columnsCount - 1) {
-					w += _indentBetweenItems;
+					w += _indentBetweenCols;
 				}
 			}
 			var newWidth: uint = w;
@@ -286,7 +293,7 @@ package com.flashmedia.gui
 			for (i = 0; i < rowsCount; i++) {
 				h += getRowHeight(i);
 				if (i < rowsCount - 1) {
-					h += _indentBetweenItems;
+					h += _indentBetweenRows;
 				}
 			}
 			var newHeight: uint = h;
@@ -300,7 +307,7 @@ package com.flashmedia.gui
 							_columnsWidth[i] = Math.round(_columnsWidth[i] * k);
 							realWidth += _columnsWidth[i] + 2 * _paddingItem;
 							if (i < _columnsWidth.length - 1) {
-								realWidth += _indentBetweenItems;
+								realWidth += _indentBetweenCols;
 							}
 						}
 						if (realWidth != width) {
@@ -323,7 +330,7 @@ package com.flashmedia.gui
 							_rowsHeight[i] = Math.round(_rowsHeight[i] * k);
 							realHeight += _rowsHeight[i] + 2 * _paddingItem;
 							if (i < _rowsHeight.length - 1) {
-								realHeight += _indentBetweenItems;
+								realHeight += _indentBetweenRows;
 							}
 						}
 						if (realHeight != height) {
@@ -352,7 +359,7 @@ package com.flashmedia.gui
 				if (_maxColumnsCount && curCol >= _maxColumnsCount) {
 					cellRectX = 0;
 					curCol = 0;
-					cellRectY += _rowsHeight[curRow] + 2 * _paddingItem + _indentBetweenItems;
+					cellRectY += _rowsHeight[curRow] + 2 * _paddingItem + _indentBetweenRows;
 					curRow++;
 				}
 				if (_maxRowsCount && curRow >= _maxRowsCount) {
@@ -391,7 +398,7 @@ package com.flashmedia.gui
 				//go.selectRect = new Rectangle(-(_columnsWidth[curCol] - go.width) / 2, -(_rowsHeight[curRow] - go.height) / 2, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1);
 				go.setSelect(true, false, null, new Rectangle(cellRectX - go.x + _paddingItem, cellRectY - go.y + _paddingItem, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1));
 				addChild(go);
-				cellRectX += _columnsWidth[curCol] + 2 * _paddingItem + _indentBetweenItems;
+				cellRectX += _columnsWidth[curCol] + 2 * _paddingItem + _indentBetweenCols;
 				curCol++;
 			}
 		}
