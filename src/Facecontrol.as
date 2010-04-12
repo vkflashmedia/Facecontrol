@@ -64,6 +64,7 @@ package {
 //			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 //			
 //			load();
+			
 			_images = new Images();
 			
 //			MultiLoader.testing = true;
@@ -74,6 +75,7 @@ package {
 			
 			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 			Util.api.addEventListener(ApiEvent.ERROR, onRequestError);
+			
 		}
 		
 		private function load():void {
@@ -369,7 +371,8 @@ package {
 			gb.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
 			gb.verticalItemsAlign = View.ALIGN_VER_TOP;
 			gb.fillBackground(0xffffff, 1.0);
-			gb.indentBetweenItems = 0;
+			gb.indentBetweenRows = 0;
+			gb.indentBetweenCols = 0;
 			gb.padding = 0;
 			gb.addItem('VeryVeryVeryLongItem\nNew line text');
 			for (var i: uint = 0; i < 20; i++) {
@@ -385,7 +388,7 @@ package {
 			addChild(gb);
 			
 			
-			scroll = new ScrollBar(this, 200, 300, 15, 200);
+			scroll = new ScrollBar(this, 200, 300, 150, 20, ScrollBar.TYPE_HORIZONTAL);
 			addChild(scroll);
 			
 			var tf1: TextField = new TextField();
@@ -403,7 +406,7 @@ package {
 			tf3.selectable = false;
 			tf3.text = 'gggggggggggyyyyyyyyy 3';
 			
-			form = new Form(this, 20, 300, 120, 250);
+			form = new Form(this, 20, 300, 90, 160);
 			form.addComponent(tf1);
 			form.addComponent(tf2);
 			form.addComponent(tf3);

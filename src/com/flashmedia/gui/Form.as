@@ -91,9 +91,32 @@ package com.flashmedia.gui
 				_verticalScrollBar.x = PADDING_LEFT + scrollRectWidth;
 				_verticalScrollBar.y = PADDING_TOP;
 				_verticalScrollBar.height = scrollRectHeight;
+				if (_contentLayer.width > scrollRectWidth) {
+					_verticalScrollBar.height -= 15;
+				}
 			}
 			else {
 				_view.removeDisplayObject('verticalScroll');
+			}
+			if (_contentLayer.width > scrollRectWidth) {
+				//TODO задание полосы прокрутки, ее интерфейса
+				if (!_horizontalScrollBar) {
+					_horizontalScrollBar = new ScrollBar(scene, 0, 0, 15, 15, ScrollBar.TYPE_HORIZONTAL);
+					_horizontalScrollBar.addEventListener(ScrollBarEvent.TYPE_SCROLL, onHorizontalScrollBarScroll);
+				}
+				scrollRectHeight -= _horizontalScrollBar.height;
+				if (!_view.contains('horizontalScroll')) {
+					_view.addDisplayObject(_horizontalScrollBar, 'horizontalScroll', VISUAL_DISPLAY_OBJECT_Z_ORDER);
+				}
+				_horizontalScrollBar.x = PADDING_LEFT;
+				_horizontalScrollBar.y = PADDING_TOP + scrollRectHeight;
+				_horizontalScrollBar.width = scrollRectWidth;
+//				if (_contentLayer.height > scrollRectHeight) {
+//					_horizontalScrollBar.width -= 15;
+//				}
+			}
+			else {
+				_view.removeDisplayObject('horizontalScroll');
 			}
 			_contentLayer.scrollRect = new Rectangle(0, 0, scrollRectWidth, scrollRectHeight);
 			_contentLayer.verticalScrollPolicy = GameLayer.SCROLL_POLICY_AUTO;
@@ -111,6 +134,10 @@ package com.flashmedia.gui
 		
 		private function onVerticalScrollBarScroll(event: ScrollBarEvent): void {
 			_contentLayer.verticalPosition = event.position;
+		}
+		
+		private function onHorizontalScrollBarScroll(event: ScrollBarEvent): void {
+			_contentLayer.horizontalPosition = event.position;
 		}
 	}
 }

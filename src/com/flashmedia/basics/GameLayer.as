@@ -188,6 +188,13 @@ package com.flashmedia.basics
 			return 0;
 		}
 		
+		public function set horizontalPosition(value: Number): void {
+			if (scrollRect) {
+				var x: int = value * (_width - _leftScrollIndent - _rightScrollIndent - scrollRect.width) + _leftScrollIndent;
+				scroll(x - scrollRect.x, 0);
+			}
+		}
+		
 		public function get horizontalPosition(): Number {
 			if (scrollRect) {
 				return (scrollRect.x - _leftScrollIndent) / (_width - _leftScrollIndent - _rightScrollIndent - scrollRect.width);
