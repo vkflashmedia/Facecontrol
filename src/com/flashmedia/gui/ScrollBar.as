@@ -9,8 +9,8 @@ package com.flashmedia.gui
 
 	public class ScrollBar extends GameObject
 	{
-		public const TYPE_VERTICAL: String = 'type_vertical';
-		public const TYPE_HORIZONTAL: String = 'type_horizontal';
+		public static const TYPE_VERTICAL: String = 'type_vertical';
+		public static const TYPE_HORIZONTAL: String = 'type_horizontal';
 		public const VIEW_TOP_ICON: int = 2;
 		public const VIEW_BOTTOM_ICON: int = 4;
 		public const VIEW_BACKGROUND: int = 8;
@@ -53,6 +53,11 @@ package com.flashmedia.gui
 			update();
 		}
 		
+		public override function set width(value: Number): void {
+			super.width = value;
+			update();
+		}
+		
 		public function set position(value: Number): void {
 			if (value > 1.0) {
 				value = 1.0;
@@ -78,57 +83,68 @@ package com.flashmedia.gui
 //		}
 		
 		private function update(): void {
+			if ((_viewImagesPolicy & VIEW_BACKGROUND) == VIEW_BACKGROUND || (_viewImagesPolicy & VIEW_ALL) == VIEW_ALL) {
+				if (!_backImage) {
+					_backImage = getStandartBackground();
+					_view.addDisplayObject(_backImage, 'back', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER);
+				}
+			}
+			if ((_viewImagesPolicy & VIEW_TOP_ICON) == VIEW_TOP_ICON || (_viewImagesPolicy & VIEW_ALL) == VIEW_ALL) {
+				if (!_topIcon) {
+					_topIcon = getStandartIcon();
+					if (_isActive) {
+						_topIcon.addEventListener(MouseEvent.MOUSE_DOWN, onTopIconMouseDown);
+					}
+					_view.addDisplayObject(_topIcon, 'topIcon', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_TOP | View.ALIGN_HOR_LEFT);
+				}
+			}
+			if ((_viewImagesPolicy & VIEW_BOTTOM_ICON) == VIEW_BOTTOM_ICON || (_viewImagesPolicy & VIEW_ALL) == VIEW_ALL) {
+				if (!_bottomIcon) {
+					_bottomIcon = getStandartIcon();
+					if (_isActive) {
+						_bottomIcon.addEventListener(MouseEvent.MOUSE_DOWN, onBottomIconMouseDown);
+					}
+					_view.addDisplayObject(_bottomIcon, 'bottomIcon', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_BOTTOM | View.ALIGN_HOR_RIGHT);
+				}
+			}
+			if (!_scrollImage) {
+				_scrollImage = new Sprite();
+				_scrollImage.tabEnabled = true;
+				if (_isActive) {
+					_scrollImage.addEventListener(MouseEvent.MOUSE_DOWN, onScrollImageMouseDown);
+					_scrollImage.addEventListener(MouseEvent.MOUSE_MOVE, onScrollImageMouseMove);
+					_scrollImage.addEventListener(MouseEvent.MOUSE_UP, onScrollImageMouseUp);
+				}
+				_view.addDisplayObject(_scrollImage, 'scroll', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER);
+			}
+			_scrollImage.graphics.clear();
+			_scrollImage.graphics.beginFill(0xff0000, GameObject.FOCUS_ALPHA);
 			if (_scrollType == TYPE_HORIZONTAL) {
-				
+				_scrollImage.graphics.drawRect(0, 0, width / 5, height);
+				_scrollImage.x = ((_topIcon) ? _topIcon.width : 0) + getScrollAreaLength() * _position;
 			}
 			else {
-				if ((_viewImagesPolicy & VIEW_BACKGROUND) == VIEW_BACKGROUND || (_viewImagesPolicy & VIEW_ALL) == VIEW_ALL) {
-					if (!_backImage) {
-						_backImage = getStandartBackground();
-						_view.addDisplayObject(_backImage, 'back', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER);
-					}
-				}
-				if ((_viewImagesPolicy & VIEW_TOP_ICON) == VIEW_TOP_ICON || (_viewImagesPolicy & VIEW_ALL) == VIEW_ALL) {
-					if (!_topIcon) {
-						_topIcon = getStandartTopIcon();
-						if (_isActive) {
-							_topIcon.addEventListener(MouseEvent.MOUSE_DOWN, onTopIconMouseDown);
-						}
-						_view.addDisplayObject(_topIcon, 'topIcon', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_TOP);
-					}
-				}
-				if ((_viewImagesPolicy & VIEW_BOTTOM_ICON) == VIEW_BOTTOM_ICON || (_viewImagesPolicy & VIEW_ALL) == VIEW_ALL) {
-					if (!_bottomIcon) {
-						_bottomIcon = getStandartBottomIcon();
-						if (_isActive) {
-							_bottomIcon.addEventListener(MouseEvent.MOUSE_DOWN, onBottomIconMouseDown);
-						}
-						_view.addDisplayObject(_bottomIcon, 'bottomIcon', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_BOTTOM);
-					}
-				}
-				if (!_scrollImage) {
-					_scrollImage = new Sprite();
-					_scrollImage.tabEnabled = true;
-					if (_isActive) {
-						_scrollImage.addEventListener(MouseEvent.MOUSE_DOWN, onScrollImageMouseDown);
-						_scrollImage.addEventListener(MouseEvent.MOUSE_MOVE, onScrollImageMouseMove);
-						_scrollImage.addEventListener(MouseEvent.MOUSE_UP, onScrollImageMouseUp);
-					}
-					_view.addDisplayObject(_scrollImage, 'scroll', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER);
-				}
-				_scrollImage.graphics.clear();
-				_scrollImage.graphics.beginFill(0xff0000, GameObject.FOCUS_ALPHA);
 				_scrollImage.graphics.drawRect(0, 0, width, height / 5);
-				_scrollImage.graphics.endFill();
-				_scrollImage.y = ((_topIcon) ? _topIcon.height : 0) + getScrollAreaHeight() * _position;
+				_scrollImage.y = ((_topIcon) ? _topIcon.height : 0) + getScrollAreaLength() * _position;
 			}
+			_scrollImage.graphics.endFill();
 		}
 		
-		private function getScrollAreaHeight(): uint {
-			return height - 
-			((_topIcon) ? _topIcon.height : 0 ) - 
-			((_bottomIcon) ? _bottomIcon.height : 0 ) -
-			((_scrollImage) ? _scrollImage.height : 0 );
+		private function getScrollAreaLength(): uint {
+			var result: int = 0;
+			if (_scrollType == TYPE_HORIZONTAL) {
+				result = width - 
+					((_topIcon) ? _topIcon.width : 0 ) - 
+					((_bottomIcon) ? _bottomIcon.width : 0 ) -
+					((_scrollImage) ? _scrollImage.width : 0 );
+			}
+			else {
+				result = height - 
+					((_topIcon) ? _topIcon.height : 0 ) - 
+					((_bottomIcon) ? _bottomIcon.height : 0 ) -
+					((_scrollImage) ? _scrollImage.height : 0 );
+			}
+			return result;
 		}
 		
 		private function onTopIconMouseDown(event: MouseEvent): void {
@@ -158,20 +174,16 @@ package com.flashmedia.gui
 			_draggingScroll = false;
 		}
 		
-		private function getStandartTopIcon(): Sprite {
+		private function getStandartIcon(): Sprite {
 			var s: Sprite = new Sprite();
 			s.tabEnabled = true;
 			s.graphics.beginFill(FOCUS_COLOR);
-			s.graphics.drawRect(0, 0, width, width);
-			s.graphics.endFill();
-			return s;
-		}
-		
-		private function getStandartBottomIcon(): Sprite {
-			var s: Sprite = new Sprite();
-			s.tabEnabled = true;
-			s.graphics.beginFill(FOCUS_COLOR);
-			s.graphics.drawRect(0, 0, width, width);
+			if (_scrollType == TYPE_HORIZONTAL) {
+				s.graphics.drawRect(0, 0, height, height);
+			}
+			else {
+				s.graphics.drawRect(0, 0, width, width);
+			}
 			s.graphics.endFill();
 			return s;
 		}
@@ -184,13 +196,13 @@ package com.flashmedia.gui
 			return s;
 		}
 		
-		private function getStandartScroll(): Sprite {
-			var s: Sprite = new Sprite();
-			s.tabEnabled = true;
-			s.graphics.beginFill(GameObject.FOCUS_COLOR, GameObject.FOCUS_ALPHA);
-			s.graphics.drawRect(0, 0, width, height / 5);
-			s.graphics.endFill();
-			return s;
-		}
+//		private function getStandartScroll(): Sprite {
+//			var s: Sprite = new Sprite();
+//			s.tabEnabled = true;
+//			s.graphics.beginFill(GameObject.FOCUS_COLOR, GameObject.FOCUS_ALPHA);
+//			s.graphics.drawRect(0, 0, width, height / 5);
+//			s.graphics.endFill();
+//			return s;
+//		}
 	}
 }
