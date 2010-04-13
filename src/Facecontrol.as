@@ -111,6 +111,10 @@ package {
 			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
 			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
 			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BCK_PATH, Images.ADD_PHOTO_BCK, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {

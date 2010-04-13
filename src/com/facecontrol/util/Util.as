@@ -5,6 +5,7 @@ package com.facecontrol.util
 	import com.flashmedia.basics.GameScene;
 	
 	import flash.text.Font;
+	import flash.text.TextField;
 	
 	public class Util
 	{
@@ -16,5 +17,16 @@ package com.facecontrol.util
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var scene:GameScene;
 		public static var api:Api = new Api();
+		
+		public static function createLabel(text:String, x:int, y:int, width:int=0):TextField {
+			var label:TextField = new TextField();
+			label.text = (text) ? text : "";
+			label.x = x;
+			label.y = y;
+			label.width = width;
+			label.selectable = false;
+			
+			return label;
+		}
 	}
 }
