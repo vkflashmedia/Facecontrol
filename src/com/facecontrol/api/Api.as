@@ -12,7 +12,7 @@ package com.facecontrol.api
 	
 	public class Api extends EventDispatcher
 	{
-		private static const FC_API_SERVER:String = "http://facecontrol/";
+		private static const FC_API_SERVER:String = 'http://facecontrol/';
 		private const loader:URLLoader = new URLLoader();
 		
 		public function Api()
@@ -39,8 +39,8 @@ package com.facecontrol.api
 			try
 			{
 				var response:Object = JSON.deserialize(loader.data);
-				response = response["response"];
-				if (response.hasOwnProperty("err_code"))
+				response = response['response'];
+				if (response.hasOwnProperty('err_code'))
 				{
 					var errorCode:int = response.err_code;
 					dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, errorCode));
@@ -59,14 +59,14 @@ package com.facecontrol.api
 		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "reg_user";
-			vars["uid"] = uid;
-			vars["fname"] = fname;
-			vars["lname"] = lname;
-			if (nickname != null) vars["nickname"] = nickname;
-			vars["sex"] = sex;
-			if (bdate != null) vars["bdate"] = bdate;
-			vars["city"] = city;
+			vars['method'] = 'reg_user';
+			vars['uid'] = uid;
+			vars['fname'] = fname;
+			vars['lname'] = lname;
+			if (nickname != null) vars['nickname'] = nickname;
+			vars['sex'] = sex;
+			if (bdate != null) vars['bdate'] = bdate;
+			vars['city'] = city;
 			
 			request(vars);
 		}
@@ -74,12 +74,12 @@ package com.facecontrol.api
 		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "save_settings";
-			vars["uid"] = uid;
-			vars["sex"] = sex;
-			vars["age_min"] = minAge;
-			vars["max_age"] = maxAge;
-			if (city != null) vars["city"] = city;
+			vars['method'] = 'save_settings';
+			vars['uid'] = uid;
+			vars['sex'] = sex;
+			vars['age_min'] = minAge;
+			vars['max_age'] = maxAge;
+			if (city != null) vars['city'] = city;
 			
 			request(vars);
 		}
@@ -87,8 +87,8 @@ package com.facecontrol.api
 		public function loadSettings(uid:int):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "load_settings";
-			vars["uid"] = uid;
+			vars['method'] = 'load_settings';
+			vars['uid'] = uid;
 			
 			request(vars);
 		}
@@ -96,12 +96,12 @@ package com.facecontrol.api
 		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "add_photo";
-			vars["uid"] = uid;
-			vars["src"] = src;
-			vars["src_small"] = src_small;
-			vars["src_big"] = src_big;
-			if (comment != null) vars["comment"] = comment;
+			vars['method'] = 'add_photo';
+			vars['uid'] = uid;
+			vars['src'] = src;
+			vars['src_small'] = src_small;
+			vars['src_big'] = src_big;
+			if (comment != null) vars['comment'] = comment;
 			
 			request(vars);
 		}
@@ -109,8 +109,8 @@ package com.facecontrol.api
 		public function getPhotos(uid:int):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "get_photos";
-			vars["uid"] = uid;
+			vars['method'] = 'get_photos';
+			vars['uid'] = uid;
 			
 			request(vars);
 		}
@@ -118,8 +118,8 @@ package com.facecontrol.api
 		public function deletePhoto(pid:int):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "del_photo";
-			vars["pid"] = pid;
+			vars['method'] = 'del_photo';
+			vars['pid'] = pid;
 			
 			request(vars);
 		}
@@ -127,12 +127,12 @@ package com.facecontrol.api
 		public function editPhoto(pid:int, src:String, src_small:String, src_big:String, comment:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "edit_photo";
-			vars["pid"] = pid;
-			vars["src"] = src;
-			vars["src_small"] = src_small;
-			vars["src_big"] = src_big;
-			if (comment != null) vars["comment"] = comment;
+			vars['method'] = 'edit_photo';
+			vars['pid'] = pid;
+			vars['src'] = src;
+			vars['src_small'] = src_small;
+			vars['src_big'] = src_big;
+			if (comment != null) vars['comment'] = comment;
 			
 			request(vars);
 		}
@@ -140,10 +140,10 @@ package com.facecontrol.api
 		public function vote(uid:int, pid:String, rating:int=1):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "vote";
-			vars["uid"] = uid;
-			vars["pid"] = pid;
-			vars["rating"] = rating;
+			vars['method'] = 'vote';
+			vars['uid'] = uid;
+			vars['pid'] = pid;
+			vars['rating'] = rating;
 			
 			request(vars);
 		}

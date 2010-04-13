@@ -7,13 +7,14 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.GameScene;
 	
 	import flash.display.Bitmap;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.AntiAliasType;
 	import flash.text.TextFormat;
 
 	public class Pagination extends GameObject
 	{
-		private static const RIGHT_INDENT:uint = 16;
+		private static const RIGHT_INDENT:uint = 8;
 		
 		protected var _currentPage:uint;
 		
@@ -22,6 +23,8 @@ package com.flashmedia.gui
 		private var _currentX:int;
 		private var _defaultTextFormat:TextFormat;
 		private var _selectedTextFormat:TextFormat;
+		
+		private var layer:Sprite;
 		
 		public function Pagination(value:GameScene, x:uint=0, y:uint=0, pagesCount:uint=0, visiblePagesCount:uint=2)
 		{
@@ -49,11 +52,26 @@ package com.flashmedia.gui
 		
 		public function set pagesCount(value:uint):void {
 			_pagesCount = value;
+			if (_currentPage > _pagesCount - 1) {
+				_currentPage = _pagesCount - 1;
+			}
 			init();
 		}
 		
+		public function get currentPage():int {
+			return _currentPage;
+		}
+		
 		public function clear():void {
-			_currentX = width - 6;
+			if (layer) {
+				removeChild(layer);
+				
+				while (layer.numChildren != 0) {
+					layer.removeChildAt(0);
+				}
+			}
+			layer = new Sprite();
+			
 			while (numChildren != 0) {
 				removeChildAt(0);
 			}
@@ -62,6 +80,7 @@ package com.flashmedia.gui
 		public function init():void {
 			clear();
 			
+			_currentX = 0;
 			var start:uint = 0;
 			var end:uint = 0;
 			var i:int = 0;
@@ -75,34 +94,17 @@ package com.flashmedia.gui
 				var max:uint = Math.max(0, _currentPage - _visiblePagesCount);
 				var min:uint = Math.min(_pagesCount - 1, _currentPage + _visiblePagesCount);
 				
-				if (min < _pagesCount - 1) {
-					addButton(Util.multiLoader.get(Images.ARROW_RIGHT), false, -1);
-				}
+				if (max > 0) addButton(Util.multiLoader.get(Images.ARROW_LEFT), false, 0);
 		
-		        for (i = min; i >= max; --i) {
+		        for (i = max; i <= min; ++i) {
 					addLinkButton(new String(i + 1), (i == _currentPage), i);
 		        }
-		        
-		        if (max > 0) addButton(Util.multiLoader.get(Images.ARROW_LEFT), false, 0);
+		
+		        if (min < _pagesCount - 1) addButton(Util.multiLoader.get(Images.ARROW_RIGHT), false, -1);
 			}
 			
-//			if (_pagesCount < _visiblePagesCount) {
-//				for (i = 0; i < _pagesCount; ++i) {
-//					addLinkButton(new String(i + 1), (i == _currentPage), i);
-//				}
-//			}
-//			else {
-//				var max:uint = Math.max(0, _currentPage - _visiblePagesCount);
-//				var min:uint = Math.min(_pagesCount - 1, _currentPage + _visiblePagesCount);
-//				
-//				if (max > 0) addButton(Util.multiLoader.get(Images.ARROW_LEFT), false, 1);
-//		
-//		        for (i = max; i <= min; ++i) {
-//					addLinkButton(new String(i + 1), (i == _currentPage), i);
-//		        }
-//		
-//		        if (min < _pagesCount - 1) addButton(Util.multiLoader.get(Images.ARROW_RIGHT), false, -1);
-//			}
+			layer.x = width - layer.width;
+			addChild(layer);
 		}
 		
 		public function update():void {
@@ -130,7 +132,7 @@ package com.flashmedia.gui
 			b.textField.embedFonts = true;
 			b.textField.antiAliasType = AntiAliasType.ADVANCED;
 			b.paginationIndex = index;
-			addChild(b);
+			layer.addChild(b);
 			
 			b.enabled = !isCurrent;
 			if (isCurrent) {
@@ -141,8 +143,8 @@ package com.flashmedia.gui
 			}
 
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);
-//			_currentX += b.width + RIGHT_INDENT;
-			_currentX -= RIGHT_INDENT;
+			_currentX += b.width + RIGHT_INDENT;
+			layer.width = _currentX;
 		}
 		
 		private function addButton(image:Bitmap, isCurrent:Boolean, index:int):void {
@@ -151,10 +153,10 @@ package com.flashmedia.gui
 			b.x = _currentX;
 			b.setBackgroundImageForState(new Bitmap(image.bitmapData), Button.STATE_NORMAL);
 			b.paginationIndex = index;
-			addChild(b);
+			layer.addChild(b);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);
-//			_currentX += b.width + RIGHT_INDENT;
-			_currentX -= RIGHT_INDENT;
+			_currentX += b.width + RIGHT_INDENT;
+			layer.width = _currentX;
 		}
 		
 		private function buttonClickListener(e:GameObjectEvent):void {

@@ -91,6 +91,12 @@ package com.facecontrol.gui
 				noVotes2.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(noVotes2);
 			}
+			
+			if (_photoData.main == 1) {
+				var v:Bitmap = Util.multiLoader.get(Images.V);
+				v.y = 42;
+				addChild(v);
+			}
 		}
 		
 		public function get photoData():Object {

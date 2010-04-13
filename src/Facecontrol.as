@@ -110,6 +110,7 @@ package {
 			
 			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
 			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
+			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -153,6 +154,8 @@ package {
 					case 10:
 						_mainForm.updateFilter();
 					break;
+					default:
+						trace('error - ' + event.errorMessage);
 				}
 			}
 			catch (e:Error) {
@@ -182,6 +185,7 @@ package {
 						_mainForm.visible = false;
 					break;
 					
+					case 'del_photo':
 					case 'set_main':
 						Util.api.getPhotos(Util.userId);
 					break;

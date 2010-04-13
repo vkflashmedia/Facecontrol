@@ -30,6 +30,7 @@ package com.facecontrol.util
 		public static const MY_PHOTO_SMILE_ICO:String = 'myPhotoSmileIco';
 		public static const ARROW_LEFT:String = 'arrowLeft';
 		public static const ARROW_RIGHT:String = 'arrowRight';
+		public static const V:String = 'V';
 		
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
@@ -58,6 +59,8 @@ package com.facecontrol.util
 		public static const MY_PHOTO_SMILE_ICO_PATH:String = 'images\\My_photo\\smile_ico.png';
 		public static const ARROW_LEFT_PATH:String = 'images\\my_friends\\ar_l.png';
 		public static const ARROW_RIGHT_PATH:String = 'images\\my_friends\\ar_r.png';
+		
+		public static const V_PATH:String = 'images\\My_photo\\V.png';
 
 	}
 }
