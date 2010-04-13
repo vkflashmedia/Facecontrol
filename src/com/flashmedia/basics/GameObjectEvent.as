@@ -4,6 +4,7 @@ package com.flashmedia.basics
 
 	public class GameObjectEvent extends Event
 	{
+		public static const TYPE_SIZE_CHANGED: String = 'type_size_changed';
 		public static const TYPE_KEY_DOWN: String = 'type_key_down';
 		public static const TYPE_KEY_UP: String = 'type_key_up';
 		public static const TYPE_MOUSE_HOVER: String = 'type_mouse_hover';
