@@ -12,19 +12,20 @@ package com.flashmedia.basics
 		public static const SCROLL_POLICY_AUTO: String = 'scroll_policy_auto';
 		public static const SCROLL_STEP: uint = 10;
 		
+		public static const SIZE_MODE_ABSOLUTE: int = 0;
+		public static const SIZE_MODE_WIDTH_BY_CONTENT: int = 2;
+		public static const SIZE_MODE_HEIGHT_BY_CONTENT: int = 4;
+		
 		protected var _horizontalScrollPolicy: String;
 		protected var _verticalScrollPolicy: String;
 		protected var _horizontalScrollStep: uint;
 		protected var _verticalScrollStep: uint;
 		protected var _smoothScroll: Number;
-//		protected var _cropBySize: Boolean;
 		protected var _topScrollIndent: Number;
 		protected var _leftScrollIndent: Number;
 		protected var _rightScrollIndent: Number;
 		protected var _bottomScrollIndent: Number;
-		// позиция прокрутки по горизонтали и вертикали в процентах от (0.0 - 1.0)
-//		protected var _horizontalPosition: uint;
-//		protected var _verticalPosition: uint;
+		protected var _sizeMode: int;
 		
 		public function GameLayer(value: GameScene)
 		{
@@ -40,6 +41,7 @@ package com.flashmedia.basics
 			_leftScrollIndent = 0;
 			_rightScrollIndent = 0;
 			_bottomScrollIndent = 0;
+			_sizeMode = SIZE_MODE_ABSOLUTE;
 		}
 		
 //		public function get cropBySize(): Boolean {
@@ -50,12 +52,19 @@ package com.flashmedia.basics
 //			_cropBySize = value;
 //		}
 		
+		
+		/*
+			Вообще правильно работать с _view. Там уже есть все необходимое
+			Сортировку можно не дуюлировать.
+			Однако нужно реализовать опреации с индексом во View, плюс неучитывать стандартные спрайты
+		*/
 		public override function addChild(child: DisplayObject): DisplayObject {
 			super.addChild(child);
 			if (child is GameObject) {
 				(child as GameObject).setGameLayer(this);
 				sortChildsByZ();
 			}
+			updateSize();
 			return child;
 		}
 		
@@ -65,7 +74,20 @@ package com.flashmedia.basics
 				(child as GameObject).setGameLayer(this);
 				sortChildsByZ();
 			}
+			updateSize();
 			return child;
+		}
+		
+		public override function removeChild(child: DisplayObject): DisplayObject {
+			var d: DisplayObject = super.removeChild(child);
+			updateSize();
+			return d;
+		}
+		
+		public override function removeChildAt(index: int): DisplayObject {
+			var d: DisplayObject = super.removeChildAt(index);
+			updateSize();
+			return d;
 		}
 		
 		public function set verticalScrollPolicy(value: String): void {
@@ -98,6 +120,15 @@ package com.flashmedia.basics
 		
 		public function get horizontalScrollStep(): uint {
 			return _horizontalScrollStep;
+		}
+		
+		public function set sizeMode(value: int): void {
+			_sizeMode = value;
+			updateSize();
+		}
+		
+		public function get sizeMode(): int {
+			return _sizeMode;
 		}
 		
 		/**
@@ -247,6 +278,40 @@ package com.flashmedia.basics
 		protected override function drawDebugInfo(): void {
 			//TODO дописать функция, чтобы было видно scrollRect, top\left\right\bottom-Indent, positions
 			super.drawDebugInfo();
+		}
+		
+		/**
+		 * Функция пересчета размеров слоя в зависимости от настройки sizeMode
+		 * Хотя стандартный класс Sprite обладает способностью "следить" за изменением размеров на основе содержимого
+		 * но в GameObject эта модель была специально перестроена, и размеры не засисят от содержимого
+		 */
+		private function updateSize(): void {
+			if (_sizeMode != SIZE_MODE_ABSOLUTE) {
+				//TODO требуется сбросить width height иначе сработает _borders - самый большой спрайт
+				width = MIN_WIDTH;
+				height = MIN_HEIGHT;
+				var maxWidth: uint = 0;
+				var maxHeight: uint = 0;
+				for (var i: uint = 0; i < numChildren; i++) {
+					var d: DisplayObject = getChildAt(i);
+					//TODO стандартные спрайты мешают
+					if (d == _debugContainer) {
+						continue;
+					}
+					if ((d.x + d.width) > maxWidth) {
+						maxWidth = d.x + d.width; 
+					}
+					if ((d.y + d.height) > maxHeight) {
+						maxHeight = d.y + d.height; 
+					}
+				}
+				if ((_sizeMode & SIZE_MODE_WIDTH_BY_CONTENT) == SIZE_MODE_WIDTH_BY_CONTENT) {
+					width = maxWidth;
+				}
+				if ((_sizeMode & SIZE_MODE_HEIGHT_BY_CONTENT) == SIZE_MODE_HEIGHT_BY_CONTENT) {
+					height = maxHeight;
+				}
+			}
 		}
 	}
 }

@@ -71,8 +71,11 @@ package com.flashmedia.basics
 //		protected var _elasticity: uint = 1; // упругость [0..1]
 //		private var states: Array; // визуальные состояния
 
-		protected var _width: uint;
-		protected var _height: uint;
+		public static const MIN_WIDTH: Number = 1;
+		public static const MIN_HEIGHT: Number = 1;
+
+		protected var _width: Number;
+		protected var _height: Number;
 		// ширина и высота определяются автоматически по графическомуу содержимому
 		protected var _autoSize: Boolean;
 		protected var _zOrder: int;
@@ -139,6 +142,8 @@ package com.flashmedia.basics
 			_fillBackground = false;
 			_zOrder = 1;
 			// границы объекта
+			_width = MIN_WIDTH;
+			_height = MIN_HEIGHT;
 			width = 100;
 			height = 100;
 		}
@@ -207,18 +212,26 @@ package com.flashmedia.basics
 		}
 		
 		public override function set width(value: Number): void {
-			_width = value;
-			updateBorder();
-			if (_selectAutosize) {
-				_selectRect = new Rectangle(0, 0, _width, _height);
-	    		updateSelection();
-	  		}
-	  		updateFocus();
-	  		updateHover();
-//	  		updateTextFieldAlign();
-	    	drawDebugInfo();
-//	    	sortSprites();
-			_view.layoutVisuals();
+			if (value < MIN_WIDTH) {
+				value = MIN_WIDTH;
+			}
+			if (_width != value) {
+				_width = value;
+				updateBorder();
+				if (_selectAutosize) {
+					_selectRect = new Rectangle(0, 0, _width, _height);
+		    		updateSelection();
+		  		}
+		  		updateFocus();
+		  		updateHover();
+	//	  		updateTextFieldAlign();
+		    	drawDebugInfo();
+	//	    	sortSprites();
+				_view.layoutVisuals();
+				var event: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_SIZE_CHANGED);
+				event.gameObject = this;
+				dispatchEvent(event);
+			}
 		}
 		
 		public override function get height(): Number {
@@ -226,18 +239,26 @@ package com.flashmedia.basics
 		}
 		
 		public override function set height(value: Number): void {
-	    	_height = value;
-	    	updateBorder();
-	    	if (_selectAutosize) {
-	    		_selectRect = new Rectangle(0, 0, _width, _height);
-	    		updateSelection();
-	  		}
-	  		updateFocus();
-	  		updateHover();
-//	  		updateTextFieldAlign();
-	    	drawDebugInfo();
-//	    	sortSprites();
-			_view.layoutVisuals();
+			if (value < MIN_HEIGHT) {
+				value = MIN_HEIGHT;
+			}
+	    	if (_height != value) {
+	    		_height = value;
+		    	updateBorder();
+		    	if (_selectAutosize) {
+		    		_selectRect = new Rectangle(0, 0, _width, _height);
+		    		updateSelection();
+		  		}
+		  		updateFocus();
+		  		updateHover();
+	//	  		updateTextFieldAlign();
+		    	drawDebugInfo();
+	//	    	sortSprites();
+				_view.layoutVisuals();
+				var event: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_SIZE_CHANGED);
+				event.gameObject = this;
+				dispatchEvent(event);
+	    	}
 		}
 		
 		public function get zOrder(): int {

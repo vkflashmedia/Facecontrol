@@ -8,6 +8,7 @@ package {
 	import com.facecontrol.gui.MainMenuEvent;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
+	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
@@ -301,6 +302,8 @@ package {
 			_multiLoader.load("c:\\img\\rating_bgr.png", "ratingBack", "Bitmap");
 			_multiLoader.load("c:\\img\\rating_star_active.png", "ratingIconOn", "Bitmap");
 			_multiLoader.load("c:\\img\\rating_star_off.png", "ratingIconOff", "Bitmap");
+			_multiLoader.load("c:\\img\\topIcon.png", "topIcon", "Bitmap");
+			_multiLoader.load("c:\\img\\bottomIcon.png", "bottomIcon", "Bitmap");
 			_multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, function (event: MultiLoaderEvent): void {
 			
 			});
@@ -322,6 +325,12 @@ package {
 					case 'ratingIconOn':
 						rateBar.rateIconOn = _multiLoader.get("ratingIconOn");
 						label.icon = _multiLoader.get("ratingIconOn");
+					break;
+					case 'topIcon':
+						form.verticalScrollBar.topIcon = _multiLoader.get("topIcon");
+					break;
+					case 'bottomIcon':
+						form.verticalScrollBar.bottomIcon = _multiLoader.get("bottomIcon");
 					break;
 				}
 			});
@@ -355,11 +364,13 @@ package {
 			var label: Label = new Label(this, 'TestLabel');
 			label.x = 300;
 			label.y = 250;
-			label.debug = true;
 			label.fillBackground(0xffffff, 1.0);
 			label.setSelect(true);
 			label.setHover(true);
 			label.setFocus(true);
+			label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
+				gb.removeAllItems();
+			});
 			addChild(label);
 			
 			gb = new GridBox(this, 4);
@@ -368,8 +379,8 @@ package {
 			});
 			gb.x = 50;
 			gb.y = 3;
-			gb.width = 500;
-			gb.height = 300;
+			gb.width = 400;
+			gb.height = 150;
 			gb.widthPolicy = GridBox.WIDTH_POLICY_AUTO_SIZE;
 			gb.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
 //			gb.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
@@ -393,7 +404,6 @@ package {
 			}
 			addChild(gb);
 			
-			
 			scroll = new ScrollBar(this, 200, 300, 150, 20, ScrollBar.TYPE_HORIZONTAL);
 			addChild(scroll);
 			
@@ -411,11 +421,45 @@ package {
 			tf3.autoSize = TextFieldAutoSize.LEFT;
 			tf3.selectable = false;
 			tf3.text = 'gggggggggggyyyyyyyyy 3';
+			var tf4: TextField = new TextField();
+			tf4.y = 140;
+			tf4.autoSize = TextFieldAutoSize.LEFT;
+			tf4.selectable = false;
+			tf4.text = 'dsfzfdzgdf 3';
+			var tf5: TextField = new TextField();
+			tf5.x = 30;
+			tf5.y = 70;
+			tf5.autoSize = TextFieldAutoSize.LEFT;
+			tf5.selectable = false;
+			tf5.text = 'gggggggggggyyyyyyyyy 3354626563573';
 			
-			form = new Form(this, 20, 300, 90, 160);
+			var gl: GameLayer = new GameLayer(this);
+			gl.x = 650;
+			gl.y = 100;
+			gl.debug = true;
+			gl.sizeMode = GameLayer.SIZE_MODE_WIDTH_BY_CONTENT | GameLayer.SIZE_MODE_HEIGHT_BY_CONTENT;
+			gl.addChild(tf4);
+			gl.addChild(tf5);
+			addChild(gl);
+			gl.removeChild(tf5);
+			
+			form = new Form(this, 20, 300, 90, 220);
+			//form.verticalScrollBar.active = false;
 			form.addComponent(tf1);
 			form.addComponent(tf2);
 			form.addComponent(tf3);
+			
+			form.verticalScrollBar.width = 15;
+			form.verticalScrollBar.viewImagesPolicy = ScrollBar.VIEW_ALL;
+			form.verticalScrollBar.setBackStyle(0x3a2e31, 0.8, 5);
+			form.verticalScrollBar.setScrollStyle(0x81787b, 1.0, 10, 8);
+
+			form.horizontalScrollBar.setBackStyle(0x3a2e31, 0.8, 5);
+			form.horizontalScrollBar.setScrollStyle(0x81787b, 1.0, 10, 8);
+			form.horizontalScrollBar.scrollStep = 0.4;			
+			form.horizontalScrollBar.viewImagesPolicy = ScrollBar.VIEW_ALL;
+			form.horizontalScrollBar.height = 15;
+			
 			addChild(form);
 		}
 		/*
@@ -525,3 +569,4 @@ package {
 		}
 	}
 }
+

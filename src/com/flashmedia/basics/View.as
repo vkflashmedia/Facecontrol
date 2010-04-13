@@ -1,7 +1,10 @@
 package com.flashmedia.basics
 {
 	import flash.display.DisplayObject;
-	
+
+	//TODO метод прослойку в GameObject чтобы скрыть класс View	
+	//TODO стандартные спрайты - специальное своййство, чтобы их отличать
+	//TODO explicitWidth explicitHeight
 	public final class View
 	{
 		public static const ALIGN_HOR_NONE: int = 0;
