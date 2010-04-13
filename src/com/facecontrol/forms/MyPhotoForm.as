@@ -6,15 +6,18 @@ package com.facecontrol.forms
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.LinkButton;
+	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.text.AntiAliasType;
 	import flash.text.Font;
 	import flash.text.TextField;
@@ -25,6 +28,7 @@ package com.facecontrol.forms
 	{
 		private static const opiumBold:Font = new EmbeddedFonts_OpiumBold();
 		private static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
+		private static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
 		
 		private var _photos:Array;
 		private var _mainPhoto:Photo;
@@ -35,13 +39,18 @@ package com.facecontrol.forms
 		protected var _votesCountField:TextField;
 		
 		private var _grid:GridBox;
+		private var _pagination:Pagination;
 		
 		public function MyPhotoForm(value:GameScene)
 		{
 			super(value);
+
+			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
+			smileIco.x = 38;
+			smileIco.y = 97;
+			addChild(smileIco);
 			
 			var labelFormat:TextFormat = new TextFormat(opiumBold.fontName, 18, 0xceb0ff);
-			
 			var label:TextField = createLabel("Мои фото", 62, 92);
 			label.setTextFormat(labelFormat);
 			label.embedFonts = true;
@@ -143,6 +152,7 @@ package com.facecontrol.forms
 			markAsMain.textField.embedFonts = true;
 			markAsMain.textField.antiAliasType = AntiAliasType.ADVANCED;
 			markAsMain.setTextPosition(19, 17);
+			markAsMain.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onMarkAsMainClick);
 			addChild(markAsMain);
 			
 			var addPhoto:Button = new Button(_scene, 377, 488);
@@ -174,9 +184,26 @@ package com.facecontrol.forms
 //			_grid.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
 			_grid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
-			_grid.indentBetweenItems = 27;
+			_grid.indentBetweenRows = 27;
+			_grid.indentBetweenCols= 0;
 			_grid.padding = 0;
 			addChild(_grid);
+			
+			_pagination = new Pagination(_scene, 507, 462);
+			_pagination.width = 70;
+			_pagination.textFormatForDefaultButton = new TextFormat(tahoma.fontName, 9, 0xbcbcbc);
+			_pagination.textFormatForSelectedButton = new TextFormat(tahomaBold.fontName, 9, 0x00ccff);
+			_pagination.addEventListener(Event.CHANGE, onPaginationChange);
+			addChild(_pagination);
+		}
+		
+		public function onPaginationChange(event:Event):void {
+//			_grid.re
+//			var p:MyPhotoGridItem;
+//			for (var i:uint = 0; i < 6; ++i) {
+//				p = new MyPhotoGridItem(_scene, _photos[i], 141, 57);
+//				_grid.addItem(p);
+//			}
 		}
 		
 		private function createLabel(text:String, x:int, y:int, width:int=0):TextField {
@@ -201,6 +228,9 @@ package com.facecontrol.forms
 				_votesCountField.setTextFormat(format);
 			}
 			
+//			_pagination.pagesCount = _photos.length / 6;
+			_pagination.pagesCount = 10;
+			
 			var p:MyPhotoGridItem;
 			for (var i:uint = 0; i < 6; ++i) {
 				p = new MyPhotoGridItem(_scene, _photos[i], 141, 57);
@@ -224,7 +254,14 @@ package com.facecontrol.forms
 						_main = _photos[i];
 					}
 				}
-				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+				
+				if (Util.multiLoader.isLoaded) {
+					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+					update();
+				}
+				else {
+					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+				}
 			}
 		}
 		
@@ -234,6 +271,11 @@ package com.facecontrol.forms
 				_mainPhoto.photo = Util.multiLoader.get(_main.pid);
 				update();
 			}
+		}
+		
+		public function onMarkAsMainClick(event:GameObjectEvent):void {
+			var gridItem:MyPhotoGridItem = _grid.selectedItem;
+			Util.api.setMain(gridItem.photoData.pid);
 		}
 	}
 }

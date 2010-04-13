@@ -148,11 +148,20 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
+		public function setMain(pid:String):void
+		{
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'set_main';
+			vars['pid'] = pid;
+			
+			request(vars);
+		}
+		
 		public function nextPhoto(uid:int):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "next_photo";
-			vars["uid"] = uid;
+			vars['method'] = 'next_photo';
+			vars['uid'] = uid;
 			
 			request(vars);
 		}
@@ -160,7 +169,7 @@ package com.facecontrol.api
 		public function top100():void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "top100";
+			vars['method'] = 'top100';
 			
 			request(vars);
 		}
@@ -168,7 +177,7 @@ package com.facecontrol.api
 		public function bottom100():void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars["method"] = "top100";
+			vars['method'] = 'top100';
 			
 			request(vars);
 		}

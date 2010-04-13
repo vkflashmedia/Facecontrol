@@ -59,14 +59,14 @@ package com.facecontrol.gui
 					removeChild(_thumbnail);
 				}
 				
-				_thumbnail = new Bitmap(_photo.bitmapData);
+				_thumbnail = new Bitmap(_photo.bitmapData, "auto", true);
 				
 				var matrix:Matrix = new Matrix();
 				var s:Number = (width - _photoBorder*2) / _thumbnail.width;
 				matrix.scale(s, s);
 				_thumbnail.transform.matrix = matrix;
 				
-				if (_thumbnail.height > (height - _photoBorder*2)) {
+				if (_thumbnail.height < (height - _photoBorder*2)) {
 					s = (height - _photoBorder*2) / _thumbnail.height;
 					matrix.scale(s, s);
 					_thumbnail.transform.matrix = matrix;
@@ -78,12 +78,13 @@ package com.facecontrol.gui
 				
 				_transparentSquare = new Sprite();
 				_transparentSquare.graphics.beginFill(_photoBorderColor, 0.5);
+
 				switch (_borderType) {
 					case BORDER_TYPE_ROUND_RECT:
-						_transparentSquare.graphics.drawRoundRect(0, 0, _thumbnail.width + _photoBorder*2, _thumbnail.height + _photoBorder*2, 15, 15);
+						_transparentSquare.graphics.drawRoundRect(0, 0, width, height, 15, 15);
 					break;
 					case BORDER_TYPE_RECT:
-						_transparentSquare.graphics.drawRect(0, 0, _thumbnail.width + _photoBorder*2, _thumbnail.height + _photoBorder*2);
+						_transparentSquare.graphics.drawRect(0, 0, width, height);
 					break;
 				}
 				
@@ -95,18 +96,20 @@ package com.facecontrol.gui
 				}
 				_squareMask = new Sprite();
 				_squareMask.graphics.beginFill(_photoBorderColor);
+				
 				switch (_borderType) {
 					case BORDER_TYPE_ROUND_RECT:
-						_squareMask.graphics.drawRoundRect(_photoBorder, _photoBorder, _thumbnail.width, _thumbnail.height, 15, 15);
+						_squareMask.graphics.drawRoundRect(_photoBorder, _photoBorder, width - _photoBorder*2, height - _photoBorder*2, 15, 15);
 					break;
 					case BORDER_TYPE_RECT:
-						_squareMask.graphics.drawRect(_photoBorder, _photoBorder, _thumbnail.width, _thumbnail.height);
+						_squareMask.graphics.drawRect(_photoBorder, _photoBorder, width - _photoBorder*2, height - _photoBorder*2);
 					break;
 				}
 				
 				addChild(_squareMask);
 				
 				_thumbnail.x = _photoBorder;
+				_thumbnail.x = (width - _thumbnail.width) / 2;
 				_thumbnail.y = _photoBorder;
 				_thumbnail.mask = _squareMask;
 			}

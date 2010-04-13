@@ -39,6 +39,7 @@ package com.facecontrol.gui
 			
 				var rating:TextField = new TextField();
 				rating.x = 93;
+				rating.autoSize = TextFieldAutoSize.LEFT;
 				rating.text = _photoData.rating_average;
 				rating.setTextFormat(new TextFormat(tahoma.fontName, 17.7, 0xffffff));
 				rating.embedFonts = true;
@@ -90,6 +91,10 @@ package com.facecontrol.gui
 				noVotes2.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(noVotes2);
 			}
+		}
+		
+		public function get photoData():Object {
+			return _photoData;
 		}
 	}
 }
