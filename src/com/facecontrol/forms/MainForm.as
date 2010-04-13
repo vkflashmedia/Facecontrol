@@ -113,16 +113,16 @@ package com.facecontrol.forms
 			
 			
 			var bigStar:Bitmap = BitmapUtil.clone(Util.multiLoader.get(Images.BIG_STAR));
-			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;//360;
+			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;;
 			bigStar.x = 44;
 			_previousLayer.addChild(bigStar);
 			
 			var line:Bitmap = Util.multiLoader.get(Images.LINE);
 			line.x = 38;
-			line.y = _smallPhoto.y + _smallPhoto.height + 68;//420;
+			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
 			_previousLayer.addChild(line);
 			
-			_ratingAverageField = createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3/*355*/, line.width);
+			_ratingAverageField = createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
@@ -130,7 +130,7 @@ package com.facecontrol.forms
 			_previousLayer.addChild(_ratingAverageField);
 			
 			
-			var ratingLabel:TextField = createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43/*395*/, line.width);
+			var ratingLabel:TextField = createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
 			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
 			ratingLabel.embedFonts = true;
 			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
@@ -138,14 +138,14 @@ package com.facecontrol.forms
 			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(ratingLabel);
 			
-			var votesLabel:TextField = createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72/*424*/, line.width);
+			var votesLabel:TextField = createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
 			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
 			votesLabel.embedFonts = true;
 			votesLabel.autoSize = TextFieldAutoSize.CENTER;
 			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
 			_previousLayer.addChild(votesLabel);
 			
-			_votesCountField = createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90/*442*/, line.width);
+			_votesCountField = createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
