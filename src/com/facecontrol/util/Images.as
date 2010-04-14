@@ -23,6 +23,15 @@ package com.facecontrol.util
 		public static const RATING_ON:String = 'ratingOn';
 		
 		public static const ADVERTISING_FORM:String = 'advertisingForm';
+		public static const MY_PHOTO_BACKGROUND:String = 'myPhotoBackground';
+		public static const MY_PHOTO_BUTTON_RED:String = 'myPhotoButtonRed';
+		public static const MY_PHOTO_BUTTON_ORANGE:String = 'myPhotoButtonOrange';
+		public static const MY_PHOTO_BUTTON_GRAY:String = 'myPhotoButtonGray';
+		public static const MY_PHOTO_SMILE_ICO:String = 'myPhotoSmileIco';
+		public static const ARROW_LEFT:String = 'arrowLeft';
+		public static const ARROW_RIGHT:String = 'arrowRight';
+		public static const V:String = 'V';
+		
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
 		public static const HEAD_BUTTON2_PATH:String = 'images\\head\\02.png';
@@ -43,10 +52,15 @@ package com.facecontrol.util
 		public static const RATING_ON_PATH:String = 'images\\rating_star_active.png';
 		
 		public static const ADVERTISING_FORM_PATH:String = 'images\\advertising_form.png';
+		public static const MY_PHOTO_BACKGROUND_PATH:String = 'images\\My_photo\\photo_form.png';
+		public static const MY_PHOTO_BUTTON_RED_PATH:String = 'images\\My_photo\\button_red.png';
+		public static const MY_PHOTO_BUTTON_ORANGE_PATH:String = 'images\\My_photo\\button_orange.png';
+		public static const MY_PHOTO_BUTTON_GRAY_PATH:String = 'images\\My_photo\\button_grey.png';
+		public static const MY_PHOTO_SMILE_ICO_PATH:String = 'images\\My_photo\\smile_ico.png';
+		public static const ARROW_LEFT_PATH:String = 'images\\my_friends\\ar_l.png';
+		public static const ARROW_RIGHT_PATH:String = 'images\\my_friends\\ar_r.png';
 		
-		public function Images()
-		{
-		}
+		public static const V_PATH:String = 'images\\My_photo\\V.png';
 
 	}
 }

@@ -103,6 +103,15 @@ package {
 			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
 					
 			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_RED_PATH, Images.MY_PHOTO_BUTTON_RED, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
+			
+			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
+			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
+			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -114,11 +123,6 @@ package {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
-//				_menu = new Menu(this);
-//				addChild(_menu);
-//				_main = new MainForm(this);
-//				addChild(_main);
-//				_main.visible = true;
 				_back = new Back(this);
 				_back.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
 				_back.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
@@ -132,7 +136,7 @@ package {
 				addChild(_myPhotoForm);
 				_myPhotoForm.visible = false;
 				
-				//Util.api.loadSettings(Util.userId);
+				Util.api.loadSettings(Util.userId);
 			}
 		}
 		
@@ -151,6 +155,8 @@ package {
 					case 10:
 						_mainForm.updateFilter();
 					break;
+					default:
+						trace('error - ' + event.errorMessage);
 				}
 			}
 			catch (e:Error) {
@@ -178,6 +184,11 @@ package {
 						_myPhotoForm.photos = response.photos;
 						_myPhotoForm.visible = true;
 						_mainForm.visible = false;
+					break;
+					
+					case 'del_photo':
+					case 'set_main':
+						Util.api.getPhotos(Util.userId);
 					break;
 				}
 			}

@@ -29,10 +29,8 @@ package com.facecontrol.forms
 	
 	public class MainForm extends GameLayer
 	{
-		private static const opiumBold:Font = new EmbeddedFonts_OpiumBold();
-		private static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
-		private static const _commentTextFormat:TextFormat = new TextFormat(tahoma.fontName, 12, 0xa7b3b4);
-		private static const _nameTextFormat:TextFormat = new TextFormat(opiumBold.fontName, 16, 0xffe6be);
+		private static const _commentTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4);
+		private static const _nameTextFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be);
 		
 		public var _userProfileBtn: GameObject;
 		public var _mainPhoto: GameObject;
@@ -52,9 +50,6 @@ package com.facecontrol.forms
 		protected var _cityBox:ComboBox;
 		
 		private var _filter:Object;
-		
-//		private var _current:UserObject;
-//		private var _previous:UserObject;
 		private var _current:Object;
 		private var _previous:Object;
 		
@@ -70,7 +65,7 @@ package com.facecontrol.forms
 			height = Constants.APP_HEIGHT;
 			
 			var label:TextField = createLabel("Оцени это фото!", 0, 72, Constants.APP_WIDTH);
-			label.setTextFormat(new TextFormat(opiumBold.fontName, 12, 0xffffff));
+			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0xffffff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.autoSize = TextFieldAutoSize.CENTER;
@@ -101,7 +96,7 @@ package com.facecontrol.forms
 			addChild(superIcon);
 			
 			var otherPhotos:LinkButton = new LinkButton(value, "Еще фото", 195, 150);
-			otherPhotos.setTextFormatForState(new TextFormat(tahoma.fontName, 12, 0x8bbe79, null, null, true), LinkButton.STATE_NORMAL);
+			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), LinkButton.STATE_NORMAL);
 			otherPhotos.textField.embedFonts = true;
 			otherPhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(otherPhotos);
@@ -118,40 +113,40 @@ package com.facecontrol.forms
 			
 			
 			var bigStar:Bitmap = BitmapUtil.clone(Util.multiLoader.get(Images.BIG_STAR));
-			bigStar.y = 360;
+			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;//360;
 			bigStar.x = 44;
 			_previousLayer.addChild(bigStar);
 			
 			var line:Bitmap = Util.multiLoader.get(Images.LINE);
 			line.x = 38;
-			line.y = 420;
+			line.y = _smallPhoto.y + _smallPhoto.height + 68;//420;
 			_previousLayer.addChild(line);
 			
-			_ratingAverageField = createLabel("0", 38, 355, line.width);
-			_ratingAverageField.setTextFormat(new TextFormat(tahoma.fontName, 30, 0xffffff));
+			_ratingAverageField = createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3/*355*/, line.width);
+			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
 			_ratingAverageField.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(_ratingAverageField);
 			
 			
-			var ratingLabel:TextField = createLabel("средний балл", 38, 395, line.width);
-			ratingLabel.setTextFormat(new TextFormat(opiumBold.fontName, 13, 0xd2dee0));
+			var ratingLabel:TextField = createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43/*395*/, line.width);
+			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
 			ratingLabel.embedFonts = true;
 			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
 			ratingLabel.type = TextFieldType.DYNAMIC;
 			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(ratingLabel);
 			
-			var votesLabel:TextField = createLabel("голосовало:", 38, 424, line.width);
-			votesLabel.setTextFormat(new TextFormat(opiumBold.fontName, 12, 0x86a4a8));
+			var votesLabel:TextField = createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72/*424*/, line.width);
+			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
 			votesLabel.embedFonts = true;
 			votesLabel.autoSize = TextFieldAutoSize.CENTER;
 			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
 			_previousLayer.addChild(votesLabel);
 			
-			_votesCountField = createLabel("10345", 38, 442, line.width);
-			_votesCountField.setTextFormat(new TextFormat(tahoma.fontName, 20, 0xb0dee6));
+			_votesCountField = createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90/*442*/, line.width);
+			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
 			_votesCountField.autoSize = TextFieldAutoSize.CENTER;
@@ -162,7 +157,7 @@ package com.facecontrol.forms
 			filterBackgruond.y = 313;
 			addChild(filterBackgruond);
 			
-			var filterLabelFormat:TextFormat = new TextFormat(tahoma.fontName, 12, 0xf2c3ff);
+			var filterLabelFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xf2c3ff);
 			
 			var filterLabel:TextField = createLabel("Я ищу:", 470, 315);
 			filterLabel.embedFonts = true;
@@ -280,6 +275,9 @@ package com.facecontrol.forms
 			_rateBar.rating = 0;
 			
 			if (_current && _current.pid != obj.pid) {
+				if (_previous) {
+					Util.multiLoader.unload(_previous.pid);
+				}
 				_previous = _current;
 			}
 			
@@ -391,9 +389,11 @@ package com.facecontrol.forms
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
 				_bigPhoto.photo = image;
+				
 				if (_nameField) {
-					_nameField.y = _bigPhoto.y + _bigPhoto.bitmap.height + 4;
+					_nameField.y = _bigPhoto.y + _bigPhoto.height + 4;
 				}
+				
 				if (_commentField) {
 					_commentField.y = _nameField.y + 28;
 					_commentField.x = _commentField.y < 495 ? _bigPhoto.x : 180;

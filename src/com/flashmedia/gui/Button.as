@@ -18,6 +18,8 @@ package com.flashmedia.gui
 		private static const HORIZONTAL_INDENT:uint = 10;
 		private static const VERTICAL_INDENT:uint = 5;
 		
+		public var paginationIndex:int;
+		
 		protected var _state:uint = STATE_NORMAL;
 		
 		protected var _normalStateBackgroundColor:uint;
@@ -30,53 +32,36 @@ package com.flashmedia.gui
 		
 		protected var _normalStateTextFormat:TextFormat;
 		protected var _highlightedStateTextFormat:TextFormat;
-		protected var _useHighlightedStateTextFormat:Boolean = false;
 		
 		protected var _normalStateBackgroundImage:Bitmap;
-		protected var _useHighlightedStateBackgroundImage:Boolean = false;
 		protected var _highlightedStateBackgroundImage:Bitmap;
 		
 		public function Button(value:GameScene, x:uint=0, y:uint=0, width:uint=50, height:uint=20)
 		{
 			super(value);
 			
-			setSelect(true);
-			
-			var tf: TextField = new TextField();
-			tf.autoSize = TextFieldAutoSize.LEFT;
-			tf.selectable = false;
-			setTextField(tf);
-			
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
 			
+			setTextField(new TextField());
+			_textField.autoSize = TextFieldAutoSize.LEFT;
+			_textField.selectable = false;
+			
 			setTextFormatForState(new TextFormat("Times New Roman", 12), STATE_NORMAL);
 			setBackgroundColorForState(0xa0a0ff, STATE_NORMAL);
+			
+			setSelect(true);
+			
+			useHandCursor = true;
+			buttonMode = true;
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownListener);
 			addEventListener(MouseEvent.MOUSE_UP, mouseUpListener);
 		}
 		
-//		public function setTextPosition(x:uint, y:uint):void {
-//			var textWidth:uint = textField.width;
-//			var textHeight:uint = textField.height;
-//			textField.autoSize = TextFieldAutoSize.NONE;
-//			
-//			textField.x = x;
-//			textField.y = y;
-//			textField.width = width;
-//			textField.height = height;
-//			
-//			update();
-//		}
-
 		public function setTextPosition(x:int, y:int):void {
-//			textHorizontalAlign = HORIZONTAL_ALIGN_NONE;
-//			textVerticalAlign = VERTICAL_ALIGN_NONE;
-//			textField.autoSize = TextFieldAutoSize.LEFT;
-			
 			setTextField(_textField, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE);
 			_textField.autoSize = TextFieldAutoSize.LEFT;
 			_textField.x = x;
@@ -95,7 +80,6 @@ package com.flashmedia.gui
 						_normalStateBackgroundImage = image;
 					break;
 					case STATE_HIGHLIGHTED:
-						_useHighlightedStateBackgroundImage = true;
 						_highlightedStateBackgroundImage = image;
 					break;
 				}
@@ -146,14 +130,12 @@ package com.flashmedia.gui
 				switch (state) {
 					case STATE_NORMAL:
 						_normalStateTitle = title;
-						
 						field.text = _normalStateTitle;
 						field.setTextFormat(_normalStateTextFormat);
 					break;
 					case STATE_HIGHLIGHTED:
 						_useHighlightedStateTitle = true;
 						_highlightedStateTitle = title;
-						
 						field.text = _highlightedStateTitle;
 						field.setTextFormat(_highlightedStateTextFormat);
 					break;
@@ -186,7 +168,6 @@ package com.flashmedia.gui
 					_normalStateTextFormat = format;
 				break;
 				case STATE_HIGHLIGHTED:
-					_useHighlightedStateTextFormat = true;
 					_highlightedStateTextFormat = format;
 				break;
 			}
@@ -218,12 +199,7 @@ package com.flashmedia.gui
 				break;
 				case STATE_HIGHLIGHTED:
 					if (_highlightedStateBackgroundImage || _normalStateBackgroundImage) {
-						if (_useHighlightedStateBackgroundImage) {
-							bitmap = _highlightedStateBackgroundImage;
-						}
-						else {
-							bitmap = _normalStateBackgroundImage;
-						}
+						bitmap = (_highlightedStateBackgroundImage) ? _highlightedStateBackgroundImage : _normalStateBackgroundImage;
 					}
 					else {
 						if (_useHighlightedStateBackgroundColor) {
@@ -233,16 +209,10 @@ package com.flashmedia.gui
 							fillBackground(_normalStateBackgroundColor, 1.0);
 						}
 					}
-					textField.text = (_useHighlightedStateTitle) ? _highlightedStateTitle : _normalStateTitle;
-					textField.setTextFormat((_useHighlightedStateTextFormat) ? _highlightedStateTextFormat : _normalStateTextFormat);
+					textField.text = (_highlightedStateTitle) ? _highlightedStateTitle : _normalStateTitle;
+					textField.setTextFormat((_highlightedStateTitle) ? _highlightedStateTextFormat : _normalStateTextFormat);
 				break;
 			}
-			
-			//TODO
-//			if (textField.autoSize == TextFieldAutoSize.LEFT) {
-//				textHorizontalAlign = HORIZONTAL_ALIGN_CENTER;
-//				textVerticalAlign = VERTICAL_ALIGN_CENTER;
-//			}
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {

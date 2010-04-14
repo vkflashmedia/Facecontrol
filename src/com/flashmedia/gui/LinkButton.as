@@ -13,42 +13,36 @@ package com.flashmedia.gui
 		public static const STATE_NORMAL:uint = 0;
 		public static const STATE_HIGHLIGHTED:uint = 1;
 		
-		protected var _normalStateTextFormat:TextFormat = new TextFormat();
-		protected var _highlithedStateTextFormat:TextFormat = new TextFormat();
-		protected var _downTextFormat:TextFormat = new TextFormat();
+		public var paginationIndex:int;
 		
-		private var _textFormat:TextFormat;
+		protected var _normalStateTextFormat:TextFormat = new TextFormat();
+		protected var _highlithedStateTextFormat:TextFormat;
+		
 		protected var _enabled:Boolean = true;
 		protected var _state:uint = STATE_NORMAL;
-		
-		public function LinkButton(scene:GameScene, text:String=null, x:uint=0, y:uint=0, width:uint=0)
+				
+		public function LinkButton(scene:GameScene, text:String=null, x:uint=0, y:uint=0)
 		{
 			super(scene);
-//			setTextStyle();
-//			setOverTextStyle();
-			setDownTextStyle();
-			_textFormat = _normalStateTextFormat;
+//			setDownTextStyle();
 			
-			var tf: TextField = new TextField();
-			tf.defaultTextFormat = _textFormat;
-			tf.autoSize = TextFieldAutoSize.LEFT;
-			tf.selectable = false;
-			tf.mouseEnabled = false;
-			setTextField(tf);
+			setTextField(new TextField());
+			_textField.autoSize = TextFieldAutoSize.LEFT;
+			_textField.selectable = false;
+			_textField.mouseEnabled = false;
 			
 			this.setSelect(true);
 			this.x = x;
 			this.y = y;
-			this.width = width;
+			this.width = textField.width;
 			this.height = textField.height;
 			this.label = text;
 			
 			buttonMode = true;
 			useHandCursor = true;
-		}
-		
-		public override function get height():Number {
-			return textField.height;
+			setSelect(true);
+			
+//			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 		
 		private function update():void {
@@ -60,15 +54,11 @@ package com.flashmedia.gui
 					textField.setTextFormat(_highlithedStateTextFormat);
 				break;
 			}
-			/*
-			if (textField.wordWrap) {
-				textField.width = width;
-			}
-			else {
+			
+			if (textField.autoSize == TextFieldAutoSize.LEFT) {
 				width = textField.width;
+				height = textField.height;
 			}
-			height = textField.height;
-			*/
 		}
 		
 		public function set enabled(enable:Boolean):void {
@@ -84,10 +74,6 @@ package com.flashmedia.gui
 		public override function set width(value: Number):void {
 			super.width = value;
 			if (textField && textField.wordWrap) update();
-		}
-		
-		public override function destroy(): void {
-			super.destroy();
 		}
 		
 		public function set wordWrap(wrap:Boolean): void {
@@ -117,74 +103,32 @@ package com.flashmedia.gui
 			}
 			update();
 		}
-		/*
-		public function setTextStyle(color:uint=0, size:uint=12, font:String="Arial", bold:Boolean=false, italic:Boolean=false, underline:Boolean=true):void {
-			_baseTextFormat.color = color;
-			_baseTextFormat.size = size;
-			_baseTextFormat.font = font;
-			_baseTextFormat.bold = bold;
-			_baseTextFormat.italic = italic;
-			_baseTextFormat.underline = underline;
-		}
-		public function setOverTextStyle(color:uint=0x0000ff, size:uint=12, font:String="Arial", bold:Boolean=false, italic:Boolean=false, underline:Boolean=true):void {
-			_overTextFormat.color = color;
-			_overTextFormat.size = size;
-			_overTextFormat.font = font;
-			_overTextFormat.bold = bold;
-			_overTextFormat.italic = italic;
-			_overTextFormat.underline = underline;
-		}
-		*/
 		
-		public function setDownTextStyle(color:uint=0, size:uint=12, font:String="Arial", bold:Boolean=false, italic:Boolean=false, underline:Boolean=true):void {
-			_downTextFormat.color = color;
-			_downTextFormat.size = size;
-			_downTextFormat.font = font;
-			_downTextFormat.bold = bold;
-			_downTextFormat.italic = italic;
-			_downTextFormat.underline = underline;
-		}
-		
-		/*
-		public function setUnderline(underline:Boolean):void {
-			var format:TextFormat = textField.getTextFormat();
-			format.underline = _baseTextFormat.underline = _overTextFormat.underline = _downTextFormat.underline = underline;
-			textField.setTextFormat(format);
-		}
-		
-		public function setBold(bold:Boolean):void {
-			_baseTextFormat.bold = _overTextFormat.bold = _downTextFormat.bold = bold;
-		}
-		*/
 		protected override function mouseOverListener(event: MouseEvent): void {
 			super.mouseOutListener(event);
 			if (_enabled) {
-				textField.setTextFormat(_highlithedStateTextFormat);
-				update();
+				if (_highlithedStateTextFormat) {
+					_state = STATE_HIGHLIGHTED;
+					update();
+				}
 			}
 		}
 		
 		protected override function mouseOutListener(event: MouseEvent): void {
 			super.mouseOutListener(event);
+			
 			if (_enabled) {
-				textField.setTextFormat(_textFormat);
+				_state = STATE_NORMAL;
 				update();
 			}
 		}
 		
-		protected override function mouseClickListener(event: MouseEvent): void {
-			super.mouseClickListener(event);
-			if (_enabled) {
-				_textFormat = _downTextFormat;
-				update();
-			}
-		}
-		
-		public function get intVal():int // Used in Pagination, for example
-	    {
-			if (label == "«") return 1;
-			if (label == "»") return -1;
-			return parseInt(label);
-	    }
+//		protected override function mouseClickListener(event: MouseEvent): void {
+//			super.mouseClickListener(event);
+//			
+//			if (_enabled) {
+//				update();
+//			}
+//		}
 	}
 }
