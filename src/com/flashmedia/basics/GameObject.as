@@ -10,6 +10,11 @@ package com.flashmedia.basics
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
+	/*
+		TODO разобраться как правильно рисовать прямоугольник (width - 1) или width
+		TODO изменить все координаты и размеры на Number, так как идет потеря точности.
+		Например в GridBox между выделением иногда появляются пробелы.
+	*/
 	/**
 	 * Наследуемся от Sprite, чтобы получать пользовательские события (Мышь, Клавиатура ...)
 	 * Автоматическое масштабирование, поворот
@@ -627,10 +632,10 @@ package com.flashmedia.basics
 	  		}
 	  		_border.graphics.clear();
 			_border.graphics.lineStyle(1, BORDERS_COLOR, 0.0);
-			_border.graphics.drawRect(0, 0, _width - 1, _height - 1);
+			_border.graphics.drawRect(0, 0, _width, _height);
 			if (_fillBackground) {
 				_border.graphics.beginFill(_backgroundColor, _backgroundAlpha);
-				_border.graphics.drawRect(0, 0, _width - 1, _height - 1);
+				_border.graphics.drawRect(0, 0, _width, _height);
 				_border.graphics.endFill();	
 			}
 //			if (!contains(_border)) {
@@ -652,7 +657,7 @@ package com.flashmedia.basics
 				_select.tabEnabled = true;
 				_select.graphics.clear();
 				_select.graphics.beginFill(SELECT_COLOR);
-				_select.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width - 1, _selectRect.height - 1);
+				_select.graphics.drawRect(_selectRect.x, _selectRect.y, _selectRect.width, _selectRect.height);
 				_select.graphics.endFill();
 				_select.alpha = 0.0;
 				if (_selectMask) {

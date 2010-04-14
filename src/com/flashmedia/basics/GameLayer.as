@@ -44,15 +44,6 @@ package com.flashmedia.basics
 			_sizeMode = SIZE_MODE_ABSOLUTE;
 		}
 		
-//		public function get cropBySize(): Boolean {
-//			return _cropBySize;
-//		}
-//		
-//		public function set cropBySize(value: Boolean): void {
-//			_cropBySize = value;
-//		}
-		
-		
 		/*
 			Вообще правильно работать с _view. Там уже есть все необходимое
 			Сортировку можно не дуюлировать.

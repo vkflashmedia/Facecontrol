@@ -7,20 +7,56 @@ package com.flashmedia.gui
 	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
+	import flash.text.TextFormat;
 
 	//TODO удаление компонентов с GridBox
 	public class GridBox extends Form
 	{
+		/**
+		 * Высота ряда вычисляется на основании элемента с наибольшей высотой.
+		 * Высота различных рядов может быть разной.
+		 */
 		public static const ROW_HEIGHT_POLICY_BY_MAX_CELL: String = 'row_height_policy_by_max_size';
+		/**
+		 * Высота всех рядов одинакова. Элемент с наибольшей высотой в GridBox будет определять высоту всех рядов.
+		 */
 		public static const ROW_HEIGHT_POLICY_ALL_SAME: String = 'row_height_policy_all_same';
+		/**
+		 * Ширина столбца вычисляется на основании элемента с наибольшей шириной.
+		 * Ширина различных столбцов может быть разной.
+		 */
 		public static const COLUMN_WIDTH_POLICY_BY_MAX_CELL: String = 'column_width_policy_by_max_size';
+		/**
+		 * Ширина всех столбцов одинакова. Элемент с наибольшей шириной в GridBox будет определять ширину всех рядов.
+		 */
 		public static const COLUMN_WIDTH_POLICY_ALL_SAME: String = 'column_width_policy_all_same';
-		
+		/**
+		 * Ширина имеет абсолютное значение, заданное пользователем. Не зависит от содержимого.
+		 * Если содержимое выходит за пределы, то возможна прокрутка.
+		 */
 		public static const WIDTH_POLICY_ABSOLUTE: String = 'width_policy_absolute';
+		/**
+		 * Ширина выставляется автоматически на основе содержимого.
+		 */
 		public static const WIDTH_POLICY_AUTO_SIZE: String = 'width_policy_auto_size';
+		/**
+		 * Ширина имеет абсолютное значение. Ячейки "пытаются" растянуться так, чтобы заполнить заданную ширину.
+		 * Или "сжаться" так, чтобы уместиться в заданную пользователем ширину.
+		 */
 		public static const WIDTH_POLICY_STRETCH_BY_WIDTH: String = 'width_policy_stretch_by_width';
+		/**
+		 * Высота имеет абсолютное значение, заданное пользователем. Не зависит от содержимого.
+		 * Если содержимое выходит за пределы, то возможна прокрутка.
+		 */
 		public static const HEIGHT_POLICY_ABSOLUTE: String = 'height_policy_absolute';
+		/**
+		 * Высота выставляется автоматически на основе содержимого.
+		 */
 		public static const HEIGHT_POLICY_AUTO_SIZE: String = 'height_policy_auto_size';
+		/**
+		 * Высота имеет абсолютное значение. Ячейки "пытаются" растянуться так, чтобы заполнить заданную высоту.
+		 * Или "сжаться" так, чтобы уместиться в заданную пользователем высоту.
+		 */
 		public static const HEIGHT_POLICY_STRETCH_BY_HEIGHT: String = 'height_policy_stretch_by_height';
 		
 		private static const PADDING_ITEM: uint = 5;
@@ -53,6 +89,7 @@ package com.flashmedia.gui
 //		private var _originGameObjectHeight: Array;
 		private var _columnsWidth: Array;
 		private var _rowsHeight: Array;
+		private var _textFormat: TextFormat;
 		
 		public function GridBox(value:GameScene, maxColumnsCount: uint = COLUMNS_DEF_COUNT, maxRowsCount: uint = ROWS_DEF_COUNT)
 		{
@@ -135,6 +172,35 @@ package com.flashmedia.gui
 			updateLayout(true, true);
 		}
 		
+		/**
+		 * Список gameObjects - список визуальных объектов, содержимого GridBox 
+		 */
+		public function get gameObjects(): Array {
+			return _gameObjects;
+		}
+		
+		/**
+		 * Выделенный объект GameObject.
+		 */
+		public function get selectedGameObject(): GameObject {
+			var index: int = _items.indexOf(_selectedItem);
+			if (index != -1) {
+				return _gameObjects[index];
+			}
+			return null;
+		}
+		
+		/**
+		 * Список значений, установленных в GridBox.
+		 * Не одно и тоже с gameObjects.
+		 */
+		public function get items(): Array {
+			return _items;
+		}
+		
+		/**
+		 * Тукущее значение GridBox.
+		 */
 		public function get selectedItem(): * {
 			return _selectedItem;
 		}
@@ -225,6 +291,21 @@ package com.flashmedia.gui
 		public function set heightPolicy(value: String): void {
 			_heightPolicy = value;
 			updateLayout(false, true);
+		}
+		
+		public function set textFormat(value: TextFormat): void {
+			if (value) {
+				_textFormat = value;
+				if (_textField) {
+					_textField.setTextFormat(_textFormat);
+				}
+				for each (var go: GameObject in _gameObjects) {
+					if (go is Label) {
+						(go as Label).textFormat = _textFormat;
+					}
+				}
+				updateLayout(true, true);
+			}
 		}
 		
 		private function updateLayout(updWidthPolicy: Boolean = false, updHeightPolicy: Boolean = false): void {
@@ -343,7 +424,7 @@ package com.flashmedia.gui
 					}
 				}
 			}
-			else {
+			else if (_widthPolicy == WIDTH_POLICY_AUTO_SIZE) {
 				width = GameObject.MIN_WIDTH;
 			}
 			if (_rowsHeight.length > 0) {
@@ -374,7 +455,7 @@ package com.flashmedia.gui
 					}
 				}
 			}
-			else {
+			else if (_widthPolicy == HEIGHT_POLICY_AUTO_SIZE) {
 				height = GameObject.MIN_HEIGHT;
 			}
 			//_debugContainer.graphics.clear();
@@ -430,7 +511,7 @@ package com.flashmedia.gui
 					break;
 				}
 				//go.selectRect = new Rectangle(-(_columnsWidth[curCol] - go.width) / 2, -(_rowsHeight[curRow] - go.height) / 2, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1);
-				go.setSelect(true, false, null, new Rectangle(cellRectX - go.x + _paddingItem, cellRectY - go.y + _paddingItem, _columnsWidth[curCol] - 1, _rowsHeight[curRow] - 1));
+				go.setSelect(true, false, null, new Rectangle(cellRectX - go.x + _paddingItem, cellRectY - go.y + _paddingItem, _columnsWidth[curCol], _rowsHeight[curRow]));
 				addComponent(go);
 				//addChild(go);
 				cellRectX += _columnsWidth[curCol] + 2 * _paddingItem + _indentBetweenCols;

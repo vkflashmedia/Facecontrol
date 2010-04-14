@@ -10,13 +10,20 @@ package com.flashmedia.gui
 	import flash.geom.Matrix;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 
-	//TODO сделать чтобы можно было добавлять любой объект. Сейчас только текст.
+	/*
+		TODO сделать чтобы можно было добавлять любой объект. Сейчас только текст.
+		TODO цвет фона дроп листа
+		TODO произвольный тип данных в ComboBox
+	*/
 	public class ComboBox extends GameObject
 	{
 		private var _dropList: GridBox;
 		private var _dropIcon: Bitmap;
 		private var _savedZOrder: int;
+		private var _textFormat: TextFormat;
+		private var _horizontalAlign: int;
 		
 		public function ComboBox(value:GameScene)
 		{
@@ -27,12 +34,14 @@ package com.flashmedia.gui
 			setFocus(true, false);
 //			canHover = true;
 			//fillBackground(0xfafaff, 1.0);
+			_horizontalAlign = View.ALIGN_HOR_LEFT;
 			_dropList = new GridBox(value, 1);
 			_dropList.fillBackground(0xffffff, 1.0);
 			_dropList.visible = false;
 			_dropList.x = 0;
 			_dropList.y = height;
 			_dropList.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
+			_dropList.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
 			_dropList.width = width;
 			_dropList.padding = 0;
 			_dropList.indentBetweenCols = 0;
@@ -60,6 +69,25 @@ package com.flashmedia.gui
 		
 		public function addItem(value: String): void {
 			_dropList.addItem(value);
+		}
+		
+		public function set textFormat(value: TextFormat): void {
+			if (value) {
+				_textFormat = value;
+				if (_textField) {
+					_textField.setTextFormat(_textFormat);
+				}
+				_dropList.textFormat = _textFormat;
+			}
+		}
+		
+		/**
+		 * Установить горизонтальное выравнивание.
+		 * Выравнены будут объекты в главном окне и списке
+		 */
+		public function set horizontalAlign(value: int): void {
+			_horizontalAlign = value;
+			updateComboBox();
 		}
 		
 		public override function set bitmap(value: Bitmap): void {
@@ -91,6 +119,7 @@ package com.flashmedia.gui
 		}
 		
 		public function set dropIcon(value: Bitmap): void {
+			_dropIcon = value;
 			var bd: BitmapData = null;
 			var b: Bitmap = null;
 			if (_bitmap) {
@@ -104,26 +133,7 @@ package com.flashmedia.gui
 			var m: Matrix = new Matrix(1, 0, 0, 1, width - value.width, 0);
 			bd.draw(value, m);
 			bitmap = b;
-//			if (_dropIcon) {
-////			_dropIcon.removeEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDropIconClickListener);
-//				removeChild(_dropIcon);
-//				_dropIcon = null;
-//			}
-//			_dropIcon = value;
-//			_dropIcon.x = width - _dropIcon.width;
-//			_dropIcon.y = 0;
-//			addChild(_dropIcon);
-			
-//			_dropIcon = new GameObject(scene);
-//			_dropIcon.selectable = true;
-//			_dropIcon.canHover = true;
-//			_dropIcon.bitmap = value;
-//			_dropIcon.x = width - _dropIcon.width;
-//			_dropIcon.y = 0;
-//			_dropIcon.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDropIconClickListener);
-//			_dropIcon.addEventListener(GameObjectEvent.TYPE_SET_HOVER, onDropIconMouseHoverListener);
-//			_dropIcon.addEventListener(GameObjectEvent.TYPE_LOST_HOVER, onDropIconMouseLostListener);
-//			addChild(_dropIcon);
+			updateComboBox();
 		}
 		
 		private function updateComboBox(): void {
@@ -132,12 +142,27 @@ package com.flashmedia.gui
 			if (_dropList.selectedItem) {
 				var tf: TextField = new TextField();
 				tf.text = _dropList.selectedItem as String;
+				if (_textFormat) {
+					tf.setTextFormat(_textFormat);
+				}
 				tf.selectable = false;
 				tf.autoSize = TextFieldAutoSize.LEFT;
 				tf.width = width;
 				tf.height = height;
-				setTextField(tf, View.ALIGN_HOR_LEFT | View.ALIGN_VER_CENTER);
+				switch (_horizontalAlign) {
+					case View.ALIGN_HOR_LEFT:
+						tf.x = 0;
+					break;
+					case View.ALIGN_HOR_CENTER:
+						tf.x = (width - tf.width - ((_dropIcon) ? _dropIcon.width: 0)) / 2;
+					break;
+					case View.ALIGN_HOR_RIGHT:
+						tf.x = (width - tf.width - ((_dropIcon) ? _dropIcon.width: 0));
+					break;
+				}
+				setTextField(tf, View.ALIGN_HOR_NONE | View.ALIGN_VER_CENTER);
 			}
+			_dropList.horizontalItemsAlign = _horizontalAlign;
 		}
 		
 		protected override function mouseClickListener(event: MouseEvent): void {
