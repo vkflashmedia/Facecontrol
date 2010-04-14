@@ -185,6 +185,12 @@ package com.facecontrol.forms
 			_grid.indentBetweenRows = 27;
 			_grid.indentBetweenCols= 0;
 			_grid.padding = 0;
+//			_grid.(0x808080, 1);
+			_grid.debug = true;
+//			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+//			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
+//			_grid.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
+//			_grid.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
 			addChild(_grid);
 			
 			_pagination = new Pagination(_scene, 500, 462);

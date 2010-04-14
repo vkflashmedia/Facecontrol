@@ -40,7 +40,7 @@ package com.net
 		
 		private function completeHandler(event:Event):void
 		{
-			trace(loader.data);
+//			trace(loader.data);
 			try {
 				var response:Object = JSON.deserialize(loader.data);
 				
