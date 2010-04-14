@@ -5,6 +5,7 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.View;
 	
 	import flash.display.Bitmap;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -17,6 +18,8 @@ package com.flashmedia.gui
 		private var _tf: TextField;
 		private var _text: String;
 		private var _textFormat: TextFormat;
+		private var _embed:Boolean = false;
+		private var _antiAliasType:String = AntiAliasType.NORMAL;
 		
 		public function Label(value: GameScene, text: String = '')
 		{
@@ -45,7 +48,10 @@ package com.flashmedia.gui
 			return _text;
 		}
 		
-		public function set textFormat(value: TextFormat): void {
+		public function setTextFormat(value: TextFormat, embed:Boolean = false, antiAliasType:String = AntiAliasType.NORMAL): void {
+			_embed = embed;
+			_antiAliasType = antiAliasType;
+			
 			if (value) {
 				_textFormat = value;
 				update();
@@ -73,6 +79,8 @@ package com.flashmedia.gui
 				_tf.text = _text;
 				if (_textFormat) {
 					_tf.setTextFormat(_textFormat);
+					_tf.embedFonts = _embed;
+					_tf.antiAliasType = _antiAliasType;
 				}
 				if (!_view.contains('text')) {
 					_view.addDisplayObject(_tf, 'text', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_CENTER | View.ALIGN_HOR_RIGHT);

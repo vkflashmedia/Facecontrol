@@ -34,27 +34,27 @@ package com.facecontrol.forms
 			
 			var format:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
 			var loadPhoto:Button = new Button(_scene, 253, 276);
-			loadPhoto.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_RED), Button.STATE_NORMAL);
-			loadPhoto.setTitleForState('загрузить фото', Button.STATE_NORMAL);
-			loadPhoto.setTextFormatForState(format, Button.STATE_NORMAL);
+			loadPhoto.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			loadPhoto.setTitleForState('загрузить фото', CONTROL_STATE_NORMAL);
+			loadPhoto.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			loadPhoto.textField.embedFonts = true;
 			loadPhoto.textField.antiAliasType = AntiAliasType.ADVANCED;
 			loadPhoto.setTextPosition(29, 11);
 			addChild(loadPhoto);
 			
 			var selectFromAlbom:Button = new Button(_scene, loadPhoto.x, loadPhoto.y + 48);
-			selectFromAlbom.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_ORANGE), Button.STATE_NORMAL);
-			selectFromAlbom.setTitleForState('выбрать из альбомов', Button.STATE_NORMAL);
-			selectFromAlbom.setTextFormatForState(format, Button.STATE_NORMAL);
+			selectFromAlbom.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
+			selectFromAlbom.setTitleForState('выбрать из альбомов', CONTROL_STATE_NORMAL);
+			selectFromAlbom.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			selectFromAlbom.textField.embedFonts = true;
 			selectFromAlbom.textField.antiAliasType = AntiAliasType.ADVANCED;
 			selectFromAlbom.setTextPosition(16, 11);
 			addChild(selectFromAlbom);
 			
 			var cancel:Button = new Button(_scene, loadPhoto.x, selectFromAlbom.y + 48);
-			cancel.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_GREY), Button.STATE_NORMAL);
-			cancel.setTitleForState('отмена', Button.STATE_NORMAL);
-			cancel.setTextFormatForState(format, Button.STATE_NORMAL);
+			cancel.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_GREY), CONTROL_STATE_NORMAL);
+			cancel.setTitleForState('отмена', CONTROL_STATE_NORMAL);
+			cancel.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			cancel.textField.embedFonts = true;
 			cancel.textField.antiAliasType = AntiAliasType.ADVANCED;
 			cancel.setTextPosition(49, 11);

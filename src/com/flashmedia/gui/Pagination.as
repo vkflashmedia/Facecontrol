@@ -118,10 +118,10 @@ package com.flashmedia.gui
 					b.enabled = (b.paginationIndex != _currentPage);
 					
 					if (b.paginationIndex == _currentPage) {
-						b.setTextFormatForState(_selectedTextFormat, LinkButton.STATE_NORMAL);
+						b.setTextFormatForState(_selectedTextFormat, CONTROL_STATE_NORMAL);
 					}
 					else {
-						b.setTextFormatForState(_defaultTextFormat, LinkButton.STATE_NORMAL);
+						b.setTextFormatForState(_defaultTextFormat, CONTROL_STATE_NORMAL);
 					}
 				}
 			}
@@ -135,12 +135,7 @@ package com.flashmedia.gui
 			layer.addChild(b);
 			
 			b.enabled = !isCurrent;
-			if (isCurrent) {
-				b.setTextFormatForState(_selectedTextFormat, LinkButton.STATE_NORMAL);
-			}
-			else {
-				b.setTextFormatForState(_defaultTextFormat, LinkButton.STATE_NORMAL);
-			}
+			b.setTextFormatForState((isCurrent) ? _selectedTextFormat : _defaultTextFormat, CONTROL_STATE_NORMAL);
 
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);
 			_currentX += b.width + RIGHT_INDENT;
@@ -151,7 +146,7 @@ package com.flashmedia.gui
 			var b:Button = new Button(_scene);
 			b.y = 2;
 			b.x = _currentX;
-			b.setBackgroundImageForState(new Bitmap(image.bitmapData), Button.STATE_NORMAL);
+			b.setBackgroundImageForState(new Bitmap(image.bitmapData), CONTROL_STATE_NORMAL);
 			b.paginationIndex = index;
 			layer.addChild(b);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);

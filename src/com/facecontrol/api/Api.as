@@ -8,7 +8,6 @@ package com.facecontrol.api
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLVariables;
-	import flash.text.TextField;
 	
 	public class Api extends EventDispatcher
 	{
@@ -29,29 +28,26 @@ package com.facecontrol.api
 			loader.load(request);
 		}
 		
-		private function errorHandler(e:IOErrorEvent):void
-		{
+		private function errorHandler(e:IOErrorEvent):void {
 			dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, 255));
 		}
 		
 		private function completeHandler(event:Event):void
 		{
-			try
-			{
+//			trace("completeHandler: "+loader.data);
+			try {
 				var response:Object = JSON.deserialize(loader.data);
-				response = response['response'];
-				if (response.hasOwnProperty('err_code'))
-				{
+				response = response.response;
+				
+				if (response.hasOwnProperty('err_code')) {
 					var errorCode:int = response.err_code;
 					dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, errorCode));
 				}
-				else
-				{
+				else {
 					dispatchEvent(new ApiEvent(ApiEvent.COMPLETED, response));
 				}
 			}
-			catch (e:Error)
-			{
+			catch (e:Error) {
 				dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, 254, e.message));
 			}
 		}

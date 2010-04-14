@@ -7,6 +7,7 @@ package com.flashmedia.gui
 	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
+	import flash.text.AntiAliasType;
 	import flash.text.TextFormat;
 
 	//TODO удаление компонентов с GridBox
@@ -90,6 +91,8 @@ package com.flashmedia.gui
 		private var _columnsWidth: Array;
 		private var _rowsHeight: Array;
 		private var _textFormat: TextFormat;
+		private var _embed:Boolean = false;
+		private var _antiAliasType:String = AntiAliasType.NORMAL;
 		
 		public function GridBox(value:GameScene, maxColumnsCount: uint = COLUMNS_DEF_COUNT, maxRowsCount: uint = ROWS_DEF_COUNT)
 		{
@@ -126,8 +129,9 @@ package com.flashmedia.gui
 			_items.push(value);
 			if (value is String) {
 				var label: Label = new Label(scene, value);
+				
 				if (_textFormat) {
-					label.textFormat = _textFormat;
+					label.setTextFormat(_textFormat, _embed, _antiAliasType);
 				}
 				label.setSelect(true);
 				label.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
@@ -296,15 +300,40 @@ package com.flashmedia.gui
 			updateLayout(false, true);
 		}
 		
-		public function set textFormat(value: TextFormat): void {
+//		public function set textFormat(value: TextFormat): void {
+//			if (value) {
+//				_textFormat = value;
+//				if (_textField) {
+//					_textField.setTextFormat(_textFormat);
+//				}
+//				for each (var go: GameObject in _gameObjects) {
+//					if (go is Label) {
+//						(go as Label).textFormat = _textFormat;
+//					}
+//				}
+//				updateLayout(true, true);
+//			}
+//		}
+
+		public function setTextFormat(value: TextFormat, embed:Boolean = false, antiAliasType:String = AntiAliasType.NORMAL): void {
+			_embed = embed;
+			_antiAliasType = antiAliasType;
+				
 			if (value) {
 				_textFormat = value;
+				
 				if (_textField) {
 					_textField.setTextFormat(_textFormat);
+					_textField.embedFonts = _embed;
+					_textField.antiAliasType = _antiAliasType;
 				}
+				
 				for each (var go: GameObject in _gameObjects) {
+					var label:Label;
+					
 					if (go is Label) {
-						(go as Label).textFormat = _textFormat;
+						label = (go as Label);
+						label.setTextFormat(_textFormat, _embed, _antiAliasType);
 					}
 				}
 				updateLayout(true, true);

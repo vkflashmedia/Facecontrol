@@ -12,15 +12,12 @@ package com.flashmedia.gui
 
 	public class Button extends GameObject
 	{
-		public static const STATE_NORMAL:uint = 0;
-		public static const STATE_HIGHLIGHTED:uint = 1;
-		
 		private static const HORIZONTAL_INDENT:uint = 10;
 		private static const VERTICAL_INDENT:uint = 5;
 		
 		public var paginationIndex:int;
 		
-		protected var _state:uint = STATE_NORMAL;
+		protected var _state:uint = CONTROL_STATE_NORMAL;
 		
 		protected var _normalStateBackgroundColor:uint;
 		protected var _highlightedStateBackgroundColor:uint;
@@ -49,8 +46,8 @@ package com.flashmedia.gui
 			_textField.autoSize = TextFieldAutoSize.LEFT;
 			_textField.selectable = false;
 			
-			setTextFormatForState(new TextFormat("Times New Roman", 12), STATE_NORMAL);
-			setBackgroundColorForState(0xa0a0ff, STATE_NORMAL);
+			setTextFormatForState(new TextFormat("Times New Roman", 12), CONTROL_STATE_NORMAL);
+			setBackgroundColorForState(0xa0a0ff, CONTROL_STATE_NORMAL);
 			
 			setSelect(true);
 			
@@ -76,10 +73,10 @@ package com.flashmedia.gui
 				clearBackground();
 				
 				switch (state) {
-					case STATE_NORMAL:
+					case CONTROL_STATE_NORMAL:
 						_normalStateBackgroundImage = image;
 					break;
-					case STATE_HIGHLIGHTED:
+					case CONTROL_STATE_HIGHLIGHTED:
 						_highlightedStateBackgroundImage = image;
 					break;
 				}
@@ -89,9 +86,9 @@ package com.flashmedia.gui
 		
 		public function backgroundImageForState(state:uint):Bitmap {
 			switch (state) {
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					return _highlightedStateBackgroundImage;
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 				default:
 					return _normalStateBackgroundImage;
 			}
@@ -99,10 +96,10 @@ package com.flashmedia.gui
 		
 		public function setBackgroundColorForState(color:uint, state:uint):void {
 			switch (state) {
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 					_normalStateBackgroundColor = color;
 				break;
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					_useHighlightedStateBackgroundColor = true;
 					_highlightedStateBackgroundColor = color;
 				break;
@@ -112,9 +109,9 @@ package com.flashmedia.gui
 		
 		public function backgroundColorForState(state:uint):uint {
 			switch (state) {
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					return _highlightedStateBackgroundColor;
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 				default:
 					return _normalStateBackgroundColor;
 			}
@@ -128,12 +125,12 @@ package com.flashmedia.gui
 				var textHeight:uint;
 						
 				switch (state) {
-					case STATE_NORMAL:
+					case CONTROL_STATE_NORMAL:
 						_normalStateTitle = title;
 						field.text = _normalStateTitle;
 						field.setTextFormat(_normalStateTextFormat);
 					break;
-					case STATE_HIGHLIGHTED:
+					case CONTROL_STATE_HIGHLIGHTED:
 						_useHighlightedStateTitle = true;
 						_highlightedStateTitle = title;
 						field.text = _highlightedStateTitle;
@@ -154,9 +151,9 @@ package com.flashmedia.gui
 		
 		public function titleForState(state:uint):String {
 			switch (state) {
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					return _highlightedStateTitle;
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 				default:
 					return _normalStateTitle;
 			}
@@ -164,10 +161,10 @@ package com.flashmedia.gui
 		
 		public function setTextFormatForState(format:TextFormat, state:uint):void {
 			switch (state) {
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 					_normalStateTextFormat = format;
 				break;
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					_highlightedStateTextFormat = format;
 				break;
 			}
@@ -176,9 +173,9 @@ package com.flashmedia.gui
 		
 		public function textFormatForState(state:uint):TextFormat {
 			switch (state) {
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					return _highlightedStateTextFormat;
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 				default:
 					return _normalStateTextFormat;
 			}
@@ -186,7 +183,7 @@ package com.flashmedia.gui
 		
 		public function update():void {
 			switch (_state) {
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 					if (_normalStateBackgroundImage) {
 						bitmap = _normalStateBackgroundImage;
 					}
@@ -197,7 +194,7 @@ package com.flashmedia.gui
 					textField.text = _normalStateTitle;
 					textField.setTextFormat(_normalStateTextFormat);
 				break;
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					if (_highlightedStateBackgroundImage || _normalStateBackgroundImage) {
 						bitmap = (_highlightedStateBackgroundImage) ? _highlightedStateBackgroundImage : _normalStateBackgroundImage;
 					}
@@ -216,24 +213,24 @@ package com.flashmedia.gui
 		}
 		
 		protected function mouseDownListener(event: MouseEvent): void {
-			_state = STATE_HIGHLIGHTED;
+			_state = CONTROL_STATE_HIGHLIGHTED;
 			update();
 		}
 		
 		protected override function mouseOutListener(event: MouseEvent): void {
 			super.mouseOutListener(event);
-			_state = STATE_NORMAL;
+			_state = CONTROL_STATE_NORMAL;
 			update();
 		}
 		
 		protected function mouseUpListener(event: MouseEvent): void {
-			_state = STATE_NORMAL;
+			_state = CONTROL_STATE_NORMAL;
 			update();
 		}
 
 		protected override function mouseClickListener(event: MouseEvent): void {
 			super.mouseClickListener(event);
-			_state = STATE_NORMAL;
+			_state = CONTROL_STATE_NORMAL;
 			update();
 		}
 	}

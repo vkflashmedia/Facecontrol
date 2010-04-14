@@ -75,17 +75,18 @@ package com.flashmedia.gui
 		}
 		
 		public function setTextFormat(value: TextFormat, embed:Boolean = false, antiAliasType:String = AntiAliasType.NORMAL): void {
+			_embed = embed;
+			_antiAliasType = antiAliasType;
+				
 			if (value) {
 				_textFormat = value;
-				_embed = embed;
-				_antiAliasType = antiAliasType;
+				
 				if (_textField) {
 					_textField.setTextFormat(_textFormat);
 					_textField.embedFonts = _embed;
 					_textField.antiAliasType = _antiAliasType;
 				}
-				_dropList.textFormat = _textFormat;
-				updateComboBox();
+				_dropList.setTextFormat(_textFormat, _embed, _antiAliasType);
 			}
 		}
 		

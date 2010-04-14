@@ -19,7 +19,6 @@ package com.facecontrol.forms
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -96,7 +95,7 @@ package com.facecontrol.forms
 			addChild(superIcon);
 			
 			var otherPhotos:LinkButton = new LinkButton(value, "Еще фото", 195, 150);
-			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), LinkButton.STATE_NORMAL);
+			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 			otherPhotos.textField.embedFonts = true;
 			otherPhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(otherPhotos);
@@ -113,7 +112,7 @@ package com.facecontrol.forms
 			
 			
 			var bigStar:Bitmap = BitmapUtil.clone(Util.multiLoader.get(Images.BIG_STAR));
-			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;;
+			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;
 			bigStar.x = 44;
 			_previousLayer.addChild(bigStar);
 			
@@ -172,7 +171,7 @@ package com.facecontrol.forms
 			_sexBox.addItem(Constants.SEX_BOTH);
 			_sexBox.selectedItem = Constants.SEX_FEMALE;
 			addChild(_sexBox);
-			/*
+			
 			filterLabel = createLabel("От:", 470, 364);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -232,7 +231,7 @@ package com.facecontrol.forms
 			_cityBox.addItem('Рязань');
 			_cityBox.selectedItem = 'Пенза';
 			addChild(_cityBox);
-			*/
+			
 			_nameField = createLabel(
 				null,
 				_bigPhoto.x,
@@ -333,8 +332,8 @@ package com.facecontrol.forms
 				break;
 			}
 			
-//			_minAgeBox.selectedItem = "" + ((_filter.age_min == 60) ? "60+" : _filter.age_min);
-//			_maxAgeBox.selectedItem = "" + ((_filter.age_max == 60) ? "60+" : _filter.age_max);
+			_minAgeBox.selectedItem = "" + ((_filter.age_min == 60) ? "60+" : _filter.age_min);
+			_maxAgeBox.selectedItem = "" + ((_filter.age_max == 60) ? "60+" : _filter.age_max);
 		}
 		
 		private function createLabel(text:String, x:int, y:int, width:int=0):TextField {
@@ -355,15 +354,10 @@ package com.facecontrol.forms
 			spr.graphics.endFill();
 			var bd: BitmapData = new BitmapData(width, 15, true, undefined);
 			bd.draw(spr);
-			var button:Bitmap = Util.multiLoader.get(Images.CHOOSE_BUTTON);
-//			var matrix:Matrix = new Matrix();
-//			matrix.tx = bd.width - button.width;
-//			bd.draw(button, matrix);
-			
 			
 			var box:ComboBox = new ComboBox(_scene);
 			box.bitmap = new Bitmap(bd);
-			box.dropIcon = button;
+			box.dropIcon = new Bitmap(Util.multiLoader.get(Images.CHOOSE_BUTTON).bitmapData);
 			box.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
 			box.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			box.x = x;

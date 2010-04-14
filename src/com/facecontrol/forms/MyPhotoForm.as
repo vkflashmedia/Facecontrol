@@ -136,15 +136,15 @@ package com.facecontrol.forms
 			addChild(photoListBck);
 			
 			var preview:LinkButton = new LinkButton(_scene, "предпросмотр", 278, 459);
-			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), LinkButton.STATE_NORMAL);
+			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), CONTROL_STATE_NORMAL);
 			preview.textField.embedFonts = true;
 			preview.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(preview);
 			
 			var markAsMain:Button = new Button(_scene, 264, 488);
-			markAsMain.setTitleForState("Сделать главной", Button.STATE_NORMAL);
-			markAsMain.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_RED), Button.STATE_NORMAL);
-			markAsMain.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), Button.STATE_NORMAL);
+			markAsMain.setTitleForState("Сделать главной", CONTROL_STATE_NORMAL);
+			markAsMain.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			markAsMain.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			markAsMain.textField.embedFonts = true;
 			markAsMain.textField.antiAliasType = AntiAliasType.ADVANCED;
 			markAsMain.setTextPosition(19, 17);
@@ -152,9 +152,9 @@ package com.facecontrol.forms
 			addChild(markAsMain);
 			
 			var addPhoto:Button = new Button(_scene, 377, 488);
-			addPhoto.setTitleForState("Добавить фото", Button.STATE_NORMAL);
-			addPhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_ORANGE), Button.STATE_NORMAL);
-			addPhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), Button.STATE_NORMAL);
+			addPhoto.setTitleForState("Добавить фото", CONTROL_STATE_NORMAL);
+			addPhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
+			addPhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			addPhoto.textField.embedFonts = true;
 			addPhoto.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addPhoto.setTextPosition(19, 17);
@@ -162,9 +162,9 @@ package com.facecontrol.forms
 			addChild(addPhoto);
 			
 			var deletePhoto:Button = new Button(_scene, 486, 488);
-			deletePhoto.setTitleForState("Удалить фото", Button.STATE_NORMAL);
-			deletePhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_GRAY), Button.STATE_NORMAL);
-			deletePhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), Button.STATE_NORMAL);
+			deletePhoto.setTitleForState("Удалить фото", CONTROL_STATE_NORMAL);
+			deletePhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_GRAY), CONTROL_STATE_NORMAL);
+			deletePhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			deletePhoto.textField.embedFonts = true;
 			deletePhoto.textField.antiAliasType = AntiAliasType.ADVANCED;
 			deletePhoto.setTextPosition(19, 17);
@@ -257,7 +257,9 @@ package com.facecontrol.forms
 		public function multiLoaderCompliteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
-				_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+				if (_main) {
+					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+				}
 				update();
 			}
 		}
