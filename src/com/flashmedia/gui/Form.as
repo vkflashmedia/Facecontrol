@@ -8,6 +8,9 @@ package com.flashmedia.gui
 	import flash.display.DisplayObject;
 	import flash.geom.Rectangle;
 
+	/*
+		TODO при прокрутке с помощью ScrollBar сбрасывается Focus с компонентов на форме
+	*/
 	public class Form extends GameLayer
 	{
 		public static const SCROLL_STEP_VERTICAL: uint = 10;
@@ -35,7 +38,8 @@ package com.flashmedia.gui
 			this.y = y;
 			this.width = width;
 			this.height = height;
-//			fillBackground(BACKGROUNG_COLOR, 0.9);
+			//TODO какой использовать фон для формы?
+			//fillBackground(BACKGROUNG_COLOR, 0.9);
 			updateContentLayer();
 		}
 		

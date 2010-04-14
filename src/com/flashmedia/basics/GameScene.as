@@ -126,10 +126,11 @@ package com.flashmedia.basics
 			if (_selectedGameObject == value) {
 				return;
 			}
-			if (_selectedGameObject) {
-				_selectedGameObject.focus = false;
-			}
+			var oldSelectedGameObject: GameObject = _selectedGameObject;
 			_selectedGameObject = value;
+			if (oldSelectedGameObject) {
+				oldSelectedGameObject.focus = false;
+			}
 			if (_selectedGameObject) {
 				_selectedGameObject.focus = true;
 			}
