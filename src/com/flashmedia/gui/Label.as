@@ -16,6 +16,7 @@ package com.flashmedia.gui
 		private var _icon: Bitmap;
 		private var _tf: TextField;
 		private var _text: String;
+		private var _textFormat: TextFormat;
 		
 		public function Label(value: GameScene, text: String = '')
 		{
@@ -45,7 +46,10 @@ package com.flashmedia.gui
 		}
 		
 		public function set textFormat(value: TextFormat): void {
-			_tf.setTextFormat(value);
+			if (value) {
+				_textFormat = value;
+				update();
+			}
 		}
 		
 		private function update(): void {
@@ -67,6 +71,9 @@ package com.flashmedia.gui
 					_tf.autoSize = TextFieldAutoSize.LEFT;
 				}
 				_tf.text = _text;
+				if (_textFormat) {
+					_tf.setTextFormat(_textFormat);
+				}
 				if (!_view.contains('text')) {
 					_view.addDisplayObject(_tf, 'text', GameObject.VISUAL_DISPLAY_OBJECT_Z_ORDER, View.ALIGN_VER_CENTER | View.ALIGN_HOR_RIGHT);
 				}

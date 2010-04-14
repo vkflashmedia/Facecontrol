@@ -1,10 +1,17 @@
 package com.flashmedia.basics
 {
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 
-	//TODO метод прослойку в GameObject чтобы скрыть класс View	
-	//TODO стандартные спрайты - специальное своййство, чтобы их отличать
-	//TODO explicitWidth explicitHeight
+	/*
+		TODO добавить свойство - selectable - обрабатывает ли спрайт сам действие пользователя, или передает дальше.
+		//TODO метод прослойку в GameObject чтобы скрыть класс View	
+		//TODO стандартные спрайты - специальное своййство, чтобы их отличать
+		//TODO explicitWidth explicitHeight
+	*/
+	/**
+	 * При клике на один из частей View, реакция передается в gameObject для обработки.
+	 */
 	public final class View
 	{
 		public static const ALIGN_HOR_NONE: int = 0;
@@ -134,5 +141,9 @@ package com.flashmedia.basics
 				layoutVisualByName(o['name']);
 			}
 		}
+		
+//		private function onMouseClick(event: MouseEvent): void {
+//			_gameObject.
+//		}
 	}
 }

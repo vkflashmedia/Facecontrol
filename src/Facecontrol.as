@@ -31,6 +31,7 @@ package {
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
 	public class Facecontrol extends GameScene {
 		
@@ -53,7 +54,7 @@ package {
 		public function Facecontrol() {
 //			aliFunction();
 //			artemFunction();
-//			testComponents();
+			//testComponents();
 
 //			_images = new Images();
 //			
@@ -362,7 +363,15 @@ package {
 			cb.addItem('Item3');
 			cb.addItem('Item4');
 			cb.addItem('Item5');
+			cb.addItem('Item6');
+			cb.addItem('Item7');
+			cb.addItem('Item8');
+			cb.addItem('Item9');
+			cb.addItem('Item10');
 			cb.selectedItem = 'Item1';
+			cb.textFormat = new TextFormat('Arial', 16, 0x00dede);
+			//выделение уходит за scrollBar !!!
+			cb.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			addChild(cb);
 			
 			var label: Label = new Label(this, 'TestLabel');
@@ -383,10 +392,11 @@ package {
 			});
 			gb.x = 50;
 			gb.y = 3;
-			gb.width = 400;
-			gb.height = 150;
-			gb.widthPolicy = GridBox.WIDTH_POLICY_AUTO_SIZE;
-			gb.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
+			gb.width = 550;
+			gb.height = 106;
+			gb.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
+			gb.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
+			//TODO autoSize - часть компонента скрывается за полосой прокрутки
 //			gb.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
 //			gb.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
 			gb.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
