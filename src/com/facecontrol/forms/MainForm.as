@@ -8,6 +8,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.GridBoxEvent;
 	import com.flashmedia.gui.LinkButton;
@@ -20,7 +21,6 @@ package com.facecontrol.forms
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.text.AntiAliasType;
-	import flash.text.Font;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
@@ -166,15 +166,13 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_sexBox = createComboBox(113);
-			_sexBox.x = 472;
-			_sexBox.y = 335;
+			_sexBox = createComboBox(472, 335, 113);
 			_sexBox.addItem(Constants.SEX_FEMALE);
 			_sexBox.addItem(Constants.SEX_MALE);
 			_sexBox.addItem(Constants.SEX_BOTH);
 			_sexBox.selectedItem = Constants.SEX_FEMALE;
 			addChild(_sexBox);
-			
+			/*
 			filterLabel = createLabel("От:", 470, 364);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -182,9 +180,7 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_minAgeBox = createComboBox(84);
-			_minAgeBox.x = 502;
-			_minAgeBox.y = 367;
+			_minAgeBox = createComboBox(502, 367, 84);
 			for (var i:int = 8; i < 60; ++i) {
 				_minAgeBox.addItem(""+i);
 			}
@@ -199,9 +195,7 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_maxAgeBox = createComboBox(84);
-			_maxAgeBox.x = 502;
-			_maxAgeBox.y = 385;
+			_maxAgeBox = createComboBox(502, 385, 84);
 			for (i = 8; i < 60; ++i) {
 				_maxAgeBox.addItem(""+i);
 			}
@@ -216,9 +210,9 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_countryBox = createComboBox(113);
-			_countryBox.x = 472;
-			_countryBox.y = 425;
+			_countryBox = createComboBox(472, 425, 113);
+			_countryBox.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
+			_countryBox.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			_countryBox.addItem('Россия');
 			_countryBox.addItem('Германия');
 			_countryBox.addItem('США');
@@ -232,15 +226,13 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_cityBox = createComboBox(113);
-			_cityBox.x = 472;
-			_cityBox.y = 465;
+			_cityBox = createComboBox(472, 465, 113);
 			_cityBox.addItem('Пенза');
 			_cityBox.addItem('Москва');
 			_cityBox.addItem('Рязань');
 			_cityBox.selectedItem = 'Пенза';
 			addChild(_cityBox);
-			
+			*/
 			_nameField = createLabel(
 				null,
 				_bigPhoto.x,
@@ -341,8 +333,8 @@ package com.facecontrol.forms
 				break;
 			}
 			
-			_minAgeBox.selectedItem = "" + ((_filter.age_min == 60) ? "60+" : _filter.age_min);
-			_maxAgeBox.selectedItem = "" + ((_filter.age_max == 60) ? "60+" : _filter.age_max);
+//			_minAgeBox.selectedItem = "" + ((_filter.age_min == 60) ? "60+" : _filter.age_min);
+//			_maxAgeBox.selectedItem = "" + ((_filter.age_max == 60) ? "60+" : _filter.age_max);
 		}
 		
 		private function createLabel(text:String, x:int, y:int, width:int=0):TextField {
@@ -356,7 +348,7 @@ package com.facecontrol.forms
 			return label;
 		}
 		
-		private function createComboBox(width:int):ComboBox {
+		private function createComboBox(x:int, y:int, width:int):ComboBox {
 			var spr: Sprite = new Sprite();
 			spr.graphics.beginFill(0xffffff);
 			spr.graphics.drawRoundRect(0, 0, width, 15, 12);
@@ -364,17 +356,19 @@ package com.facecontrol.forms
 			var bd: BitmapData = new BitmapData(width, 15, true, undefined);
 			bd.draw(spr);
 			var button:Bitmap = Util.multiLoader.get(Images.CHOOSE_BUTTON);
-			var matrix:Matrix = new Matrix();
-			matrix.tx = bd.width - button.width;
-			bd.draw(button, matrix);
+//			var matrix:Matrix = new Matrix();
+//			matrix.tx = bd.width - button.width;
+//			bd.draw(button, matrix);
 			
-			var format:TextFormat = new TextFormat();
-			format.font = "Tahoma";
-			format.size = 11;
 			
 			var box:ComboBox = new ComboBox(_scene);
 			box.bitmap = new Bitmap(bd);
-//			box.textField.defaultTextFormat = format;
+			box.dropIcon = button;
+			box.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
+			box.horizontalAlign = View.ALIGN_HOR_RIGHT;
+			box.x = x;
+			box.y = y;
+			box.width = width;
 			box.height = 15;
 			return box;
 		}

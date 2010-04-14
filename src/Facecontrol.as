@@ -373,7 +373,7 @@ package {
 			cb.addItem('Item9');
 			cb.addItem('Item10');
 			cb.selectedItem = 'Item1';
-			cb.textFormat = new TextFormat('Arial', 16, 0x00dede);
+			cb.setTextFormat(new TextFormat('Arial', 16, 0x00dede));
 			//выделение уходит за scrollBar !!!
 			cb.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			addChild(cb);

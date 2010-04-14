@@ -8,6 +8,7 @@ package com.flashmedia.gui
 	import flash.display.BitmapData;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -24,6 +25,8 @@ package com.flashmedia.gui
 		private var _savedZOrder: int;
 		private var _textFormat: TextFormat;
 		private var _horizontalAlign: int;
+		private var _embed:Boolean = false;
+		private var _antiAliasType:String = AntiAliasType.NORMAL;
 		
 		public function ComboBox(value:GameScene)
 		{
@@ -71,13 +74,18 @@ package com.flashmedia.gui
 			_dropList.addItem(value);
 		}
 		
-		public function set textFormat(value: TextFormat): void {
+		public function setTextFormat(value: TextFormat, embed:Boolean = false, antiAliasType:String = AntiAliasType.NORMAL): void {
 			if (value) {
 				_textFormat = value;
+				_embed = embed;
+				_antiAliasType = antiAliasType;
 				if (_textField) {
 					_textField.setTextFormat(_textFormat);
+					_textField.embedFonts = _embed;
+					_textField.antiAliasType = _antiAliasType;
 				}
 				_dropList.textFormat = _textFormat;
+				updateComboBox();
 			}
 		}
 		
@@ -144,6 +152,8 @@ package com.flashmedia.gui
 				tf.text = _dropList.selectedItem as String;
 				if (_textFormat) {
 					tf.setTextFormat(_textFormat);
+					tf.embedFonts = _embed;
+					tf.antiAliasType = _antiAliasType;
 				}
 				tf.selectable = false;
 				tf.autoSize = TextFieldAutoSize.LEFT;
