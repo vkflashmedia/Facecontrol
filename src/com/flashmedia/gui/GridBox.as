@@ -126,6 +126,9 @@ package com.flashmedia.gui
 			_items.push(value);
 			if (value is String) {
 				var label: Label = new Label(scene, value);
+				if (_textFormat) {
+					label.textFormat = _textFormat;
+				}
 				label.setSelect(true);
 				label.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
 				label.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);

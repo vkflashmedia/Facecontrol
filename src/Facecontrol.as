@@ -31,6 +31,7 @@ package {
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	
 	public class Facecontrol extends GameScene {
@@ -54,7 +55,7 @@ package {
 		public function Facecontrol() {
 //			aliFunction();
 //			artemFunction();
-			//testComponents();
+			testComponents();
 
 //			_images = new Images();
 //			
@@ -66,7 +67,7 @@ package {
 //			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 //			
 //			load();
-			
+			/*
 			_images = new Images();
 			
 //			MultiLoader.testing = true;
@@ -77,7 +78,7 @@ package {
 			
 			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 			Util.api.addEventListener(ApiEvent.ERROR, onRequestError);
-			
+			*/
 		}
 		
 		private function load():void {
@@ -358,6 +359,8 @@ package {
 			bd.draw(spr);
 			var cbBack: Bitmap = new Bitmap(bd);
 			cb = new ComboBox(this);
+			cb.textFormat = new TextFormat('Arial', 16, 0x00dede);
+			cb.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			cb.bitmap = cbBack;
 			cb.x = 400;
 			cb.y = 400;
@@ -373,9 +376,7 @@ package {
 			cb.addItem('Item9');
 			cb.addItem('Item10');
 			cb.selectedItem = 'Item1';
-			cb.textFormat = new TextFormat('Arial', 16, 0x00dede);
 			//выделение уходит за scrollBar !!!
-			cb.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			addChild(cb);
 			
 			var label: Label = new Label(this, 'TestLabel');
@@ -479,6 +480,18 @@ package {
 			form.horizontalScrollBar.height = 15;
 			
 			addChild(form);
+			
+			var textInput: TextField = new TextField();
+			textInput.autoSize = TextFieldAutoSize.LEFT;
+			textInput.selectable = true;
+			textInput.x = 700;
+			textInput.y = 400;
+			textInput.text = 'Input here';
+			textInput.width = 100;
+			textInput.type = TextFieldType.INPUT;
+			textInput.multiline = true;
+			textInput.wordWrap = true;
+			addChild(textInput);
 		}
 		/*
 		private function onButtonClicked(e: GameObjectEvent): void {
