@@ -4,8 +4,8 @@ package com.facecontrol.api
 
 	public class ApiEvent extends Event
 	{
-		public static const COMPLETED:String = 'Request completed';
-		public static const ERROR:String = 'Error';
+		public static const COMPLETED:String = 'ApiEvent::COMPLETED';
+		public static const ERROR:String = 'ApiEvent::ERROR';
 		
 		public var response:Object;
 		public var errorCode:int;

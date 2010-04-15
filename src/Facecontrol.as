@@ -22,6 +22,7 @@ package {
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.gui.ScrollBar;
+	import com.net.VKontakteEvent;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -55,22 +56,10 @@ package {
 		public function Facecontrol() {
 //			aliFunction();
 //			artemFunction();
-			//testComponents();
+//			testComponents();
 
-//			_images = new Images();
-//			
-////			MultiLoader.testing = true;
-//			Util.multiLoader = new MultiLoader();
-//			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-//			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-//			
-//			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
-//			
-//			load();
-			
 			_images = new Images();
 			
-//			MultiLoader.testing = true;
 			Util.multiLoader = new MultiLoader();
 			load();
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
@@ -79,6 +68,8 @@ package {
 			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 			Util.api.addEventListener(ApiEvent.ERROR, onRequestError);
 			
+			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
+			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
 		}
 		
 		private function load():void {
@@ -113,6 +104,10 @@ package {
 			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
 			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
 			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BCK_PATH, Images.ADD_PHOTO_BCK, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
+			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -137,7 +132,7 @@ package {
 				addChild(_myPhotoForm);
 				_myPhotoForm.visible = false;
 				
-				Util.api.loadSettings(Util.userId);
+				Util.vkontakte.getProfiles(Util.userId);
 			}
 		}
 		
@@ -150,6 +145,39 @@ package {
 			Util.api.getPhotos(Util.userId);
 		}
 		
+		private function onVkontakteRequestError(event:VKontakteEvent):void {
+			try {
+				switch (event.errorCode) {
+					case 10:
+						_mainForm.updateFilter();
+					break;
+					default:
+						trace('onVkontakteRequestError - ' + event.errorMessage);
+				}
+			}
+			catch (e:Error) {
+				trace(e.message);
+			}
+		}
+		
+		private function onVkontakteRequestComplited(event:VKontakteEvent):void {
+			var response:Object = event.response;
+			try {
+				switch (event.method) {
+					case 'getProfiles':
+						var user:Object = response[0];
+						Util.src_small = user.photo;
+						Util.src = user.photo_medium;
+						Util.src_big = user.photo_big;
+						Util.api.registerUser(Util.userId, user.first_name, user.last_name, user.nickname, user.sex, user.bdate, user.city);
+					break;
+				}
+			}
+			catch (e:Error) {
+				trace(e.message);
+			}
+		}
+		
 		private function onRequestError(event:ApiEvent):void {
 			try {
 				switch (event.errorCode) {
@@ -157,7 +185,7 @@ package {
 						_mainForm.updateFilter();
 					break;
 					default:
-						trace('error - ' + event.errorMessage);
+						trace('onRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
 				}
 			}
 			catch (e:Error) {
@@ -169,6 +197,15 @@ package {
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
+					case 'reg_user':
+						if (response.photo_count == 0) {
+							Util.api.addPhoto(Util.userId, Util.src, Util.src_small, Util.src_big);
+						}
+						else Util.api.loadSettings(Util.userId);
+					break;
+					case 'add_photo':
+						Util.api.loadSettings(Util.userId);
+					break;
 					case "load_settings":
 						_mainForm.filter = response;
 						_mainForm.visible = true;
@@ -188,6 +225,7 @@ package {
 					break;
 					
 					case 'del_photo':
+						Util.multiLoader.unload(response.pid);
 					case 'set_main':
 						Util.api.getPhotos(Util.userId);
 					break;
@@ -195,12 +233,6 @@ package {
 			}
 			catch (e:Error) {
 				trace(e.message);
-			}
-			
-			switch (response["err_code"]) {
-				case 10:
-					_mainForm.updateFilter();
-				break;
 			}
 		}
 		
@@ -355,7 +387,6 @@ package {
 			bd.draw(spr);
 			var cbBack: Bitmap = new Bitmap(bd);
 			cb = new ComboBox(this);
-			cb.textFormat = new TextFormat('Arial', 16, 0x00dede);
 			cb.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			cb.bitmap = cbBack;
 			cb.x = 400;
@@ -372,6 +403,7 @@ package {
 			cb.addItem('Item9');
 			cb.addItem('Item10');
 			cb.selectedItem = 'Item1';
+			cb.setTextFormat(new TextFormat('Arial', 16, 0x00dede));
 			//выделение уходит за scrollBar !!!
 			addChild(cb);
 			

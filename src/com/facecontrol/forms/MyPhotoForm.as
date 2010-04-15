@@ -19,7 +19,6 @@ package com.facecontrol.forms
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.AntiAliasType;
-	import flash.text.Font;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -48,7 +47,7 @@ package com.facecontrol.forms
 			addChild(smileIco);
 			
 			var labelFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff);
-			var label:TextField = createLabel("Мои фото", 62, 92);
+			var label:TextField = Util.createLabel("Мои фото", 62, 92);
 			label.setTextFormat(labelFormat);
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -62,14 +61,14 @@ package com.facecontrol.forms
 			border.graphics.drawRect(0, 0, 1, 11);
 			addChild(border);
 			
-			label = createLabel("Главное фото", border.x + 4, 118);
+			label = Util.createLabel("Главное фото", border.x + 4, 118);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 14, 0xffa200));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			label = createLabel("Выбери самое лучшее фото твоей жизни", 38, 146, 125);
+			label = Util.createLabel("Выбери самое лучшее фото твоей жизни", 38, 146, 125);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -85,14 +84,14 @@ package com.facecontrol.forms
 			border.graphics.drawRect(0, 0, 1, 11);
 			addChild(border);
 			
-			label = createLabel("Твои фото в приложении", border.x + 4, 118);
+			label = Util.createLabel("Твои фото в приложении", border.x + 4, 118);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 14, 0xffa200));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			label = createLabel("Выбери главное фото, которое будет учавствовать в голосовании", 273, 146, 240);
+			label = Util.createLabel("Выбери главное фото, которое будет учавствовать в голосовании", 273, 146, 240);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -110,21 +109,21 @@ package com.facecontrol.forms
 			bigStar.y = 376;
 			addChild(bigStar);
 			
-			_ratingAverageField = createLabel("9,5", 77, 371);
+			_ratingAverageField = Util.createLabel("9,5", 77, 371);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
 			_ratingAverageField.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_ratingAverageField);
 			
-			_votesCountField = createLabel("10345 голосов", 140, 386);
+			_votesCountField = Util.createLabel("10345 голосов", 140, 386);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
 			_votesCountField.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_votesCountField);
 			
-			label = createLabel("Комментарий к фото:", 38, 430);
+			label = Util.createLabel("Комментарий к фото:", 38, 430);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -137,15 +136,15 @@ package com.facecontrol.forms
 			addChild(photoListBck);
 			
 			var preview:LinkButton = new LinkButton(_scene, "предпросмотр", 278, 459);
-			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), LinkButton.STATE_NORMAL);
+			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), CONTROL_STATE_NORMAL);
 			preview.textField.embedFonts = true;
 			preview.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(preview);
 			
 			var markAsMain:Button = new Button(_scene, 264, 488);
-			markAsMain.setTitleForState("Сделать главной", Button.STATE_NORMAL);
-			markAsMain.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_RED), Button.STATE_NORMAL);
-			markAsMain.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), Button.STATE_NORMAL);
+			markAsMain.setTitleForState("Сделать главной", CONTROL_STATE_NORMAL);
+			markAsMain.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			markAsMain.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			markAsMain.textField.embedFonts = true;
 			markAsMain.textField.antiAliasType = AntiAliasType.ADVANCED;
 			markAsMain.setTextPosition(19, 17);
@@ -153,18 +152,19 @@ package com.facecontrol.forms
 			addChild(markAsMain);
 			
 			var addPhoto:Button = new Button(_scene, 377, 488);
-			addPhoto.setTitleForState("Добавить фото", Button.STATE_NORMAL);
-			addPhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_ORANGE), Button.STATE_NORMAL);
-			addPhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), Button.STATE_NORMAL);
+			addPhoto.setTitleForState("Добавить фото", CONTROL_STATE_NORMAL);
+			addPhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
+			addPhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			addPhoto.textField.embedFonts = true;
 			addPhoto.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addPhoto.setTextPosition(19, 17);
+			addPhoto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onAddPhotoClick);
 			addChild(addPhoto);
 			
 			var deletePhoto:Button = new Button(_scene, 486, 488);
-			deletePhoto.setTitleForState("Удалить фото", Button.STATE_NORMAL);
-			deletePhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_GRAY), Button.STATE_NORMAL);
-			deletePhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), Button.STATE_NORMAL);
+			deletePhoto.setTitleForState("Удалить фото", CONTROL_STATE_NORMAL);
+			deletePhoto.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_GRAY), CONTROL_STATE_NORMAL);
+			deletePhoto.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			deletePhoto.textField.embedFonts = true;
 			deletePhoto.textField.antiAliasType = AntiAliasType.ADVANCED;
 			deletePhoto.setTextPosition(19, 17);
@@ -185,6 +185,12 @@ package com.facecontrol.forms
 			_grid.indentBetweenRows = 27;
 			_grid.indentBetweenCols= 0;
 			_grid.padding = 0;
+//			_grid.(0x808080, 1);
+			_grid.debug = true;
+//			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+//			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
+//			_grid.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
+//			_grid.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
 			addChild(_grid);
 			
 			_pagination = new Pagination(_scene, 500, 462);
@@ -210,17 +216,6 @@ package com.facecontrol.forms
 				p = new MyPhotoGridItem(_scene, _photos[i], 141, 57);
 				_grid.addItem(p);
 			}
-		}
-		
-		private function createLabel(text:String, x:int, y:int, width:int=0):TextField {
-			var label:TextField = new TextField();
-			label.text = (text) ? text : "";
-			label.x = x;
-			label.y = y;
-			label.width = width;
-			label.selectable = false;
-			
-			return label;
 		}
 		
 		private function update():void {
@@ -268,7 +263,9 @@ package com.facecontrol.forms
 		public function multiLoaderCompliteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
-				_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+				if (_main) {
+					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+				}
 				update();
 			}
 		}
@@ -276,6 +273,10 @@ package com.facecontrol.forms
 		public function onMarkAsMainClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			Util.api.setMain(gridItem.photoData.pid);
+		}
+		
+		public function onAddPhotoClick(event:GameObjectEvent):void {
+			_scene.showModal(new AddPhotoDialog(_scene));
 		}
 		
 		public function onDeletePhotoClick(event:GameObjectEvent):void {

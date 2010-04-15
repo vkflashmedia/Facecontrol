@@ -8,6 +8,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.GridBoxEvent;
 	import com.flashmedia.gui.LinkButton;
@@ -18,9 +19,7 @@ package com.facecontrol.forms
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	import flash.text.AntiAliasType;
-	import flash.text.Font;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
@@ -96,7 +95,7 @@ package com.facecontrol.forms
 			addChild(superIcon);
 			
 			var otherPhotos:LinkButton = new LinkButton(value, "Еще фото", 195, 150);
-			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), LinkButton.STATE_NORMAL);
+			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 			otherPhotos.textField.embedFonts = true;
 			otherPhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(otherPhotos);
@@ -113,16 +112,16 @@ package com.facecontrol.forms
 			
 			
 			var bigStar:Bitmap = BitmapUtil.clone(Util.multiLoader.get(Images.BIG_STAR));
-			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;//360;
+			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;
 			bigStar.x = 44;
 			_previousLayer.addChild(bigStar);
 			
 			var line:Bitmap = Util.multiLoader.get(Images.LINE);
 			line.x = 38;
-			line.y = _smallPhoto.y + _smallPhoto.height + 68;//420;
+			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
 			_previousLayer.addChild(line);
 			
-			_ratingAverageField = createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3/*355*/, line.width);
+			_ratingAverageField = createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
@@ -130,7 +129,7 @@ package com.facecontrol.forms
 			_previousLayer.addChild(_ratingAverageField);
 			
 			
-			var ratingLabel:TextField = createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43/*395*/, line.width);
+			var ratingLabel:TextField = createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
 			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
 			ratingLabel.embedFonts = true;
 			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
@@ -138,14 +137,14 @@ package com.facecontrol.forms
 			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(ratingLabel);
 			
-			var votesLabel:TextField = createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72/*424*/, line.width);
+			var votesLabel:TextField = createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
 			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
 			votesLabel.embedFonts = true;
 			votesLabel.autoSize = TextFieldAutoSize.CENTER;
 			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
 			_previousLayer.addChild(votesLabel);
 			
-			_votesCountField = createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90/*442*/, line.width);
+			_votesCountField = createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
@@ -166,9 +165,7 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_sexBox = createComboBox(113);
-			_sexBox.x = 472;
-			_sexBox.y = 335;
+			_sexBox = createComboBox(472, 335, 113);
 			_sexBox.addItem(Constants.SEX_FEMALE);
 			_sexBox.addItem(Constants.SEX_MALE);
 			_sexBox.addItem(Constants.SEX_BOTH);
@@ -182,9 +179,7 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_minAgeBox = createComboBox(84);
-			_minAgeBox.x = 502;
-			_minAgeBox.y = 367;
+			_minAgeBox = createComboBox(502, 367, 84);
 			for (var i:int = 8; i < 60; ++i) {
 				_minAgeBox.addItem(""+i);
 			}
@@ -199,9 +194,7 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_maxAgeBox = createComboBox(84);
-			_maxAgeBox.x = 502;
-			_maxAgeBox.y = 385;
+			_maxAgeBox = createComboBox(502, 385, 84);
 			for (i = 8; i < 60; ++i) {
 				_maxAgeBox.addItem(""+i);
 			}
@@ -216,9 +209,9 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_countryBox = createComboBox(113);
-			_countryBox.x = 472;
-			_countryBox.y = 425;
+			_countryBox = createComboBox(472, 425, 113);
+			_countryBox.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
+			_countryBox.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			_countryBox.addItem('Россия');
 			_countryBox.addItem('Германия');
 			_countryBox.addItem('США');
@@ -232,9 +225,7 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_cityBox = createComboBox(113);
-			_cityBox.x = 472;
-			_cityBox.y = 465;
+			_cityBox = createComboBox(472, 465, 113);
 			_cityBox.addItem('Пенза');
 			_cityBox.addItem('Москва');
 			_cityBox.addItem('Рязань');
@@ -356,25 +347,22 @@ package com.facecontrol.forms
 			return label;
 		}
 		
-		private function createComboBox(width:int):ComboBox {
+		private function createComboBox(x:int, y:int, width:int):ComboBox {
 			var spr: Sprite = new Sprite();
 			spr.graphics.beginFill(0xffffff);
 			spr.graphics.drawRoundRect(0, 0, width, 15, 12);
 			spr.graphics.endFill();
 			var bd: BitmapData = new BitmapData(width, 15, true, undefined);
 			bd.draw(spr);
-			var button:Bitmap = Util.multiLoader.get(Images.CHOOSE_BUTTON);
-			var matrix:Matrix = new Matrix();
-			matrix.tx = bd.width - button.width;
-			bd.draw(button, matrix);
-			
-			var format:TextFormat = new TextFormat();
-			format.font = "Tahoma";
-			format.size = 11;
 			
 			var box:ComboBox = new ComboBox(_scene);
 			box.bitmap = new Bitmap(bd);
-//			box.textField.defaultTextFormat = format;
+			box.dropIcon = new Bitmap(Util.multiLoader.get(Images.CHOOSE_BUTTON).bitmapData);
+			box.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
+			box.horizontalAlign = View.ALIGN_HOR_RIGHT;
+			box.x = x;
+			box.y = y;
+			box.width = width;
 			box.height = 15;
 			return box;
 		}

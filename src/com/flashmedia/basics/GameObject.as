@@ -24,6 +24,11 @@ package com.flashmedia.basics
 	 */
 	public class GameObject extends Sprite
 	{
+		public static const CONTROL_STATE_NORMAL:uint = 0;
+		public static const CONTROL_STATE_HIGHLIGHTED:uint = 1;
+		public static const CONTROL_STATE_DISABLED:uint = 2;
+		public static const CONTROL_STATE_SELECTED:uint = 3;
+		
 		public static const VISUAL_SELECT_MASK_Z_ORDER: int = 1200;
 		public static const VISUAL_SELECT_Z_ORDER: int = 1100;
 		public static const VISUAL_DEBUG_CONTAINER_Z_ORDER: int = 1000;

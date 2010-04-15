@@ -30,7 +30,12 @@ package com.facecontrol.util
 		public static const MY_PHOTO_SMILE_ICO:String = 'myPhotoSmileIco';
 		public static const ARROW_LEFT:String = 'arrowLeft';
 		public static const ARROW_RIGHT:String = 'arrowRight';
+		
 		public static const V:String = 'V';
+		public static const ADD_PHOTO_BCK:String = 'addPhotoBck';
+		public static const ADD_PHOTO_BUTTON_RED:String = 'addPhotoButtonRed';
+		public static const ADD_PHOTO_BUTTON_ORANGE:String = 'addPhotoButtonOrange';
+		public static const ADD_PHOTO_BUTTON_GREY:String = 'addPhotoButtonGrey';
 		
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
@@ -61,6 +66,10 @@ package com.facecontrol.util
 		public static const ARROW_RIGHT_PATH:String = 'images\\my_friends\\ar_r.png';
 		
 		public static const V_PATH:String = 'images\\My_photo\\V.png';
+		public static const ADD_PHOTO_BCK_PATH:String = 'images\\add_foto\\bgr.png';
+		public static const ADD_PHOTO_BUTTON_RED_PATH:String = 'images\\add_foto\\button_red.png';
+		public static const ADD_PHOTO_BUTTON_ORANGE_PATH:String = 'images\\add_foto\\button_orange.png';
+		public static const ADD_PHOTO_BUTTON_GREY_PATH:String = 'images\\add_foto\\button_grey.png';
 
 	}
 }

@@ -10,21 +10,17 @@ package com.flashmedia.gui
 
 	public class LinkButton extends GameObject
 	{
-		public static const STATE_NORMAL:uint = 0;
-		public static const STATE_HIGHLIGHTED:uint = 1;
-		
 		public var paginationIndex:int;
 		
 		protected var _normalStateTextFormat:TextFormat = new TextFormat();
 		protected var _highlithedStateTextFormat:TextFormat;
 		
 		protected var _enabled:Boolean = true;
-		protected var _state:uint = STATE_NORMAL;
+		protected var _state:uint = CONTROL_STATE_NORMAL;
 				
 		public function LinkButton(scene:GameScene, text:String=null, x:uint=0, y:uint=0)
 		{
 			super(scene);
-//			setDownTextStyle();
 			
 			setTextField(new TextField());
 			_textField.autoSize = TextFieldAutoSize.LEFT;
@@ -41,16 +37,14 @@ package com.flashmedia.gui
 			buttonMode = true;
 			useHandCursor = true;
 			setSelect(true);
-			
-//			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 		
 		private function update():void {
 			switch (_state) {
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 					textField.setTextFormat(_normalStateTextFormat);
 				break;
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					textField.setTextFormat(_highlithedStateTextFormat);
 				break;
 			}
@@ -94,10 +88,10 @@ package com.flashmedia.gui
 		
 		public function setTextFormatForState(format:TextFormat, state:uint):void {
 			switch (state) {
-				case STATE_NORMAL:
+				case CONTROL_STATE_NORMAL:
 					_normalStateTextFormat = format;
 				break;
-				case STATE_HIGHLIGHTED:
+				case CONTROL_STATE_HIGHLIGHTED:
 					_highlithedStateTextFormat = format;
 				break;
 			}
@@ -108,7 +102,7 @@ package com.flashmedia.gui
 			super.mouseOutListener(event);
 			if (_enabled) {
 				if (_highlithedStateTextFormat) {
-					_state = STATE_HIGHLIGHTED;
+					_state = CONTROL_STATE_HIGHLIGHTED;
 					update();
 				}
 			}
@@ -118,17 +112,9 @@ package com.flashmedia.gui
 			super.mouseOutListener(event);
 			
 			if (_enabled) {
-				_state = STATE_NORMAL;
+				_state = CONTROL_STATE_NORMAL;
 				update();
 			}
 		}
-		
-//		protected override function mouseClickListener(event: MouseEvent): void {
-//			super.mouseClickListener(event);
-//			
-//			if (_enabled) {
-//				update();
-//			}
-//		}
 	}
 }
