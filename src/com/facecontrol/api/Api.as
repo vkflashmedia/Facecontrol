@@ -162,6 +162,19 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
+		public function friends(uids:Array):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'friends';
+			var uidsString:String = '';
+			var uid:String;
+			for each (uid in uids) {
+				uidsString += uid + ',';
+			}
+			vars['uids'] = uidsString;
+			
+			request(vars);
+		}
+		
 		public function top100():void
 		{
 			var vars: URLVariables = new URLVariables();

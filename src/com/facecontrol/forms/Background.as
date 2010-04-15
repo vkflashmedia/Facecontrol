@@ -13,10 +13,10 @@ package com.facecontrol.forms
 	import flash.text.Font;
 	import flash.text.TextFormat;
 
-	public class Back extends GameLayer
+	public class Background extends GameLayer
 	{
 		public var menu:MainMenu;
-		public function Back(value:GameScene)
+		public function Background(value:GameScene)
 		{
 			super(value);
 			bitmap = Util.multiLoader.get(Images.BACKGROUND);

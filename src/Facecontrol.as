@@ -2,7 +2,8 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
-	import com.facecontrol.forms.Back;
+	import com.facecontrol.forms.Background;
+	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MyPhotoForm;
 	import com.facecontrol.gui.MainMenuEvent;
@@ -49,9 +50,10 @@ package {
 		private var rateBar: RatingBar;
 		private var form: Form;
 		
-		private var _back:Back;
+		private var _background:Background;
 		private var _mainForm:MainForm;
 		private var _myPhotoForm:MyPhotoForm;
+		private var _friendsForm:FriendsForm;
 		
 		public function Facecontrol() {
 //			aliFunction();
@@ -108,6 +110,8 @@ package {
 			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
 			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
 			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
+			
+			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -119,30 +123,43 @@ package {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
-				_back = new Back(this);
-				_back.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
-				_back.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
-				addChild(_back);
+				_background = new Background(this);
+				_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
+				_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
+				_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
+				addChild(_background);
 				
 				_mainForm = new MainForm(this);
-				addChild(_mainForm);
 				_mainForm.visible = false;
+				addChild(_mainForm);
 				
 				_myPhotoForm = new MyPhotoForm(this);
-				addChild(_myPhotoForm);
 				_myPhotoForm.visible = false;
+				addChild(_myPhotoForm);
+				
+				_friendsForm = new FriendsForm(this);
+				_friendsForm.visible = false;
+				addChild(_friendsForm);
 				
 				Util.vkontakte.getProfiles(Util.userId);
 			}
 		}
 		
-		private function onFirstMenuButtonClick(event:MainMenuEvent):void {
+		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
 			_mainForm.visible = true;
 			_myPhotoForm.visible = false;
+			_friendsForm.visible = false;
 		}
 		
-		private function onSecondMenuButtonClick(event:MainMenuEvent):void {
+		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
 			Util.api.getPhotos(Util.userId);
+		}
+		
+		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
+			Util.vkontakte.getFriends();
+//			_mainForm.visible = false;
+//			_myPhotoForm.visible = false;
+//			_friendsForm.visible = true;
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -170,6 +187,11 @@ package {
 						Util.src = user.photo_medium;
 						Util.src_big = user.photo_big;
 						Util.api.registerUser(Util.userId, user.first_name, user.last_name, user.nickname, user.sex, user.bdate, user.city);
+					break;
+					
+					case 'getFriends':
+						var ids:Array = response as Array;
+						Util.api.friends(ids);
 					break;
 				}
 			}
@@ -222,12 +244,21 @@ package {
 						_myPhotoForm.photos = response.photos;
 						_myPhotoForm.visible = true;
 						_mainForm.visible = false;
+						_friendsForm.visible = false;
 					break;
 					
 					case 'del_photo':
 						Util.multiLoader.unload(response.pid);
 					case 'set_main':
 						Util.api.getPhotos(Util.userId);
+					break;
+					
+					case 'friends':
+						var users:Array = response.users as Array;
+						_friendsForm.users = users;
+						_mainForm.visible = false;
+						_myPhotoForm.visible = false;
+						_friendsForm.visible = true;
 					break;
 				}
 			}
