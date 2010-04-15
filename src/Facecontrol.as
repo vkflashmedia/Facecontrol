@@ -349,16 +349,16 @@ package {
 				switch (event.entry) {
 					case 'dropIcon':
 						cb.dropIcon = _multiLoader.get("dropIcon");
-						gb.addItem(_multiLoader.get("dropIcon"));
+						//gb.addItem(_multiLoader.get("dropIcon"));
 						//gb.addItem(cb);
 					break;
 					case 'ratingBack':
 						rateBar.bitmap = _multiLoader.get("ratingBack");
-						gb.addItem(rateBar);
+						//gb.addItem(rateBar);
 					break;
 					case 'ratingIconOff':
 						rateBar.rateIconOff = _multiLoader.get("ratingIconOff");
-						gb.addItem(_multiLoader.get("ratingIconOff"));
+						//gb.addItem(_multiLoader.get("ratingIconOff"));
 					break;
 					case 'ratingIconOn':
 						rateBar.rateIconOn = _multiLoader.get("ratingIconOn");
@@ -413,7 +413,7 @@ package {
 			label.fillBackground(0xffffff, 1.0);
 			label.setSelect(true);
 			label.setHover(true);
-			label.setFocus(true);
+			label.setFocus(true, true, new Bitmap(new BitmapData(100, 40, false, 0x00ff00)), View.ALIGN_HOR_CENTER | View.ALIGN_VER_CENTER);
 			label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
 				gb.removeAllItems();
 			});
@@ -423,12 +423,13 @@ package {
 			gb.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, function (event: GridBoxEvent) : void {
 				trace((event.item as String) + ' ' + event.columnIndex + ' ' + event.rowIndex);
 			});
+			gb.debug = true;
 			gb.x = 50;
 			gb.y = 3;
 			gb.width = 550;
 			gb.height = 106;
-			gb.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
-			gb.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
+			gb.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+			//gb.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
 			//TODO autoSize - часть компонента скрывается за полосой прокрутки
 //			gb.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
 //			gb.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
@@ -449,6 +450,7 @@ package {
 				}
 				gb.addItem(str);
 			}
+			//gb.setItemFocus(new Bitmap(new BitmapData(100, 40, false, 0x00ff00)), 0);
 			addChild(gb);
 			
 			scroll = new ScrollBar(this, 200, 300, 150, 20, ScrollBar.TYPE_HORIZONTAL);
@@ -514,10 +516,9 @@ package {
 			textInput.selectable = true;
 			textInput.x = 700;
 			textInput.y = 400;
-			textInput.text = 'Input here';
+			textInput.text = 'Введите свой комментарий...';
 			textInput.width = 100;
 			textInput.type = TextFieldType.INPUT;
-			textInput.multiline = true;
 			textInput.wordWrap = true;
 			addChild(textInput);
 		}

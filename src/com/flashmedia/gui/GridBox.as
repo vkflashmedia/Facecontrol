@@ -6,11 +6,13 @@ package com.flashmedia.gui
 	import com.flashmedia.basics.View;
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.text.AntiAliasType;
 	import flash.text.TextFormat;
 
 	//TODO удаление компонентов с GridBox
+	//TODO при установке итема более тонкая настройка его фокуса, выделения и т.д
 	public class GridBox extends Form
 	{
 		/**
@@ -134,8 +136,8 @@ package com.flashmedia.gui
 					label.setTextFormat(_textFormat, _embed, _antiAliasType);
 				}
 				label.setSelect(true);
-				label.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
-				label.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
+				label.setHover(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
+				label.setFocus(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
 				label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(label);
 //				_originGameObjectWidth.push(label.width);
@@ -147,8 +149,8 @@ package com.flashmedia.gui
 				go.width = value.width;
 				go.height = value.height;
 				go.setSelect(true);
-				go.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
-				go.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
+				go.setHover(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
+				go.setFocus(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
 				go.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(go);
 //				_originGameObjectWidth.push(go.width);
@@ -156,8 +158,8 @@ package com.flashmedia.gui
 			}
 			else if (value is GameObject) {
 				value.setSelect(true);
-				value.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
-				value.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
+//				value.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
+//				value.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
 				value.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 				_gameObjects.push(value);
 				//TODO теперь можно отказаться от  _originGameObjectWidth
@@ -218,6 +220,12 @@ package com.flashmedia.gui
 				selectItem(_gameObjects[index]);
 			}
 		}
+		
+//		public function setItemFocus(value: DisplayObject, layout: int = 0): void {
+//			for each (var go: GameObject in _gameObjects) {
+//				go.setFocus(true, true, value, layout);
+//			}
+//		}
 		
 		public function get selectedColumnIndex(): uint {
 			return _selectedColumnIndex;

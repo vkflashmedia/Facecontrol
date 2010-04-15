@@ -11,6 +11,7 @@ package com.flashmedia.basics
 	import flash.text.TextFormat;
 	
 	/*
+		TODO недостаточно настроек для задания фокуса. Нет смещения по x y, выравнивания, растяжения по ширине высоте и т.п.
 		TODO разобраться как правильно рисовать прямоугольник (width - 1) или width
 		TODO изменить все координаты и размеры на Number, так как идет потеря точности.
 		Например в GridBox между выделением иногда появляются пробелы.
@@ -122,12 +123,14 @@ package com.flashmedia.basics
 		protected var _isDefaultFocus: Boolean;
 		protected var _focus: DisplayObject;
 		protected var _focusSizeMode: String;
+		protected var _focusLayout: int;
 		// настройка свойств рамки при наведении
 		protected var _hoverEnabled: Boolean;
 		protected var _viewHover: Boolean;
 		protected var _isDefaultHover: Boolean;
 		protected var _hover: DisplayObject;
 		protected var _hoverSizeMode: String;
+		protected var _hoverLayout: int;
 		// цвет фона
 		protected var _fillBackground: Boolean;
 		protected var _backgroundColor: uint;
@@ -144,8 +147,8 @@ package com.flashmedia.basics
 			_debug = false;
 			_autoSize = true;
 			setSelect(false, true);
-			setFocus(false, true, null, SIZE_MODE_BORDER);
-			setHover(false, true, null, SIZE_MODE_BORDER);
+			setFocus(false, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, SIZE_MODE_BORDER);
+			setHover(false, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, SIZE_MODE_BORDER);
 			_type = 'GameObject';
 			_backgroundColor = BACKGROUNG_COLOR;
 			_backgroundAlpha = 1.0;
@@ -481,11 +484,12 @@ package com.flashmedia.basics
 ////			sortSprites();
 //		}
 		
-		public function setFocus(enabled: Boolean, viewFocus: Boolean = true, focusDisplayObject: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
+		public function setFocus(enabled: Boolean, viewFocus: Boolean = true, focusDisplayObject: DisplayObject = null, layout: int = 0, sizeMode: String = SIZE_MODE_BORDER): void {
 			_focusEnabled = enabled;
 			_viewFocus = viewFocus;
 			_isDefaultFocus = !focusDisplayObject;
 			_focus = focusDisplayObject;
+			_focusLayout = layout;
 			_focusSizeMode = sizeMode;
 			updateFocus();
 		}
@@ -528,11 +532,12 @@ package com.flashmedia.basics
 //			//sortSprites();
 //		}
 		
-		public function setHover(enabled: Boolean, viewHover: Boolean = true, hoverDisplayObject: DisplayObject = null, sizeMode: String = SIZE_MODE_BORDER): void {
+		public function setHover(enabled: Boolean, viewHover: Boolean = true, hoverDisplayObject: DisplayObject = null, layout: int = 0, sizeMode: String = SIZE_MODE_BORDER): void {
 			_hoverEnabled = enabled;
 			_viewHover = viewHover;
 			_isDefaultHover = !hoverDisplayObject;
 			_hover = hoverDisplayObject;
+			_hoverLayout = layout;
 			_hoverSizeMode = sizeMode;
 			updateHover();
 		}
@@ -711,9 +716,11 @@ package com.flashmedia.basics
 					}
 					(_focus as Sprite).graphics.endFill();
 				}
-				if (!_view.contains(NAME_FOCUS)) {
-					_view.addDisplayObject(_focus, NAME_FOCUS, VISUAL_FOCUS_Z_ORDER);
-				}
+				_focus.visible = false;
+				_view.removeDisplayObject(NAME_FOCUS);
+//				if (!_view.contains(NAME_FOCUS)) {
+					_view.addDisplayObject(_focus, NAME_FOCUS, VISUAL_FOCUS_Z_ORDER, _focusLayout);
+//				}
 //				if (!contains(_focus)) {
 //					addChild(_focus);
 //				}
@@ -753,9 +760,11 @@ package com.flashmedia.basics
 //						addChild(_hover);
 //					}
 				}
-				if (!_view.contains(NAME_HOVER)) {
-					_view.addDisplayObject(_hover, NAME_HOVER, VISUAL_HOVER_Z_ORDER);
-				}
+				_hover.visible = false;
+				_view.removeDisplayObject(NAME_HOVER);
+				//if (!_view.contains(NAME_HOVER)) {
+					_view.addDisplayObject(_hover, NAME_HOVER, VISUAL_HOVER_Z_ORDER, _hoverLayout);
+				//}
 			}
 			else {
 				if (_hover) {
