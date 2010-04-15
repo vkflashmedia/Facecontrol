@@ -19,6 +19,7 @@ package {
 	import com.flashmedia.gui.GridBoxEvent;
 	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
+	import com.flashmedia.gui.Memo;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.gui.ScrollBar;
@@ -317,16 +318,16 @@ package {
 				switch (event.entry) {
 					case 'dropIcon':
 						cb.dropIcon = _multiLoader.get("dropIcon");
-						gb.addItem(_multiLoader.get("dropIcon"));
+						//gb.addItem(_multiLoader.get("dropIcon"));
 						//gb.addItem(cb);
 					break;
 					case 'ratingBack':
 						rateBar.bitmap = _multiLoader.get("ratingBack");
-						gb.addItem(rateBar);
+						//gb.addItem(rateBar);
 					break;
 					case 'ratingIconOff':
 						rateBar.rateIconOff = _multiLoader.get("ratingIconOff");
-						gb.addItem(_multiLoader.get("ratingIconOff"));
+						//gb.addItem(_multiLoader.get("ratingIconOff"));
 					break;
 					case 'ratingIconOn':
 						rateBar.rateIconOn = _multiLoader.get("ratingIconOn");
@@ -381,7 +382,7 @@ package {
 			label.fillBackground(0xffffff, 1.0);
 			label.setSelect(true);
 			label.setHover(true);
-			label.setFocus(true);
+			label.setFocus(true, true, new Bitmap(new BitmapData(100, 40, false, 0x00ff00)), View.ALIGN_HOR_CENTER | View.ALIGN_VER_CENTER);
 			label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
 				gb.removeAllItems();
 			});
@@ -391,12 +392,13 @@ package {
 			gb.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, function (event: GridBoxEvent) : void {
 				trace((event.item as String) + ' ' + event.columnIndex + ' ' + event.rowIndex);
 			});
+			gb.debug = true;
 			gb.x = 50;
 			gb.y = 3;
 			gb.width = 550;
 			gb.height = 106;
-			gb.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
-			gb.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
+			gb.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+			//gb.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
 			//TODO autoSize - часть компонента скрывается за полосой прокрутки
 //			gb.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
 //			gb.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
@@ -406,17 +408,18 @@ package {
 			gb.indentBetweenRows = 0;
 			gb.indentBetweenCols = 0;
 			gb.padding = 0;
-			gb.addItem('VeryVeryVeryLongItem\nNew line text');
-			for (var i: uint = 0; i < 20; i++) {
-				var str: String = 'Item' + i.toString();
-				if (i == 2) {
-					str = 'Long long Item 10';
-				}
-				if (i == 7) {
-					str = 'Line1\nLine2\nLine3';
-				}
-				gb.addItem(str);
-			}
+//			gb.addItem('VeryVeryVeryLongItem\nNew line text');
+//			for (var i: uint = 0; i < 20; i++) {
+//				var str: String = 'Item' + i.toString();
+//				if (i == 2) {
+//					str = 'Long long Item 10';
+//				}
+//				if (i == 7) {
+//					str = 'Line1\nLine2\nLine3';
+//				}
+//				gb.addItem(str);
+//			}
+			//gb.setItemFocus(new Bitmap(new BitmapData(100, 40, false, 0x00ff00)), 0);
 			addChild(gb);
 			
 			scroll = new ScrollBar(this, 200, 300, 150, 20, ScrollBar.TYPE_HORIZONTAL);
@@ -482,10 +485,9 @@ package {
 			textInput.selectable = true;
 			textInput.x = 700;
 			textInput.y = 400;
-			textInput.text = 'Input here';
+			textInput.text = 'Введите свой комментарий...';
 			textInput.width = 100;
 			textInput.type = TextFieldType.INPUT;
-			textInput.multiline = true;
 			textInput.wordWrap = true;
 			addChild(textInput);
 		}
