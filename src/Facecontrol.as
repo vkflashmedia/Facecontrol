@@ -19,7 +19,6 @@ package {
 	import com.flashmedia.gui.GridBoxEvent;
 	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
-	import com.flashmedia.gui.Memo;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.gui.ScrollBar;
@@ -56,7 +55,7 @@ package {
 		public function Facecontrol() {
 //			aliFunction();
 //			artemFunction();
-			testComponents();
+			//testComponents();
 
 //			_images = new Images();
 //			
@@ -68,7 +67,7 @@ package {
 //			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 //			
 //			load();
-			/*
+			
 			_images = new Images();
 			
 //			MultiLoader.testing = true;
@@ -79,7 +78,7 @@ package {
 			
 			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
 			Util.api.addEventListener(ApiEvent.ERROR, onRequestError);
-			*/
+			
 		}
 		
 		private function load():void {
@@ -408,17 +407,17 @@ package {
 			gb.indentBetweenRows = 0;
 			gb.indentBetweenCols = 0;
 			gb.padding = 0;
-//			gb.addItem('VeryVeryVeryLongItem\nNew line text');
-//			for (var i: uint = 0; i < 20; i++) {
-//				var str: String = 'Item' + i.toString();
-//				if (i == 2) {
-//					str = 'Long long Item 10';
-//				}
-//				if (i == 7) {
-//					str = 'Line1\nLine2\nLine3';
-//				}
-//				gb.addItem(str);
-//			}
+			gb.addItem('VeryVeryVeryLongItem\nNew line text');
+			for (var i: uint = 0; i < 20; i++) {
+				var str: String = 'Item' + i.toString();
+				if (i == 2) {
+					str = 'Long long Item 10';
+				}
+				if (i == 7) {
+					str = 'Line1\nLine2\nLine3';
+				}
+				gb.addItem(str);
+			}
 			//gb.setItemFocus(new Bitmap(new BitmapData(100, 40, false, 0x00ff00)), 0);
 			addChild(gb);
 			
