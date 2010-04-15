@@ -26,7 +26,7 @@ package com.facecontrol.gui
 			this.height = height;
 			
 			var photoBitmap:Bitmap = new Bitmap(Util.multiLoader.get(_photoData.pid).bitmapData);
-			var photo:Photo = new Photo(_scene, photoBitmap, 7, 0, 61, 57, Photo.BORDER_TYPE_RECT);
+			var photo:Photo = new Photo(_scene, photoBitmap, 4, 4, 61, 57, Photo.BORDER_TYPE_RECT);
 			photo.photoBorderColor = 0x824e4c;
 			photo.photoBorder = 1;
 			addChild(photo);
@@ -94,7 +94,8 @@ package com.facecontrol.gui
 			
 			if (_photoData.main == 1) {
 				var v:Bitmap = Util.multiLoader.get(Images.V);
-				v.y = 42;
+				v.x = -4;
+				v.y = 46;
 				addChild(v);
 			}
 		}
