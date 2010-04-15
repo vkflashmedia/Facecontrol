@@ -176,18 +176,14 @@ package com.facecontrol.forms
 			_grid.y = 209;
 			_grid.width = 290;
 			_grid.height = 225;
-//			_grid.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
-//			_grid.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
 //			_grid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
 //			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
 			_grid.indentBetweenRows = 27;
 			_grid.indentBetweenCols= 0;
 			_grid.padding = 0;
 			_grid.debug = true;
-			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
-			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
-//			_grid.columnWidthPolicy = GridBox.COLUMN_WIDTH_POLICY_ALL_SAME;
-//			_grid.rowHeightPolicy = GridBox.ROW_HEIGHT_POLICY_ALL_SAME;
+//			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+//			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
 			addChild(_grid);
 			
 			_pagination = new Pagination(_scene, 500, 462);
@@ -213,6 +209,7 @@ package com.facecontrol.forms
 //				p = new MyPhotoGridItem(_scene, _photos[i], 141, 57);
 				p = new MyPhotoGridItem(_scene, _photos[i], 127, 64);
 				_grid.addItem(p);
+//				_grid.addItem("qwe");
 			}
 		}
 		
