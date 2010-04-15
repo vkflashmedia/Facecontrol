@@ -24,12 +24,13 @@ package com.facecontrol.util
 		public static var api:Api = new Api();
 		public static var vkontakte:VKontakte = new VKontakte();
 		
-		public static function createLabel(text:String, x:int, y:int, width:int=0):TextField {
+		public static function createLabel(text:String, x:int, y:int, width:int=0, height:int=0):TextField {
 			var label:TextField = new TextField();
 			label.text = (text) ? text : "";
 			label.x = x;
 			label.y = y;
 			label.width = width;
+			label.height = height;
 			label.selectable = false;
 			
 			return label;
