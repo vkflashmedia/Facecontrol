@@ -176,8 +176,8 @@ package com.facecontrol.forms
 			_grid.y = 209;
 			_grid.width = 290;
 			_grid.height = 225;
-			_grid.widthPolicy = GridBox.WIDTH_POLICY_AUTO_SIZE;
-			_grid.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
+			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
 			_grid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
 			_grid.indentBetweenRows = 27;
