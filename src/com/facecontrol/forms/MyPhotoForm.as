@@ -258,6 +258,7 @@ package com.facecontrol.forms
 		public function multiLoaderCompliteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+				
 				if (_main) {
 					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
 				}
