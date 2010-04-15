@@ -112,6 +112,7 @@ package {
 			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
 			
 			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.FRIENDS_LINE_PATH, Images.FRIENDS_LINE, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {

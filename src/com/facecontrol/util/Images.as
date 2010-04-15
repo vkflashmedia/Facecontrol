@@ -38,6 +38,7 @@ package com.facecontrol.util
 		public static const ADD_PHOTO_BUTTON_GREY:String = 'addPhotoButtonGrey';
 		
 		public static const FRIENDS_BACKGROUND:String = 'FRIENDS_BACKGROUND';
+		public static const FRIENDS_LINE:String = 'FRIENDS_LINE';
 		
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
@@ -74,6 +75,7 @@ package com.facecontrol.util
 		public static const ADD_PHOTO_BUTTON_GREY_PATH:String = 'images\\add_foto\\button_grey.png';
 		
 		public static const FRIENDS_BACKGROUND_PATH:String = 'images\\my_friends\\bgr.png';
+		public static const FRIENDS_LINE_PATH:String = 'images\\my_friends\\line.png';
 
 	}
 }
