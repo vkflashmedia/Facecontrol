@@ -34,7 +34,7 @@ package com.facecontrol.api
 		
 		private function completeHandler(event:Event):void
 		{
-			trace("completeHandler: "+loader.data);
+//			trace("completeHandler: "+loader.data);
 			try {
 				var json:Object = JSON.deserialize(loader.data);
 				

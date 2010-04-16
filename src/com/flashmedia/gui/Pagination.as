@@ -58,6 +58,10 @@ package com.flashmedia.gui
 			init();
 		}
 		
+		public function get pagesCount():uint {
+			return _pagesCount;
+		}
+		
 		public function get currentPage():int {
 			return _currentPage;
 		}

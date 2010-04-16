@@ -28,6 +28,7 @@ package com.facecontrol.util
 		public static const MY_PHOTO_BUTTON_ORANGE:String = 'myPhotoButtonOrange';
 		public static const MY_PHOTO_BUTTON_GRAY:String = 'myPhotoButtonGray';
 		public static const MY_PHOTO_SMILE_ICO:String = 'myPhotoSmileIco';
+		public static const MY_PHOTO_SELECTION:String = 'MY_PHOTO_SELECTION';
 		public static const ARROW_LEFT:String = 'arrowLeft';
 		public static const ARROW_RIGHT:String = 'arrowRight';
 		
@@ -65,6 +66,7 @@ package com.facecontrol.util
 		public static const MY_PHOTO_BUTTON_ORANGE_PATH:String = 'images\\My_photo\\button_orange.png';
 		public static const MY_PHOTO_BUTTON_GRAY_PATH:String = 'images\\My_photo\\button_grey.png';
 		public static const MY_PHOTO_SMILE_ICO_PATH:String = 'images\\My_photo\\smile_ico.png';
+		public static const MY_PHOTO_SELECTION_PATH:String = 'images\\My_photo\\selection.png';
 		public static const ARROW_LEFT_PATH:String = 'images\\my_friends\\ar_l.png';
 		public static const ARROW_RIGHT_PATH:String = 'images\\my_friends\\ar_r.png';
 		

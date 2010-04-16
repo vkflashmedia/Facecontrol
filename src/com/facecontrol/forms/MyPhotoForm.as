@@ -68,7 +68,7 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			label = Util.createLabel("Выбери самое лучшее фото твоей жизни", 38, 146, 125);
+			label = Util.createLabel("Выбери самое лучшее фото твоей жизни", 38, 146, 125, 50);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -91,7 +91,7 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			label = Util.createLabel("Выбери главное фото, которое будет учавствовать в голосовании", 273, 146, 240);
+			label = Util.createLabel("Выбери главное фото, которое будет учавствовать в голосовании", 273, 146, 240, 50);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -172,8 +172,8 @@ package com.facecontrol.forms
 			addChild(deletePhoto);
 			
 			_grid = new GridBox(_scene, 2, 3);
-			_grid.x = 288;
-			_grid.y = 209;
+			_grid.x = 281;
+			_grid.y = 203;
 			_grid.width = 290;
 			_grid.height = 225;
 			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
@@ -182,8 +182,8 @@ package com.facecontrol.forms
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
 			_grid.indentBetweenRows = 27;
 			_grid.indentBetweenCols= 0;
-			_grid.padding = 0;
-			_grid.debug = true;
+			_grid.padding = 3;
+//			_grid.debug = true;
 			addChild(_grid);
 			
 			_pagination = new Pagination(_scene, 500, 462);
@@ -204,10 +204,11 @@ package com.facecontrol.forms
 			var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 			var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _photos.length ? start + MAX_PHOTO_COUNT_IN_GRID : _photos.length;
 			var p:MyPhotoGridItem;
+			var b:Bitmap = Util.multiLoader.get(Images.MY_PHOTO_SELECTION);
 			
 			for (var i:uint = start; i < end; ++i) {
-//				p = new MyPhotoGridItem(_scene, _photos[i], 141, 57);
 				p = new MyPhotoGridItem(_scene, _photos[i], 127, 64);
+				p.setFocus(true, true, new Bitmap(b.bitmapData));
 				_grid.addItem(p);
 			}
 		}
@@ -224,19 +225,18 @@ package com.facecontrol.forms
 			}
 			
 			_pagination.pagesCount = Math.ceil(_photos.length / MAX_PHOTO_COUNT_IN_GRID);
+			_pagination.visible = _pagination.pagesCount > 1;
 			updateGrid();
 		}
 		
 		public function set photos(value:Array):void {
 			if (value) {
-//				_photos = new Array(value.length);
 				_photos = value;
 				var photo:Object;
 				
 				for each (photo in _photos) {
-//					_photos[i] = value[i].photo;
 					if (!Util.multiLoader.hasLoaded(photo.pid)) {
-						Util.multiLoader.load(photo.src_big, photo.pid, "Bitmap");
+						Util.multiLoader.load(photo.src_big, photo.pid, 'Bitmap');
 					}
 					if (photo.main == 1) _main = photo;
 				}
@@ -264,7 +264,7 @@ package com.facecontrol.forms
 		
 		public function onMarkAsMainClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
-			Util.api.setMain(gridItem.photoData.pid);
+			if (gridItem) Util.api.setMain(gridItem.photoData.pid);
 		}
 		
 		public function onAddPhotoClick(event:GameObjectEvent):void {

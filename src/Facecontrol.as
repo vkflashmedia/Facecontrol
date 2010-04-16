@@ -102,6 +102,7 @@ package {
 			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
 			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
 			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_SELECTION_PATH, Images.MY_PHOTO_SELECTION, 'Bitmap');
 			
 			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
 			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
