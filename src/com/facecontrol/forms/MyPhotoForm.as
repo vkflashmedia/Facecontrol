@@ -209,14 +209,13 @@ package com.facecontrol.forms
 //				p = new MyPhotoGridItem(_scene, _photos[i], 141, 57);
 				p = new MyPhotoGridItem(_scene, _photos[i], 127, 64);
 				_grid.addItem(p);
-//				_grid.addItem("qwe");
 			}
 		}
 		
 		private function update():void {
 			if (_main) {
 				var format:TextFormat = _ratingAverageField.getTextFormat();
-				_ratingAverageField.text = _main.rating_average;
+				_ratingAverageField.text = (_main.rating_average) ? _main.rating_average : "";
 				_ratingAverageField.setTextFormat(format);
 				
 				format = _votesCountField.getTextFormat();
@@ -230,19 +229,16 @@ package com.facecontrol.forms
 		
 		public function set photos(value:Array):void {
 			if (value) {
-				_photos = new Array(value.length);
-				var i:uint;
+//				_photos = new Array(value.length);
+				_photos = value;
+				var photo:Object;
 				
-				for (i = 0; i < value.length; ++i) {
-					_photos[i] = value[i].photo;
-					
-					if (!Util.multiLoader.hasLoaded(_photos[i].pid)) {
-						Util.multiLoader.load(_photos[i].src_big, _photos[i].pid, "Bitmap");
+				for each (photo in _photos) {
+//					_photos[i] = value[i].photo;
+					if (!Util.multiLoader.hasLoaded(photo.pid)) {
+						Util.multiLoader.load(photo.src_big, photo.pid, "Bitmap");
 					}
-					
-					if (_photos[i].main == 1) {
-						_main = _photos[i];
-					}
+					if (photo.main == 1) _main = photo;
 				}
 				
 				if (Util.multiLoader.isLoaded) {

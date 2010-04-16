@@ -82,24 +82,18 @@ package com.facecontrol.forms
 			var user:Object;
 			
 			for each (user in _users) {
-				
 				if (!Util.multiLoader.hasLoaded(user.pid)) {
-					if (user.src_big) {
-						Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-					}
+					if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
 				}
 			}
 			
-			if (Util.multiLoader.isLoaded) {
-				initGrid();
-			}
-			else {
-				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-			}
+			if (Util.multiLoader.isLoaded) initGrid();
+			else Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 		}
 		
 		public function loadCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 				initGrid();
 			}
 		}
