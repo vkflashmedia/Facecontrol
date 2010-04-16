@@ -31,22 +31,26 @@ package com.facecontrol.api
 		
 		private function errorHandler(e:IOErrorEvent):void {
 			trace("errorHandler: "+e.text);
-			dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, 255));
+			dispatchEvent(new ApiEvent(ApiEvent.ERROR, e.text, 255));
 		}
 		
 		private function completeHandler(event:Event):void
 		{
 			trace("completeHandler: "+loader.data);
 			try {
-				var response:Object = JSON.deserialize(loader.data);
-				response = response.response;
+				var json:Object = JSON.deserialize(loader.data);
 				
-				if (response.hasOwnProperty('err_code')) {
-					var errorCode:int = response.err_code;
-					dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, errorCode));
+				if (json.hasOwnProperty('err_code')) {
+					var errorCode:int = json.err_code;
+					var errorMessage:String = null;
+					
+					if (json.hasOwnProperty('err_msg')) {
+						errorMessage = json.err_msg;
+					}
+					dispatchEvent(new ApiEvent(ApiEvent.ERROR, errorMessage, errorCode));
 				}
-				else {
-					dispatchEvent(new ApiEvent(ApiEvent.COMPLETED, response));
+				else if (json.hasOwnProperty('response')) {
+					dispatchEvent(new ApiEvent(ApiEvent.COMPLETED, json.response));
 				}
 			}
 			catch (e:Error) {
@@ -61,8 +65,10 @@ package com.facecontrol.api
 			vars['uid'] = uid;
 			vars['fname'] = fname;
 			vars['lname'] = lname;
+			
 			if (nickname != null) vars['nickname'] = nickname;
 			vars['sex'] = sex;
+			
 			if (bdate != null) vars['bdate'] = bdate;
 			vars['city'] = city;
 			
@@ -77,6 +83,7 @@ package com.facecontrol.api
 			vars['sex'] = sex;
 			vars['age_min'] = minAge;
 			vars['max_age'] = maxAge;
+			
 			if (city != null) vars['city'] = city;
 			
 			request(vars);

@@ -158,9 +158,6 @@ package {
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
-//			_mainForm.visible = false;
-//			_myPhotoForm.visible = false;
-//			_friendsForm.visible = true;
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -229,19 +226,19 @@ package {
 					case 'add_photo':
 						Util.api.loadSettings(Util.userId);
 					break;
-					case "load_settings":
+					case 'load_settings':
 						_mainForm.filter = response;
 						_mainForm.visible = true;
 					break;
-					case "next_photo":
+					case 'next_photo':
 						_mainForm.nextPhoto(response);
 					break;
 					
-					case "vote":
+					case 'vote':
 						_mainForm.vote(response);
 					break;
 					
-					case "get_photos":
+					case 'get_photos':
 						_myPhotoForm.photos = response.photos;
 						_myPhotoForm.visible = true;
 						_mainForm.visible = false;
@@ -250,13 +247,13 @@ package {
 					
 					case 'del_photo':
 						Util.multiLoader.unload(response.pid);
+						
 					case 'set_main':
 						Util.api.getPhotos(Util.userId);
 					break;
 					
 					case 'friends':
-						var users:Array = response.users as Array;
-						_friendsForm.users = users;
+						_friendsForm.users = response.users;
 						_mainForm.visible = false;
 						_myPhotoForm.visible = false;
 						_friendsForm.visible = true;
