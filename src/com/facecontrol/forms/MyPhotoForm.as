@@ -216,7 +216,7 @@ package com.facecontrol.forms
 		private function update():void {
 			if (_main) {
 				var format:TextFormat = _ratingAverageField.getTextFormat();
-				_ratingAverageField.text = _main.rating_average;
+				_ratingAverageField.text = (_main.rating_average) ? _main.rating_average : '';
 				_ratingAverageField.setTextFormat(format);
 				
 				format = _votesCountField.getTextFormat();

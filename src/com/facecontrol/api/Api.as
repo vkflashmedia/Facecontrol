@@ -11,7 +11,8 @@ package com.facecontrol.api
 	
 	public class Api extends EventDispatcher
 	{
-		private static const FC_API_SERVER:String = 'http://facecontrol/';
+		//private static const FC_API_SERVER:String = 'http://facecontrol/';
+		private static const FC_API_SERVER:String = 'http://www.public.facecontrol/';
 		private const loader:URLLoader = new URLLoader();
 		
 		public function Api()
@@ -29,12 +30,13 @@ package com.facecontrol.api
 		}
 		
 		private function errorHandler(e:IOErrorEvent):void {
+			trace("errorHandler: "+e.text);
 			dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, 255));
 		}
 		
 		private function completeHandler(event:Event):void
 		{
-//			trace("completeHandler: "+loader.data);
+			trace("completeHandler: "+loader.data);
 			try {
 				var response:Object = JSON.deserialize(loader.data);
 				response = response.response;
