@@ -398,6 +398,7 @@ package com.facecontrol.forms
 		
 		public function set filter(obj:Object):void {
 			_filter = obj;
+			updateFilter();
 		}
 		
 		public function onRateClicked(event:MouseEvent):void {

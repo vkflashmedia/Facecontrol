@@ -38,7 +38,7 @@ package com.facecontrol.api
 			try {
 				var json:Object = JSON.deserialize(loader.data);
 				
-				if (json.hasOwnProperty('err_code')) {
+				if (json.hasOwnProperty('error')) {
 					var errorCode:int = json.err_code;
 					var errorMessage:String = null;
 					

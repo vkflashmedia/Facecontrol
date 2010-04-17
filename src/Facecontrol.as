@@ -67,8 +67,8 @@ package {
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 			
-			Util.api.addEventListener(ApiEvent.COMPLETED, onRequestComplited);
-			Util.api.addEventListener(ApiEvent.ERROR, onRequestError);
+			Util.api.addEventListener(ApiEvent.COMPLETED, onFacecontrolRequestComplited);
+			Util.api.addEventListener(ApiEvent.ERROR, onFacecontrolRequestError);
 			
 			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
 			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
@@ -165,9 +165,6 @@ package {
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
 			try {
 				switch (event.errorCode) {
-					case 10:
-						_mainForm.updateFilter();
-					break;
 					default:
 						trace('onVkontakteRequestError - ' + event.errorMessage);
 				}
@@ -200,7 +197,7 @@ package {
 			}
 		}
 		
-		private function onRequestError(event:ApiEvent):void {
+		public function onFacecontrolRequestError(event:ApiEvent):void {
 			try {
 				switch (event.errorCode) {
 					case 10:
@@ -215,7 +212,7 @@ package {
 			}
 		}
 		
-		private function onRequestComplited(event:ApiEvent):void {
+		private function onFacecontrolRequestComplited(event:ApiEvent):void {
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
