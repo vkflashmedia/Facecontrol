@@ -130,7 +130,7 @@ package com.facecontrol.api
 		public function setComment(pid:int, comment:String):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'edit_photo';
+			vars['method'] = 'set_comment';
 			vars['pid'] = pid;
 			vars['comment'] = comment;
 			

@@ -151,7 +151,6 @@ package com.facecontrol.forms
 			_commentInput.antiAliasType = AntiAliasType.ADVANCED;
 			_commentInput.type = TextFieldType.INPUT;
 			_commentInput.wordWrap = true;
-			_commentInput.addEventListener(Event.CHANGE, onCommentChange);
 			_commentInput.addEventListener(FocusEvent.FOCUS_OUT, onMouseOut);
 			addChild(_commentInput);
 			
