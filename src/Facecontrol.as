@@ -103,6 +103,7 @@ package {
 			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
 			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
 			Util.multiLoader.load(Images.MY_PHOTO_SELECTION_PATH, Images.MY_PHOTO_SELECTION, 'Bitmap');
+			Util.multiLoader.load(Images.MY_PHOTO_COMMENT_FROM_PATH, Images.MY_PHOTO_COMMENT_FORM, 'Bitmap');
 			
 			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
 			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
@@ -258,6 +259,10 @@ package {
 						_mainForm.visible = false;
 						_myPhotoForm.visible = false;
 						_friendsForm.visible = true;
+					break;
+					
+					case 'edit_photo':
+						Util.api.getPhotos(Util.userId);
 					break;
 				}
 			}

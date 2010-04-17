@@ -34,7 +34,7 @@ package com.facecontrol.api
 		
 		private function completeHandler(event:Event):void
 		{
-//			trace("completeHandler: "+loader.data);
+			trace("completeHandler: "+loader.data);
 			try {
 				var json:Object = JSON.deserialize(loader.data);
 				
@@ -127,15 +127,12 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
-		public function editPhoto(pid:int, src:String, src_small:String, src_big:String, comment:String=null):void
+		public function setComment(pid:int, comment:String):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'edit_photo';
 			vars['pid'] = pid;
-			vars['src'] = src;
-			vars['src_small'] = src_small;
-			vars['src_big'] = src_big;
-			if (comment != null) vars['comment'] = comment;
+			vars['comment'] = comment;
 			
 			request(vars);
 		}
