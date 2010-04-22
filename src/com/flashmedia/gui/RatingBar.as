@@ -27,6 +27,7 @@ package com.flashmedia.gui
 		public function RatingBar(value: GameScene, pointsCount: uint = POINTS_COUNT_DEF)
 		{
 			super(value);
+			
 			width = 100;
 			height = 20;
 			setSelect(true);

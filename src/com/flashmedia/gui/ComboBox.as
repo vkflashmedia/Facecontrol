@@ -192,6 +192,7 @@ package com.flashmedia.gui
 			_dropList.visible = false;
 			zOrder = _savedZOrder;
 			updateComboBox();
+			dispatchEvent(new ComboBoxEvent(ComboBoxEvent.ITEM_SELECT));
 		}
 		
 //		private function onDropIconClickListener(event: GameObjectEvent): void {

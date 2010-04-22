@@ -10,6 +10,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
+	import com.flashmedia.gui.ComboBoxEvent;
 	import com.flashmedia.gui.GridBoxEvent;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.RatingBar;
@@ -53,6 +54,7 @@ package com.facecontrol.forms
 		private var _previous:Object;
 		
 		private var _previousLayer:Sprite;
+		private var _morePhotos:LinkButton;
 		
 		public function MainForm(value:GameScene)
 		{
@@ -84,7 +86,6 @@ package com.facecontrol.forms
 			_rateBar.rateIconOn = Util.multiLoader.get(Images.RATING_ON);
 			_rateBar.buttonMode = true;
 			_rateBar.useHandCursor = true;
-			
 			_rateBar.addEventListener(MouseEvent.CLICK, onRateClicked);
 			
 			addChild(_rateBar);
@@ -94,11 +95,12 @@ package com.facecontrol.forms
 			superIcon.y = 75;
 			addChild(superIcon);
 			
-			var otherPhotos:LinkButton = new LinkButton(value, "Еще фото", 195, 150);
-			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
-			otherPhotos.textField.embedFonts = true;
-			otherPhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
-			addChild(otherPhotos);
+			_morePhotos = new LinkButton(value, "Еще фото", 195, 150);
+			_morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
+			_morePhotos.textField.embedFonts = true;
+			_morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_morePhotos.visible = false;
+			addChild(_morePhotos);
 			
 			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
 			addChild(_bigPhoto);
@@ -170,6 +172,7 @@ package com.facecontrol.forms
 			_sexBox.addItem(Constants.SEX_MALE);
 			_sexBox.addItem(Constants.SEX_BOTH);
 			_sexBox.selectedItem = Constants.SEX_FEMALE;
+			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onSexChange);
 			addChild(_sexBox);
 			
 			filterLabel = createLabel("От:", 470, 364);
@@ -377,6 +380,7 @@ package com.facecontrol.forms
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
 				_bigPhoto.photo = image;
+				_morePhotos.visible = true;
 				
 				if (_nameField) {
 					_nameField.y = _bigPhoto.y + _bigPhoto.height + 4;
@@ -417,6 +421,10 @@ package com.facecontrol.forms
 //				TODO:
 //				_maxAgeBox.selectedItem = _minAgeBox.selectedIndex;
 			}
+		}
+		
+		public function onSexChange(event:ComboBoxEvent):void {
+//			TODO:
 		}
 	}
 }
