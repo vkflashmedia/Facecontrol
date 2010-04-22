@@ -18,7 +18,7 @@ package com.facecontrol.util
 		public static var src:String;
 		public static var src_big:String;
 		
-		public static var userId:uint = 11757602;//9028622;
+		public static var userId:uint = /*11757602;*/9028622;
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var scene:GameScene;
 		public static var api:Api = new Api();

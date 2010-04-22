@@ -4,6 +4,7 @@ package com.facecontrol.gui
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
 	import flash.text.AntiAliasType;
@@ -14,8 +15,6 @@ package com.facecontrol.gui
 
 	public class MyPhotoGridItem extends GameObject
 	{
-		private static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
-		
 		private var _photoData:Object;
 		
 		public function MyPhotoGridItem(value:GameScene, photoData:Object, width:Number, height:Number)
@@ -32,7 +31,7 @@ package com.facecontrol.gui
 			addChild(photo);
 			
 			if (_photoData.votes_count > 0) {
-				var star:Bitmap = new Bitmap(Util.multiLoader.get(Images.RATING_ON).bitmapData);
+				var star:Bitmap = BitmapUtil.cloneImageNamed(Images.RATING_ON);
 				star.x = 73;
 				star.y = 5;
 				addChild(star);
@@ -41,7 +40,7 @@ package com.facecontrol.gui
 				rating.x = 93;
 				rating.autoSize = TextFieldAutoSize.LEFT;
 				rating.text = _photoData.rating_average;
-				rating.setTextFormat(new TextFormat(tahoma.fontName, 17.7, 0xffffff));
+				rating.setTextFormat(new TextFormat(Util.tahoma.fontName, 17.7, 0xffffff));
 				rating.embedFonts = true;
 				rating.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(rating);
@@ -52,7 +51,7 @@ package com.facecontrol.gui
 				votes.width = 45;
 				votes.height = 30;
 				votes.text = _photoData.votes_count;
-				votes.setTextFormat(new TextFormat(tahoma.fontName, 10, 0xb0dee6));
+				votes.setTextFormat(new TextFormat(Util.tahoma.fontName, 10, 0xb0dee6));
 				votes.embedFonts = true;
 				votes.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(votes);
@@ -63,7 +62,7 @@ package com.facecontrol.gui
 				label.width = 45;
 				label.height = 30;
 				label.text = "голосов";
-				label.setTextFormat(new TextFormat(tahoma.fontName, 10, 0x9a9a9a));
+				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 10, 0x9a9a9a));
 				label.embedFonts = true;
 				label.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(label);
@@ -75,7 +74,7 @@ package com.facecontrol.gui
 				noVotes1.width = 40;
 				noVotes1.text = "нет";
 				noVotes1.autoSize = TextFieldAutoSize.CENTER;
-				noVotes1.setTextFormat(new TextFormat(tahoma.fontName, 10, 0x9a9a9a));
+				noVotes1.setTextFormat(new TextFormat(Util.tahoma.fontName, 10, 0x9a9a9a));
 				noVotes1.embedFonts = true;
 				noVotes1.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(noVotes1);
@@ -86,7 +85,7 @@ package com.facecontrol.gui
 				noVotes2.width = 40;
 				noVotes2.text = "голосов";
 				noVotes2.autoSize = TextFieldAutoSize.CENTER;
-				noVotes2.setTextFormat(new TextFormat(tahoma.fontName, 10, 0x9a9a9a));
+				noVotes2.setTextFormat(new TextFormat(Util.tahoma.fontName, 10, 0x9a9a9a));
 				noVotes2.embedFonts = true;
 				noVotes2.antiAliasType = AntiAliasType.ADVANCED;
 				addChild(noVotes2);

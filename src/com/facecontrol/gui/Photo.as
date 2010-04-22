@@ -117,7 +117,7 @@ package com.facecontrol.gui
 		
 		public function set photo(value:Bitmap):void {
 			if (value != null) {
-				_photo = BitmapUtil.clone(value);
+				_photo = BitmapUtil.cloneBitmap(value);
 				update();
 			}
 		}

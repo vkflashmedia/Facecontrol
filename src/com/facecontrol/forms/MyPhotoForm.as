@@ -107,7 +107,7 @@ package com.facecontrol.forms
 			_mainPhoto.photoBorder = 1;
 			addChild(_mainPhoto);
 			
-			var bigStar:Bitmap = BitmapUtil.clone(Util.multiLoader.get(Images.BIG_STAR));
+			var bigStar:Bitmap = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
 			bigStar.x = 38;
 			bigStar.y = 376;
 			addChild(bigStar);
@@ -228,11 +228,10 @@ package com.facecontrol.forms
 			var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 			var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _photos.length ? start + MAX_PHOTO_COUNT_IN_GRID : _photos.length;
 			var p:MyPhotoGridItem;
-			var b:Bitmap = Util.multiLoader.get(Images.MY_PHOTO_SELECTION);
 			
 			for (var i:uint = start; i < end; ++i) {
 				p = new MyPhotoGridItem(_scene, _photos[i], 127, 64);
-				p.setFocus(true, true, new Bitmap(b.bitmapData));
+				p.setFocus(true, true, BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SELECTION));
 				_grid.addItem(p);
 			}
 		}

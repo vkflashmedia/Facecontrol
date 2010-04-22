@@ -105,12 +105,14 @@ package com.facecontrol.forms
 			_friendsCount.text = 'всего: ' + count;
 			_friendsCount.setTextFormat(format);
 			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
+			_pagination.visible = _pagination.pagesCount > 1;
 			
 			var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 			var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 			
+			_grid.removeAllItems();
 			for (i = start; i < end; ++i) {
-				var item:FriendGridItem = new FriendGridItem(_scene, _users[i], i == count - 1);
+				var item:FriendGridItem = new FriendGridItem(_scene, _users[i], i != count - 1);
 				_grid.addItem(item);
 			}
 		}

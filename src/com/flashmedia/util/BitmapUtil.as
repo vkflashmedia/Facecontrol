@@ -1,5 +1,7 @@
 package com.flashmedia.util
 {
+	import com.facecontrol.util.Util;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
@@ -17,8 +19,12 @@ package com.flashmedia.util
 		{
 		}
 		
-		public static function clone(image:Bitmap):Bitmap {
+		public static function cloneBitmap(image:Bitmap):Bitmap {
 			return new Bitmap(image.bitmapData);
+		}
+		
+		public static function cloneImageNamed(imageName:String):Bitmap {
+			return new Bitmap(Util.multiLoader.get(imageName).bitmapData);
 		}
 
 		public static function scaleImage(bitmap: Bitmap, width: uint, height: uint, ... attrs): void {

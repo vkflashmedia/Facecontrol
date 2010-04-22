@@ -113,7 +113,7 @@ package com.facecontrol.forms
 			_previousLayer.addChild(_smallPhoto);
 			
 			
-			var bigStar:Bitmap = BitmapUtil.clone(Util.multiLoader.get(Images.BIG_STAR));
+			var bigStar:Bitmap = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
 			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;
 			bigStar.x = 44;
 			_previousLayer.addChild(bigStar);
