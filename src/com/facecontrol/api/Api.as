@@ -1,5 +1,6 @@
 package com.facecontrol.api
 {
+	import com.facecontrol.util.Util;
 	import com.serialization.json.JSON;
 	
 	import flash.events.Event;
@@ -174,6 +175,7 @@ package com.facecontrol.api
 			for each (uid in uids) {
 				uidsString += uid + ',';
 			}
+			vars['viewer_id'] = Util.userId;
 			vars['uids'] = uidsString;
 			
 			request(vars);

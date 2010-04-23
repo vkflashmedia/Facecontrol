@@ -72,6 +72,8 @@ package {
 			
 			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
 			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
+			
+			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 		}
 		
 		private function load():void {
@@ -144,7 +146,7 @@ package {
 				_friendsForm.visible = false;
 				addChild(_friendsForm);
 				
-				Util.vkontakte.getProfiles(Util.userId);
+				Util.vkontakte.getProfiles(new Array(''+Util.userId));
 			}
 		}
 		
@@ -160,6 +162,7 @@ package {
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
+//			Util.vkontakte.getFriendsProfiles();
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -189,12 +192,21 @@ package {
 					case 'getFriends':
 						var ids:Array = response as Array;
 						Util.api.friends(ids);
+//						Util.vkontakte.getProfiles(ids);
 					break;
 				}
 			}
 			catch (e:Error) {
 				trace(e.message);
 			}
+		}
+		
+		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
+			var users:Array = event.response as Array;
+			_friendsForm.users = users;
+			_mainForm.visible = false;
+			_myPhotoForm.visible = false;
+			_friendsForm.visible = true;
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {

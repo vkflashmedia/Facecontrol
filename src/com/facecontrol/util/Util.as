@@ -14,6 +14,8 @@ package com.facecontrol.util
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
 		
+		public static const apiId:uint = 1827403;
+		
 		public static var src_small:String;
 		public static var src:String;
 		public static var src_big:String;

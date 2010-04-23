@@ -1,5 +1,6 @@
 package com.net
 {
+	import com.facecontrol.util.Util;
 	import com.gsolo.encryption.MD5;
 	import com.serialization.json.JSON;
 	
@@ -18,14 +19,23 @@ package com.net
 		public static const STATE_GET_FRIENDS:uint = 3;
 		
 		private static const FC_API_SERVER:String = 'http://api.vkontakte.ru/api.php';
-		private const loader:URLLoader = new URLLoader();
+		private const commonLoader:URLLoader = new URLLoader();
+		
+//		private const friendsLoader:URLLoader = new URLLoader();
+//		private const profilesLoader:URLLoader = new URLLoader();
 		
 		public var state:uint = STATE_NONE;
 		
 		public function VKontakte()
 		{
-			loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
-			loader.addEventListener(Event.COMPLETE, completeHandler);
+			commonLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+			commonLoader.addEventListener(Event.COMPLETE, completeHandler);
+			
+//			friendsLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+//			friendsLoader.addEventListener(Event.COMPLETE, onFriendsLoaded);
+//			
+//			profilesLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+//			profilesLoader.addEventListener(Event.COMPLETE, onProfilesLoaded);
 		}
 
 		private function request(vars:URLVariables):void
@@ -33,7 +43,7 @@ package com.net
 			var request: URLRequest = new URLRequest();
 			request.url = FC_API_SERVER;
 			request.data = vars;
-			loader.load(request);
+			commonLoader.load(request);
 		}
 		
 		private function errorHandler(e:IOErrorEvent):void {
@@ -45,7 +55,7 @@ package com.net
 		{
 //			trace(loader.data);
 			try {
-				var response:Object = JSON.deserialize(loader.data);
+				var response:Object = JSON.deserialize(commonLoader.data);
 				
 				if (response.hasOwnProperty('error')) {
 					response = response.error;
@@ -75,23 +85,28 @@ package com.net
 			state = STATE_NONE;
 		}
 		
-		public function getProfiles(uid:int):void {
+		public function getProfiles(uids:Array):void {
 			if (state == STATE_NONE) {
 				state = STATE_GET_PROFILES;
 				
+				var idsString:String = '';
+				for each (var uid:String in uids) {
+					idsString += uid + ',';
+				}
+				
 				var vars: URLVariables = new URLVariables();
-				var sig:String = '57856825'+'api_id=1827403'+
+				var sig:String = '57856825'+'api_id='+Util.apiId+
 					'fields=uid,first_name,last_name,nickname,sex,bdate,city,photo,photo_medium,photo_big'+
 					'format=json'+
-					'method=getProfiles'+'test_mode=1'+'uids='+uid+'v=2.0'+'EqKl8Wg2be';
+					'method=getProfiles'+'test_mode=1'+'uids='+idsString+'v=2.0'+'EqKl8Wg2be';
 					
-				vars['api_id'] = '1827403';
+				vars['api_id'] = ''+Util.apiId;
 				vars['v'] = '2.0';
 				vars['method'] = 'getProfiles';
-				vars['uids'] = uid;
+				vars['uids'] = idsString;
 				vars['fields'] = 'uid,first_name,last_name,nickname,sex,bdate,city,photo,photo_medium,photo_big';
 				vars['format'] = 'json';
-				vars['test_mode'] = '1';
+				vars['test_mode'] = 1;
 				vars['sig'] = MD5.encrypt(sig);
 				
 				request(vars);
@@ -103,8 +118,8 @@ package com.net
 				state = STATE_GET_PROFILES;
 				
 				var vars: URLVariables = new URLVariables();
-				var sig:String = '57856825'+'api_id=1827403'+'format=json'+'method=isAppUser'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
-				vars['api_id'] = '1827403';
+				var sig:String = '57856825'+'api_id='+Util.apiId+'format=json'+'method=isAppUser'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+				vars['api_id'] = Util.apiId;
 				vars['v'] = '2.0';
 				vars['method'] = 'isAppUser';
 				vars['format'] = 'json';
@@ -120,8 +135,8 @@ package com.net
 				state = STATE_GET_FRIENDS;
 				
 				var vars: URLVariables = new URLVariables();
-				var sig:String = '57856825'+'api_id=1827403'+'format=json'+'method=getFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
-				vars['api_id'] = '1827403';
+				var sig:String = '57856825'+'api_id='+Util.apiId+'format=json'+'method=getFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+				vars['api_id'] = Util.apiId;
 				vars['v'] = '2.0';
 				vars['method'] = 'getFriends';
 				vars['format'] = 'json';
@@ -132,21 +147,83 @@ package com.net
 			}
 		}
 		
-		public function getAppFriends():void {
-			if (state == STATE_NONE) {
-				state = STATE_GET_APP_FRIENDS;
-				
-				var vars: URLVariables = new URLVariables();
-				var sig:String = '57856825'+'api_id=1827403'+'format=json'+'method=getAppFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
-				vars['api_id'] = '1827403';
-				vars['v'] = '2.0';
-				vars['method'] = 'getAppFriends';
-				vars['format'] = 'json';
-				vars['test_mode'] = '1';
-				vars['sig'] = MD5.encrypt(sig);
-				
-				request(vars);
-			}
-		}
+		
+//		public function getFriendsProfiles():void {
+//			var vars: URLVariables = new URLVariables();
+//			var sig:String = '57856825'+'api_id='+Util.apiId+'format=json'+'method=getFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+//			vars['api_id'] = Util.apiId;
+//			vars['v'] = '2.0';
+//			vars['method'] = 'getFriends';
+//			vars['format'] = 'json';
+//			vars['test_mode'] = '1';
+//			vars['sig'] = MD5.encrypt(sig);
+//			
+//			requestForLoader(vars, friendsLoader);
+//		}
+//		
+//		private function requestForLoader(vars:URLVariables, loader:URLLoader):void {
+//			var request: URLRequest = new URLRequest();
+//			request.url = FC_API_SERVER;
+//			request.data = vars;
+//			loader.load(request);
+//		}
+//		
+//		private function onFriendsLoaded(event:Event):void {
+//			try {
+//				var response:Object = JSON.deserialize(friendsLoader.data);
+//				
+//				if (response.hasOwnProperty('error')) {
+//					response = response.error;
+//					var errorCode:int = response.error_code;
+//					dispatchEvent(new VKontakteEvent(VKontakteEvent.ERROR, response.error_msg, errorCode));
+//				}
+//				else if (response.hasOwnProperty('response')) {
+//					var uids:Array = response.response;
+//					var idsString:String = '';
+//					for each (var uid:String in uids) {
+//						idsString += uid + ',';
+//					}
+//					
+//					var vars: URLVariables = new URLVariables();
+//					var sig:String = '57856825'+'api_id='+Util.apiId+
+//						'fields=uid,first_name,last_name,nickname,sex,bdate,city,photo,photo_medium,photo_big'+
+//						'format=json'+
+//						'method=getProfiles'+'test_mode=1'+'uids='+idsString+'v=2.0'+'EqKl8Wg2be';
+//						
+//					vars['api_id'] = Util.apiId;
+//					vars['v'] = '2.0';
+//					vars['method'] = 'getProfiles';
+//					vars['uids'] = idsString;
+//					vars['fields'] = 'uid,first_name,last_name,nickname,sex,bdate,city,photo,photo_medium,photo_big';
+//					vars['format'] = 'json';
+//					vars['test_mode'] = '1';
+//					vars['sig'] = MD5.encrypt(sig);
+//					
+//					requestForLoader(vars, profilesLoader);
+//				}
+//			}
+//			catch (e:Error) {
+//				dispatchEvent(new VKontakteEvent(VKontakteEvent.ERROR, null, null, 254, e.message));
+//			}
+//		}
+//		
+//		private function onProfilesLoaded(event:Event):void {
+//			try {
+//				var response:Object = JSON.deserialize(profilesLoader.data);
+//				
+//				if (response.hasOwnProperty('error')) {
+//					response = response.error;
+//					var errorCode:int = response.error_code;
+//					dispatchEvent(new VKontakteEvent(VKontakteEvent.ERROR, response.error_msg, errorCode));
+//				}
+//				else if (response.hasOwnProperty('response')) {
+//					var users:Array = response.response;
+//					dispatchEvent(new VKontakteEvent(VKontakteEvent.FRIEDNS_PROFILES_LOADED, null, users));
+//				}
+//			}
+//			catch (e:Error) {
+//				dispatchEvent(new VKontakteEvent(VKontakteEvent.ERROR, null, null, 254, e.message));
+//			}
+//		}
 	}
 }

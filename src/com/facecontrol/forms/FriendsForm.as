@@ -74,7 +74,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onPaginationChange(event:Event):void {
-			
+			updateGrid();
 		}
 		
 		public function set users(value:Array):void {
@@ -82,23 +82,30 @@ package com.facecontrol.forms
 			var user:Object;
 			
 			for each (user in _users) {
-				if (!Util.multiLoader.hasLoaded(user.pid)) {
-					if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+				if (user.pid) {
+					if (!Util.multiLoader.hasLoaded(user.pid)) {
+						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+					}
+				}
+				else if (user.photo_big) {
+					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
+						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+					}
 				}
 			}
 			
-			if (Util.multiLoader.isLoaded) initGrid();
+			if (Util.multiLoader.isLoaded) updateGrid();
 			else Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 		}
 		
 		public function loadCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-				initGrid();
+				updateGrid();
 			}
 		}
 		
-		public function initGrid():void {
+		public function updateGrid():void {
 			var i:int = 0;
 			var count:int = _users.length;
 			var format:TextFormat = _friendsCount.getTextFormat();
