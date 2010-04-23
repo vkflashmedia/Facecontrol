@@ -39,13 +39,14 @@ package com.facecontrol.api
 				var json:Object = JSON.deserialize(loader.data);
 				
 				if (json.hasOwnProperty('error')) {
+					json = json.error;
 					var errorCode:int = json.err_code;
 					var errorMessage:String = null;
 					
 					if (json.hasOwnProperty('err_msg')) {
 						errorMessage = json.err_msg;
 					}
-					dispatchEvent(new ApiEvent(ApiEvent.ERROR, errorMessage, errorCode));
+					dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, errorCode, errorMessage));
 				}
 				else if (json.hasOwnProperty('response')) {
 					dispatchEvent(new ApiEvent(ApiEvent.COMPLETED, json.response));
@@ -74,7 +75,7 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
-		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null):void
+		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null, country:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'save_settings';
@@ -82,8 +83,8 @@ package com.facecontrol.api
 			vars['sex'] = sex;
 			vars['age_min'] = minAge;
 			vars['max_age'] = maxAge;
-			
-			if (city != null) vars['city'] = city;
+			if (city) vars['city'] = city;
+			if (country) vars['country'] = country;
 			
 			request(vars);
 		}

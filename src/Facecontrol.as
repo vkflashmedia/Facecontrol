@@ -201,7 +201,7 @@ package {
 						_mainForm.updateFilter();
 					break;
 					default:
-						trace('onRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
+						trace('onFacecontrolRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
 				}
 			}
 			catch (e:Error) {
