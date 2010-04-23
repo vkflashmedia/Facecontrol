@@ -70,6 +70,10 @@ package com.flashmedia.gui
 			}
 		}
 		
+		public function clear():void {
+			_dropList.removeAllItems();
+		}
+		
 		public function addItem(value: String): void {
 			_dropList.addItem(value);
 		}

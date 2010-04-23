@@ -56,7 +56,7 @@ package com.facecontrol.api
 			}
 		}
 		
-		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int):void
+		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'reg_user';
@@ -69,6 +69,7 @@ package com.facecontrol.api
 			
 			if (bdate != null) vars['bdate'] = bdate;
 			vars['city'] = city;
+			vars['country'] = country;
 			
 			request(vars);
 		}

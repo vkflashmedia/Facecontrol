@@ -166,7 +166,7 @@ package {
 			try {
 				switch (event.errorCode) {
 					default:
-						trace('onVkontakteRequestError - ' + event.errorMessage);
+						trace('onVkontakteRequestError: ' + event.errorCode + ' ' + event.errorMessage);
 				}
 			}
 			catch (e:Error) {
@@ -179,11 +179,8 @@ package {
 			try {
 				switch (event.method) {
 					case 'getProfiles':
-						var user:Object = response[0];
-						Util.src_small = user.photo;
-						Util.src = user.photo_medium;
-						Util.src_big = user.photo_big;
-						Util.api.registerUser(Util.userId, user.first_name, user.last_name, user.nickname, user.sex, user.bdate, user.city);
+						Util.user = response[0];
+						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
 					break;
 					
 					case 'getFriends':
@@ -217,8 +214,10 @@ package {
 			try {
 				switch (response.method) {
 					case 'reg_user':
+						Util.user.city_name = response.city_name;
+						Util.user.country_name = response.country_name;
 						if (response.photo_count == 0) {
-							Util.api.addPhoto(Util.userId, Util.src, Util.src_small, Util.src_big);
+							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
 						}
 						else Util.api.loadSettings(Util.userId);
 					break;
