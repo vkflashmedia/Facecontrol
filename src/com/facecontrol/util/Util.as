@@ -25,7 +25,7 @@ package com.facecontrol.util
 		
 		public static function createLabel(text:String, x:int, y:int, width:int=0, height:int=0):TextField {
 			var label:TextField = new TextField();
-			label.text = (text) ? text : "";
+			label.text = (text) ? text : '';
 			label.x = x;
 			label.y = y;
 			label.width = width;

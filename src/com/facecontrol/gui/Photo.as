@@ -54,11 +54,11 @@ package com.facecontrol.gui
 		}
 		
 		private function update():void {
-			if (_photo) {
-				if (_thumbnail) {
-					removeChild(_thumbnail);
-				}
+			while (numChildren > 0) {
+				removeChildAt(0);
+			}
 				
+			if (_photo) {
 				_thumbnail = new Bitmap(_photo.bitmapData, "auto", true);
 				
 				var matrix:Matrix = new Matrix();
@@ -72,10 +72,6 @@ package com.facecontrol.gui
 					_thumbnail.transform.matrix = matrix;
 				}
 					
-				if (_transparentSquare) {
-					removeChild(_transparentSquare);
-				}
-				
 				_transparentSquare = new Sprite();
 				_transparentSquare.graphics.beginFill(_photoBorderColor, 0.5);
 
@@ -91,9 +87,6 @@ package com.facecontrol.gui
 				addChild(_transparentSquare);
 				addChild(_thumbnail);
 				
-				if (_squareMask) {
-					removeChild(_squareMask);
-				}
 				_squareMask = new Sprite();
 				_squareMask.graphics.beginFill(_photoBorderColor);
 				
@@ -116,10 +109,8 @@ package com.facecontrol.gui
 		}
 		
 		public function set photo(value:Bitmap):void {
-			if (value != null) {
-				_photo = BitmapUtil.cloneBitmap(value);
-				update();
-			}
+			_photo = (value) ? BitmapUtil.cloneBitmap(value) : null;
+			update();
 		}
 		
 		public function get photo():Bitmap {

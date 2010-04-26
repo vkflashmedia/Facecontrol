@@ -209,10 +209,6 @@ package {
 		public function onFacecontrolRequestError(event:ApiEvent):void {
 			try {
 				switch (event.errorCode) {
-					case 10:
-						_mainForm.updateFilter();
-//						TODO disable rate bar
-					break;
 					default:
 						trace('onFacecontrolRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
 				}
@@ -234,13 +230,16 @@ package {
 						}
 						else Util.api.loadSettings(Util.userId);
 					break;
+					
 					case 'add_photo':
 						Util.api.loadSettings(Util.userId);
 					break;
+					
 					case 'load_settings':
 						_mainForm.filter = response;
 						_mainForm.visible = true;
 					break;
+					
 					case 'next_photo':
 						_mainForm.nextPhoto(response);
 					break;
@@ -272,6 +271,10 @@ package {
 					
 					case 'edit_photo':
 						Util.api.getPhotos(Util.userId);
+					break;
+					
+					case 'save_settings':
+						Util.api.nextPhoto(Util.userId);
 					break;
 				}
 			}

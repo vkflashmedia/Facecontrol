@@ -68,7 +68,7 @@ package com.facecontrol.forms
 			width = Constants.APP_WIDTH;
 			height = Constants.APP_HEIGHT;
 			
-			var label:TextField = createLabel("Оцени это фото!", 0, 72, Constants.APP_WIDTH);
+			var label:TextField = Util.createLabel("Оцени это фото!", 0, 72, Constants.APP_WIDTH);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0xffffff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -126,7 +126,7 @@ package com.facecontrol.forms
 			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
 			_previousLayer.addChild(line);
 			
-			_ratingAverageField = createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
+			_ratingAverageField = Util.createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
@@ -134,7 +134,7 @@ package com.facecontrol.forms
 			_previousLayer.addChild(_ratingAverageField);
 			
 			
-			var ratingLabel:TextField = createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
+			var ratingLabel:TextField = Util.createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
 			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
 			ratingLabel.embedFonts = true;
 			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
@@ -142,14 +142,14 @@ package com.facecontrol.forms
 			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(ratingLabel);
 			
-			var votesLabel:TextField = createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
+			var votesLabel:TextField = Util.createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
 			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
 			votesLabel.embedFonts = true;
 			votesLabel.autoSize = TextFieldAutoSize.CENTER;
 			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
 			_previousLayer.addChild(votesLabel);
 			
-			_votesCountField = createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
+			_votesCountField = Util.createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
@@ -163,7 +163,7 @@ package com.facecontrol.forms
 			
 			var filterLabelFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xf2c3ff);
 			
-			var filterLabel:TextField = createLabel("Я ищу:", 470, 315);
+			var filterLabel:TextField = Util.createLabel("Я ищу:", 470, 315);
 			filterLabel.embedFonts = true;
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.setTextFormat(filterLabelFormat);
@@ -178,7 +178,7 @@ package com.facecontrol.forms
 			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_sexBox);
 			
-			filterLabel = createLabel("От:", 470, 364);
+			filterLabel = Util.createLabel("От:", 470, 364);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.setTextFormat(filterLabelFormat);
@@ -193,7 +193,7 @@ package com.facecontrol.forms
 			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMinAgeChanged);
 			addChild(_minAgeBox);
 			
-			filterLabel = createLabel("До:", 470, 382);
+			filterLabel = Util.createLabel("До:", 470, 382);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -208,7 +208,7 @@ package com.facecontrol.forms
 			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMaxAgeChanged);
 			addChild(_maxAgeBox);
 			
-			filterLabel = createLabel("Страна:", 470, 405);
+			filterLabel = Util.createLabel("Страна:", 470, 405);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -221,7 +221,7 @@ package com.facecontrol.forms
 			_countryBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_countryBox);
 			
-			filterLabel = createLabel("Город:", 470, 445);
+			filterLabel = Util.createLabel("Город:", 470, 445);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -232,7 +232,7 @@ package com.facecontrol.forms
 			_cityBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_cityBox);
 			
-			_nameField = createLabel(
+			_nameField = Util.createLabel(
 				null,
 				_bigPhoto.x,
 				_bigPhoto.y + ((_bigPhoto.bitmap) ? _bigPhoto.bitmap.height : _bigPhoto.height) + 4,
@@ -243,7 +243,7 @@ package com.facecontrol.forms
 			addChild(_nameField);
 			
 			var commentY:int = _nameField.y + 28;
-			_commentField = createLabel(
+			_commentField = Util.createLabel(
 				null,
 				commentY < 495 ? _bigPhoto.x : 180,
 				commentY,
@@ -265,17 +265,33 @@ package com.facecontrol.forms
 		public function nextPhoto(obj:Object):void {
 			_rateBar.rating = 0;
 			
-			if (_current && _current.pid != obj.pid) {
-				if (_previous) {
-					Util.multiLoader.unload(_previous.pid);
+			if (!obj.hasOwnProperty('pid')) {
+				if (_current) {
+					bigPhoto = null;
+					Util.multiLoader.unload(_current.pid);
 				}
-				_previous = _current;
+				
+				_current = null;
+				
+				_nameField.text = '';
+				_nameField.setTextFormat(_nameTextFormat);
+				
+				_commentField.text = '';
+				_commentField.setTextFormat(_commentTextFormat);
 			}
-			
-			if (!_current || _current.pid != obj.pid) {
-				_current = obj;
-				Util.multiLoader.load(_current.src_big, _current.pid, "Bitmap");
-				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+			else {
+				if (_current && _current.pid != obj.pid) {
+					if (_previous) {
+						Util.multiLoader.unload(_previous.pid);
+					}
+					_previous = _current;
+				}
+				
+				if (!_current || _current.pid != obj.pid) {
+					_current = obj;
+					Util.multiLoader.load(_current.src_big, _current.pid, "Bitmap");
+					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+				}
 			}
 		}
 		
@@ -320,11 +336,15 @@ package com.facecontrol.forms
 		}
 		
 		public function updateFilter():void {
+			_sexBox.removeEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
+			_countryBox.removeEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
+			_cityBox.removeEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
+			
 			switch (_filter.sex) {
-				case 1:
+				case '1':
 					_sexBox.selectedItem = Constants.SEX_FEMALE;
 				break;
-				case 2:
+				case '2':
 					_sexBox.selectedItem = Constants.SEX_MALE;
 				break;
 				default:
@@ -332,8 +352,8 @@ package com.facecontrol.forms
 				break;
 			}
 			
-			_minAgeBox.selectedItem = "" + ((_filter.age_min == 60) ? "60+" : _filter.age_min);
-			_maxAgeBox.selectedItem = "" + ((_filter.age_max == 60) ? "60+" : _filter.age_max);
+			_minAgeBox.selectedItem = ((_filter.age_min == 60) ? '60+' : _filter.age_min);
+			_maxAgeBox.selectedItem = ((_filter.age_max == 60) ? '60+' : _filter.age_max);
 			
 			_countryBox.clear();
 			if (Util.user.country_name) {
@@ -348,17 +368,10 @@ package com.facecontrol.forms
 			}
 			_cityBox.addItem(CITY_DEFAULT);
 			_cityBox.selectedItem = (_filter.city) ? _filter.city : CITY_DEFAULT;
-		}
-		
-		private function createLabel(text:String, x:int, y:int, width:int=0):TextField {
-			var label:TextField = new TextField();
-			label.text = (text) ? text : "";
-			label.x = x;
-			label.y = y;
-			label.width = width;
-			label.selectable = false;
 			
-			return label;
+			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
+			_countryBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
+			_cityBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 		}
 		
 		private function createComboBox(x:int, y:int, width:int):ComboBox {
@@ -366,6 +379,7 @@ package com.facecontrol.forms
 			spr.graphics.beginFill(0xffffff);
 			spr.graphics.drawRoundRect(0, 0, width, 15, 12);
 			spr.graphics.endFill();
+			
 			var bd: BitmapData = new BitmapData(width, 15, true, undefined);
 			bd.draw(spr);
 			
@@ -402,6 +416,9 @@ package com.facecontrol.forms
 					_commentField.x = _commentField.y < 495 ? _bigPhoto.x : 180;
 					_commentField.width = _commentField.y < 495 ? _bigPhoto.width : 300;
 				}
+			} else {
+				_bigPhoto.photo = null;
+				_morePhotos.visible = false;
 			}
 		}
 		
@@ -439,12 +456,11 @@ package com.facecontrol.forms
 		}
 		
 		private function saveFilters():void {
-			var sex:int = 3;
+			var sex:int = _sexBox.selectedIndex + 1;
 			var minAge:int = _minAgeBox.selectedIndex + 8;
 			var maxAge:int = _maxAgeBox.selectedIndex + 8;
 			var city:String = null;
 			var country:String = null;
-			
 			
 			if (_cityBox.selectedItem != CITY_DEFAULT) {
 				city = Util.user.city;
