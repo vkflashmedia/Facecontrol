@@ -199,6 +199,7 @@ package {
 				switch (event.errorCode) {
 					case 10:
 						_mainForm.updateFilter();
+//						TODO disable rate bar
 					break;
 					default:
 						trace('onFacecontrolRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
