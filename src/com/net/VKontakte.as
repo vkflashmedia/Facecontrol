@@ -53,14 +53,13 @@ package com.net
 		
 		private function completeHandler(event:Event):void
 		{
-//			trace(loader.data);
+			trace(commonLoader.data);
 			try {
 				var response:Object = JSON.deserialize(commonLoader.data);
 				
 				if (response.hasOwnProperty('error')) {
 					response = response.error;
-					var errorCode:int = response.error_code;
-					dispatchEvent(new VKontakteEvent(VKontakteEvent.ERROR, response.error_msg, errorCode));
+					dispatchEvent(new VKontakteEvent(VKontakteEvent.ERROR, null, null, response.error_code, response.error_msg));
 				}
 				else if (response.hasOwnProperty('response')) {
 					var method:String;
@@ -95,16 +94,17 @@ package com.net
 				}
 				
 				var vars: URLVariables = new URLVariables();
+				var fields:String = 'uid,first_name,last_name,nickname,sex,bdate,city,photo_big,country';
 				var sig:String = '57856825'+'api_id='+Util.apiId+
-					'fields=uid,first_name,last_name,nickname,sex,bdate,city,photo,photo_medium,photo_big'+
+					'fields='+fields+
 					'format=json'+
 					'method=getProfiles'+'test_mode=1'+'uids='+idsString+'v=2.0'+'EqKl8Wg2be';
 					
-				vars['api_id'] = ''+Util.apiId;
+				vars['api_id'] = Util.apiId;
 				vars['v'] = '2.0';
 				vars['method'] = 'getProfiles';
 				vars['uids'] = idsString;
-				vars['fields'] = 'uid,first_name,last_name,nickname,sex,bdate,city,photo,photo_medium,photo_big';
+				vars['fields'] = fields;
 				vars['format'] = 'json';
 				vars['test_mode'] = 1;
 				vars['sig'] = MD5.encrypt(sig);

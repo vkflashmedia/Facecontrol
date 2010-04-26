@@ -32,6 +32,9 @@ package com.facecontrol.forms
 		private static const _commentTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4);
 		private static const _nameTextFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be);
 		
+		private static const COUNTRY_DEFAULT:String = 'Весь мир';
+		private static const CITY_DEFAULT:String = 'Вся страна';
+		
 		public var _userProfileBtn: GameObject;
 		public var _mainPhoto: GameObject;
 		
@@ -172,7 +175,7 @@ package com.facecontrol.forms
 			_sexBox.addItem(Constants.SEX_MALE);
 			_sexBox.addItem(Constants.SEX_BOTH);
 			_sexBox.selectedItem = Constants.SEX_FEMALE;
-			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onSexChange);
+			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_sexBox);
 			
 			filterLabel = createLabel("От:", 470, 364);
@@ -215,10 +218,7 @@ package com.facecontrol.forms
 			_countryBox = createComboBox(472, 425, 113);
 			_countryBox.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
 			_countryBox.horizontalAlign = View.ALIGN_HOR_RIGHT;
-			_countryBox.addItem('Россия');
-			_countryBox.addItem('Германия');
-			_countryBox.addItem('США');
-			_countryBox.selectedItem = 'Россия';
+			_countryBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_countryBox);
 			
 			filterLabel = createLabel("Город:", 470, 445);
@@ -229,10 +229,7 @@ package com.facecontrol.forms
 			addChild(filterLabel);
 			
 			_cityBox = createComboBox(472, 465, 113);
-			_cityBox.addItem('Пенза');
-			_cityBox.addItem('Москва');
-			_cityBox.addItem('Рязань');
-			_cityBox.selectedItem = 'Пенза';
+			_cityBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_cityBox);
 			
 			_nameField = createLabel(
@@ -295,7 +292,7 @@ package com.facecontrol.forms
 			if (Util.multiLoader.hasLoaded(_current.pid)) {
 				bigPhoto = Util.multiLoader.get(_current.pid);
 				
-				_nameField.text = _current.fname;
+				_nameField.text = _current.first_name;
 				_nameField.setTextFormat(_nameTextFormat);
 				
 				if (_current.comment) {
@@ -337,6 +334,20 @@ package com.facecontrol.forms
 			
 			_minAgeBox.selectedItem = "" + ((_filter.age_min == 60) ? "60+" : _filter.age_min);
 			_maxAgeBox.selectedItem = "" + ((_filter.age_max == 60) ? "60+" : _filter.age_max);
+			
+			_countryBox.clear();
+			if (Util.user.country_name) {
+				_countryBox.addItem(Util.user.country_name);
+			}
+			_countryBox.addItem(COUNTRY_DEFAULT);
+			_countryBox.selectedItem = (_filter.country) ? _filter.country : COUNTRY_DEFAULT;
+			
+			_cityBox.clear();
+			if (Util.user.city_name) {
+				_cityBox.addItem(Util.user.city_name);
+			}
+			_cityBox.addItem(CITY_DEFAULT);
+			_cityBox.selectedItem = (_filter.city) ? _filter.city : CITY_DEFAULT;
 		}
 		
 		private function createLabel(text:String, x:int, y:int, width:int=0):TextField {
@@ -423,8 +434,27 @@ package com.facecontrol.forms
 			}
 		}
 		
-		public function onSexChange(event:ComboBoxEvent):void {
-//			TODO:
+		public function onFilterChanged(event:ComboBoxEvent):void {
+			saveFilters();
+		}
+		
+		private function saveFilters():void {
+			var sex:int = 3;
+			var minAge:int = _minAgeBox.selectedIndex + 8;
+			var maxAge:int = _maxAgeBox.selectedIndex + 8;
+			var city:String = null;
+			var country:String = null;
+			
+			
+			if (_cityBox.selectedItem != CITY_DEFAULT) {
+				city = Util.user.city;
+			}
+			
+			if (_countryBox.selectedItem != COUNTRY_DEFAULT) {
+				country = Util.user.country;
+			}
+			
+			Util.api.saveSettings(Util.userId, sex, minAge, maxAge, city, country);
 		}
 	}
 }
