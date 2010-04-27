@@ -29,11 +29,18 @@ package com.facecontrol.forms
 	
 	public class MainForm extends GameLayer
 	{
+		
 		private static const _commentTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4);
 		private static const _nameTextFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be);
 		
 		private static const COUNTRY_DEFAULT:String = 'Весь мир';
 		private static const CITY_DEFAULT:String = 'Вся страна';
+		
+		private static var _instance:MainForm = null;
+		public static function get instance():MainForm {
+			if (!_instance) _instance = new MainForm(Util.scene);
+			return _instance;
+		}
 		
 		public var _userProfileBtn: GameObject;
 		public var _mainPhoto: GameObject;

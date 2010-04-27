@@ -21,6 +21,12 @@ package com.facecontrol.forms
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 5;
 		
+		private static var _instance:FriendsForm = null;
+		public static function get instance():FriendsForm {
+			if (!_instance) _instance = new FriendsForm(Util.scene);
+			return _instance;
+		}
+		
 		private var _friendsCount:TextField;
 		private var _pagination:Pagination;
 		private var _grid:GridBox;
@@ -29,6 +35,7 @@ package com.facecontrol.forms
 		public function FriendsForm(value:GameScene)
 		{
 			super(value);
+			visible = false;
 			
 			var label:TextField = Util.createLabel("Мои друзья", 150, 75);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));

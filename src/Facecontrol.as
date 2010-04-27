@@ -6,6 +6,7 @@ package {
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MyPhotoForm;
+	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -51,11 +52,9 @@ package {
 		private var form: Form;
 		
 		private var _background:Background;
-		private var _mainForm:MainForm;
-		private var _myPhotoForm:MyPhotoForm;
-		private var _friendsForm:FriendsForm;
 		
 		public function Facecontrol() {
+			Util.scene = this;
 //			aliFunction();
 //			artemFunction();
 //			testComponents();
@@ -125,39 +124,38 @@ package {
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
+				addChild(MainForm.instance);
+				addChild(MyPhotoForm.instance);
+				addChild(Top100.instance);
+				addChild(FriendsForm.instance);
+				
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
 				_background = new Background(this);
 				_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
 				_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
+				_background.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
 				_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
 				addChild(_background);
-				
-				_mainForm = new MainForm(this);
-				_mainForm.visible = false;
-				addChild(_mainForm);
-				
-				_myPhotoForm = new MyPhotoForm(this);
-				_myPhotoForm.visible = false;
-				addChild(_myPhotoForm);
-				
-				_friendsForm = new FriendsForm(this);
-				_friendsForm.visible = false;
-				addChild(_friendsForm);
 				
 				Util.vkontakte.getProfiles(new Array(''+Util.userId));
 			}
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
-			_mainForm.visible = true;
-			_myPhotoForm.visible = false;
-			_friendsForm.visible = false;
+			MainForm.instance.visible = true;
+			MyPhotoForm.instance.visible = false;
+			Top100.instance.visible = false;
+			FriendsForm.instance.visible = false;
 		}
 		
 		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
 			Util.api.getPhotos(Util.userId);
+		}
+		
+		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
+//			TOP100
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
@@ -200,10 +198,10 @@ package {
 		
 		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
 			var users:Array = event.response as Array;
-			_friendsForm.users = users;
-			_mainForm.visible = false;
-			_myPhotoForm.visible = false;
-			_friendsForm.visible = true;
+			FriendsForm.instance.users = users;
+			MainForm.instance.visible = false;
+			MyPhotoForm.instance.visible = false;
+			FriendsForm.instance.visible = true;
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
@@ -236,23 +234,23 @@ package {
 					break;
 					
 					case 'load_settings':
-						_mainForm.filter = response;
-						_mainForm.visible = true;
+						MainForm.instance.filter = response;
+						MainForm.instance.visible = true;
 					break;
 					
 					case 'next_photo':
-						_mainForm.nextPhoto(response);
+						MainForm.instance.nextPhoto(response);
 					break;
 					
 					case 'vote':
-						_mainForm.vote(response);
+						MainForm.instance.vote(response);
 					break;
 					
 					case 'get_photos':
-						_myPhotoForm.photos = response.photos;
-						_myPhotoForm.visible = true;
-						_mainForm.visible = false;
-						_friendsForm.visible = false;
+						MyPhotoForm.instance.photos = response.photos;
+						MyPhotoForm.instance.visible = true;
+						MainForm.instance.visible = false;
+						FriendsForm.instance.visible = false;
 					break;
 					
 					case 'del_photo':
@@ -263,10 +261,10 @@ package {
 					break;
 					
 					case 'friends':
-						_friendsForm.users = response.users;
-						_mainForm.visible = false;
-						_myPhotoForm.visible = false;
-						_friendsForm.visible = true;
+						FriendsForm.instance.users = response.users;
+						MainForm.instance.visible = false;
+						MyPhotoForm.instance.visible = false;
+						FriendsForm.instance.visible = true;
 					break;
 					
 					case 'edit_photo':

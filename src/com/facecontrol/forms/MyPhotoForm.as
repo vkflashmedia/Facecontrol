@@ -29,6 +29,12 @@ package com.facecontrol.forms
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 6;
 		
+		private static var _instance:MyPhotoForm;
+		public static function get instance():MyPhotoForm {
+			if (!_instance) _instance = new MyPhotoForm(Util.scene);
+			return _instance;
+		}
+		
 		private var _photos:Array;
 		private var _mainPhoto:Photo;
 		private var _main:Object;
@@ -43,6 +49,7 @@ package com.facecontrol.forms
 		public function MyPhotoForm(value:GameScene)
 		{
 			super(value);
+			visible = false;
 
 			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
 			smileIco.x = 38;
