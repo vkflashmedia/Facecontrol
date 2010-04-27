@@ -9,6 +9,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.Pagination;
+	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
 	import flash.events.Event;
@@ -44,12 +45,12 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			var background:Bitmap = Util.multiLoader.get(Images.FRIENDS_BACKGROUND);
+			var background:Bitmap = BitmapUtil.cloneImageNamed(Images.FRIENDS_BACKGROUND);
 			background.x = 152;
 			background.y = 104;
 			addChild(background);
 			
-			_friendsCount = Util.createLabel("всего: 1", 400, 84, 80, 10);
+			_friendsCount = Util.createLabel('', 400, 84, 80, 10);
 			_friendsCount.setTextFormat(new TextFormat(Util.tahoma.fontName, 11, 0xff352b));
 			_friendsCount.embedFonts = true;
 			_friendsCount.antiAliasType = AntiAliasType.ADVANCED;

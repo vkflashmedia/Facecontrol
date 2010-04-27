@@ -29,7 +29,6 @@ package com.facecontrol.forms
 	
 	public class MainForm extends GameLayer
 	{
-		
 		private static const _commentTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4);
 		private static const _nameTextFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be);
 		
@@ -75,7 +74,7 @@ package com.facecontrol.forms
 			width = Constants.APP_WIDTH;
 			height = Constants.APP_HEIGHT;
 			
-			var label:TextField = Util.createLabel("Оцени это фото!", 0, 72, Constants.APP_WIDTH);
+			var label:TextField = Util.createLabel('Оцени это фото!', 0, 72, Constants.APP_WIDTH);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0xffffff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -105,7 +104,7 @@ package com.facecontrol.forms
 			superIcon.y = 75;
 			addChild(superIcon);
 			
-			_morePhotos = new LinkButton(value, "Еще фото", 195, 150);
+			_morePhotos = new LinkButton(value, '', 195, 150);
 			_morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 			_morePhotos.textField.embedFonts = true;
 			_morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -133,7 +132,7 @@ package com.facecontrol.forms
 			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
 			_previousLayer.addChild(line);
 			
-			_ratingAverageField = Util.createLabel("0", 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
+			_ratingAverageField = Util.createLabel('', 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
@@ -141,7 +140,7 @@ package com.facecontrol.forms
 			_previousLayer.addChild(_ratingAverageField);
 			
 			
-			var ratingLabel:TextField = Util.createLabel("средний балл", 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
+			var ratingLabel:TextField = Util.createLabel('средний балл', 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
 			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
 			ratingLabel.embedFonts = true;
 			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
@@ -149,14 +148,14 @@ package com.facecontrol.forms
 			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(ratingLabel);
 			
-			var votesLabel:TextField = Util.createLabel("голосовало:", 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
+			var votesLabel:TextField = Util.createLabel('голосовало:', 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
 			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
 			votesLabel.embedFonts = true;
 			votesLabel.autoSize = TextFieldAutoSize.CENTER;
 			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
 			_previousLayer.addChild(votesLabel);
 			
-			_votesCountField = Util.createLabel("10345", 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
+			_votesCountField = Util.createLabel('', 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
@@ -170,7 +169,7 @@ package com.facecontrol.forms
 			
 			var filterLabelFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xf2c3ff);
 			
-			var filterLabel:TextField = Util.createLabel("Я ищу:", 470, 315);
+			var filterLabel:TextField = Util.createLabel('Я ищу:', 470, 315);
 			filterLabel.embedFonts = true;
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.setTextFormat(filterLabelFormat);
@@ -185,7 +184,7 @@ package com.facecontrol.forms
 			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_sexBox);
 			
-			filterLabel = Util.createLabel("От:", 470, 364);
+			filterLabel = Util.createLabel('От:', 470, 364);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.setTextFormat(filterLabelFormat);
@@ -194,13 +193,13 @@ package com.facecontrol.forms
 			
 			_minAgeBox = createComboBox(502, 367, 84);
 			for (var i:int = 8; i < 60; ++i) {
-				_minAgeBox.addItem(""+i);
+				_minAgeBox.addItem(''+i);
 			}
-			_minAgeBox.addItem("60+");
+			_minAgeBox.addItem('60+');
 			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMinAgeChanged);
 			addChild(_minAgeBox);
 			
-			filterLabel = Util.createLabel("До:", 470, 382);
+			filterLabel = Util.createLabel('До:', 470, 382);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -209,7 +208,7 @@ package com.facecontrol.forms
 			
 			_maxAgeBox = createComboBox(502, 385, 84);
 			for (i = 8; i < 60; ++i) {
-				_maxAgeBox.addItem(""+i);
+				_maxAgeBox.addItem(''+i);
 			}
 			_maxAgeBox.addItem("60+");
 			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMaxAgeChanged);
@@ -255,18 +254,11 @@ package com.facecontrol.forms
 				commentY < 495 ? _bigPhoto.x : 180,
 				commentY,
 				commentY < 495 ? _bigPhoto.width : 300);
-			
 			_commentField.setTextFormat(_commentTextFormat);
+			_commentField.embedFonts = true;
 			_commentField.multiline = true;
 			_commentField.wordWrap = true;
 			addChild(_commentField);
-		}
-		
-		public override function set visible(value:Boolean):void {
-			super.visible = value;
-			if (value) {
-				Util.api.nextPhoto(Util.userId);
-			}
 		}
 		
 		public function nextPhoto(obj:Object):void {
@@ -413,6 +405,7 @@ package com.facecontrol.forms
 			if (image) {
 				_bigPhoto.photo = image;
 				_morePhotos.visible = true;
+				_morePhotos.label = Util.getMorePhotoString(_current.sex);
 				
 				if (_nameField) {
 					_nameField.y = _bigPhoto.y + _bigPhoto.height + 4;

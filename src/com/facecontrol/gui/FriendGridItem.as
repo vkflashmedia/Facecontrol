@@ -31,7 +31,7 @@ package com.facecontrol.gui
 				photo.photoBorder = 1;
 				addChild(photo);
 				
-				var morePhotos:LinkButton = new LinkButton(value, "Еще фото", 265, 75);
+				var morePhotos:LinkButton = new LinkButton(value, Util.getMorePhotoString(userRaw.sex), 214, 75, TextFieldAutoSize.RIGHT);
 				morePhotos.width = 50;
 				morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 				morePhotos.textField.embedFonts = true;
@@ -45,7 +45,7 @@ package com.facecontrol.gui
 				photo.photoBorder = 1;
 				addChild(photo);
 				
-				var invite:LinkButton = new LinkButton(value, "пригласить", 258, 75);
+				var invite:LinkButton = new LinkButton(value, 'пригласить', 258, 75);
 				invite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xce7716, null, null, true), CONTROL_STATE_NORMAL);
 				invite.textField.embedFonts = true;
 				invite.textField.antiAliasType = AntiAliasType.ADVANCED;

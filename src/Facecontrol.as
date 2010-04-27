@@ -24,6 +24,7 @@ package {
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.gui.ScrollBar;
+	import com.net.ServerEvent;
 	import com.net.VKontakteEvent;
 	
 	import flash.display.Bitmap;
@@ -73,6 +74,9 @@ package {
 			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
 			
 			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
+			
+			Util.server.addEventListener(ServerEvent.ERROR, onServerRequestError);
+			Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoadCompeted);
 		}
 		
 		private function load():void {
@@ -124,11 +128,6 @@ package {
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
-				addChild(MainForm.instance);
-				addChild(MyPhotoForm.instance);
-				addChild(Top100.instance);
-				addChild(FriendsForm.instance);
-				
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
@@ -139,11 +138,17 @@ package {
 				_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
 				addChild(_background);
 				
-				Util.vkontakte.getProfiles(new Array(''+Util.userId));
+				addChild(MainForm.instance);
+				addChild(MyPhotoForm.instance);
+				addChild(Top100.instance);
+				addChild(FriendsForm.instance);
+				
+				Util.vkontakte.getProfiles(new Array('' + Util.userId));
 			}
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
+			Util.api.nextPhoto(Util.userId);
 			MainForm.instance.visible = true;
 			MyPhotoForm.instance.visible = false;
 			Top100.instance.visible = false;
@@ -155,12 +160,34 @@ package {
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
-//			TOP100
+			Util.server.getTop();
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
 //			Util.vkontakte.getFriendsProfiles();
+		}
+		
+		public function onServerRequestError(event:ServerEvent):void {
+			try {
+				switch (event.errorCode) {
+					default:
+						trace('onServerRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
+				}
+			}
+			catch (e:Error) {
+				trace(e.message);
+			}
+		}
+		
+		private function onTopLoadCompeted(event:ServerEvent):void {
+			var response:Object = event.response;
+			Top100.instance.users = response.users;
+			
+			MainForm.instance.visible = false;
+			MyPhotoForm.instance.visible = false;
+			Top100.instance.visible = true;
+			FriendsForm.instance.visible = false;
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -201,6 +228,7 @@ package {
 			FriendsForm.instance.users = users;
 			MainForm.instance.visible = false;
 			MyPhotoForm.instance.visible = false;
+			Top100.instance.visible = false;
 			FriendsForm.instance.visible = true;
 		}
 		
@@ -236,9 +264,11 @@ package {
 					case 'load_settings':
 						MainForm.instance.filter = response;
 						MainForm.instance.visible = true;
+						Util.api.nextPhoto(Util.userId);
 					break;
 					
 					case 'next_photo':
+						MainForm.instance.visible = true;
 						MainForm.instance.nextPhoto(response);
 					break;
 					
@@ -250,6 +280,7 @@ package {
 						MyPhotoForm.instance.photos = response.photos;
 						MyPhotoForm.instance.visible = true;
 						MainForm.instance.visible = false;
+						Top100.instance.visible = false;
 						FriendsForm.instance.visible = false;
 					break;
 					
@@ -264,6 +295,7 @@ package {
 						FriendsForm.instance.users = response.users;
 						MainForm.instance.visible = false;
 						MyPhotoForm.instance.visible = false;
+						Top100.instance.visible = false;
 						FriendsForm.instance.visible = true;
 					break;
 					

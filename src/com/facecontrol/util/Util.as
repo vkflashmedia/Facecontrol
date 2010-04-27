@@ -3,6 +3,7 @@ package com.facecontrol.util
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
 	import com.flashmedia.basics.GameScene;
+	import com.net.Server;
 	import com.net.VKontakte;
 	
 	import flash.text.Font;
@@ -22,6 +23,7 @@ package com.facecontrol.util
 		public static var scene:GameScene;
 		public static var api:Api = new Api();
 		public static var vkontakte:VKontakte = new VKontakte();
+		public static var server:Server = new Server();
 		
 		public static function createLabel(text:String, x:int, y:int, width:int=0, height:int=0):TextField {
 			var label:TextField = new TextField();
@@ -33,6 +35,20 @@ package com.facecontrol.util
 			label.selectable = false;
 			
 			return label;
+		}
+		
+		public static function getMorePhotoString(sex:String):String {
+			var result:String = 'Другие ';
+			switch (sex) {
+				case '1':
+					result += 'ее';
+				break;
+				case '2':
+					result += 'его';
+				break;
+			}
+			result += ' фото';
+			return result;
 		}
 	}
 }

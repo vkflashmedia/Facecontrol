@@ -18,14 +18,14 @@ package com.flashmedia.gui
 		protected var _enabled:Boolean = true;
 		protected var _state:uint = CONTROL_STATE_NORMAL;
 				
-		public function LinkButton(scene:GameScene, text:String=null, x:uint=0, y:uint=0)
+		public function LinkButton(scene:GameScene, text:String=null, x:uint=0, y:uint=0, autoSize:String=TextFieldAutoSize.LEFT)
 		{
 			super(scene);
 			
 			setTextField(new TextField());
-			_textField.autoSize = TextFieldAutoSize.LEFT;
-			_textField.selectable = false;
-			_textField.mouseEnabled = false;
+			textField.autoSize = autoSize;
+			textField.selectable = false;
+			textField.mouseEnabled = false;
 			
 			this.setSelect(true);
 			this.x = x;
@@ -96,6 +96,16 @@ package com.flashmedia.gui
 				break;
 			}
 			update();
+		}
+		
+		public function getTextFormatForState(state:uint):TextFormat {
+			switch (state) {
+				case CONTROL_STATE_NORMAL:
+					return _normalStateTextFormat;
+				case CONTROL_STATE_HIGHLIGHTED:
+					return _highlithedStateTextFormat;
+			}
+			return null;
 		}
 		
 		protected override function mouseOverListener(event: MouseEvent): void {
