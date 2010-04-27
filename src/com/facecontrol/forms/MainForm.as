@@ -253,7 +253,8 @@ package com.facecontrol.forms
 				null,
 				commentY < 495 ? _bigPhoto.x : 180,
 				commentY,
-				commentY < 495 ? _bigPhoto.width : 300);
+				commentY < 495 ? _bigPhoto.width : 300,
+				100);
 			_commentField.setTextFormat(_commentTextFormat);
 			_commentField.embedFonts = true;
 			_commentField.multiline = true;
@@ -310,7 +311,7 @@ package com.facecontrol.forms
 				_nameField.text = _current.first_name;
 				_nameField.setTextFormat(_nameTextFormat);
 				
-				if (_current.comment) {
+				if (_current.comment && _commentField) {
 					_commentField.text = _current.comment;
 					_commentField.setTextFormat(_commentTextFormat);
 				}
