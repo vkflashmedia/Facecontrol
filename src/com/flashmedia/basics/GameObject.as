@@ -1,5 +1,7 @@
 package com.flashmedia.basics
 {
+	import com.flashmedia.basics.actions.intervalactions.Animation;
+	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -15,6 +17,7 @@ package com.flashmedia.basics
 		TODO разобраться как правильно рисовать прямоугольник (width - 1) или width
 		TODO изменить все координаты и размеры на Number, так как идет потеря точности.
 		Например в GridBox между выделением иногда появляются пробелы.
+		TODO Для оптимизации можно использовать систему сигналов, как в той статье.
 	*/
 	/**
 	 * Наследуемся от Sprite, чтобы получать пользовательские события (Мышь, Клавиатура ...)
@@ -137,7 +140,16 @@ package com.flashmedia.basics
 		protected var _backgroundAlpha: Number;
 		// слои игрового обекта
 		protected var _view: View;
-		
+		// анимации
+		/**
+		 * Список анимаций игрового объекта.
+		 */
+		protected var _animations: Array;
+		/**
+		 * Анимация, которая воспроизводится в данный момент.
+		 * Если ничего не воспроизводится, то null.
+		 */
+		protected var _playingAnim: Animation;
 		
 		public function GameObject(value: GameScene)
 		{
@@ -189,6 +201,7 @@ package com.flashmedia.basics
 			if (_select) {
 				_select.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardListener);
 				_select.removeEventListener(MouseEvent.CLICK, mouseClickListener);
+				_select.removeEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickListener);
 				_select.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 				_select.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
 				_select.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
@@ -204,6 +217,8 @@ package com.flashmedia.basics
 				_debugContainer = null;
 			}
 			_gameLayer = null;
+			//todo release animations
+			//todo release view
 		}
 		
 		public function get view(): View {
@@ -360,33 +375,9 @@ package com.flashmedia.basics
 			return null
 		}
 		
-//		public function set textField(value: TextField): void {
-//			if (_textField) {
-////				removeChild(_textField);
-//				_view.removeDisplayObject(NAME_TEXT_FIELD);
-//			}
-//			if (value) {
-//				_textField = value;
-////				updateTextFieldAlign();
-////				addChild(_textField);
-//				_view.addDisplayObject(_textField, NAME_TEXT_FIELD, VISUAL_TEXT_FIELD_Z_ORDER, layoutMode);
-////				sortSprites();
-//			}
-//		}
-		
 		public function get textField(): TextField {
 			return _textField;
 		}
-		
-//		public function set textHorizontalAlign(value: String): void {
-//			_textHorizontalAlign = value;
-//			updateTextFieldAlign();
-//		}
-//		
-//		public function set textVerticalAlign(value: String): void {
-//			_textVerticalAlign = value;
-//			updateTextFieldAlign();
-//		}
 		
 		public function set autoSize(value: Boolean): void {
 			_autoSize = value;
@@ -423,66 +414,9 @@ package com.flashmedia.basics
 //			sortSprites();
 		}
 		
-//		public function set selectable(value: Boolean): void {
-//			_selectable = value;
-//			updateSelection();
-//			updateFocus();
-//	  		updateHover();
-//			drawDebugInfo();
-//			sortSprites();
-//		}
-		
 		public function get selectable(): Boolean {
 			return _selectable;
 		}
-		
-		/**
-		 * Если сбросить свойство selectAutosize, выделение не будет следить за изменением габаритов объекта
-		 */
-//		public function set selectAutosize(value: Boolean): void {
-//			_selectAutosize = value;
-//			if (_selectAutosize) {
-//				_selectRect = new Rectangle(0, 0, _width, _height);
-//				updateSelection();
-//				updateFocus();
-//	  			updateHover();
-//				drawDebugInfo();
-//			}
-//			sortSprites();
-//		}
-//		
-//		public function set selectRect(value: Rectangle): void {
-//			_selectAutosize = false;
-//			_selectRect = value;
-//			if (_selectMask) {
-//				_selectMask.x = _selectRect.x;
-//				_selectMask.y = _selectRect.y;
-//			}
-//			updateSelection();
-//			updateFocus();
-//	  		updateHover();
-//			drawDebugInfo();
-//			sortSprites();
-//		}
-//		
-//		public function set selectMask(value: Sprite): void {
-//			if (_selectMask) {
-////				removeChild(_selectMask);
-//				removeDisplayObject(NAME_SELECT_MASK);
-//			}
-//			_selectMask = value;
-//			_selectMask.name = NAME_SELECT_MASK;
-//			if (_selectRect) {
-//				_selectMask.x = _selectRect.x;
-//				_selectMask.y = _selectRect.y;
-//			}
-////			addChild(_selectMask);
-//			if (_select) {
-//				_select.mask = _selectMask;
-//				addDisplayObject(_selectMask, VISUAL_SELECT_MASK_Z_ORDER);
-//			}
-////			sortSprites();
-//		}
 		
 		public function setFocus(enabled: Boolean, viewFocus: Boolean = true, focusDisplayObject: DisplayObject = null, layout: int = 0, sizeMode: String = SIZE_MODE_BORDER): void {
 			_focusEnabled = enabled;
@@ -494,22 +428,9 @@ package com.flashmedia.basics
 			updateFocus();
 		}
 		
-//		public function set canFocus(value: Boolean): void {
-//			_focusEnabled = value;
-//			updateFocus();
-//			sortSprites();
-//		}
-		
 		public function get canFocus(): Boolean {
 			return _focusEnabled;
 		}
-		
-//		public function set focusSprite(value: Sprite): void {
-//			_focus = value;
-//			//_view.addDisplayObject(_focus, NAME_FOCUS, VISUAL_FOCUS_Z_ORDER);
-//			updateFocus();
-//			//sortSprites();
-//		}
 		
 		public function set focus(value: Boolean): void {
 			if (_focusEnabled) {
@@ -576,6 +497,74 @@ package com.flashmedia.basics
 		
 		public function get scene(): GameScene {
 			return _scene;
+		}
+		
+		/**
+		 * Добавляет анимацию в список анимаций GameObject
+		 */
+		public function addAnimation(value: Animation): void {
+			if (!_animations) {
+				_animations = new Array();
+			}
+			_animations.push(value);
+		}
+		
+		/**
+		 * Поиск анимации в списке анимация.
+		 * @anm - ссылка или строковое имя анимации.
+		 */
+		private function findAnim(anm: *): Animation {
+			var result: Animation = null;
+			if (anm is String) {
+				for each(var aa: Animation in _animations) {
+					if (aa.nameAction == (anm as String)) {
+						result = aa;
+					}
+				}
+			}
+			if (anm is Animation) {
+				result = _animations[_animations.indexOf(anm)];
+			}
+			return result;
+		}
+		
+		/**
+		 * Начать прогрывание анимации по имени или ссылке
+		 * @anm - строковое имя или ссылка на объект анимации
+		 * @loopCount - количество воспроизведений анимации. По умолчанию 1. Отрицательное число - бесконечное воспроизведение.
+		 * @startFrame - индекс кадра, с которого начинать воспроизведение. По умолчанию 0.
+		 * @endFrame - индекс кадра, на котором заканчивать воспроизведение. По умолчанию последний кадр.
+		 */
+		public function startAnimation(anm: *, iterationsCount: int = 1, startFrame: int = -1, endFrame: int = -1): void {
+			var a: Animation = findAnim(anm);
+			if (a) {
+//				if (_playingAnim) {
+//					_playingAnim.stop();
+//				}
+				_playingAnim = a;
+				//todo add listener start, pause, stop
+				_playingAnim.start(iterationsCount, startFrame, endFrame);
+			}
+		}
+		
+		/**
+		 * Приостановить воспроизведение.
+		 * При следующем вызове startAnimation, воспроизведение будет продолжено с текущего кадра.
+		 */
+		public function pauseAnimation(): void {
+			if (_playingAnim) {
+				_playingAnim.pause();
+			}
+		} 
+		
+		/**
+		 * Остановить воспроизведение.
+		 * При следующем вызове startAnimation, воспроизведение будет начато сначала.
+		 */
+		public function stopAnimation(): void {
+			if (_playingAnim) {
+				_playingAnim.stop();
+			}
 		}
 		
 		internal function setGameLayer(value: GameLayer): void {
@@ -657,8 +646,11 @@ package com.flashmedia.basics
 			if (_selectable) {
 				if (!_select) {
 					_select = new Sprite();
+					_select.mouseEnabled = true;
+					_select.doubleClickEnabled = true;
 					_select.addEventListener(KeyboardEvent.KEY_DOWN, keyboardListener);
 					_select.addEventListener(MouseEvent.CLICK, mouseClickListener);
+					_select.addEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickListener);
 					_select.addEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 					_select.addEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
 					_select.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
@@ -684,6 +676,7 @@ package com.flashmedia.basics
 				if (_select) {
 					_select.removeEventListener(KeyboardEvent.KEY_DOWN, keyboardListener);
 					_select.removeEventListener(MouseEvent.CLICK, mouseClickListener);
+					_select.removeEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickListener);
 					_select.removeEventListener(MouseEvent.MOUSE_OVER, mouseOverListener);
 					_select.removeEventListener(MouseEvent.MOUSE_OUT, mouseOutListener);
 					_select.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveListener);
@@ -775,97 +768,6 @@ package com.flashmedia.basics
 			}
 		}
 		
-//		private function updateTextFieldAlign(): void {
-//			if (_textField) {
-//				switch (_textHorizontalAlign) {
-//					case HORIZONTAL_ALIGN_LEFT:
-//						_textField.x = 0;
-//					break;
-//					case HORIZONTAL_ALIGN_RIGHT:
-//						_textField.x = width - _textField.width;
-//					break;
-//					case HORIZONTAL_ALIGN_CENTER:
-//					default:
-//						_textField.x = (width - _textField.width) / 2;
-//				}
-//				switch (_textVerticalAlign) {
-//					case VERTICAL_ALIGN_TOP:
-//						_textField.y = 0;
-//					break;
-//					case VERTICAL_ALIGN_BOTTOM:
-//						_textField.y = height - _textField.height;
-//					break;
-//					case VERTICAL_ALIGN_CENTER:
-//					default:
-//						_textField.y = (height - _textField.height) / 2;
-//				}
-//			}
-//		}
-//		private function updateTextFieldAlign(): void {
-//			if (_textField) {
-//				switch (_textHorizontalAlign) {
-//					case HORIZONTAL_ALIGN_LEFT:
-//						_textField.x = 0;
-//					break;
-//					case HORIZONTAL_ALIGN_RIGHT:
-//						_textField.x = width - _textField.width;
-//					break;
-//					case HORIZONTAL_ALIGN_CENTER:
-////					default:
-//						_textField.x = (width - _textField.width) / 2;
-//				}
-//				switch (_textVerticalAlign) {
-//					case VERTICAL_ALIGN_TOP:
-//						_textField.y = 0;
-//					break;
-//					case VERTICAL_ALIGN_BOTTOM:
-//						_textField.y = height - _textField.height;
-//					break;
-//					case VERTICAL_ALIGN_CENTER:
-////					default:
-//						_textField.y = (height - _textField.height) / 2;
-//				}
-//			}
-//		}
-		
-		/**
-		 * Сортировка составляющих игрового объекта. Каждый спрайт должен находиться на своем месте.
-		 * Например выделение с его маской выше всех, чтобы обрабатывать действия пользователя.
-		 * bitmap - bitmapMask - border - debugContainer - select - selectMask
-		 */
-//		private function sortSprites(): void {
-			//_view.sortVisuals();
-			//front
-//			if (_selectMask) {
-//				setChildIndex(_selectMask, 0);
-//			}
-//			if (_select) {
-//				setChildIndex(_select, 0);
-//			}
-//			if (_debugContainer) {
-//				setChildIndex(_debugContainer, 0);
-//			}
-//			if (_textField) {
-//				setChildIndex(_textField, 0);
-//			}
-//			if (_border) {
-//				setChildIndex(_border, 0);
-//			}
-//			if (_bitmapMask) {
-//				setChildIndex(_bitmapMask, 0);
-//			}
-//			if (_bitmap) {
-//				setChildIndex(_bitmap, 0);
-//			}
-//			if (_focus) {
-//				setChildIndex(_focus, 0);
-//			}
-//			if (_hover) {
-//				setChildIndex(_hover, 0);
-//			}
-			//back
-//		}
-		
 		protected function keyboardListener(event: KeyboardEvent): void {
 			var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_KEY_DOWN);
 			goEvent.gameObject = this;
@@ -879,6 +781,16 @@ package com.flashmedia.basics
 				event.stopPropagation(); // отменяет дальнейшую обработку события - сцена не снимет выделение
 			}
 			var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_MOUSE_CLICK);
+			goEvent.gameObject = this;
+			dispatchEvent(goEvent);
+		}
+		
+		protected function mouseDoubleClickListener(event: MouseEvent): void {
+			if (_selectable && _focusEnabled) {
+				_scene.selectedGameObject = this;
+				event.stopPropagation(); // отменяет дальнейшую обработку события - сцена не снимет выделение
+			}
+			var goEvent: GameObjectEvent = new GameObjectEvent(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK);
 			goEvent.gameObject = this;
 			dispatchEvent(goEvent);
 		}

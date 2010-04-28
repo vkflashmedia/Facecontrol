@@ -2,11 +2,13 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MyPhotoForm;
 	import com.facecontrol.gui.MainMenuEvent;
+	import com.facecontrol.gui.VkAdPanel;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
@@ -50,16 +52,19 @@ package {
 		private var rateBar: RatingBar;
 		private var form: Form;
 		
-		private var _background:Background;
-		private var _mainForm:MainForm;
-		private var _myPhotoForm:MyPhotoForm;
-		private var _friendsForm:FriendsForm;
+		public var _background: Background;
+		public var _mainForm: MainForm;
+		public var _myPhotoForm: MyPhotoForm;
+		public var _friendsForm: FriendsForm;
+		public var _allUserPhotoForm: AllUserPhotoForm;
 		
 		public function Facecontrol() {
 //			aliFunction();
 //			artemFunction();
 //			testComponents();
-
+//			new Test(this).testAnimation();
+//			var form: PhotoAlbumForm = new PhotoAlbumForm(this);			
+//			addChild(form);
 			_images = new Images();
 			
 			Util.multiLoader = new MultiLoader();
@@ -113,6 +118,11 @@ package {
 			
 			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
 			Util.multiLoader.load(Images.FRIENDS_LINE_PATH, Images.FRIENDS_LINE, 'Bitmap');
+			
+			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK_PATH, Images.ALL_USER_PHOTO_BACK, 'Bitmap');
+			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
+			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
+			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -142,12 +152,17 @@ package {
 				_friendsForm.visible = false;
 				addChild(_friendsForm);
 				
+				_allUserPhotoForm = new AllUserPhotoForm(this);
+				_allUserPhotoForm.visible = false;
+				addChild(_allUserPhotoForm);
+				
 				Util.vkontakte.getProfiles(Util.userId);
 			}
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
 			_mainForm.visible = true;
+			_allUserPhotoForm.visible = false;
 			_myPhotoForm.visible = false;
 			_friendsForm.visible = false;
 		}
@@ -158,6 +173,13 @@ package {
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
+		}
+		
+		public function showAllUserPhotoForm(): void {
+			_mainForm.visible = false;
+			_myPhotoForm.visible = false;
+			_friendsForm.visible = false;
+			_allUserPhotoForm.visible = true;
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -181,6 +203,9 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						var user:Object = response[0];
+						Util.firstName = user.first_name;
+						Util.nickname = user.nickname;
+						Util.lastName = user.last_name;
 						Util.src_small = user.photo;
 						Util.src = user.photo_medium;
 						Util.src_big = user.photo_big;
@@ -519,7 +544,7 @@ package {
 			gl.addChild(tf4);
 			gl.addChild(tf5);
 			addChild(gl);
-			gl.removeChild(tf5);
+			//gl.removeChild(tf5);
 			
 			form = new Form(this, 20, 300, 90, 220);
 			//form.verticalScrollBar.active = false;
@@ -550,6 +575,10 @@ package {
 			textInput.type = TextFieldType.INPUT;
 			textInput.wordWrap = true;
 			addChild(textInput);
+			
+			var adPanel: VkAdPanel = new VkAdPanel(this, 500, 200, 200, 100);
+			adPanel.fillBackground(0xffffff, 1.0);
+			addChild(adPanel);
 		}
 		/*
 		private function onButtonClicked(e: GameObjectEvent): void {

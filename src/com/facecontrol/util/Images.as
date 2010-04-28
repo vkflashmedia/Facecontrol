@@ -40,6 +40,12 @@ package com.facecontrol.util
 		public static const FRIENDS_BACKGROUND:String = 'FRIENDS_BACKGROUND';
 		public static const FRIENDS_LINE:String = 'FRIENDS_LINE';
 		
+		public static const ALL_USER_PHOTO_BACK:String = 'allUserPhotoBack';
+		public static const ALL_USER_PHOTO_BACK2:String = 'allUserPhotoBack2';
+		public static const ALL_USER_PHOTO_LEFT_BTN:String = 'allUserPhotoLeftBtn';
+		public static const ALL_USER_PHOTO_RIGHT_BTN:String = 'allUserPhotoRightBtn';
+		
+		
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
 		public static const HEAD_BUTTON2_PATH:String = 'images\\head\\02.png';
@@ -76,6 +82,10 @@ package com.facecontrol.util
 		
 		public static const FRIENDS_BACKGROUND_PATH:String = 'images\\my_friends\\bgr.png';
 		public static const FRIENDS_LINE_PATH:String = 'images\\my_friends\\line.png';
-
+		
+		public static const ALL_USER_PHOTO_BACK_PATH:String = 'images\\all_user_foto\\bgr.png';
+		public static const ALL_USER_PHOTO_BACK2_PATH:String = 'images\\all_user_foto\\bgr02.png';
+		public static const ALL_USER_PHOTO_LEFT_BTN_PATH:String = 'images\\all_user_foto\\but_l.png';
+		public static const ALL_USER_PHOTO_RIGHT_BTN_PATH:String = 'images\\all_user_foto\\but_r.png';
 	}
 }

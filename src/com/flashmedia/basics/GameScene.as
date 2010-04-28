@@ -191,6 +191,9 @@ package com.flashmedia.basics
 					_realTpsCount++;
 				}
 			}
+			var gsEvent: GameSceneEvent = new GameSceneEvent(GameSceneEvent.TYPE_TICK);
+			gsEvent.scene = this;
+			dispatchEvent(gsEvent);
 		}
 		
 		//TODO render

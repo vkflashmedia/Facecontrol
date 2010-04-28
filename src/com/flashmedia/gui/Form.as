@@ -108,9 +108,12 @@ package com.flashmedia.gui
 //		}
 		
 		public function removeComponent(child: DisplayObject): DisplayObject {
-			var d: DisplayObject = _contentLayer.removeChild(child);
-			updateContentLayer();
-			return d;
+			if (_contentLayer.contains(child)) {
+				var d: DisplayObject = _contentLayer.removeChild(child);
+				updateContentLayer();
+				return d;
+			}
+			return null;
 		}
 		
 //		public override function removeChild(child: DisplayObject): DisplayObject {
@@ -135,7 +138,7 @@ package com.flashmedia.gui
 			_contentLayer.y = _paddingTop;
 			var scrollRectWidth: int = width - _paddingLeft - _paddingRight;
 			var scrollRectHeight: int = height - _paddingBottom - _paddingTop;
-			if (_contentLayer.height > scrollRectHeight) {
+			if (_contentLayer.height > scrollRectHeight && scrollRectHeight > 1) {
 				if (!_verticalScrollBar) {
 					_verticalScrollBar = new ScrollBar(scene, 0, 0, 15, 15);
 					_verticalScrollBar.addEventListener(ScrollBarEvent.TYPE_SCROLL, onVerticalScrollBarScroll);
@@ -155,7 +158,7 @@ package com.flashmedia.gui
 			else {
 				_view.removeDisplayObject('verticalScroll');
 			}
-			if (_contentLayer.width > scrollRectWidth) {
+			if (_contentLayer.width > scrollRectWidth && scrollRectWidth > 1) {
 				if (!_horizontalScrollBar) {
 					_horizontalScrollBar = new ScrollBar(scene, 0, 0, 15, 15, ScrollBar.TYPE_HORIZONTAL);
 					_horizontalScrollBar.addEventListener(ScrollBarEvent.TYPE_SCROLL, onHorizontalScrollBarScroll);

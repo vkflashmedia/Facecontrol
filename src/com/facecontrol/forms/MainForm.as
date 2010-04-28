@@ -7,6 +7,7 @@ package com.facecontrol.forms
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
@@ -98,6 +99,7 @@ package com.facecontrol.forms
 			otherPhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 			otherPhotos.textField.embedFonts = true;
 			otherPhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
+			otherPhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onOtherPhotosClick);
 			addChild(otherPhotos);
 			
 			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
@@ -279,6 +281,24 @@ package com.facecontrol.forms
 			}
 		}
 		
+		public function fullNameCurrentUser(limit: int = 20): String {
+			if (_current) {
+				if (limit < 3) {
+					limit = 3;
+				}
+				var fn: String = _current.fname + ' ' + ((_current.nickname) ? (_current.nickname + ' ') : '') + _current.lname;
+				if (fn.length > limit) {
+					fn = fn.substr(0, limit) + '...';
+				}
+				return fn;
+			}
+			return '';
+		}
+		
+		public function get currentUser(): Object {
+			return _current;
+		}
+		
 		public function vote(obj:Object):void {
 			_current.rating_average = obj.rating_average;
 			_current.votes_count = obj.votes_count;
@@ -416,6 +436,10 @@ package com.facecontrol.forms
 //				TODO:
 //				_maxAgeBox.selectedItem = _minAgeBox.selectedIndex;
 			}
+		}
+		
+		public function onOtherPhotosClick(event: GameObjectEvent): void {
+			(scene as Facecontrol).showAllUserPhotoForm();
 		}
 	}
 }
