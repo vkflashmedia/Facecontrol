@@ -139,7 +139,13 @@ package com.flashmedia.gui
 			layer.addChild(b);
 			
 			b.enabled = !isCurrent;
-			b.setTextFormatForState((isCurrent) ? _selectedTextFormat : _defaultTextFormat, CONTROL_STATE_NORMAL);
+			if (isCurrent && _selectedTextFormat) {
+				b.setTextFormatForState(_selectedTextFormat, CONTROL_STATE_NORMAL);
+			}
+			if (!isCurrent && _defaultTextFormat) {
+				b.setTextFormatForState(_defaultTextFormat, CONTROL_STATE_NORMAL);
+			}
+			//b.setTextFormatForState((isCurrent) ? _selectedTextFormat : _defaultTextFormat, CONTROL_STATE_NORMAL);
 
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);
 			_currentX += b.width + RIGHT_INDENT;
@@ -150,7 +156,9 @@ package com.flashmedia.gui
 			var b:Button = new Button(_scene);
 			b.y = 2;
 			b.x = _currentX;
-			b.setBackgroundImageForState(new Bitmap(image.bitmapData), CONTROL_STATE_NORMAL);
+			if (image) {
+				b.setBackgroundImageForState(new Bitmap(image.bitmapData), CONTROL_STATE_NORMAL);
+			}
 			b.paginationIndex = index;
 			layer.addChild(b);
 			b.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, buttonClickListener);

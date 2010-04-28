@@ -4,6 +4,7 @@ package com.flashmedia.gui
 
 	public class GridBoxEvent extends GameObjectEvent
 	{
+		public static const TYPE_ITEM_DOUBLECLICK: String = 'type_item_doubleclick';
 		public static const TYPE_ITEM_SELECTED: String = 'type_item_selected';
 		public static const TYPE_SCROLL: String = 'type_scroll';
 		

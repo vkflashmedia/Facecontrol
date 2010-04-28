@@ -18,7 +18,10 @@ package com.facecontrol.util
 		public static const apiId:uint = 1827403;
 		public static var user:Object;
 		
-		public static var userId:uint = /*11757602;*/9028622;
+		public static var userId:uint = 11757602;//9028622;
+		public static var firstName: String;
+		public static var nickname: String;
+		public static var lastName: String;
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var scene:GameScene;
 		public static var api:Api = new Api();
@@ -49,6 +52,17 @@ package com.facecontrol.util
 			}
 			result += ' фото';
 			return result;
+		}
+		
+		public static function fullName(limit: int = 20): String {
+			if (limit < 3) {
+				limit = 3;
+			}
+			var fn: String = firstName + ' ' + ((nickname) ? (nickname + ' ') : '') + lastName;
+			if (fn.length > limit) {
+				fn = fn.substr(0, limit) + '...';
+			}
+			return fn;
 		}
 	}
 }

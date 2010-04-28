@@ -9,12 +9,14 @@ package com.flashmedia.basics
 		public static const TYPE_KEY_UP: String = 'type_key_up';
 		public static const TYPE_MOUSE_HOVER: String = 'type_mouse_hover';
 		public static const TYPE_MOUSE_CLICK: String = 'type_mouse_click';
+		public static const TYPE_MOUSE_DOUBLECLICK: String = 'type_mouse_doubleclick';
 		public static const TYPE_MOUSE_MOVE: String = 'type_mouse_move';
-		public static const TYPE_ANIMATION_COMPLETED: String = 'type_animation_completed';
 		public static const TYPE_SET_FOCUS: String = 'type_set_focus';
 		public static const TYPE_LOST_FOCUS: String = 'type_lost_focus';
 		public static const TYPE_SET_HOVER: String = 'type_set_hover';
 		public static const TYPE_LOST_HOVER: String = 'type_lost_hover';
+		public static const TYPE_ANIMATION_STARTED: String = 'type_animation_started';
+		public static const TYPE_ANIMATION_COMPLETED: String = 'type_animation_completed';
 		
 		private var _gameObject: GameObject;
 		private var _keyCode: uint;
