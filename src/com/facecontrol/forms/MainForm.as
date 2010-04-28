@@ -210,11 +210,11 @@ package com.facecontrol.forms
 			for (i = 8; i < 60; ++i) {
 				_maxAgeBox.addItem(''+i);
 			}
-			_maxAgeBox.addItem("60+");
+			_maxAgeBox.addItem('60+');
 			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMaxAgeChanged);
 			addChild(_maxAgeBox);
 			
-			filterLabel = Util.createLabel("Страна:", 470, 405);
+			filterLabel = Util.createLabel('Страна:', 470, 405);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -227,7 +227,7 @@ package com.facecontrol.forms
 			_countryBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_countryBox);
 			
-			filterLabel = Util.createLabel("Город:", 470, 445);
+			filterLabel = Util.createLabel('Город:', 470, 445);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;

@@ -19,6 +19,8 @@ package com.facecontrol.gui
 		{
 			super(value);
 			
+			setSelect(true);
+			
 			this.width = 329;
 			this.height = 99;
 			
@@ -66,6 +68,7 @@ package com.facecontrol.gui
 				rating.setTextFormat(new TextFormat(Util.tahoma.fontName, 17.7, 0xffffff));
 				rating.embedFonts = true;
 				rating.antiAliasType = AntiAliasType.ADVANCED;
+				rating.selectable = false;
 				addChild(rating);
 				
 				var votesCount:String = userRaw.votes_count;
@@ -78,6 +81,7 @@ package com.facecontrol.gui
 				votes.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6), 1, votesCount.length + 1);
 				votes.embedFonts = true;
 				votes.antiAliasType = AntiAliasType.ADVANCED;
+				votes.selectable = false;
 				addChild(votes);
 			}
 			else {
@@ -89,6 +93,7 @@ package com.facecontrol.gui
 				noVotes.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
 				noVotes.embedFonts = true;
 				noVotes.antiAliasType = AntiAliasType.ADVANCED;
+				noVotes.selectable = false;
 				addChild(noVotes);
 			}
 			
@@ -100,6 +105,7 @@ package com.facecontrol.gui
 			name.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e));
 			name.embedFonts = true;
 			name.antiAliasType = AntiAliasType.ADVANCED;
+			name.selectable = false;
 			addChild(name);
 			
 			var label:TextField = new TextField();
@@ -108,6 +114,7 @@ package com.facecontrol.gui
 			label.autoSize = TextFieldAutoSize.LEFT;
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
+			label.selectable = false;
 			addChild(label);
 			
 			if (userRaw.age) {

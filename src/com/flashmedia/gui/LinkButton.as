@@ -27,7 +27,6 @@ package com.flashmedia.gui
 			textField.selectable = false;
 			textField.mouseEnabled = false;
 			
-			this.setSelect(true);
 			this.x = x;
 			this.y = y;
 			this.width = textField.width;
