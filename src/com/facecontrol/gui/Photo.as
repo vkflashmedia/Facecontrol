@@ -59,7 +59,7 @@ package com.facecontrol.gui
 			}
 				
 			if (_photo) {
-				_thumbnail = new Bitmap(_photo.bitmapData, "auto", true);
+				_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
 				
 				var matrix:Matrix = new Matrix();
 				var s:Number = (width - _photoBorder*2) / _thumbnail.width;

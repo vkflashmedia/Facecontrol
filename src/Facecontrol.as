@@ -5,6 +5,7 @@ package {
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
+	import com.facecontrol.forms.MessageDialog;
 	import com.facecontrol.forms.MyPhotoForm;
 	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
@@ -135,6 +136,7 @@ package {
 				_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
 				_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
 				_background.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
+				_background.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
 				_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
 				addChild(_background);
 				
@@ -163,6 +165,11 @@ package {
 			Util.server.getTop();
 		}
 		
+		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
+//			Util.api.getPhotos(Util.userId);
+			showModal(new MessageDialog(this, 'Сообщение:', 'Вы не сможете учавствовать в ТОПе, пока у вас не загружена хотя бы одна фотография.'));
+		}
+		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
 //			Util.vkontakte.getFriendsProfiles();
@@ -172,7 +179,7 @@ package {
 			try {
 				switch (event.errorCode) {
 					default:
-						trace('onServerRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
+						showModal(new MessageDialog(this, 'Ошибка:', event.errorMessage));
 				}
 			}
 			catch (e:Error) {
@@ -236,7 +243,8 @@ package {
 			try {
 				switch (event.errorCode) {
 					default:
-						trace('onFacecontrolRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
+						showModal(new MessageDialog(this, 'Ошибка:', event.errorMessage));
+//						trace('onFacecontrolRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
 				}
 			}
 			catch (e:Error) {
