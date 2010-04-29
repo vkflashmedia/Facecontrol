@@ -48,6 +48,9 @@ package com.facecontrol.util
 		public static const ALL_USER_PHOTO_LEFT_BTN:String = 'allUserPhotoLeftBtn';
 		public static const ALL_USER_PHOTO_RIGHT_BTN:String = 'allUserPhotoRightBtn';
 		
+		public static const MESSAGE_DIALOG_BACKGROUND:String = 'MESSAGE_DIALOG_BACKGROUND';
+		public static const MESSAGE_DIALOG_BUTTON:String = 'MESSAGE_DIALOG_BUTTON';
+		
 		
 		
 		public static const HEAD_BUTTON1_PATH:String = 'images\\head\\01.png';
@@ -92,5 +95,8 @@ package com.facecontrol.util
 		public static const ALL_USER_PHOTO_BACK2_PATH:String = 'images\\all_user_foto\\bgr02.png';
 		public static const ALL_USER_PHOTO_LEFT_BTN_PATH:String = 'images\\all_user_foto\\but_l.png';
 		public static const ALL_USER_PHOTO_RIGHT_BTN_PATH:String = 'images\\all_user_foto\\but_r.png';
+		
+		public static const MESSAGE_DIALOG_BACKGROUND_PATH:String = 'images\\message_dialog\\form.png';
+		public static const MESSAGE_DIALOG_BUTTON_PATH:String = 'images\\message_dialog\\button_red.png';
 	}
 }

@@ -134,6 +134,9 @@ package {
 			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
 			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
 			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
+			
+			Util.multiLoader.load(Images.MESSAGE_DIALOG_BACKGROUND_PATH, Images.MESSAGE_DIALOG_BACKGROUND, 'Bitmap');
+			Util.multiLoader.load(Images.MESSAGE_DIALOG_BUTTON_PATH, Images.MESSAGE_DIALOG_BUTTON, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {

@@ -6,6 +6,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Sprite;
 	import flash.text.AntiAliasType;
@@ -22,14 +23,14 @@ package com.facecontrol.forms
 			this.graphics.beginFill(0x00, 0.5);
 			this.graphics.drawRect(0, 0, _scene.width, _scene.height);
 			
-			var square:Sprite = new Sprite();
-			square.graphics.beginFill(0x00, 1);
-			square.graphics.drawRect(166, 214, 300, 175);
-			addChild(square);
+//			var square:Sprite = new Sprite();
+//			square.graphics.beginFill(0x00, 1);
+//			square.graphics.drawRect(166, 214, 300, 175);
+//			addChild(square);
 			
-//			bitmap = new Bitmap();
-//			bitmap.x = 216;
-//			bitmap.y = 213;
+			bitmap = Util.multiLoader.get(Images.MESSAGE_DIALOG_BACKGROUND);
+			bitmap.x = 166;
+			bitmap.y = 214;
 			
 			var label:TextField = Util.createLabel(title, 175, 232, 282, 20);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
@@ -47,8 +48,8 @@ package com.facecontrol.forms
 			addChild(label);
 			
 			var format:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
-			var ok:Button = new Button(_scene, 250, 322);
-			ok.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			var ok:Button = new Button(_scene, 249, 322);
+			ok.setBackgroundImageForState(Util.multiLoader.get(Images.MESSAGE_DIALOG_BUTTON), CONTROL_STATE_NORMAL);
 			ok.setTitleForState('Oк', CONTROL_STATE_NORMAL);
 			ok.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			ok.textField.embedFonts = true;
