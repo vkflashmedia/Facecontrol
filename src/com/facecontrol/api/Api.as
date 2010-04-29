@@ -30,9 +30,9 @@ package com.facecontrol.api
 			loader.load(request);
 		}
 		
-		private function errorHandler(e:IOErrorEvent):void {
-			trace("errorHandler: "+e.text);
-			dispatchEvent(new ApiEvent(ApiEvent.ERROR, e.text, 255));
+		private function errorHandler(event:IOErrorEvent):void {
+			trace('errorHandler: ' + event.text);
+			dispatchEvent(new ApiEvent(ApiEvent.ERROR, event.text, 255));
 		}
 		
 		private function completeHandler(event:Event):void
