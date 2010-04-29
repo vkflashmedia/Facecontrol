@@ -12,7 +12,6 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.ComboBoxEvent;
-	import com.flashmedia.gui.GridBoxEvent;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.util.BitmapUtil;
@@ -20,7 +19,9 @@ package com.facecontrol.forms
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TextEvent;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -54,8 +55,8 @@ package com.facecontrol.forms
 		protected var _rateBar:RatingBar;
 		
 		protected var _sexBox:ComboBox;
-		protected var _minAgeBox:ComboBox;
-		protected var _maxAgeBox:ComboBox;
+		protected var _minAgeBox:TextField;
+		protected var _maxAgeBox:TextField;
 		protected var _countryBox:ComboBox;
 		protected var _cityBox:ComboBox;
 		
@@ -193,12 +194,25 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_minAgeBox = createComboBox(502, 367, 84);
-			for (var i:int = 8; i < 60; ++i) {
-				_minAgeBox.addItem(''+i);
-			}
-			_minAgeBox.addItem('60+');
-			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMinAgeChanged);
+			var spr: Sprite = new Sprite();
+			spr.graphics.beginFill(0xffffff);
+			spr.graphics.drawRoundRect(502, 367, 84, 15, 12);
+			spr.graphics.endFill();
+			addChild(spr);
+			
+			_minAgeBox = new TextField();
+			_minAgeBox.selectable = true;
+			_minAgeBox.x = 480;
+			_minAgeBox.y = 367;
+			_minAgeBox.maxChars = 3;
+			_minAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
+			_minAgeBox.autoSize = TextFieldAutoSize.RIGHT;
+			_minAgeBox.type = TextFieldType.INPUT;
+			_minAgeBox.embedFonts = true;
+			_minAgeBox.antiAliasType = AntiAliasType.ADVANCED;
+			_minAgeBox.restrict = '0-9';
+			_minAgeBox.addEventListener(FocusEvent.FOCUS_OUT, onMinAgeFocusOut);
+			_minAgeBox.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 			addChild(_minAgeBox);
 			
 			filterLabel = Util.createLabel('До:', 470, 382);
@@ -208,12 +222,25 @@ package com.facecontrol.forms
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_maxAgeBox = createComboBox(502, 385, 84);
-			for (i = 8; i < 60; ++i) {
-				_maxAgeBox.addItem(''+i);
-			}
-			_maxAgeBox.addItem('60+');
-			_minAgeBox.addEventListener(GridBoxEvent.TYPE_ITEM_SELECTED, onMaxAgeChanged);
+			spr = new Sprite();
+			spr.graphics.beginFill(0xffffff);
+			spr.graphics.drawRoundRect(502, 385, 84, 15, 12);
+			spr.graphics.endFill();
+			addChild(spr);
+			
+			_maxAgeBox = new TextField();
+			_maxAgeBox.selectable = true;
+			_maxAgeBox.x = 480;
+			_maxAgeBox.y = 385;
+			_maxAgeBox.maxChars = 3;
+			_maxAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
+			_maxAgeBox.autoSize = TextFieldAutoSize.RIGHT;
+			_maxAgeBox.type = TextFieldType.INPUT;
+			_maxAgeBox.embedFonts = true;
+			_maxAgeBox.antiAliasType = AntiAliasType.ADVANCED;
+			_maxAgeBox.restrict = '0-9';
+			_maxAgeBox.addEventListener(FocusEvent.FOCUS_OUT, onMaxAgeFocusOut);
+			_maxAgeBox.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 			addChild(_maxAgeBox);
 			
 			filterLabel = Util.createLabel('Страна:', 470, 405);
@@ -348,8 +375,6 @@ package com.facecontrol.forms
 					_votesCountField.text = _previous.votes_count;
 					_votesCountField.setTextFormat(format);
 				}
-				
-				updateFilter();
 			}
 			
 			Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
@@ -372,8 +397,13 @@ package com.facecontrol.forms
 				break;
 			}
 			
-			_minAgeBox.selectedItem = ((_filter.age_min == 60) ? '60+' : _filter.age_min);
-			_maxAgeBox.selectedItem = ((_filter.age_max == 60) ? '60+' : _filter.age_max);
+			var format:TextFormat = _minAgeBox.getTextFormat();
+			_minAgeBox.text = ((_filter.age_min == 60) ? '60+' : _filter.age_min);;
+			_minAgeBox.setTextFormat(format);
+			
+			format = _maxAgeBox.getTextFormat();
+			_maxAgeBox.text = ((_filter.age_max == 60) ? '60+' : _filter.age_max);
+			_maxAgeBox.setTextFormat(format);
 			
 			_countryBox.clear();
 			if (Util.user.country_name) {
@@ -458,28 +488,67 @@ package com.facecontrol.forms
 			Util.api.vote(Util.userId, _current.pid, _rateBar.rating);
 		}
 		
-		public function onMinAgeChanged(event:GridBoxEvent):void {
-			if (_minAgeBox.selectedIndex > _maxAgeBox.selectedIndex) {
-//				TODO:
-//				_maxAgeBox.selectedItem = _minAgeBox.selectedIndex;
-			}
-		}
-		
-		public function onMaxAgeChanged(event:GridBoxEvent):void {
-			if (_minAgeBox.selectedIndex > _maxAgeBox.selectedIndex) {
-//				TODO:
-//				_maxAgeBox.selectedItem = _minAgeBox.selectedIndex;
-			}
-		}
-		
 		public function onFilterChanged(event:ComboBoxEvent):void {
+			saveFilters();
+		}
+		
+		public function onTextInput(event:TextEvent):void {
+			if (event.target.length + event.text.length > 2) {
+				event.preventDefault();
+			}
+		}
+		
+		public function onMinAgeFocusOut(event:FocusEvent):void {
+			var format:TextFormat = _minAgeBox.getTextFormat();
+			if (_minAgeBox.length > 0) {
+				if (_minAgeBox.text != '60+') {
+					var age:int = int(_minAgeBox.text);
+					if (age < 8) _minAgeBox.text = '8';
+					else if (age >= 60) _minAgeBox.text = '60+';
+				}
+			}
+			else _minAgeBox.text = '8';
+			_minAgeBox.setTextFormat(format);
+			
+			var ageMin:int = _minAgeBox.text == '60+' ? 60 : int(_minAgeBox.text);
+			var ageMax:int = _maxAgeBox.text == '60+' ? 60 : int(_maxAgeBox.text);
+			
+			if (ageMax < ageMin) {
+				format  = _maxAgeBox.getTextFormat();
+				_maxAgeBox.text = _minAgeBox.text;
+				_maxAgeBox.setTextFormat(format);
+			}
+			
+			saveFilters();
+		}
+		
+		public function onMaxAgeFocusOut(event:FocusEvent):void {
+			var format:TextFormat = _maxAgeBox.getTextFormat();
+			if (_maxAgeBox.length > 0) {
+				if (_maxAgeBox.text != '60+') {
+					var age:int = int(_maxAgeBox.text);
+					if (age < 8) _maxAgeBox.text = '8';
+					else if (age >= 60) _maxAgeBox.text = '60+';
+				}
+			}
+			else _maxAgeBox.text = '8';
+			_maxAgeBox.setTextFormat(format);
+			
+			var ageMin:int = _minAgeBox.text == '60+' ? 60 : int(_minAgeBox.text);
+			var ageMax:int = _maxAgeBox.text == '60+' ? 60 : int(_maxAgeBox.text);
+			
+			if (ageMin > ageMax) {
+				format  = _minAgeBox.getTextFormat();
+				_minAgeBox.text = _maxAgeBox.text;
+				_minAgeBox.setTextFormat(format);
+			}
 			saveFilters();
 		}
 		
 		private function saveFilters():void {
 			var sex:int = _sexBox.selectedIndex + 1;
-			var minAge:int = _minAgeBox.selectedIndex + 8;
-			var maxAge:int = _maxAgeBox.selectedIndex + 8;
+			var ageMin:int = _minAgeBox.text == '60+' ? 60 : int(_minAgeBox.text);
+			var ageMax:int = _maxAgeBox.text == '60+' ? 60 : int(_maxAgeBox.text);
 			var city:String = null;
 			var country:String = null;
 			
@@ -491,7 +560,7 @@ package com.facecontrol.forms
 				country = Util.user.country;
 			}
 			
-			Util.api.saveSettings(Util.userId, sex, minAge, maxAge, city, country);
+			Util.api.saveSettings(Util.userId, sex, ageMin, ageMax, city, country);
 		}
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {

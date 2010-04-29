@@ -78,14 +78,14 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
-		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null, country:String=null):void
+		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=60, city:String=null, country:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'save_settings';
 			vars['uid'] = uid;
 			vars['sex'] = sex;
 			vars['age_min'] = minAge;
-			vars['max_age'] = maxAge;
+			vars['age_max'] = maxAge;
 			if (city) vars['city'] = city;
 			if (country) vars['country'] = country;
 			
