@@ -200,5 +200,22 @@ package com.facecontrol.api
 			
 			request(vars);
 		}
+		
+		public function favorites(uid:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'favorites';
+			vars['uid'] = uid;
+			
+			request(vars);
+		}
+		
+		public function addFavorite(uid:int, favoriteUid:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'add_favorite';
+			vars['uid'] = uid;
+			vars['favorite_uid'] = favoriteUid;
+			
+			request(vars);
+		}
 	}
 }

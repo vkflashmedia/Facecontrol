@@ -18,27 +18,27 @@ package com.facecontrol.forms
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class FriendsForm extends GameLayer
+	public class FavoritesForm extends GameLayer
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 5;
 		
-		private static var _instance:FriendsForm = null;
-		public static function get instance():FriendsForm {
-			if (!_instance) _instance = new FriendsForm(Util.scene);
+		private static var _instance:FavoritesForm;
+		public static function get instance():FavoritesForm {
+			if (!_instance) _instance = new FavoritesForm(Util.scene);
 			return _instance;
 		}
 		
-		private var _friendsCount:TextField;
+		private var _favoritesCount:TextField;
 		private var _pagination:Pagination;
 		private var _grid:GridBox;
 		private var _users:Array;
 		
-		public function FriendsForm(value:GameScene)
+		public function FavoritesForm(value:GameScene)
 		{
 			super(value);
 			visible = false;
 			
-			var label:TextField = Util.createLabel('Мои друзья', 150, 75);
+			var label:TextField = Util.createLabel('Избранные', 150, 75);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -50,12 +50,12 @@ package com.facecontrol.forms
 			background.y = 104;
 			addChild(background);
 			
-			_friendsCount = Util.createLabel('', 400, 84, 80, 10);
-			_friendsCount.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11, 0xff352b);
-			_friendsCount.embedFonts = true;
-			_friendsCount.antiAliasType = AntiAliasType.ADVANCED;
-			_friendsCount.autoSize = TextFieldAutoSize.RIGHT;
-			addChild(_friendsCount);
+			_favoritesCount = Util.createLabel('', 400, 84, 80, 10);
+			_favoritesCount.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11, 0xff352b);
+			_favoritesCount.embedFonts = true;
+			_favoritesCount.antiAliasType = AntiAliasType.ADVANCED;
+			_favoritesCount.autoSize = TextFieldAutoSize.RIGHT;
+			addChild(_favoritesCount);
 			
 			_pagination = new Pagination(_scene, 383, 600);
 			_pagination.width = 83;
@@ -77,27 +77,25 @@ package com.facecontrol.forms
 			_grid.indentBetweenRows = 0;
 			_grid.indentBetweenCols= 0;
 			_grid.padding = 0;
-//			_grid.debug = true;
 			addChild(_grid);
 		}
 		
-		public function onPaginationChange(event:Event):void {
-			updateGrid();
+		public override function set visible(value:Boolean):void {
+			super.visible = value;
+			if (value && _users.length == 0) {
+				_scene.showModal(new MessageDialog(_scene,
+				'Сообщение:', 'У вас нет избранных пользователей. Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.'));
+			}
 		}
 		
 		public function set users(value:Array):void {
 			_users = value;
-			var user:Object;
 			
+			var user:Object;
 			for each (user in _users) {
 				if (user.pid) {
 					if (!Util.multiLoader.hasLoaded(user.pid)) {
 						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-					}
-				}
-				else if (user.photo_big) {
-					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
 					}
 				}
 			}
@@ -106,19 +104,16 @@ package com.facecontrol.forms
 			else Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 		}
 		
-		public function loadCompleteListener(event:MultiLoaderEvent):void {
-			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-				updateGrid();
-			}
+		public function onPaginationChange(event:Event):void {
+			updateGrid();
 		}
 		
 		public function updateGrid():void {
 			var i:int = 0;
 			var count:int = _users.length;
-			var format:TextFormat = _friendsCount.getTextFormat();
-			_friendsCount.text = 'всего: ' + count;
-			_friendsCount.setTextFormat(format);
+			var format:TextFormat = _favoritesCount.getTextFormat();
+			_favoritesCount.text = 'всего: ' + count;
+			_favoritesCount.setTextFormat(format);
 			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
 			_pagination.visible = _pagination.pagesCount > 1;
 			
@@ -133,6 +128,13 @@ package com.facecontrol.forms
 					item = new FriendGridItem(_scene, _users[i], i != count - 1);
 					_grid.addItem(item);
 				}
+			}
+		}
+		
+		public function loadCompleteListener(event:MultiLoaderEvent):void {
+			if (Util.multiLoader.isLoaded) {
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+				updateGrid();
 			}
 		}
 	}

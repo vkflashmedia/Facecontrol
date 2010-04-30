@@ -4,6 +4,7 @@ package {
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
+	import com.facecontrol.forms.FavoritesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MessageDialog;
@@ -89,54 +90,57 @@ package {
 		}
 		
 		private function load():void {
-			Util.multiLoader.load(Images.HEAD_BUTTON1_PATH, Images.HEAD_BUTTON1, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON2_PATH, Images.HEAD_BUTTON2, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON3_PATH, Images.HEAD_BUTTON3, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON4_PATH, Images.HEAD_BUTTON4, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON5_PATH, Images.HEAD_BUTTON5, 'Bitmap');
-			
-			Util.multiLoader.load(Images.BACKGROUND_PATH, Images.BACKGROUND, 'Bitmap');
-			
-			Util.multiLoader.load(Images.SUPER_ICON_PATH, Images.SUPER_ICON, 'Bitmap');
-			Util.multiLoader.load(Images.JUNK_ICON_PATH, Images.JUNK_ICON, 'Bitmap');
-
-			Util.multiLoader.load(Images.BIG_MASK_PATH, Images.BIG_MASK, 'Bitmap');
-			Util.multiLoader.load(Images.SMALL_MASK_PATH, Images.SMALL_MASK, 'Bitmap');
-			Util.multiLoader.load(Images.BIG_STAR_PATH, Images.BIG_STAR, 'Bitmap');
-			Util.multiLoader.load(Images.LINE_PATH, Images.LINE, 'Bitmap');
-			Util.multiLoader.load(Images.FILTER_BACKGROUND_PATH, Images.FILTER_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.CHOOSE_BUTTON_PATH, Images.CHOOSE_BUTTON, 'Bitmap');
-			Util.multiLoader.load(Images.RATING_BACKGROUND_PATH, Images.RATING_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
-			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
-					
-			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_RED_PATH, Images.MY_PHOTO_BUTTON_RED, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_SELECTION_PATH, Images.MY_PHOTO_SELECTION, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_COMMENT_FROM_PATH, Images.MY_PHOTO_COMMENT_FORM, 'Bitmap');
-			
-			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
-			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
-			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BCK_PATH, Images.ADD_PHOTO_BCK, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
-			
-			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.FRIENDS_LINE_PATH, Images.FRIENDS_LINE, 'Bitmap');
-			
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK_PATH, Images.ALL_USER_PHOTO_BACK, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
-			
-			Util.multiLoader.load(Images.MESSAGE_DIALOG_BACKGROUND_PATH, Images.MESSAGE_DIALOG_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.MESSAGE_DIALOG_BUTTON_PATH, Images.MESSAGE_DIALOG_BUTTON, 'Bitmap');
+//			Util.multiLoader.load(Images.HEAD_BUTTON1_PATH, Images.HEAD_BUTTON1, 'Bitmap');
+//			Util.multiLoader.load(Images.HEAD_BUTTON2_PATH, Images.HEAD_BUTTON2, 'Bitmap');
+//			Util.multiLoader.load(Images.HEAD_BUTTON3_PATH, Images.HEAD_BUTTON3, 'Bitmap');
+//			Util.multiLoader.load(Images.HEAD_BUTTON4_PATH, Images.HEAD_BUTTON4, 'Bitmap');
+//			Util.multiLoader.load(Images.HEAD_BUTTON5_PATH, Images.HEAD_BUTTON5, 'Bitmap');
+//			
+//			Util.multiLoader.load(Images.BACKGROUND_PATH, Images.BACKGROUND, 'Bitmap');
+//			
+//			Util.multiLoader.load(Images.SUPER_ICON_PATH, Images.SUPER_ICON, 'Bitmap');
+//			Util.multiLoader.load(Images.JUNK_ICON_PATH, Images.JUNK_ICON, 'Bitmap');
+//
+//			Util.multiLoader.load(Images.BIG_MASK_PATH, Images.BIG_MASK, 'Bitmap');
+//			Util.multiLoader.load(Images.SMALL_MASK_PATH, Images.SMALL_MASK, 'Bitmap');
+//			Util.multiLoader.load(Images.BIG_STAR_PATH, Images.BIG_STAR, 'Bitmap');
+//			Util.multiLoader.load(Images.LINE_PATH, Images.LINE, 'Bitmap');
+//			Util.multiLoader.load(Images.FILTER_BACKGROUND_PATH, Images.FILTER_BACKGROUND, 'Bitmap');
+//			Util.multiLoader.load(Images.CHOOSE_BUTTON_PATH, Images.CHOOSE_BUTTON, 'Bitmap');
+//			Util.multiLoader.load(Images.RATING_BACKGROUND_PATH, Images.RATING_BACKGROUND, 'Bitmap');
+//			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
+//			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
+//					
+//			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_RED_PATH, Images.MY_PHOTO_BUTTON_RED, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_SELECTION_PATH, Images.MY_PHOTO_SELECTION, 'Bitmap');
+//			Util.multiLoader.load(Images.MY_PHOTO_COMMENT_FROM_PATH, Images.MY_PHOTO_COMMENT_FORM, 'Bitmap');
+//			
+//			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
+//			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
+//			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
+//			Util.multiLoader.load(Images.ADD_PHOTO_BCK_PATH, Images.ADD_PHOTO_BCK, 'Bitmap');
+//			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
+//			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
+//			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
+//			
+//			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
+//			Util.multiLoader.load(Images.FRIENDS_LINE_PATH, Images.FRIENDS_LINE, 'Bitmap');
+//			
+//			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK_PATH, Images.ALL_USER_PHOTO_BACK, 'Bitmap');
+//			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
+//			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
+//			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
+//			
+//			Util.multiLoader.load(Images.MESSAGE_DIALOG_BACKGROUND_PATH, Images.MESSAGE_DIALOG_BACKGROUND, 'Bitmap');
+//			Util.multiLoader.load(Images.MESSAGE_DIALOG_BUTTON_PATH, Images.MESSAGE_DIALOG_BUTTON, 'Bitmap');
+			for each (var image:String in Images.IMAGES) {
+				Util.multiLoader.load(image, image, 'Bitmap');
+			}
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -159,6 +163,7 @@ package {
 				addChild(MainForm.instance);
 				addChild(MyPhotoForm.instance);
 				addChild(Top100.instance);
+				addChild(FavoritesForm.instance);
 				addChild(FriendsForm.instance);
 				
 				Util.vkontakte.getProfiles(new Array('' + Util.userId));
@@ -175,6 +180,7 @@ package {
 			MyPhotoForm.instance.visible = false;
 			Top100.instance.visible = false;
 			FriendsForm.instance.visible = false;
+			FavoritesForm.instance.visible = false;
 			_allUserPhotoForm.visible = false;
 		}
 		
@@ -187,8 +193,8 @@ package {
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-//			Util.api.getPhotos(Util.userId);
-			showModal(new MessageDialog(this, 'Сообщение:', 'Вы не сможете учавствовать в ТОПе, пока у вас не загружена хотя бы одна фотография.'));
+			Util.api.favorites(Util.userId);
+//			showModal(new MessageDialog(this, 'Сообщение:', 'Вы не сможете учавствовать в ТОПе, пока у вас не загружена хотя бы одна фотография.'));
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
@@ -215,6 +221,7 @@ package {
 			MainForm.instance.visible = false;
 			MyPhotoForm.instance.visible = false;
 			Top100.instance.visible = true;
+			FavoritesForm.instance.visible = false;
 			FriendsForm.instance.visible = false;
 		}
 		
@@ -222,6 +229,7 @@ package {
 			MainForm.instance.visible = false;
 			MyPhotoForm.instance.visible = false;
 			FriendsForm.instance.visible = false;
+			FavoritesForm.instance.visible = false;
 			_allUserPhotoForm.visible = true;
 		}
 		
@@ -264,6 +272,7 @@ package {
 			MainForm.instance.visible = false;
 			MyPhotoForm.instance.visible = false;
 			Top100.instance.visible = false;
+			FavoritesForm.instance.visible = false;
 			FriendsForm.instance.visible = true;
 		}
 		
@@ -317,6 +326,7 @@ package {
 						MyPhotoForm.instance.visible = true;
 						MainForm.instance.visible = false;
 						Top100.instance.visible = false;
+						FavoritesForm.instance.visible = false;
 						FriendsForm.instance.visible = false;
 					break;
 					
@@ -332,6 +342,7 @@ package {
 						MainForm.instance.visible = false;
 						MyPhotoForm.instance.visible = false;
 						Top100.instance.visible = false;
+						FavoritesForm.instance.visible = false;
 						FriendsForm.instance.visible = true;
 					break;
 					
@@ -341,6 +352,19 @@ package {
 					
 					case 'save_settings':
 						Util.api.nextPhoto(Util.userId);
+					break;
+					
+					case 'favorites':
+						FavoritesForm.instance.users = response.users;
+						FavoritesForm.instance.visible = true;
+						MainForm.instance.visible = false;
+						MyPhotoForm.instance.visible = false;
+						Top100.instance.visible = false;
+						FriendsForm.instance.visible = false;
+					break;
+					
+					case 'add_favorite':
+						
 					break;
 				}
 			}

@@ -34,16 +34,25 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.CENTER;
 			addChild(label);
 			
-			label = Util.createLabel(message, 193, 271, 250, 35);
-			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff));
+			label = Util.createLabel('', 193, 271, 250, 35);
+			label.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xffffff);
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.multiline = true;
 			label.wordWrap = true;
+			label.text = message;
+			switch (label.numLines) {
+				case 3:
+					label.height = 50;
+				break;
+				case 4:
+					label.height = 70;
+				break;
+			}
 			addChild(label);
 			
 			var format:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
-			var ok:Button = new Button(_scene, 249, 322);
+			var ok:Button = new Button(_scene, 249, (label.numLines < 3) ? 322 : 332);
 			ok.setBackgroundImageForState(Util.multiLoader.get(Images.MESSAGE_DIALOG_BUTTON), CONTROL_STATE_NORMAL);
 			ok.setTitleForState('Oк', CONTROL_STATE_NORMAL);
 			ok.setTextFormatForState(format, CONTROL_STATE_NORMAL);
