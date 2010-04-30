@@ -152,7 +152,6 @@ package com.facecontrol.forms
 			_commentInput.width = 176;
 			_commentInput.height = 121;
 			_commentInput.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
-//			_commentInput.text = '';
 			_commentInput.maxChars = 127;
 			_commentInput.embedFonts = true;
 			_commentInput.antiAliasType = AntiAliasType.ADVANCED;
@@ -170,6 +169,7 @@ package com.facecontrol.forms
 			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), CONTROL_STATE_NORMAL);
 			preview.textField.embedFonts = true;
 			preview.textField.antiAliasType = AntiAliasType.ADVANCED;
+			preview.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onPreviewClick);
 			addChild(preview);
 			
 			var markAsMain:Button = new Button(_scene, 264, 488);
@@ -308,7 +308,12 @@ package com.facecontrol.forms
 		
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
-			Util.api.deletePhoto(gridItem.photoData.pid);
+			if (gridItem) {
+				Util.api.deletePhoto(gridItem.photoData.pid);
+			}
+			else {
+				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+			}
 		}
 		
 		public function onCommentChange(event:Event):void {
@@ -318,6 +323,15 @@ package com.facecontrol.forms
 		public function onMouseOut(event:FocusEvent):void {
 			_main.comment = _commentInput.text;
 			Util.api.setComment(_main.pid, _main.comment);
+		}
+		
+		public function onPreviewClick(event:GameObjectEvent):void {
+			var gridItem:MyPhotoGridItem = _grid.selectedItem;
+			if (gridItem) {
+				_scene.showModal(new PhotoPreviewDialog(_scene, Util.multiLoader.get(gridItem.photoData.pid)));
+			} else {
+				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+			}
 		}
 		
 	}

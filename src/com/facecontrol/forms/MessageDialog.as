@@ -23,11 +23,6 @@ package com.facecontrol.forms
 			this.graphics.beginFill(0x00, 0.5);
 			this.graphics.drawRect(0, 0, _scene.width, _scene.height);
 			
-//			var square:Sprite = new Sprite();
-//			square.graphics.beginFill(0x00, 1);
-//			square.graphics.drawRect(166, 214, 300, 175);
-//			addChild(square);
-			
 			bitmap = Util.multiLoader.get(Images.MESSAGE_DIALOG_BACKGROUND);
 			bitmap.x = 166;
 			bitmap.y = 214;
