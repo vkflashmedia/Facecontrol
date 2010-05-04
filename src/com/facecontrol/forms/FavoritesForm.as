@@ -2,11 +2,12 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.facecontrol.gui.FriendGridItem;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.util.BitmapUtil;
@@ -18,7 +19,7 @@ package com.facecontrol.forms
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class FavoritesForm extends GameLayer
+	public class FavoritesForm extends Form
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 5;
 		
@@ -35,7 +36,7 @@ package com.facecontrol.forms
 		
 		public function FavoritesForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
 			
 			var label:TextField = Util.createLabel('Избранные', 150, 75);
@@ -82,7 +83,7 @@ package com.facecontrol.forms
 		
 		public override function set visible(value:Boolean):void {
 			super.visible = value;
-			if (value && _users.length == 0) {
+			if (value && _users && _users.length == 0) {
 				_scene.showModal(new MessageDialog(_scene,
 				'Сообщение:', 'У вас нет избранных пользователей. Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.'));
 			}
@@ -125,7 +126,7 @@ package com.facecontrol.forms
 				
 				var item:FriendGridItem;
 				for (i = start; i < end; ++i) {
-					item = new FriendGridItem(_scene, _users[i], i != count - 1);
+					item = new FriendGridItem(_scene, _users[i], i != count - 1, true);
 					_grid.addItem(item);
 				}
 			}
@@ -136,6 +137,10 @@ package com.facecontrol.forms
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 				updateGrid();
 			}
+		}
+		
+		public override function refresh():void {
+			Util.api.favorites(Util.userId);
 		}
 	}
 }

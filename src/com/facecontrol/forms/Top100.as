@@ -2,23 +2,21 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.facecontrol.gui.FriendGridItem;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
 	import flash.events.Event;
-	import flash.text.AntiAliasType;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class Top100 extends GameLayer
+	public class Top100 extends Form
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 5;
 		
@@ -35,7 +33,7 @@ package com.facecontrol.forms
 		
 		public function Top100(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
 			
 			var background:Bitmap = BitmapUtil.cloneImageNamed(Images.FRIENDS_BACKGROUND);
@@ -111,6 +109,10 @@ package com.facecontrol.forms
 				var item:FriendGridItem = new FriendGridItem(_scene, _users[i], i != count - 1);
 				_grid.addItem(item);
 			}
+		}
+		
+		public override function refresh():void {
+			Util.server.getTop(Util.userId);
 		}
 	}
 }

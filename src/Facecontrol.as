@@ -176,6 +176,7 @@ package {
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
 			Util.api.nextPhoto(Util.userId);
+//			MainForm.instance.show();
 			MainForm.instance.visible = true;
 			MyPhotoForm.instance.visible = false;
 			Top100.instance.visible = false;
@@ -189,7 +190,7 @@ package {
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
-			Util.server.getTop();
+			Util.server.getTop(Util.userId);
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
@@ -364,7 +365,16 @@ package {
 					break;
 					
 					case 'add_favorite':
-						
+					case 'del_favorite':
+						for (var i:int = 0; i < numChildren; ++i) {
+							if (getChildAt(i) is Form) {
+								var form:Form = getChildAt(i) as Form;
+								if (form.visible) {
+									form.refresh();
+									break;
+								}
+							} 
+						}
 					break;
 				}
 			}

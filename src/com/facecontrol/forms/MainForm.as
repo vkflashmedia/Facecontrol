@@ -5,13 +5,13 @@ package com.facecontrol.forms
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.ComboBoxEvent;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.util.BitmapUtil;
@@ -29,7 +29,7 @@ package com.facecontrol.forms
 	import flash.text.TextFormat;
 	
 	
-	public class MainForm extends GameLayer
+	public class MainForm extends Form
 	{
 		private static const _commentTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4);
 		private static const _nameTextFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be);
@@ -66,10 +66,11 @@ package com.facecontrol.forms
 		
 		private var _previousLayer:Sprite;
 		private var _morePhotos:LinkButton;
+		private var _favorite:LinkButton;
 		
 		public function MainForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			
 			visible = false;
 			
@@ -113,6 +114,14 @@ package com.facecontrol.forms
 			_morePhotos.visible = false;
 			_morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onOtherPhotosClick);
 			addChild(_morePhotos);
+			
+			_favorite = new LinkButton(value, '', 305, 150);
+			_favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
+			_favorite.textField.embedFonts = true;
+			_favorite.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_favorite.visible = false;
+			_favorite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFavoriteClick);
+			addChild(_favorite);
 			
 			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
 			addChild(_bigPhoto);
@@ -317,10 +326,12 @@ package com.facecontrol.forms
 				}
 				
 				if (!_current || _current.pid != obj.pid) {
-					_current = obj;
-					Util.multiLoader.load(_current.src_big, _current.pid, "Bitmap");
+					Util.multiLoader.load(obj.src_big, obj.pid, 'Bitmap');
 					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				}
+				
+				_current = obj;
+				if (_current) _favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
 		}
 		
@@ -378,6 +389,10 @@ package com.facecontrol.forms
 			}
 			
 			Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+		}
+		
+		public override function refresh():void {
+			Util.api.nextPhoto(Util.userId);
 		}
 		
 		public function updateFilter():void {
@@ -458,6 +473,9 @@ package com.facecontrol.forms
 				_morePhotos.visible = true;
 				_morePhotos.label = Util.getMorePhotoString(_current.sex);
 				
+				_favorite.visible = true;
+				_favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
+				
 				if (_nameField) {
 					_nameField.y = _bigPhoto.y + _bigPhoto.height + 4;
 				}
@@ -470,6 +488,7 @@ package com.facecontrol.forms
 			} else {
 				_bigPhoto.photo = null;
 				_morePhotos.visible = false;
+				_favorite.visible = false;
 			}
 		}
 		
@@ -565,6 +584,26 @@ package com.facecontrol.forms
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
 			(scene as Facecontrol).showAllUserPhotoForm();
+		}
+		
+		public function onFavoriteClick(event: GameObjectEvent):void {
+			if (_current.favorite) {
+				Util.api.deleteFavorite(Util.userId, _current.uid);
+			}
+			else {
+				Util.api.addFavorite(Util.userId, _current.uid);
+			}
+		}
+		
+		public function show():void {
+			if (_scene) {
+				for (var i:int = 0; i < _scene.numChildren; ++i) {
+					if (_scene.getChildAt(i) is Form) {
+						var form:Form = _scene.getChildAt(i) as Form;
+						form.visible = (form != this);
+					} 
+				}
+			}
 		}
 	}
 }

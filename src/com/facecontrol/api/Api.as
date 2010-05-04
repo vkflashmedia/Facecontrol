@@ -185,10 +185,11 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
-		public function top100():void
+		public function top100(uid:uint):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'top100';
+			vars['uid'] = uid;
 			
 			request(vars);
 		}
@@ -212,6 +213,15 @@ package com.facecontrol.api
 		public function addFavorite(uid:int, favoriteUid:int):void {
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'add_favorite';
+			vars['uid'] = uid;
+			vars['favorite_uid'] = favoriteUid;
+			
+			request(vars);
+		}
+		
+		public function deleteFavorite(uid:int, favoriteUid:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'del_favorite';
 			vars['uid'] = uid;
 			vars['favorite_uid'] = favoriteUid;
 			

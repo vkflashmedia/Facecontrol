@@ -2,11 +2,12 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.facecontrol.gui.FriendGridItem;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.util.BitmapUtil;
@@ -18,7 +19,7 @@ package com.facecontrol.forms
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class FriendsForm extends GameLayer
+	public class FriendsForm extends Form
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 5;
 		
@@ -35,7 +36,7 @@ package com.facecontrol.forms
 		
 		public function FriendsForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
 			
 			var label:TextField = Util.createLabel('Мои друзья', 150, 75);
@@ -134,6 +135,10 @@ package com.facecontrol.forms
 					_grid.addItem(item);
 				}
 			}
+		}
+		
+		public override function refresh():void {
+			Util.vkontakte.getFriends();
 		}
 	}
 }

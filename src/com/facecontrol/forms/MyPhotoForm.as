@@ -3,13 +3,14 @@ package com.facecontrol.forms
 	import com.efnx.events.MultiLoaderEvent;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.Pagination;
@@ -25,7 +26,7 @@ package com.facecontrol.forms
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 
-	public class MyPhotoForm extends GameLayer
+	public class MyPhotoForm extends Form
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 6;
 		
@@ -48,7 +49,7 @@ package com.facecontrol.forms
 		
 		public function MyPhotoForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
 
 			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);

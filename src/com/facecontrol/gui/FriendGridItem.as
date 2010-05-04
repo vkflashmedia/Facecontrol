@@ -15,7 +15,7 @@ package com.facecontrol.gui
 
 	public class FriendGridItem extends GameObject
 	{
-		public function FriendGridItem(value:GameScene, userRaw:Object, drawLine:Boolean)
+		public function FriendGridItem(value:GameScene, userRaw:Object, drawLine:Boolean, showFavoriteLink:Boolean=true)
 		{
 			super(value);
 			
@@ -147,6 +147,14 @@ package com.facecontrol.gui
 				}
 				else label.text = userRaw.city;
 				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0x9a9a9a), i, label.text.length);
+			}
+			
+			if (userRaw.hasOwnProperty('favorite') && showFavoriteLink) {
+				var favorite:LinkButton = new LinkButton(value, (userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 210, 55);
+				favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xce7716, null, null, true), CONTROL_STATE_NORMAL);
+				favorite.textField.embedFonts = true;
+				favorite.textField.antiAliasType = AntiAliasType.ADVANCED;
+				addChild(favorite);
 			}
 			
 			if (drawLine) {

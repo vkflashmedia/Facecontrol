@@ -45,9 +45,10 @@ package com.net
 			dispatchEvent(new ServerEvent(ServerEvent.ERROR, null, 255, event.text));
 		}
 		
-		public function getTop():void {
+		public function getTop(uid:uint):void {
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'top100';
+			vars['uid'] = uid;
 			request(vars, topLoader);
 		}
 		
