@@ -101,7 +101,7 @@ package com.facecontrol.api
 			request(vars);
 		}
 		
-		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null):void
+		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null, vkPid:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'add_photo';
@@ -109,7 +109,8 @@ package com.facecontrol.api
 			vars['src'] = src;
 			vars['src_small'] = src_small;
 			vars['src_big'] = src_big;
-			if (comment != null) vars['comment'] = comment;
+			if (comment) vars['comment'] = comment;
+			if (vkPid) vars['vk_pid'] = vkPid;
 			
 			request(vars);
 		}
@@ -137,6 +138,7 @@ package com.facecontrol.api
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'set_comment';
 			vars['pid'] = pid;
+			
 			vars['comment'] = comment;
 			
 			request(vars);
