@@ -1,15 +1,18 @@
 package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
+	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.gui.Photo;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
-	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.gui.Form;
 	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
@@ -18,18 +21,19 @@ package com.facecontrol.forms
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class AllUserPhotoForm extends GameLayer
+	public class AllUserPhotoForm extends Form
 	{
 		private const THUMB_X: int = 12;
 		private const THUMB_WIDTH: int = 60;
 		private const THUMB_HEIGHT: int = 60;
-		private const THUMB_BETWEEN_INDENT: int = 23;
+		private const THUMB_BETWEEN_INDENT: int = 14;
 		private const THUMB_VISIBLE_COUNT: int = 5;
 		
 		private var label: TextField;
 		private var labelName: TextField;
+		private var curBigPhoto: Photo;
 		private var api: Api;
-		
+		private var multiloader: MultiLoader;
 		/**
 		 * ['src_big']
 		 * ['src_small']
@@ -41,18 +45,27 @@ package com.facecontrol.forms
 		private var allPhotos: Array;
 		private var thumbsLayer: GameLayer;
 		private var addedPhotosCount: int;
+		private var curPhotoIndex: int;
 		private var lastPhotoX: int;
+		
+		private static var _instance: AllUserPhotoForm;
+		public static function get instance():AllUserPhotoForm {
+			if (!_instance) _instance = new AllUserPhotoForm(Util.scene);
+			return _instance;
+		}
 		
 		
 		public function AllUserPhotoForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+			visible = false;
+			multiloader = new MultiLoader();
+						
 			api = new Api();
 			api.addEventListener(ApiEvent.COMPLETED, onRequestCompleted);
 			api.addEventListener(ApiEvent.ERROR, onRequestError);
 			
 			allPhotos = new Array();
-			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 			
 			var smileIco: Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
 			smileIco.x = 114;
@@ -94,11 +107,13 @@ package com.facecontrol.forms
 			
 			var leftBtn: Button = new Button(_scene, 32, 488);
 			leftBtn.setBackgroundImageForState(Util.multiLoader.get(Images.ALL_USER_PHOTO_LEFT_BTN), CONTROL_STATE_NORMAL);
+			leftBtn.setBackgroundImageForState(Util.multiLoader.get(Images.ALL_USER_PHOTO_LEFT_ACT_BTN), CONTROL_STATE_HIGHLIGHTED);
 			leftBtn.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onLeftBtnClick);
 			addChild(leftBtn);
 			
 			var rightBtn: Button = new Button(_scene, 568, 488);
 			rightBtn.setBackgroundImageForState(Util.multiLoader.get(Images.ALL_USER_PHOTO_RIGHT_BTN), CONTROL_STATE_NORMAL);
+			rightBtn.setBackgroundImageForState(Util.multiLoader.get(Images.ALL_USER_PHOTO_RIGHT_ACT_BTN), CONTROL_STATE_HIGHLIGHTED);
 			rightBtn.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onRightBtnClick);
 			addChild(rightBtn);
 			
@@ -132,6 +147,8 @@ package com.facecontrol.forms
 					removeChild(thumbsLayer);
 				}
 				thumbsLayer = new GameLayer(scene);
+				//thumbsLayer.debug = true;
+				thumbsLayer.smoothScroll = 0.7;
 				thumbsLayer.x = 96;
 				thumbsLayer.y = 496;
 				thumbsLayer.width = 435;
@@ -139,49 +156,96 @@ package com.facecontrol.forms
 				thumbsLayer.scrollRect = new Rectangle(0, 0, thumbsLayer.width, THUMB_HEIGHT);
 				addChild(thumbsLayer);
 				
-				//todo fix
+				addedPhotosCount = 0;
+				curPhotoIndex = 0;
+				lastPhotoX = 0;
+				
 				allPhotos = new Array();
-				allPhotos.push({
-						'src_path': 'http://cs9231.vkontakte.ru/u06492/100001227/m_7875d2fb.jpg',
-					 	'src_small_path': 'http://cs9231.vkontakte.ru/u06492/100001227/s_c3bba2a8.jpg',
-					 	'src_big_path': 'http://cs9231.vkontakte.ru/u06492/100001227/x_cd563004.jpg'});
-				allPhotos.push({
-						'src_path': 'http://cs9231.vkontakte.ru/u06492/100001227/m_fd092958.jpg',
-						'src_small_path': 'http://cs9231.vkontakte.ru/u06492/100001227/s_603d27ab.jpg',
-						'src_big_path': 'http://cs9231.vkontakte.ru/u06492/100001227/x_1f8ec9b8.jpg'});
-				for each (var photo: Object in allPhotos) {
-					Util.multiLoader.load(photo['src_small_path'], photo['src_small_path'], 'Bitmap');
+				//todo fix
+				api.getPhotos(4136593);
+				//api.getPhotos(MainForm.instance.currentUser['uid']);
+			}
+			else {
+				if (multiloader) {
+					multiloader.unloadAll();
 				}
-//				var currentUser: Object = (scene as Facecontrol)._mainForm.currentUser; 
-//				if (currentUser && currentUser.hasOwnProperty('uid')) {
-//					api.getPhotos(currentUser['uid']);
-//				}
+				if (curBigPhoto && contains(curBigPhoto)) {
+					removeChild(curBigPhoto);
+					curBigPhoto = null;
+				}
+			}
+		}
+		
+		private function toLeftPhoto(): void {
+			if (curPhotoIndex > 0) {
+				curPhotoIndex--;
+				if (curBigPhoto && contains(curBigPhoto)) {
+					removeChild(curBigPhoto);
+				}
+				var cp: Object = null;
+				for each (var p: Object in allPhotos) {
+					if (p['index'] == curPhotoIndex) {
+						cp = p;
+					}
+				}
+				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto.photoBorderColor = 0x3a2426;
+				addChild(curBigPhoto);
+				thumbsLayer.scroll(-THUMB_WIDTH - THUMB_BETWEEN_INDENT, 0);
+			}
+		}
+		
+		private function toRightPhoto(): void {
+			if (curPhotoIndex < (addedPhotosCount - 1)) {
+				curPhotoIndex++;
+				if (curBigPhoto && contains(curBigPhoto)) {
+					removeChild(curBigPhoto);
+				}
+				var cp: Object = null;
+				for each (var p: Object in allPhotos) {
+					if (p['index'] == curPhotoIndex) {
+						cp = p;
+					}
+				}
+				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto.photoBorderColor = 0x3a2426;
+				addChild(curBigPhoto);
+				thumbsLayer.scroll(THUMB_WIDTH + THUMB_BETWEEN_INDENT, 0);
 			}
 		}
 		
 		private function addPhoto(photo: Object): void {
-			if (photo.hasOwnProperty('src') && photo.hasOwnProperty('src_big') && photo.hasOwnProperty('src_small')) {
-				var thumb: GameObject = new GameObject(scene);
-				thumb.bitmap = photo['src_small'];
-				thumb.autoSize = true;
+			if (photo.hasOwnProperty('src_big')) {
+				// photo.hasOwnProperty('src') && photo.hasOwnProperty('src_small') &&
+				photo['index'] = addedPhotosCount;
+				var thumb: Photo = new Photo(scene, photo['src_big'], 0, 0, THUMB_WIDTH, THUMB_HEIGHT, Photo.BORDER_TYPE_RECT);
+				thumb.photoBorderColor = 0x563645;
 				if (addedPhotosCount == 0) {
+					//curBigPhoto = new Photo(scene, photo['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+					curBigPhoto = new Photo(scene, photo['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
+					curBigPhoto.photoBorderColor = 0x3a2426;
+					addChild(curBigPhoto);
 					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
+					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
 				}
 				else {
 					thumb.x = lastPhotoX;
+					thumbsLayer.width += THUMB_BETWEEN_INDENT + THUMB_WIDTH;
+					lastPhotoX += THUMB_BETWEEN_INDENT + THUMB_WIDTH;
 				}
-				lastPhotoX += thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
 				thumbsLayer.addChild(thumb);
 				addedPhotosCount++;
 			}
 		}
 		
 		private function onLeftBtnClick(event: GameObjectEvent): void {
-			
+			toLeftPhoto();
 		}
 		
 		private function onRightBtnClick(event: GameObjectEvent): void {
-			
+			toRightPhoto();
 		}
 		
 		private function onCancelClick(event: GameObjectEvent): void {
@@ -191,7 +255,11 @@ package com.facecontrol.forms
 		private function onRequestCompleted(event: ApiEvent): void {
 			switch (event.response.method) {
 				case 'get_photos':
-					event.response;
+					multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+					for each (var photo: Object in event.response.photos) {
+						allPhotos.push({'src_big_path': photo['src_big']});
+						multiloader.load(photo['src_big'], photo['src_big'], 'Bitmap');
+					}
 				break;
 			}
 		}
@@ -201,24 +269,39 @@ package com.facecontrol.forms
 		}
 		
 		public function multiLoaderCompliteListener(event: MultiLoaderEvent):void {
-			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+			if (multiloader.isLoaded) {
+				multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 			}
 			for (var i: int = 0; i < allPhotos.length; i++) {
-				if (allPhotos[i]['src_small_path'] == event.entry) {
-					allPhotos[i]['src_small'] = Util.multiLoader.get(allPhotos[i]['src_small_path']);
-					addPhoto(allPhotos[i]);
-					break;
-				}
+//				if (allPhotos[i]['src_small_path'] == event.entry) {
+//					allPhotos[i]['src_small'] = multiloader.get(allPhotos[i]['src_small_path']);
+//					addPhoto(allPhotos[i]);
+//					break;
+//				}
 				if (allPhotos[i]['src_big_path'] == event.entry) {
-					allPhotos[i]['src_big'] = Util.multiLoader.get(allPhotos[i]['src_big_path']);
+					allPhotos[i]['src_big'] = multiloader.get(allPhotos[i]['src_big_path']);
 					addPhoto(allPhotos[i]);
 					break;
 				}
-				if (allPhotos[i]['src_path'] == event.entry) {
-					allPhotos[i]['src'] = Util.multiLoader.get(allPhotos[i]['src_path']);
-					addPhoto(allPhotos[i]);
-					break;
+//				if (allPhotos[i]['src_path'] == event.entry) {
+//					allPhotos[i]['src'] = multiloader.get(allPhotos[i]['src_path']);
+//					addPhoto(allPhotos[i]);
+//					break;
+//				}
+			}
+		}
+		
+		public function multiLoaderFaultListener(event: MultiLoaderEvent):void {
+			trace('multiLoaderFaultListener :: ' + event.entry);
+		}
+		
+		public function show():void {
+			if (_scene) {
+				for (var i:int = 0; i < _scene.numChildren; ++i) {
+					if (_scene.getChildAt(i) is Form) {
+						var form:Form = _scene.getChildAt(i) as Form;
+						form.visible = (form is AllUserPhotoForm);
+					} 
 				}
 			}
 		}

@@ -583,7 +583,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
-			(scene as Facecontrol).showAllUserPhotoForm();
+			AllUserPhotoForm.instance.show();
 		}
 		
 		public function onFavoriteClick(event: GameObjectEvent):void {
@@ -601,7 +601,7 @@ package com.facecontrol.forms
 					if (_scene.getChildAt(i) is Form) {
 						var form:Form = _scene.getChildAt(i) as Form;
 						form.visible = (form is MainForm);
-					} 
+					}
 				}
 			}
 		}

@@ -82,6 +82,20 @@ package com.facecontrol.util
 		public static const ARROW_LEFT:String = 'images\\my_friends\\ar_l.png';
 		public static const ARROW_RIGHT:String = 'images\\my_friends\\ar_r.png';
 		
+		public static const ALL_USER_PHOTO_BACK:String = 'images\\all_user_foto\\bgr.png';
+		public static const ALL_USER_PHOTO_BACK2:String = 'images\\all_user_foto\\bgr02.png';
+		public static const ALL_USER_PHOTO_LEFT_BTN:String = 'images\\all_user_foto\\but_l.png';
+		public static const ALL_USER_PHOTO_RIGHT_BTN:String = 'images\\all_user_foto\\but_r.png';
+		public static const ALL_USER_PHOTO_LEFT_ACT_BTN:String = 'images\\all_user_foto\\but_l_active.png';
+		public static const ALL_USER_PHOTO_RIGHT_ACT_BTN:String = 'images\\all_user_foto\\but_r_active.png';
+		
+		public static const PHOTO_ALBUM_BACK:String = 'images\\photo_album\\form.png';
+		public static const PHOTO_ALBUM_GRAY_BTN:String = 'images\\photo_album\\button_gray.png';
+		public static const PHOTO_ALBUM_ORANGE_BTN:String = 'images\\photo_album\\button_orange.png';
+		public static const PHOTO_ALBUM_RED_BTN:String = 'images\\photo_album\\button_red.png';
+		public static const PHOTO_ALBUM_FOLDER:String = 'images\\photo_album\\folder.png';
+		public static const PHOTO_ALBUM_SELECT:String = 'images\\photo_album\\select.png';
+		
 		public static const V:String = 'images\\My_photo\\V.png';
 		public static const ADD_PHOTO_BCK:String = 'images\\add_foto\\bgr.png';
 		public static const ADD_PHOTO_BUTTON_RED:String = 'images\\add_foto\\button_red.png';
@@ -90,11 +104,6 @@ package com.facecontrol.util
 		
 		public static const FRIENDS_BACKGROUND:String = 'images\\my_friends\\bgr.png';
 		public static const FRIENDS_LINE:String = 'images\\my_friends\\line.png';
-		
-		public static const ALL_USER_PHOTO_BACK:String = 'images\\all_user_foto\\bgr.png';
-		public static const ALL_USER_PHOTO_BACK2:String = 'images\\all_user_foto\\bgr02.png';
-		public static const ALL_USER_PHOTO_LEFT_BTN:String = 'images\\all_user_foto\\but_l.png';
-		public static const ALL_USER_PHOTO_RIGHT_BTN:String = 'images\\all_user_foto\\but_r.png';
 		
 		public static const MESSAGE_DIALOG_BACKGROUND:String = 'images\\message_dialog\\form.png';
 		public static const MESSAGE_DIALOG_BUTTON:String = 'images\\message_dialog\\button_red.png';
@@ -134,6 +143,20 @@ package com.facecontrol.util
 			ADD_PHOTO_BUTTON_RED,
 			ADD_PHOTO_BUTTON_ORANGE,
 			ADD_PHOTO_BUTTON_GREY,
+		
+			ALL_USER_PHOTO_BACK,
+			ALL_USER_PHOTO_BACK2,
+			ALL_USER_PHOTO_LEFT_BTN,
+			ALL_USER_PHOTO_RIGHT_BTN,
+			ALL_USER_PHOTO_LEFT_ACT_BTN,
+			ALL_USER_PHOTO_RIGHT_ACT_BTN,
+			
+			PHOTO_ALBUM_BACK,
+			PHOTO_ALBUM_GRAY_BTN,
+			PHOTO_ALBUM_ORANGE_BTN,
+			PHOTO_ALBUM_RED_BTN,
+			PHOTO_ALBUM_FOLDER,
+			PHOTO_ALBUM_SELECT,
 		
 			FRIENDS_BACKGROUND,
 			FRIENDS_LINE,

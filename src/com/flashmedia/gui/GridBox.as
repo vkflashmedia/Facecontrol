@@ -127,7 +127,10 @@ package com.flashmedia.gui
 		
 		public function addItem(value: *, go: GameObject = null): void {
 			_items.push(value);
-			_gameObjects.push((go) ? go : createGameObject(value));
+			var g: GameObject = (go) ? go : createGameObject(value);
+			g.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
+			g.addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
+			_gameObjects.push(g);
 			updateLayout(true, true);
 		}
 		
@@ -136,7 +139,10 @@ package com.flashmedia.gui
 				if (_items[i] == oldItem) {
 					_items[i] = newItem;
 					removeComponent(_gameObjects[i]);
+					_gameObjects[i] = null;
 					_gameObjects[i] = (newGo) ? newGo : createGameObject(newItem);
+					_gameObjects[i].addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
+					_gameObjects[i].addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
 				}
 			}
 			updateLayout(true, true);
@@ -559,7 +565,7 @@ package com.flashmedia.gui
 			dispatchEvent(gbEvent);	
 		}
 		
-				private function createGameObject(value: *): GameObject {
+		private function createGameObject(value: *): GameObject {
 			if (value is String) {
 				var label: Label = new Label(scene, value);
 				if (_textFormat) {
@@ -568,8 +574,6 @@ package com.flashmedia.gui
 				label.setSelect(true);
 				label.setHover(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
 				label.setFocus(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
-				label.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
-				label.addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
 				return label;
 			}
 			else if (value is Bitmap) {
@@ -580,16 +584,12 @@ package com.flashmedia.gui
 				go.setSelect(true);
 				go.setHover(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
 				go.setFocus(true, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, GameObject.SIZE_MODE_SELECT);
-				go.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
-				go.addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
 				return go;
 			}
 			else if (value is GameObject) {
 				value.setSelect(true);
 //				value.setFocus(true, true, null, GameObject.SIZE_MODE_SELECT);
 //				value.setHover(true, true, null, GameObject.SIZE_MODE_SELECT);
-				value.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
-				value.addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
 				return value;
 			}
 			else {

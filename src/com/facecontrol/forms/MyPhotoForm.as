@@ -260,6 +260,10 @@ package com.facecontrol.forms
 			updateGrid();
 		}
 		
+		public function get photos(): Array {
+			return _photos;
+		}
+		
 		public function set photos(value:Array):void {
 			if (value) {
 				_photos = value;

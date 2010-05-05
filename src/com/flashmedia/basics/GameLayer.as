@@ -16,6 +16,8 @@ package com.flashmedia.basics
 		public static const SIZE_MODE_WIDTH_BY_CONTENT: int = 2;
 		public static const SIZE_MODE_HEIGHT_BY_CONTENT: int = 4;
 		
+		protected static const MIN_SCROLL_SPEED: Number = 2;
+		
 		protected var _horizontalScrollPolicy: String;
 		protected var _verticalScrollPolicy: String;
 		protected var _horizontalScrollStep: uint;
@@ -26,6 +28,8 @@ package com.flashmedia.basics
 		protected var _rightScrollIndent: Number;
 		protected var _bottomScrollIndent: Number;
 		protected var _sizeMode: int;
+		protected var _deltaX: Number = 0;
+		protected var _deltaY: Number = 0;
 		
 		public function GameLayer(value: GameScene)
 		{
@@ -42,6 +46,7 @@ package com.flashmedia.basics
 			_rightScrollIndent = 0;
 			_bottomScrollIndent = 0;
 			_sizeMode = SIZE_MODE_ABSOLUTE;
+			_scene.addEventListener(GameSceneEvent.TYPE_TICK, onTick);
 		}
 		
 		/*
@@ -124,6 +129,8 @@ package com.flashmedia.basics
 		
 		/**
 		 * Плавность прокрутки. Значение (0.0 - 1.0)
+		 * 0.0 - нет плавности, моментальная прокрутка.
+		 * 1.0 - очень плавная (медленная) прокрутка.
 		 */
 		public function set smoothScroll(value: Number): void {
 			//TODO реализация плавности - это уже анимация. Потом сделать.
@@ -152,9 +159,9 @@ package com.flashmedia.basics
 		}
 		
 		/**
-		 * Прокрутить слой на заданную величину
+		 * Изменить координаты прямоугольника прокрутки. Мгновенно.
 		 */
-		public function scroll(deltaX: int, deltaY: int): void {
+		private function changeScrollRectCoords(deltaX: Number, deltaY: Number): void {
 			if (scrollRect) {
 				var rect: Rectangle = scrollRect;
 				rect.x += deltaX;
@@ -193,6 +200,61 @@ package com.flashmedia.basics
 					event.horizontalPosition = horizontalPosition;
 					dispatchEvent(event);
 				}
+			}
+		}
+		
+		/**
+		 * Сделать один шаг в анимации прокрутки.
+		 */
+		
+		private var sumDX: Number = 0;
+		private function scrollAnim(): void {
+			var dX: Number = _deltaX * (1 - _smoothScroll);
+			var dY: Number = _deltaY * (1 - _smoothScroll);
+			if (dX >= 0) {
+				dX = (dX < MIN_SCROLL_SPEED) ? MIN_SCROLL_SPEED : dX;
+			}
+			else {
+				dX = (-dX < MIN_SCROLL_SPEED) ? -MIN_SCROLL_SPEED : dX;
+			}
+			if (dY >= 0) {
+				dY = (dY < MIN_SCROLL_SPEED) ? MIN_SCROLL_SPEED : dY;
+			}
+			else {
+				dY = (-dY < MIN_SCROLL_SPEED) ? -MIN_SCROLL_SPEED : dY;
+			}
+			if (Math.abs(_deltaX) < MIN_SCROLL_SPEED) {
+				dX = _deltaX;
+			}
+			if (Math.abs(_deltaY) < MIN_SCROLL_SPEED) {
+				dY = _deltaY;
+			}
+			changeScrollRectCoords(dX, dY);
+			sumDX += dX;
+			_deltaX -= dX;
+			_deltaY -= dY;
+			if (_deltaX == 0) {
+				trace('sumDX = ' + sumDX);				
+			}
+		}
+		 
+		/**
+		 * Прокрутить слой на заданную величину
+		 */
+		public function scroll(deltaX: Number, deltaY: Number): void {
+			sumDX = 0;
+			if (_smoothScroll == 0.0) {
+				changeScrollRectCoords(deltaX, deltaY);
+			}
+			else {
+				_deltaX = deltaX;
+				_deltaY = deltaY;
+			}
+		}
+		
+		protected function onTick(event: GameSceneEvent): void {
+			if (_deltaX != 0 || _deltaY != 0) {
+				scrollAnim();
 			}
 		}
 		

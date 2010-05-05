@@ -60,9 +60,10 @@ package {
 //		public var _mainForm: MainForm;
 //		public var _myPhotoForm: MyPhotoForm;
 //		public var _friendsForm: FriendsForm;
-		public var _allUserPhotoForm: AllUserPhotoForm;
+//		public var _allUserPhotoForm: AllUserPhotoForm;
 		
 		public function Facecontrol() {
+			
 			Util.scene = this;
 //			aliFunction();
 //			artemFunction();
@@ -91,54 +92,6 @@ package {
 		}
 		
 		private function load():void {
-//			Util.multiLoader.load(Images.HEAD_BUTTON1_PATH, Images.HEAD_BUTTON1, 'Bitmap');
-//			Util.multiLoader.load(Images.HEAD_BUTTON2_PATH, Images.HEAD_BUTTON2, 'Bitmap');
-//			Util.multiLoader.load(Images.HEAD_BUTTON3_PATH, Images.HEAD_BUTTON3, 'Bitmap');
-//			Util.multiLoader.load(Images.HEAD_BUTTON4_PATH, Images.HEAD_BUTTON4, 'Bitmap');
-//			Util.multiLoader.load(Images.HEAD_BUTTON5_PATH, Images.HEAD_BUTTON5, 'Bitmap');
-//			
-//			Util.multiLoader.load(Images.BACKGROUND_PATH, Images.BACKGROUND, 'Bitmap');
-//			
-//			Util.multiLoader.load(Images.SUPER_ICON_PATH, Images.SUPER_ICON, 'Bitmap');
-//			Util.multiLoader.load(Images.JUNK_ICON_PATH, Images.JUNK_ICON, 'Bitmap');
-//
-//			Util.multiLoader.load(Images.BIG_MASK_PATH, Images.BIG_MASK, 'Bitmap');
-//			Util.multiLoader.load(Images.SMALL_MASK_PATH, Images.SMALL_MASK, 'Bitmap');
-//			Util.multiLoader.load(Images.BIG_STAR_PATH, Images.BIG_STAR, 'Bitmap');
-//			Util.multiLoader.load(Images.LINE_PATH, Images.LINE, 'Bitmap');
-//			Util.multiLoader.load(Images.FILTER_BACKGROUND_PATH, Images.FILTER_BACKGROUND, 'Bitmap');
-//			Util.multiLoader.load(Images.CHOOSE_BUTTON_PATH, Images.CHOOSE_BUTTON, 'Bitmap');
-//			Util.multiLoader.load(Images.RATING_BACKGROUND_PATH, Images.RATING_BACKGROUND, 'Bitmap');
-//			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
-//			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
-//					
-//			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_RED_PATH, Images.MY_PHOTO_BUTTON_RED, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_SELECTION_PATH, Images.MY_PHOTO_SELECTION, 'Bitmap');
-//			Util.multiLoader.load(Images.MY_PHOTO_COMMENT_FROM_PATH, Images.MY_PHOTO_COMMENT_FORM, 'Bitmap');
-//			
-//			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
-//			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
-//			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
-//			Util.multiLoader.load(Images.ADD_PHOTO_BCK_PATH, Images.ADD_PHOTO_BCK, 'Bitmap');
-//			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
-//			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
-//			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
-//			
-//			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
-//			Util.multiLoader.load(Images.FRIENDS_LINE_PATH, Images.FRIENDS_LINE, 'Bitmap');
-//			
-//			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK_PATH, Images.ALL_USER_PHOTO_BACK, 'Bitmap');
-//			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
-//			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
-//			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
-//			
-//			Util.multiLoader.load(Images.MESSAGE_DIALOG_BACKGROUND_PATH, Images.MESSAGE_DIALOG_BACKGROUND, 'Bitmap');
-//			Util.multiLoader.load(Images.MESSAGE_DIALOG_BUTTON_PATH, Images.MESSAGE_DIALOG_BUTTON, 'Bitmap');
 			for each (var image:String in Images.IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
@@ -166,12 +119,9 @@ package {
 				addChild(Top100.instance);
 				addChild(FavoritesForm.instance);
 				addChild(FriendsForm.instance);
+				addChild(AllUserPhotoForm.instance);
 				
 				Util.vkontakte.getProfiles(new Array('' + Util.userId));
-				
-				_allUserPhotoForm = new AllUserPhotoForm(this);
-				_allUserPhotoForm.visible = false;
-				addChild(_allUserPhotoForm);
 			}
 		}
 		
@@ -221,14 +171,6 @@ package {
 		private function onTopLoaded(event:ServerEvent):void {
 			Top100.instance.users = event.response.users;
 			Top100.instance.show();
-		}
-		
-		public function showAllUserPhotoForm(): void {
-			MainForm.instance.visible = false;
-			MyPhotoForm.instance.visible = false;
-			FriendsForm.instance.visible = false;
-			FavoritesForm.instance.visible = false;
-			_allUserPhotoForm.visible = true;
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
