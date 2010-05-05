@@ -13,6 +13,11 @@ package com.facecontrol.gui
 		public static const BORDER_TYPE_ROUND_RECT:uint = 0;
 		public static const BORDER_TYPE_RECT:uint = 1;
 		
+		public static const ALIGN_LEFT:uint = 0;
+		public static const ALIGN_CENTER:uint = 1;
+		
+		private var _align:uint = ALIGN_LEFT;
+		
 		private var _photoBorder:uint;
 		private var _photoBorderColor:int;
 		private var _borderType:uint = BORDER_TYPE_ROUND_RECT;
@@ -50,6 +55,11 @@ package com.facecontrol.gui
 		
 		public function set borderType(value:uint):void {
 			_borderType = value;
+			update();
+		}
+		
+		public function set align(value:uint):void {
+			_align = value;
 			update();
 		}
 		
@@ -101,9 +111,17 @@ package com.facecontrol.gui
 				
 				addChild(_squareMask);
 				
-				_thumbnail.x = _photoBorder;
-				_thumbnail.x = (width - _thumbnail.width) / 2;
-				_thumbnail.y = _photoBorder;
+//				_thumbnail.x = _photoBorder;
+				switch (_align) {
+					case ALIGN_LEFT:
+						_thumbnail.x = (width - _thumbnail.width) / 2;
+						_thumbnail.y = _photoBorder;
+					break;
+					case ALIGN_CENTER:
+						_thumbnail.x = (width - _thumbnail.width) / 2;
+						_thumbnail.y = _photoBorder;
+					break;
+				}
 				_thumbnail.mask = _squareMask;
 			}
 		}
