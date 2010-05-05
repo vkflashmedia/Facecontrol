@@ -335,5 +335,15 @@ package com.facecontrol.forms
 			}
 		}
 		
+		public function show():void {
+			if (_scene) {
+				for (var i:int = 0; i < _scene.numChildren; ++i) {
+					if (_scene.getChildAt(i) is Form) {
+						var form:Form = _scene.getChildAt(i) as Form;
+						form.visible = (form is MyPhotoForm);
+					} 
+				}
+			}
+		}
 	}
 }

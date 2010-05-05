@@ -60,23 +60,23 @@ package com.facecontrol.api
 			}
 		}
 		
-		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int):void
-		{
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'reg_user';
-			vars['uid'] = uid;
-			vars['fname'] = fname;
-			vars['lname'] = lname;
-			
-			if (nickname != null) vars['nickname'] = nickname;
-			vars['sex'] = sex;
-			
-			if (bdate != null) vars['bdate'] = bdate;
-			vars['city'] = city;
-			vars['country'] = country;
-			
-			request(vars);
-		}
+//		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int):void
+//		{
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'reg_user';
+//			vars['uid'] = uid;
+//			vars['fname'] = fname;
+//			vars['lname'] = lname;
+//			
+//			if (nickname != null) vars['nickname'] = nickname;
+//			vars['sex'] = sex;
+//			
+//			if (bdate != null) vars['bdate'] = bdate;
+//			vars['city'] = city;
+//			vars['country'] = country;
+//			
+//			request(vars);
+//		}
 		
 		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=60, city:String=null, country:String=null):void
 		{
@@ -181,23 +181,6 @@ package com.facecontrol.api
 			}
 			vars['viewer_id'] = Util.userId;
 			vars['uids'] = uidsString;
-			
-			request(vars);
-		}
-		
-		public function top100(uid:uint):void
-		{
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'top100';
-			vars['uid'] = uid;
-			
-			request(vars);
-		}
-		
-		public function bottom100():void
-		{
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'top100';
 			
 			request(vars);
 		}

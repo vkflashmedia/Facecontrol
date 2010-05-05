@@ -3,6 +3,7 @@ package com.facecontrol.gui
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
@@ -15,10 +16,11 @@ package com.facecontrol.gui
 
 	public class FriendGridItem extends GameObject
 	{
+		private var _user:Object;
 		public function FriendGridItem(value:GameScene, userRaw:Object, drawLine:Boolean, showFavoriteLink:Boolean=true)
 		{
 			super(value);
-			
+			_user = userRaw;
 			setSelect(true);
 			
 			this.width = 329;
@@ -33,8 +35,7 @@ package com.facecontrol.gui
 				photo.photoBorder = 1;
 				addChild(photo);
 				
-				var morePhotos:LinkButton = new LinkButton(value, Util.getMorePhotoString(userRaw.sex), 214, 75, TextFieldAutoSize.RIGHT);
-				morePhotos.width = 50;
+				var morePhotos:LinkButton = new LinkButton(value, Util.getMorePhotoString(userRaw.sex), 14, 75);
 				morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 				morePhotos.textField.embedFonts = true;
 				morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -121,11 +122,6 @@ package com.facecontrol.gui
 				label.text = userRaw.age + ' ' + ageString(userRaw.age);
 				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff), 0, label.text.length);
 			}
-			else if (userRaw.bdate) {
-				var age:int = 0;
-				label.text = userRaw.age + ' ' + ageString(userRaw.age);
-				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff), 0, label.text.length);
-			}
 			
 			var i:int;
 			if (userRaw.country) {
@@ -150,10 +146,12 @@ package com.facecontrol.gui
 			}
 			
 			if (userRaw.hasOwnProperty('favorite') && showFavoriteLink) {
-				var favorite:LinkButton = new LinkButton(value, (userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 210, 55);
+				var favorite:LinkButton = new LinkButton(value, (userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 214, 75, TextFieldAutoSize.RIGHT);
+				favorite.width = 100;
 				favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xce7716, null, null, true), CONTROL_STATE_NORMAL);
 				favorite.textField.embedFonts = true;
 				favorite.textField.antiAliasType = AntiAliasType.ADVANCED;
+				favorite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFavoriteClick);
 				addChild(favorite);
 			}
 			
@@ -223,6 +221,15 @@ package com.facecontrol.gui
 			}
 			
 			return result;
+		}
+		
+		public function onFavoriteClick(event:GameObjectEvent):void {
+			if (_user.favorite) {
+				Util.api.deleteFavorite(Util.userId, _user.uid);
+			}
+			else {
+				Util.api.addFavorite(Util.userId, _user.uid);
+			}
 		}
 	}
 }

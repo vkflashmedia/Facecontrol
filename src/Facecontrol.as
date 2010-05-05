@@ -86,7 +86,8 @@ package {
 			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 			
 			Util.server.addEventListener(ServerEvent.ERROR, onServerRequestError);
-			Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoadCompeted);
+			Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoaded);
+			Util.server.addEventListener(ServerEvent.REG_USER_COMPLETED, onUserRegistred);
 		}
 		
 		private function load():void {
@@ -176,13 +177,7 @@ package {
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
 			Util.api.nextPhoto(Util.userId);
-//			MainForm.instance.show();
-			MainForm.instance.visible = true;
-			MyPhotoForm.instance.visible = false;
-			Top100.instance.visible = false;
-			FriendsForm.instance.visible = false;
-			FavoritesForm.instance.visible = false;
-			_allUserPhotoForm.visible = false;
+			MainForm.instance.show();
 		}
 		
 		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
@@ -195,12 +190,10 @@ package {
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
 			Util.api.favorites(Util.userId);
-//			showModal(new MessageDialog(this, 'Сообщение:', 'Вы не сможете учавствовать в ТОПе, пока у вас не загружена хотя бы одна фотография.'));
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
-//			Util.vkontakte.getFriendsProfiles();
 		}
 		
 		public function onServerRequestError(event:ServerEvent):void {
@@ -215,15 +208,19 @@ package {
 			}
 		}
 		
-		private function onTopLoadCompeted(event:ServerEvent):void {
+		private function onUserRegistred(event:ServerEvent):void {
 			var response:Object = event.response;
-			Top100.instance.users = response.users;
-			
-			MainForm.instance.visible = false;
-			MyPhotoForm.instance.visible = false;
-			Top100.instance.visible = true;
-			FavoritesForm.instance.visible = false;
-			FriendsForm.instance.visible = false;
+			Util.user.city_name = response.city_name;
+			Util.user.country_name = response.country_name;
+			if (response.photo_count == 0) {
+				Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
+			}
+			else Util.api.loadSettings(Util.userId);
+		}
+		
+		private function onTopLoaded(event:ServerEvent):void {
+			Top100.instance.users = event.response.users;
+			Top100.instance.show();
 		}
 		
 		public function showAllUserPhotoForm(): void {
@@ -252,13 +249,11 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						Util.user = response[0];
-						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
+						Util.server.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
 					break;
 					
 					case 'getFriends':
-						var ids:Array = response as Array;
-						Util.api.friends(ids);
-//						Util.vkontakte.getProfiles(ids);
+						Util.api.friends(response as Array);
 					break;
 				}
 			}
@@ -270,11 +265,7 @@ package {
 		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
 			var users:Array = event.response as Array;
 			FriendsForm.instance.users = users;
-			MainForm.instance.visible = false;
-			MyPhotoForm.instance.visible = false;
-			Top100.instance.visible = false;
-			FavoritesForm.instance.visible = false;
-			FriendsForm.instance.visible = true;
+			FriendsForm.instance.show();
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
@@ -294,14 +285,14 @@ package {
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
-					case 'reg_user':
-						Util.user.city_name = response.city_name;
-						Util.user.country_name = response.country_name;
-						if (response.photo_count == 0) {
-							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
-						}
-						else Util.api.loadSettings(Util.userId);
-					break;
+//					case 'reg_user':
+//						Util.user.city_name = response.city_name;
+//						Util.user.country_name = response.country_name;
+//						if (response.photo_count == 0) {
+//							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
+//						}
+//						else Util.api.loadSettings(Util.userId);
+//					break;
 					
 					case 'add_photo':
 						Util.api.loadSettings(Util.userId);
@@ -309,12 +300,11 @@ package {
 					
 					case 'load_settings':
 						MainForm.instance.filter = response;
-						MainForm.instance.visible = true;
 						Util.api.nextPhoto(Util.userId);
 					break;
 					
 					case 'next_photo':
-						MainForm.instance.visible = true;
+						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 					break;
 					
@@ -324,11 +314,7 @@ package {
 					
 					case 'get_photos':
 						MyPhotoForm.instance.photos = response.photos;
-						MyPhotoForm.instance.visible = true;
-						MainForm.instance.visible = false;
-						Top100.instance.visible = false;
-						FavoritesForm.instance.visible = false;
-						FriendsForm.instance.visible = false;
+						MyPhotoForm.instance.show();
 					break;
 					
 					case 'del_photo':
@@ -340,11 +326,7 @@ package {
 					
 					case 'friends':
 						FriendsForm.instance.users = response.users;
-						MainForm.instance.visible = false;
-						MyPhotoForm.instance.visible = false;
-						Top100.instance.visible = false;
-						FavoritesForm.instance.visible = false;
-						FriendsForm.instance.visible = true;
+						FriendsForm.instance.show();
 					break;
 					
 					case 'edit_photo':
@@ -357,11 +339,7 @@ package {
 					
 					case 'favorites':
 						FavoritesForm.instance.users = response.users;
-						FavoritesForm.instance.visible = true;
-						MainForm.instance.visible = false;
-						MyPhotoForm.instance.visible = false;
-						Top100.instance.visible = false;
-						FriendsForm.instance.visible = false;
+						FavoritesForm.instance.show();
 					break;
 					
 					case 'add_favorite':

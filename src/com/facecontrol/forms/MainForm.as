@@ -600,7 +600,7 @@ package com.facecontrol.forms
 				for (var i:int = 0; i < _scene.numChildren; ++i) {
 					if (_scene.getChildAt(i) is Form) {
 						var form:Form = _scene.getChildAt(i) as Form;
-						form.visible = (form != this);
+						form.visible = (form is MainForm);
 					} 
 				}
 			}
