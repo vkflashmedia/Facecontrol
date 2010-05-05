@@ -5,12 +5,14 @@ package com.facecontrol.forms
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.gui.Photo;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.gui.Form;
 	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
@@ -19,7 +21,7 @@ package com.facecontrol.forms
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class AllUserPhotoForm extends GameLayer
+	public class AllUserPhotoForm extends Form
 	{
 		private const THUMB_X: int = 12;
 		private const THUMB_WIDTH: int = 60;
@@ -46,10 +48,17 @@ package com.facecontrol.forms
 		private var curPhotoIndex: int;
 		private var lastPhotoX: int;
 		
+		private static var _instance: AllUserPhotoForm;
+		public static function get instance():AllUserPhotoForm {
+			if (!_instance) _instance = new AllUserPhotoForm(Util.scene);
+			return _instance;
+		}
+		
 		
 		public function AllUserPhotoForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+			visible = false;
 			multiloader = new MultiLoader();
 						
 			api = new Api();
@@ -157,7 +166,9 @@ package com.facecontrol.forms
 				//api.getPhotos(MainForm.instance.currentUser['uid']);
 			}
 			else {
-				multiloader.unloadAll();
+				if (multiloader) {
+					multiloader.unloadAll();
+				}
 				if (curBigPhoto && contains(curBigPhoto)) {
 					removeChild(curBigPhoto);
 					curBigPhoto = null;
@@ -177,7 +188,8 @@ package com.facecontrol.forms
 						cp = p;
 					}
 				}
-				curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
 				curBigPhoto.photoBorderColor = 0x3a2426;
 				addChild(curBigPhoto);
 				thumbsLayer.scroll(-THUMB_WIDTH - THUMB_BETWEEN_INDENT, 0);
@@ -196,7 +208,8 @@ package com.facecontrol.forms
 						cp = p;
 					}
 				}
-				curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
 				curBigPhoto.photoBorderColor = 0x3a2426;
 				addChild(curBigPhoto);
 				thumbsLayer.scroll(THUMB_WIDTH + THUMB_BETWEEN_INDENT, 0);
@@ -210,7 +223,8 @@ package com.facecontrol.forms
 				var thumb: Photo = new Photo(scene, photo['src_big'], 0, 0, THUMB_WIDTH, THUMB_HEIGHT, Photo.BORDER_TYPE_RECT);
 				thumb.photoBorderColor = 0x563645;
 				if (addedPhotosCount == 0) {
-					curBigPhoto = new Photo(scene, photo['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+					//curBigPhoto = new Photo(scene, photo['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
+					curBigPhoto = new Photo(scene, photo['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
 					curBigPhoto.photoBorderColor = 0x3a2426;
 					addChild(curBigPhoto);
 					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
@@ -279,6 +293,17 @@ package com.facecontrol.forms
 		
 		public function multiLoaderFaultListener(event: MultiLoaderEvent):void {
 			trace('multiLoaderFaultListener :: ' + event.entry);
+		}
+		
+		public function show():void {
+			if (_scene) {
+				for (var i:int = 0; i < _scene.numChildren; ++i) {
+					if (_scene.getChildAt(i) is Form) {
+						var form:Form = _scene.getChildAt(i) as Form;
+						form.visible = (form is AllUserPhotoForm);
+					} 
+				}
+			}
 		}
 	}
 }

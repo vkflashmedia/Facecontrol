@@ -242,5 +242,9 @@ package com.flashmedia.gui
 			}
 			_contentLayer.scrollRect = new Rectangle(0, 0, scrollRectWidth, scrollRectHeight);
 		}
+		
+		public function refresh():void {
+			
+		}
 	}
 }

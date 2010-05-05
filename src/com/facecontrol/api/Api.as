@@ -53,7 +53,7 @@ package com.facecontrol.api
 				requestQueue.push(r);	
 			}
 		}
-		
+
 		private function errorHandler(e:IOErrorEvent):void {
 			trace("errorHandler: "+e.text);
 			dispatchEvent(new ApiEvent(ApiEvent.ERROR, e.text, 255));
@@ -111,7 +111,7 @@ package com.facecontrol.api
 			vars['uid'] = uid;
 			vars['sex'] = sex;
 			vars['age_min'] = minAge;
-			vars['max_age'] = maxAge;
+			vars['age_max'] = maxAge;
 			if (city) vars['city'] = city;
 			if (country) vars['country'] = country;
 			
@@ -127,7 +127,7 @@ package com.facecontrol.api
 			request('load_settings', vars);
 		}
 		
-		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null):void
+		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null, vkPid:String=null):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'add_photo';
@@ -135,7 +135,8 @@ package com.facecontrol.api
 			vars['src'] = src;
 			vars['src_small'] = src_small;
 			vars['src_big'] = src_big;
-			if (comment != null) vars['comment'] = comment;
+			if (comment) vars['comment'] = comment;
+			if (vkPid) vars['vk_pid'] = vkPid;
 			
 			request('add_photo', vars);
 		}
@@ -163,6 +164,7 @@ package com.facecontrol.api
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'set_comment';
 			vars['pid'] = pid;
+			
 			vars['comment'] = comment;
 			
 			request('set_comment', vars);
@@ -211,18 +213,28 @@ package com.facecontrol.api
 			request('friends', vars);
 		}
 		
-		public function top100():void
-		{
+		public function favorites(uid:int):void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'top100';
+			vars['method'] = 'favorites';
+			vars['uid'] = uid;
 			
 			request('top100', vars);
 		}
 		
-		public function bottom100():void
-		{
+		public function addFavorite(uid:int, favoriteUid:int):void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'top100';
+			vars['method'] = 'add_favorite';
+			vars['uid'] = uid;
+			vars['favorite_uid'] = favoriteUid;
+			
+			request('add_favorite', vars);
+		}
+		
+		public function deleteFavorite(uid:int, favoriteUid:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'del_favorite';
+			vars['uid'] = uid;
+			vars['favorite_uid'] = favoriteUid;
 			
 			request('top100', vars);
 		}

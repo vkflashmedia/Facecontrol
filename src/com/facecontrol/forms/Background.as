@@ -33,7 +33,7 @@ package com.facecontrol.forms
 			
 			var b1:Button = new Button(scene, 0, 0);
 			b1.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON1), CONTROL_STATE_NORMAL);
-			b1.setTitleForState("главная", CONTROL_STATE_NORMAL);
+			b1.setTitleForState('главная', CONTROL_STATE_NORMAL);
 			b1.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b1.textField.embedFonts = true;
 			b1.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -42,7 +42,7 @@ package com.facecontrol.forms
 			
 			var b2:Button = new Button(scene, 149, 0);
 			b2.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON2), CONTROL_STATE_NORMAL);
-			b2.setTitleForState("мои фото", CONTROL_STATE_NORMAL);
+			b2.setTitleForState('мои фото', CONTROL_STATE_NORMAL);
 			b2.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b2.textField.embedFonts = true;
 			b2.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -50,7 +50,7 @@ package com.facecontrol.forms
 			
 			var b3:Button = new Button(scene, 257, 0);
 			b3.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON3), CONTROL_STATE_NORMAL);
-			b3.setTitleForState("top100", CONTROL_STATE_NORMAL);
+			b3.setTitleForState('top100', CONTROL_STATE_NORMAL);
 			b3.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b3.textField.embedFonts = true;
 			b3.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -59,7 +59,7 @@ package com.facecontrol.forms
 			
 			var b4:Button = new Button(scene, 364, 0);
 			b4.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON4), CONTROL_STATE_NORMAL);
-			b4.setTitleForState("bottom100", CONTROL_STATE_NORMAL);
+			b4.setTitleForState('избранные', CONTROL_STATE_NORMAL);
 			b4.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b4.textField.embedFonts = true;
 			b4.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -68,7 +68,7 @@ package com.facecontrol.forms
 			
 			var b5:Button = new Button(scene, 483, 0);
 			b5.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON5), CONTROL_STATE_NORMAL);
-			b5.setTitleForState("друзья", CONTROL_STATE_NORMAL);
+			b5.setTitleForState('друзья', CONTROL_STATE_NORMAL);
 			b5.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b5.textField.embedFonts = true;
 			b5.textField.antiAliasType = AntiAliasType.ADVANCED;

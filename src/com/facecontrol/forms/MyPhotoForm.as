@@ -3,13 +3,14 @@ package com.facecontrol.forms
 	import com.efnx.events.MultiLoaderEvent;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.Pagination;
@@ -25,7 +26,7 @@ package com.facecontrol.forms
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 
-	public class MyPhotoForm extends GameLayer
+	public class MyPhotoForm extends Form
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 6;
 		
@@ -48,7 +49,7 @@ package com.facecontrol.forms
 		
 		public function MyPhotoForm(value:GameScene)
 		{
-			super(value);
+			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
 
 			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
@@ -152,7 +153,6 @@ package com.facecontrol.forms
 			_commentInput.width = 176;
 			_commentInput.height = 121;
 			_commentInput.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
-//			_commentInput.text = '';
 			_commentInput.maxChars = 127;
 			_commentInput.embedFonts = true;
 			_commentInput.antiAliasType = AntiAliasType.ADVANCED;
@@ -170,6 +170,7 @@ package com.facecontrol.forms
 			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), CONTROL_STATE_NORMAL);
 			preview.textField.embedFonts = true;
 			preview.textField.antiAliasType = AntiAliasType.ADVANCED;
+			preview.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onPreviewClick);
 			addChild(preview);
 			
 			var markAsMain:Button = new Button(_scene, 264, 488);
@@ -312,7 +313,12 @@ package com.facecontrol.forms
 		
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
-			Util.api.deletePhoto(gridItem.photoData.pid);
+			if (gridItem) {
+				Util.api.deletePhoto(gridItem.photoData.pid);
+			}
+			else {
+				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+			}
 		}
 		
 		public function onCommentChange(event:Event):void {
@@ -324,5 +330,24 @@ package com.facecontrol.forms
 			Util.api.setComment(_main.pid, _main.comment);
 		}
 		
+		public function onPreviewClick(event:GameObjectEvent):void {
+			var gridItem:MyPhotoGridItem = _grid.selectedItem;
+			if (gridItem) {
+				_scene.showModal(new PhotoPreviewDialog(_scene, Util.multiLoader.get(gridItem.photoData.pid)));
+			} else {
+				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+			}
+		}
+		
+		public function show():void {
+			if (_scene) {
+				for (var i:int = 0; i < _scene.numChildren; ++i) {
+					if (_scene.getChildAt(i) is Form) {
+						var form:Form = _scene.getChildAt(i) as Form;
+						form.visible = (form is MyPhotoForm);
+					} 
+				}
+			}
+		}
 	}
 }

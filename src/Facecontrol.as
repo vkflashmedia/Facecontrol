@@ -4,6 +4,7 @@ package {
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
+	import com.facecontrol.forms.FavoritesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MessageDialog;
@@ -59,7 +60,7 @@ package {
 //		public var _mainForm: MainForm;
 //		public var _myPhotoForm: MyPhotoForm;
 //		public var _friendsForm: FriendsForm;
-		public var _allUserPhotoForm: AllUserPhotoForm;
+//		public var _allUserPhotoForm: AllUserPhotoForm;
 		
 		public function Facecontrol() {
 			
@@ -86,64 +87,14 @@ package {
 			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 			
 			Util.server.addEventListener(ServerEvent.ERROR, onServerRequestError);
-			Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoadCompeted);
+			Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoaded);
+			Util.server.addEventListener(ServerEvent.REG_USER_COMPLETED, onUserRegistred);
 		}
 		
 		private function load():void {
-			Util.multiLoader.load(Images.HEAD_BUTTON1_PATH, Images.HEAD_BUTTON1, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON2_PATH, Images.HEAD_BUTTON2, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON3_PATH, Images.HEAD_BUTTON3, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON4_PATH, Images.HEAD_BUTTON4, 'Bitmap');
-			Util.multiLoader.load(Images.HEAD_BUTTON5_PATH, Images.HEAD_BUTTON5, 'Bitmap');
-			
-			Util.multiLoader.load(Images.BACKGROUND_PATH, Images.BACKGROUND, 'Bitmap');
-			
-			Util.multiLoader.load(Images.SUPER_ICON_PATH, Images.SUPER_ICON, 'Bitmap');
-			Util.multiLoader.load(Images.JUNK_ICON_PATH, Images.JUNK_ICON, 'Bitmap');
-
-			Util.multiLoader.load(Images.BIG_MASK_PATH, Images.BIG_MASK, 'Bitmap');
-			Util.multiLoader.load(Images.SMALL_MASK_PATH, Images.SMALL_MASK, 'Bitmap');
-			Util.multiLoader.load(Images.BIG_STAR_PATH, Images.BIG_STAR, 'Bitmap');
-			Util.multiLoader.load(Images.LINE_PATH, Images.LINE, 'Bitmap');
-			Util.multiLoader.load(Images.FILTER_BACKGROUND_PATH, Images.FILTER_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.CHOOSE_BUTTON_PATH, Images.CHOOSE_BUTTON, 'Bitmap');
-			Util.multiLoader.load(Images.RATING_BACKGROUND_PATH, Images.RATING_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.RATING_OFF_PATH, Images.RATING_OFF, 'Bitmap');
-			Util.multiLoader.load(Images.RATING_ON_PATH, Images.RATING_ON, 'Bitmap');
-					
-			Util.multiLoader.load(Images.ADVERTISING_FORM_PATH, Images.ADVERTISING_FORM, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BACKGROUND_PATH, Images.MY_PHOTO_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_RED_PATH, Images.MY_PHOTO_BUTTON_RED, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_ORANGE_PATH, Images.MY_PHOTO_BUTTON_ORANGE, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_BUTTON_GRAY_PATH, Images.MY_PHOTO_BUTTON_GRAY, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_SMILE_ICO_PATH, Images.MY_PHOTO_SMILE_ICO, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_SELECTION_PATH, Images.MY_PHOTO_SELECTION, 'Bitmap');
-			Util.multiLoader.load(Images.MY_PHOTO_COMMENT_FROM_PATH, Images.MY_PHOTO_COMMENT_FORM, 'Bitmap');
-			
-			Util.multiLoader.load(Images.ARROW_LEFT_PATH, Images.ARROW_LEFT, 'Bitmap');
-			Util.multiLoader.load(Images.ARROW_RIGHT_PATH, Images.ARROW_RIGHT, 'Bitmap');
-			Util.multiLoader.load(Images.V_PATH, Images.V, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BCK_PATH, Images.ADD_PHOTO_BCK, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_RED_PATH, Images.ADD_PHOTO_BUTTON_RED, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_ORANGE_PATH, Images.ADD_PHOTO_BUTTON_ORANGE, 'Bitmap');
-			Util.multiLoader.load(Images.ADD_PHOTO_BUTTON_GREY_PATH, Images.ADD_PHOTO_BUTTON_GREY, 'Bitmap');
-			
-			Util.multiLoader.load(Images.FRIENDS_BACKGROUND_PATH, Images.FRIENDS_BACKGROUND, 'Bitmap');
-			Util.multiLoader.load(Images.FRIENDS_LINE_PATH, Images.FRIENDS_LINE, 'Bitmap');
-			
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK_PATH, Images.ALL_USER_PHOTO_BACK, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_ACT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_ACT_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_ACT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_ACT_BTN, 'Bitmap');
-			
-			Util.multiLoader.load(Images.PHOTO_ALBUM_BACK_PATH, Images.PHOTO_ALBUM_BACK, 'Bitmap');
-			Util.multiLoader.load(Images.PHOTO_ALBUM_FOLDER_PATH, Images.PHOTO_ALBUM_FOLDER, 'Bitmap');
-			Util.multiLoader.load(Images.PHOTO_ALBUM_GRAY_BTN_PATH, Images.PHOTO_ALBUM_GRAY_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.PHOTO_ALBUM_ORANGE_BTN_PATH, Images.PHOTO_ALBUM_ORANGE_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.PHOTO_ALBUM_RED_BTN_PATH, Images.PHOTO_ALBUM_RED_BTN, 'Bitmap');
-			Util.multiLoader.load(Images.PHOTO_ALBUM_SELECT_PATH, Images.PHOTO_ALBUM_SELECT, 'Bitmap');
+			for each (var image:String in Images.IMAGES) {
+				Util.multiLoader.load(image, image, 'Bitmap');
+			}
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -166,23 +117,17 @@ package {
 				addChild(MainForm.instance);
 				addChild(MyPhotoForm.instance);
 				addChild(Top100.instance);
+				addChild(FavoritesForm.instance);
 				addChild(FriendsForm.instance);
+				addChild(AllUserPhotoForm.instance);
 				
 				Util.vkontakte.getProfiles(new Array('' + Util.userId));
-				
-				_allUserPhotoForm = new AllUserPhotoForm(this);
-				_allUserPhotoForm.visible = false;
-				addChild(_allUserPhotoForm);
 			}
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
 			Util.api.nextPhoto(Util.userId);
-			MainForm.instance.visible = true;
-			MyPhotoForm.instance.visible = false;
-			Top100.instance.visible = false;
-			FriendsForm.instance.visible = false;
-			_allUserPhotoForm.visible = false;
+			MainForm.instance.show();
 		}
 		
 		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
@@ -190,17 +135,15 @@ package {
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
-			Util.server.getTop();
+			Util.server.getTop(Util.userId);
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-//			Util.api.getPhotos(Util.userId);
-			showModal(new MessageDialog(this, 'Сообщение:', 'Вы не сможете учавствовать в ТОПе, пока у вас не загружена хотя бы одна фотография.'));
+			Util.api.favorites(Util.userId);
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			Util.vkontakte.getFriends();
-//			Util.vkontakte.getFriendsProfiles();
 		}
 		
 		public function onServerRequestError(event:ServerEvent):void {
@@ -215,21 +158,19 @@ package {
 			}
 		}
 		
-		private function onTopLoadCompeted(event:ServerEvent):void {
+		private function onUserRegistred(event:ServerEvent):void {
 			var response:Object = event.response;
-			Top100.instance.users = response.users;
-			
-			MainForm.instance.visible = false;
-			MyPhotoForm.instance.visible = false;
-			Top100.instance.visible = true;
-			FriendsForm.instance.visible = false;
+			Util.user.city_name = response.city_name;
+			Util.user.country_name = response.country_name;
+			if (response.photo_count == 0) {
+				Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
+			}
+			else Util.api.loadSettings(Util.userId);
 		}
 		
-		public function showAllUserPhotoForm(): void {
-			MainForm.instance.visible = false;
-			MyPhotoForm.instance.visible = false;
-			FriendsForm.instance.visible = false;
-			_allUserPhotoForm.visible = true;
+		private function onTopLoaded(event:ServerEvent):void {
+			Top100.instance.users = event.response.users;
+			Top100.instance.show();
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -250,13 +191,11 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						Util.user = response[0];
-						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
+						Util.server.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
 					break;
 					
 					case 'getFriends':
-						var ids:Array = response as Array;
-						Util.api.friends(ids);
-//						Util.vkontakte.getProfiles(ids);
+						Util.api.friends(response as Array);
 					break;
 				}
 			}
@@ -268,10 +207,7 @@ package {
 		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
 			var users:Array = event.response as Array;
 			FriendsForm.instance.users = users;
-			MainForm.instance.visible = false;
-			MyPhotoForm.instance.visible = false;
-			Top100.instance.visible = false;
-			FriendsForm.instance.visible = true;
+			FriendsForm.instance.show();
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
@@ -291,14 +227,14 @@ package {
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
-					case 'reg_user':
-						Util.user.city_name = response.city_name;
-						Util.user.country_name = response.country_name;
-						if (response.photo_count == 0) {
-							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
-						}
-						else Util.api.loadSettings(Util.userId);
-					break;
+//					case 'reg_user':
+//						Util.user.city_name = response.city_name;
+//						Util.user.country_name = response.country_name;
+//						if (response.photo_count == 0) {
+//							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
+//						}
+//						else Util.api.loadSettings(Util.userId);
+//					break;
 					
 					case 'add_photo':
 						Util.api.loadSettings(Util.userId);
@@ -306,12 +242,11 @@ package {
 					
 					case 'load_settings':
 						MainForm.instance.filter = response;
-						MainForm.instance.visible = true;
 						Util.api.nextPhoto(Util.userId);
 					break;
 					
 					case 'next_photo':
-						MainForm.instance.visible = true;
+						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 					break;
 					
@@ -321,10 +256,7 @@ package {
 					
 					case 'get_photos':
 						MyPhotoForm.instance.photos = response.photos;
-						MyPhotoForm.instance.visible = true;
-						MainForm.instance.visible = false;
-						Top100.instance.visible = false;
-						FriendsForm.instance.visible = false;
+						MyPhotoForm.instance.show();
 					break;
 					
 					case 'del_photo':
@@ -336,10 +268,7 @@ package {
 					
 					case 'friends':
 						FriendsForm.instance.users = response.users;
-						MainForm.instance.visible = false;
-						MyPhotoForm.instance.visible = false;
-						Top100.instance.visible = false;
-						FriendsForm.instance.visible = true;
+						FriendsForm.instance.show();
 					break;
 					
 					case 'edit_photo':
@@ -348,6 +277,24 @@ package {
 					
 					case 'save_settings':
 						Util.api.nextPhoto(Util.userId);
+					break;
+					
+					case 'favorites':
+						FavoritesForm.instance.users = response.users;
+						FavoritesForm.instance.show();
+					break;
+					
+					case 'add_favorite':
+					case 'del_favorite':
+						for (var i:int = 0; i < numChildren; ++i) {
+							if (getChildAt(i) is Form) {
+								var form:Form = getChildAt(i) as Form;
+								if (form.visible) {
+									form.refresh();
+									break;
+								}
+							} 
+						}
 					break;
 				}
 			}

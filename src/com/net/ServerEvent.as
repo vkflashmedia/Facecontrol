@@ -6,6 +6,7 @@ package com.net
 	{
 		public static const ERROR:String = 'ERROR';
 		public static const TOP_LOAD_COMPLETED:String = 'TOP_LOAD_COMPLETED';
+		public static const REG_USER_COMPLETED:String = 'REG_USER_COMPLETED';
 		
 		public var errorCode:int;
 		public var errorMessage:String;

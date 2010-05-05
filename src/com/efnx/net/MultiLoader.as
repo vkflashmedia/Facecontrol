@@ -347,7 +347,7 @@ package com.efnx.net
 		*	LoaderInfo
 		*/
 		private function completeLoad(event:Event):void
-		{	
+		{
 			var entryName:String = resolver[event.target];
 			if(testing) trace("MultiLoader::completeLoad() " + entryName);
 			event.target.removeEventListener(Event.COMPLETE, completeLoad);
