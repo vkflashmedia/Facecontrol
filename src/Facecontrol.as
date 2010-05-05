@@ -62,6 +62,7 @@ package {
 		public var _allUserPhotoForm: AllUserPhotoForm;
 		
 		public function Facecontrol() {
+			
 			Util.scene = this;
 //			aliFunction();
 //			artemFunction();
@@ -134,6 +135,15 @@ package {
 			Util.multiLoader.load(Images.ALL_USER_PHOTO_BACK2_PATH, Images.ALL_USER_PHOTO_BACK2, 'Bitmap');
 			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_BTN, 'Bitmap');
 			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_BTN, 'Bitmap');
+			Util.multiLoader.load(Images.ALL_USER_PHOTO_LEFT_ACT_BTN_PATH, Images.ALL_USER_PHOTO_LEFT_ACT_BTN, 'Bitmap');
+			Util.multiLoader.load(Images.ALL_USER_PHOTO_RIGHT_ACT_BTN_PATH, Images.ALL_USER_PHOTO_RIGHT_ACT_BTN, 'Bitmap');
+			
+			Util.multiLoader.load(Images.PHOTO_ALBUM_BACK_PATH, Images.PHOTO_ALBUM_BACK, 'Bitmap');
+			Util.multiLoader.load(Images.PHOTO_ALBUM_FOLDER_PATH, Images.PHOTO_ALBUM_FOLDER, 'Bitmap');
+			Util.multiLoader.load(Images.PHOTO_ALBUM_GRAY_BTN_PATH, Images.PHOTO_ALBUM_GRAY_BTN, 'Bitmap');
+			Util.multiLoader.load(Images.PHOTO_ALBUM_ORANGE_BTN_PATH, Images.PHOTO_ALBUM_ORANGE_BTN, 'Bitmap');
+			Util.multiLoader.load(Images.PHOTO_ALBUM_RED_BTN_PATH, Images.PHOTO_ALBUM_RED_BTN, 'Bitmap');
+			Util.multiLoader.load(Images.PHOTO_ALBUM_SELECT_PATH, Images.PHOTO_ALBUM_SELECT, 'Bitmap');
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {

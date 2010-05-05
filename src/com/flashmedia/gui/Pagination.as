@@ -66,6 +66,11 @@ package com.flashmedia.gui
 			return _currentPage;
 		}
 		
+		public function set currentPage(value: int): void {
+			_currentPage = value;
+			init();
+		}
+		
 		public function clear():void {
 			if (layer) {
 				removeChild(layer);

@@ -47,6 +47,15 @@ package com.facecontrol.util
 		public static const ALL_USER_PHOTO_BACK2:String = 'allUserPhotoBack2';
 		public static const ALL_USER_PHOTO_LEFT_BTN:String = 'allUserPhotoLeftBtn';
 		public static const ALL_USER_PHOTO_RIGHT_BTN:String = 'allUserPhotoRightBtn';
+		public static const ALL_USER_PHOTO_LEFT_ACT_BTN:String = 'allUserPhotoLeftActBtn';
+		public static const ALL_USER_PHOTO_RIGHT_ACT_BTN:String = 'allUserPhotoRightActBtn';
+		
+		public static const PHOTO_ALBUM_BACK:String = 'photo_album_form';
+		public static const PHOTO_ALBUM_GRAY_BTN:String = 'photo_album_button_gray';
+		public static const PHOTO_ALBUM_ORANGE_BTN:String = 'photo_album_button_orange';
+		public static const PHOTO_ALBUM_RED_BTN:String = 'photo_album_button_red';
+		public static const PHOTO_ALBUM_FOLDER:String = 'photo_album_folder';
+		public static const PHOTO_ALBUM_SELECT:String = 'photo_album_select';
 		
 		
 		
@@ -92,5 +101,14 @@ package com.facecontrol.util
 		public static const ALL_USER_PHOTO_BACK2_PATH:String = 'images\\all_user_foto\\bgr02.png';
 		public static const ALL_USER_PHOTO_LEFT_BTN_PATH:String = 'images\\all_user_foto\\but_l.png';
 		public static const ALL_USER_PHOTO_RIGHT_BTN_PATH:String = 'images\\all_user_foto\\but_r.png';
+		public static const ALL_USER_PHOTO_LEFT_ACT_BTN_PATH:String = 'images\\all_user_foto\\but_l_active.png';
+		public static const ALL_USER_PHOTO_RIGHT_ACT_BTN_PATH:String = 'images\\all_user_foto\\but_r_active.png';
+		
+		public static const PHOTO_ALBUM_BACK_PATH:String = 'images\\photo_album\\form.png';
+		public static const PHOTO_ALBUM_GRAY_BTN_PATH:String = 'images\\photo_album\\button_gray.png';
+		public static const PHOTO_ALBUM_ORANGE_BTN_PATH:String = 'images\\photo_album\\button_orange.png';
+		public static const PHOTO_ALBUM_RED_BTN_PATH:String = 'images\\photo_album\\button_red.png';
+		public static const PHOTO_ALBUM_FOLDER_PATH:String = 'images\\photo_album\\folder.png';
+		public static const PHOTO_ALBUM_SELECT_PATH:String = 'images\\photo_album\\select.png';
 	}
 }

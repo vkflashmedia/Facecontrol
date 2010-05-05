@@ -6,38 +6,63 @@ package com.facecontrol.api
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
+	import flash.events.TimerEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLVariables;
+	import flash.utils.Timer;
 	
 	public class Api extends EventDispatcher
 	{
-		private static const FC_API_SERVER:String = 'http://facecontrol/';
-//		private static const FC_API_SERVER:String = 'http://www.public.facecontrol/';
+//		private static const FC_API_SERVER:String = 'http://facecontrol/';
+		private static const FC_API_SERVER:String = 'http://www.public.facecontrol/';
 		private const loader:URLLoader = new URLLoader();
+		private var requestQueue: Array;
+		private var timer: Timer;
+		private var currentMethod: String;
 		
 		public function Api()
 		{
+			currentMethod = null;
+			requestQueue = new Array();
+			timer = new Timer(500, 0);
+			timer.addEventListener(TimerEvent.TIMER, onTimer);
+			timer.start();
 			loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			loader.addEventListener(Event.COMPLETE, completeHandler);
 		}
 		
-		private function request(vars:URLVariables):void
+		private function onTimer(event: TimerEvent): void {
+			if (requestQueue.length > 0 && !currentMethod) {
+				var r: Object = requestQueue.pop();
+				request(r['method'], r['vars']);
+			}
+		}
+		
+		private function request(method: String, vars:URLVariables):void
 		{
-			var request: URLRequest = new URLRequest();
-			request.url = FC_API_SERVER;
-			request.data = vars;
-			loader.load(request);
+			if (!currentMethod) {
+				currentMethod = method;
+				var request: URLRequest = new URLRequest();
+				request.url = FC_API_SERVER;
+				request.data = vars;
+				loader.load(request);
+			}
+			else {
+				var r: Object = {'method': method, 'vars': vars};
+				requestQueue.push(r);	
+			}
 		}
 		
 		private function errorHandler(e:IOErrorEvent):void {
 			trace("errorHandler: "+e.text);
 			dispatchEvent(new ApiEvent(ApiEvent.ERROR, e.text, 255));
+			currentMethod = null;
 		}
 		
 		private function completeHandler(event:Event):void
 		{
-			trace("completeHandler: "+loader.data);
+			trace("Api:completeHandler: "+loader.data);
 			try {
 				var json:Object = JSON.deserialize(loader.data);
 				
@@ -58,6 +83,7 @@ package com.facecontrol.api
 			catch (e:Error) {
 				dispatchEvent(new ApiEvent(ApiEvent.ERROR, null, 254, e.message));
 			}
+			currentMethod = null;
 		}
 		
 		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int):void
@@ -75,7 +101,7 @@ package com.facecontrol.api
 			vars['city'] = city;
 			vars['country'] = country;
 			
-			request(vars);
+			request('reg_user', vars);
 		}
 		
 		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null, country:String=null):void
@@ -89,7 +115,7 @@ package com.facecontrol.api
 			if (city) vars['city'] = city;
 			if (country) vars['country'] = country;
 			
-			request(vars);
+			request('save_settings', vars);
 		}
 		
 		public function loadSettings(uid:int):void
@@ -98,7 +124,7 @@ package com.facecontrol.api
 			vars['method'] = 'load_settings';
 			vars['uid'] = uid;
 			
-			request(vars);
+			request('load_settings', vars);
 		}
 		
 		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null):void
@@ -111,7 +137,7 @@ package com.facecontrol.api
 			vars['src_big'] = src_big;
 			if (comment != null) vars['comment'] = comment;
 			
-			request(vars);
+			request('add_photo', vars);
 		}
 		
 		public function getPhotos(uid:int):void
@@ -120,7 +146,7 @@ package com.facecontrol.api
 			vars['method'] = 'get_photos';
 			vars['uid'] = uid;
 			
-			request(vars);
+			request('get_photos', vars);
 		}
 		
 		public function deletePhoto(pid:int):void
@@ -129,7 +155,7 @@ package com.facecontrol.api
 			vars['method'] = 'del_photo';
 			vars['pid'] = pid;
 			
-			request(vars);
+			request('del_photo', vars);
 		}
 		
 		public function setComment(pid:int, comment:String):void
@@ -139,7 +165,7 @@ package com.facecontrol.api
 			vars['pid'] = pid;
 			vars['comment'] = comment;
 			
-			request(vars);
+			request('set_comment', vars);
 		}
 		
 		public function vote(uid:int, pid:String, rating:int=1):void
@@ -150,7 +176,7 @@ package com.facecontrol.api
 			vars['pid'] = pid;
 			vars['rating'] = rating;
 			
-			request(vars);
+			request('vote', vars);
 		}
 		
 		public function setMain(pid:String):void
@@ -159,7 +185,7 @@ package com.facecontrol.api
 			vars['method'] = 'set_main';
 			vars['pid'] = pid;
 			
-			request(vars);
+			request('set_main', vars);
 		}
 		
 		public function nextPhoto(uid:int):void
@@ -168,7 +194,7 @@ package com.facecontrol.api
 			vars['method'] = 'next_photo';
 			vars['uid'] = uid;
 			
-			request(vars);
+			request('next_photo', vars);
 		}
 		
 		public function friends(uids:Array):void {
@@ -182,7 +208,7 @@ package com.facecontrol.api
 			vars['viewer_id'] = Util.userId;
 			vars['uids'] = uidsString;
 			
-			request(vars);
+			request('friends', vars);
 		}
 		
 		public function top100():void
@@ -190,7 +216,7 @@ package com.facecontrol.api
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'top100';
 			
-			request(vars);
+			request('top100', vars);
 		}
 		
 		public function bottom100():void
@@ -198,7 +224,7 @@ package com.facecontrol.api
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'top100';
 			
-			request(vars);
+			request('top100', vars);
 		}
 	}
 }

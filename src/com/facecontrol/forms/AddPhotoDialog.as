@@ -49,6 +49,7 @@ package com.facecontrol.forms
 			selectFromAlbom.textField.embedFonts = true;
 			selectFromAlbom.textField.antiAliasType = AntiAliasType.ADVANCED;
 			selectFromAlbom.setTextPosition(16, 11);
+			selectFromAlbom.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onAlbumClick);
 			addChild(selectFromAlbom);
 			
 			var cancel:Button = new Button(_scene, loadPhoto.x, selectFromAlbom.y + 48);
@@ -60,6 +61,12 @@ package com.facecontrol.forms
 			cancel.setTextPosition(49, 11);
 			cancel.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onCancelClick);
 			addChild(cancel);
+		}
+		
+		public function onAlbumClick(event:GameObjectEvent):void {
+			_scene.resetModal(this);
+			PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+			_scene.showModal(PhotoAlbumForm.instance);
 		}
 		
 		public function onCancelClick(event:GameObjectEvent):void {

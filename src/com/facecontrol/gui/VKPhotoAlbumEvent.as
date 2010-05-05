@@ -4,7 +4,8 @@ package com.facecontrol.gui
 
 	public class VKPhotoAlbumEvent extends GameObjectEvent
 	{
-		public static const LOADED:String = 'album_loaded';
+		public static const ALBUMS_LOADED:String = 'albums_loaded';
+		public static const PHOTOS_LOADED:String = 'photos_loaded';
 		
 		public function VKPhotoAlbumEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
