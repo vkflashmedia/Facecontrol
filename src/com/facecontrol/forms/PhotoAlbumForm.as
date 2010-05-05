@@ -190,7 +190,7 @@ package com.facecontrol.forms
 			try {
 				switch (response.method) {
 					case 'add_photo':
-						trace('add_photo');
+						Util.api.getPhotos(Util.userId);
 					break;
 				}
 			}

@@ -212,7 +212,7 @@ package com.facecontrol.forms
 			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
 			_grid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
-			_grid.indentBetweenRows = 27;
+			_grid.indentBetweenRows = 0;
 			_grid.indentBetweenCols= 0;
 			_grid.padding = 3;
 //			_grid.debug = true;
@@ -308,7 +308,8 @@ package com.facecontrol.forms
 		}
 		
 		public function onAddPhotoClick(event:GameObjectEvent):void {
-			_scene.showModal(new AddPhotoDialog(_scene));
+			PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+			_scene.showModal(PhotoAlbumForm.instance);
 		}
 		
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
