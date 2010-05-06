@@ -164,14 +164,16 @@ package com.flashmedia.basics
 		 * Если перед показом объект ыл добавлен на сцену, то удаляем его со сцены.
 		 */
 		public function resetModal(value: GameObject): void {
-			_isModalShow = false;
-			updateModalBlockLayer();
 			var attrs: Object = _savedModalGameObjectsAttrs.pop();
-			value.internalZOrder = attrs.zOrder;
-			if (attrs.added) {
-				value.setGameLayer(null);
-				_modalBlockLayer.removeChild(value);
+			if (attrs) {
+				value.internalZOrder = attrs.zOrder;
+				if (attrs.added) {
+					value.setGameLayer(null);
+					_modalBlockLayer.removeChild(value);
+				}
 			}
+			_isModalShow = (_savedModalGameObjectsAttrs.length > 0);
+			updateModalBlockLayer();
 		}
 		
 		public function get isModalShow(): Boolean {

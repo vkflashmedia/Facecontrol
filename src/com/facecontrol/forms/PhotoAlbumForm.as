@@ -142,6 +142,8 @@ package com.facecontrol.forms
 		}
 		
 		private function onSaveClick(event: GameObjectEvent): void {
+			var wasChanges: Boolean = false;
+			scene.showModal(PreloaderSplash.instance); 
 			_vkPhotoAlbum.showAlbums(0);
 			_pagination.currentPage = 0;
 			var newPhotos: Array = _vkPhotoAlbum.getPhotosToAdd();
@@ -150,6 +152,7 @@ package com.facecontrol.forms
 				var src_small: String = (p.hasOwnProperty('src_small')) ? p['src_small'] : null;
 				var src_big: String = (p.hasOwnProperty('src_big')) ? p['src_big'] : null;
 				_api.addPhoto(Util.userId, src, src_small, src_big, null);
+				wasChanges = true
 			}
 			var delPhotos: Array = _vkPhotoAlbum.getPhotosToDelete();
 			var photos: Array = MyPhotoForm.instance.photos;
@@ -160,13 +163,17 @@ package com.facecontrol.forms
 				for each (var photo: Object in photos) {
 					if (photo['src_big'] == src_big) {
 						_api.deletePhoto(photo['pid']);
+						wasChanges = true;
 						break;
 					}
 				}
 			}
 			_vkPhotoAlbum.clearMarks();
-			Util.api.getPhotos(Util.userId);
+			//Util.api.getPhotos(Util.userId);
 			_scene.resetModal(this);
+			if (!wasChanges) {
+				scene.resetModal(PreloaderSplash.instance);
+			}
 		}
 		
 		private function onCancelClick(event: GameObjectEvent): void {
@@ -190,6 +197,11 @@ package com.facecontrol.forms
 			try {
 				switch (response.method) {
 					case 'add_photo':
+						//todo
+						Util.api.getPhotos(Util.userId);
+					break;
+					case 'del_photo':
+						//todo
 						Util.api.getPhotos(Util.userId);
 					break;
 				}

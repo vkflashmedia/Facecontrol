@@ -9,21 +9,15 @@ package {
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MessageDialog;
 	import com.facecontrol.forms.MyPhotoForm;
+	import com.facecontrol.forms.PreloaderForm;
 	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
-	import com.facecontrol.gui.VkAdPanel;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameLayer;
-	import com.flashmedia.basics.GameObject;
-	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
-	import com.flashmedia.basics.View;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.GridBox;
-	import com.flashmedia.gui.GridBoxEvent;
-	import com.flashmedia.gui.Label;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.gui.RatingBar;
@@ -31,16 +25,7 @@ package {
 	import com.net.ServerEvent;
 	import com.net.VKontakteEvent;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.PixelSnapping;
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-	import flash.geom.Rectangle;
 	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFieldType;
-	import flash.text.TextFormat;
 	
 	public class Facecontrol extends GameScene {
 		
@@ -57,6 +42,7 @@ package {
 		private var form: Form;
 		
 		private var _background:Background;
+		private var _preloaderShown: Boolean;
 		
 		public function Facecontrol() {
 			
@@ -64,21 +50,15 @@ package {
 			_images = new Images();
 			
 			Util.multiLoader = new MultiLoader();
-			load();
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-			
-			Util.api.addEventListener(ApiEvent.COMPLETED, onFacecontrolRequestComplited);
-			Util.api.addEventListener(ApiEvent.ERROR, onFacecontrolRequestError);
-			
-			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
-			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
-			
-			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
-			
-			Util.server.addEventListener(ServerEvent.ERROR, onServerRequestError);
-			Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoaded);
-			Util.server.addEventListener(ServerEvent.REG_USER_COMPLETED, onUserRegistred);
+			loadPreloader();
+		}
+		
+		private function loadPreloader():void {
+			for each (var image: String in Images.PRE_IMAGES) {
+				Util.multiLoader.load(image, image, 'Bitmap');
+			}
 		}
 		
 		private function load():void {
@@ -93,25 +73,46 @@ package {
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-				
-				_background = new Background(this);
-				_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
-				_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
-				_background.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
-				_background.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
-				_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
-				addChild(_background);
-				
-				addChild(MainForm.instance);
-				addChild(MyPhotoForm.instance);
-				addChild(Top100.instance);
-				addChild(FavoritesForm.instance);
-				addChild(FriendsForm.instance);
-				addChild(AllUserPhotoForm.instance);
-				
-				Util.vkontakte.getProfiles(new Array('' + Util.userId));
+				if (_preloaderShown) {
+					Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+					Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+					
+					_background = new Background(this);
+					_background.visible = false;
+					_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
+					_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
+					_background.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
+					_background.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
+					_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
+					addChild(_background);
+					
+					addChild(MainForm.instance);
+					addChild(MyPhotoForm.instance);
+					addChild(Top100.instance);
+					addChild(FavoritesForm.instance);
+					addChild(FriendsForm.instance);
+					addChild(AllUserPhotoForm.instance);
+					
+					Util.vkontakte.getProfiles(new Array('' + Util.userId));
+				}
+				else {
+					_preloaderShown = true;
+					addChild(PreloaderForm.instance);
+					
+					load();
+					
+					Util.api.addEventListener(ApiEvent.COMPLETED, onFacecontrolRequestComplited);
+					Util.api.addEventListener(ApiEvent.ERROR, onFacecontrolRequestError);
+					
+					Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
+					Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
+					
+					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
+					
+					Util.server.addEventListener(ServerEvent.ERROR, onServerRequestError);
+					Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoaded);
+					Util.server.addEventListener(ServerEvent.REG_USER_COMPLETED, onUserRegistred);
+				}
 			}
 		}
 		
@@ -235,6 +236,7 @@ package {
 					break;
 					
 					case 'next_photo':
+						_background.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 					break;
@@ -244,6 +246,7 @@ package {
 					break;
 					
 					case 'get_photos':
+						this.resetModal(PreloaderForm.instance);
 						MyPhotoForm.instance.photos = response.photos;
 						MyPhotoForm.instance.show();
 					break;

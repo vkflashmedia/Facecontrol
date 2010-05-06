@@ -108,7 +108,31 @@ package com.facecontrol.util
 		public static const MESSAGE_DIALOG_BACKGROUND:String = 'images\\message_dialog\\form.png';
 		public static const MESSAGE_DIALOG_BUTTON:String = 'images\\message_dialog\\button_red.png';
 		
+		public static const PRELOADER_BACK:String = 'images\\preloader\\bgr.png';
+		public static const PRELOADER_ANIM1:String = 'images\\preloader\\01.png';
+		public static const PRELOADER_ANIM2:String = 'images\\preloader\\02.png';
+		public static const PRELOADER_ANIM3:String = 'images\\preloader\\03.png';
+		public static const PRELOADER_ANIM4:String = 'images\\preloader\\04.png';
+		public static const PRELOADER_ANIM5:String = 'images\\preloader\\05.png';
+		public static const PRELOADER_ANIM6:String = 'images\\preloader\\06.png';
+		public static const PRELOADER_ANIM7:String = 'images\\preloader\\07.png';
+		public static const PRELOADER_ANIM8:String = 'images\\preloader\\08.png';
+		public static const SPLASH:String = 'images\\preloader\\splash.png';
+		
+		public static const PRE_IMAGES: Array = new Array(
+			PRELOADER_ANIM1,
+			PRELOADER_ANIM2,
+			PRELOADER_ANIM3,
+			PRELOADER_ANIM4,
+			PRELOADER_ANIM5,
+			PRELOADER_ANIM6,
+			PRELOADER_ANIM7,
+			PRELOADER_ANIM8
+		);
+		
 		public static const IMAGES:Array = new Array(
+			PRELOADER_BACK,
+		
 			HEAD_BUTTON1,
 			HEAD_BUTTON2,
 			HEAD_BUTTON3,

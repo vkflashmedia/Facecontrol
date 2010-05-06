@@ -229,6 +229,7 @@ package com.facecontrol.forms
 					addChild(curBigPhoto);
 					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
+					scene.resetModal(PreloaderSplash.instance);
 				}
 				else {
 					thumb.x = lastPhotoX;
