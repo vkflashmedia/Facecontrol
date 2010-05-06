@@ -189,6 +189,7 @@ package com.facecontrol.forms
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
+					case 'del_photo':
 					case 'add_photo':
 						Util.api.getPhotos(Util.userId);
 					break;
