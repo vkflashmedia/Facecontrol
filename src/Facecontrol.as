@@ -17,43 +17,23 @@ package {
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameScene;
-	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.Form;
-	import com.flashmedia.gui.GridBox;
-	import com.flashmedia.gui.LinkButton;
-	import com.flashmedia.gui.Pagination;
-	import com.flashmedia.gui.RatingBar;
-	import com.flashmedia.gui.ScrollBar;
-	import com.net.ServerEvent;
 	import com.net.VKontakteEvent;
 	
-	import flash.text.TextField;
+	import flash.system.Security;
 	
 	public class Facecontrol extends GameScene {
-		
-		private static var _images:Images;
-		private static var _multiLoader: MultiLoader;
-		
-		private var textField: TextField = new TextField();
-		private var p:Pagination;
-		private var linkButton:LinkButton;
-		private var gb: GridBox;
-		private var cb: ComboBox;
-		private var scroll: ScrollBar;
-		private var rateBar: RatingBar;
-		private var form: Form;
-		
 		private var _background:Background;
 		private var _preloaderShown: Boolean;
 		
 		public function Facecontrol() {
-
+			Security.allowDomain('*');
+			MultiLoader.usingContext = true;
 			Util.scene = this;
-			_images = new Images();
 			
-			Util.multiLoader = new MultiLoader();
-			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+//			Util.multiLoader = new MultiLoader();
+//			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+//			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 			loadPreloader();
 		}
 		
@@ -61,6 +41,16 @@ package {
 			for each (var image: String in Images.PRE_IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
+			load();
+			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+			
+			Util.api.addEventListener(ApiEvent.COMPLETED, onFacecontrolRequestComplited);
+			Util.api.addEventListener(ApiEvent.ERROR, onFacecontrolRequestError);
+			
+			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
+			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
+			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 		}
 		
 		private function load():void {
@@ -110,10 +100,6 @@ package {
 					Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
 					
 					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
-					
-					Util.server.addEventListener(ServerEvent.ERROR, onServerRequestError);
-					Util.server.addEventListener(ServerEvent.TOP_LOAD_COMPLETED, onTopLoaded);
-					Util.server.addEventListener(ServerEvent.REG_USER_COMPLETED, onUserRegistred);
 				}
 			}
 		}
@@ -130,7 +116,7 @@ package {
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
 			this.showModal(PreloaderSplash.instance);
-			Util.server.getTop(Util.userId);
+			Util.api.getTop(Util.userId);
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
@@ -141,36 +127,6 @@ package {
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			this.showModal(PreloaderSplash.instance);
 			Util.vkontakte.getFriends();
-		}
-		
-		public function onServerRequestError(event:ServerEvent):void {
-			try {
-				switch (event.errorCode) {
-					default:
-						showModal(new MessageDialog(this, 'Ошибка:', event.errorMessage));
-				}
-			}
-			catch (e:Error) {
-				trace(e.message);
-			}
-		}
-		
-		private function onUserRegistred(event:ServerEvent):void {
-			var response:Object = event.response;
-			Util.user.city_name = response.city_name;
-			Util.user.country_name = response.country_name;
-			if (response.photo_count == 0) {
-				Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
-			}
-			else Util.api.loadSettings(Util.userId);
-		}
-		
-		private function onTopLoaded(event:ServerEvent):void {
-			Top100.instance.users = event.response.users;
-			Top100.instance.show();
-			if (PreloaderSplash.instance.isModal) {
-				this.resetModal(PreloaderSplash.instance);
-			}
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -191,7 +147,7 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						Util.user = response[0];
-						Util.server.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
+						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
 					break;
 					
 					case 'getFriends':
@@ -229,14 +185,22 @@ package {
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
-//					case 'reg_user':
-//						Util.user.city_name = response.city_name;
-//						Util.user.country_name = response.country_name;
-//						if (response.photo_count == 0) {
-//							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
-//						}
-//						else Util.api.loadSettings(Util.userId);
-//					break;
+					case 'reg_user':
+						Util.user.city_name = response.city_name;
+						Util.user.country_name = response.country_name;
+						if (response.photo_count == 0) {
+							Util.api.addPhoto(Util.userId, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
+						}
+						else Util.api.loadSettings(Util.userId);
+					break;
+					
+					case 'top100':
+						Top100.instance.users = event.response.users;
+						Top100.instance.show();
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
+					break;
 					
 					case 'add_photo':
 						Util.api.loadSettings(Util.userId);

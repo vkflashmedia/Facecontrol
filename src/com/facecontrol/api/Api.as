@@ -15,8 +15,7 @@ package com.facecontrol.api
 	public class Api extends EventDispatcher
 	{
 		private static const FC_API_SERVER:String = 'http://facecontrol.pe.mastertest.ru/';
-//		private static const FC_API_SERVER:String = 'http://facecontrol/';
-//		private static const FC_API_SERVER:String = 'http://www.public.facecontrol/';
+		
 		private const loader:URLLoader = new URLLoader();
 		private var requestQueue: Array;
 		private var timer: Timer;
@@ -50,8 +49,7 @@ package com.facecontrol.api
 				loader.load(request);
 			}
 			else {
-				var r: Object = {'method': method, 'vars': vars};
-				requestQueue.push(r);	
+				requestQueue.push({'method': method, 'vars': vars});	
 			}
 		}
 
@@ -219,7 +217,7 @@ package com.facecontrol.api
 			vars['method'] = 'favorites';
 			vars['uid'] = uid;
 			
-			request('top100', vars);
+			request('favorites', vars);
 		}
 		
 		public function addFavorite(uid:int, favoriteUid:int):void {
@@ -237,6 +235,13 @@ package com.facecontrol.api
 			vars['uid'] = uid;
 			vars['favorite_uid'] = favoriteUid;
 			
+			request('del_favorite', vars);
+		}
+		
+		public function getTop(uid:uint):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'top100';
+			vars['uid'] = uid;
 			request('top100', vars);
 		}
 	}

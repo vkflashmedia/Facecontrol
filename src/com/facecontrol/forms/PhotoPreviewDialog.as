@@ -17,7 +17,7 @@ package com.facecontrol.forms
 			this.graphics.drawRect(0, 0, _scene.width, _scene.height);
 			
 			bitmap = photo;
-			bitmap.x = (Constants.APP_WIDTH - bitmap.width) / 2;
+			bitmap.x = 50 + (Constants.APP_WIDTH - 100 - bitmap.width) / 2;
 			bitmap.y = 80 + (540 - bitmap.height) / 2;
 			
 			addEventListener(MouseEvent.CLICK, onClick);

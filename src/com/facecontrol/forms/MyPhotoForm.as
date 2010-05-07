@@ -42,6 +42,8 @@ package com.facecontrol.forms
 		
 		protected var _ratingAverageField:TextField;
 		protected var _votesCountField:TextField;
+		protected var _noVotesField:TextField;
+		private var _bigStar:Bitmap;
 		
 		private var _grid:GridBox;
 		private var _pagination:Pagination;
@@ -115,10 +117,10 @@ package com.facecontrol.forms
 			_mainPhoto.photoBorder = 1;
 			addChild(_mainPhoto);
 			
-			var bigStar:Bitmap = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
-			bigStar.x = 38;
-			bigStar.y = 376;
-			addChild(bigStar);
+			_bigStar = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
+			_bigStar.x = 38;
+			_bigStar.y = 376;
+			addChild(_bigStar);
 			
 			_ratingAverageField = Util.createLabel('9,5', 77, 371);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
@@ -133,6 +135,14 @@ package com.facecontrol.forms
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
 			_votesCountField.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_votesCountField);
+			
+			_noVotesField = Util.createLabel('нет голосов', 38, 386);
+			_noVotesField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
+			_noVotesField.embedFonts = true;
+			_noVotesField.antiAliasType = AntiAliasType.ADVANCED;
+			_noVotesField.autoSize = TextFieldAutoSize.LEFT;
+			_noVotesField.visible = false;
+			addChild(_noVotesField);
 			
 			label = Util.createLabel('Комментарий к фото:', 38, 430);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
@@ -251,8 +261,11 @@ package com.facecontrol.forms
 				_ratingAverageField.setTextFormat(format);
 				
 				format = _votesCountField.getTextFormat();
-				_votesCountField.text = (_main.votes_count > 0) ? _main.votes_count + ' голосов' : 'нет голосов';
+				_votesCountField.text = _main.votes_count + ' голосов';
 				_votesCountField.setTextFormat(format);
+				_votesCountField.visible = _bigStar.visible = (_main.votes_count > 0);
+				
+				_noVotesField.visible = (_main.votes_count == 0);
 			}
 			
 			_pagination.pagesCount = Math.ceil(_photos.length / MAX_PHOTO_COUNT_IN_GRID);
