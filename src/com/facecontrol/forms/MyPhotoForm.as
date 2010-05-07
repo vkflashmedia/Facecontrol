@@ -315,6 +315,7 @@ package com.facecontrol.forms
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) {
+				scene.showModal(PreloaderSplash.instance);
 				Util.api.deletePhoto(gridItem.photoData.pid);
 			}
 			else {

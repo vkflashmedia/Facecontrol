@@ -2,6 +2,7 @@ package com.facecontrol.gui
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameObject;
@@ -103,7 +104,7 @@ package com.facecontrol.gui
 			for each (var a: Object in _albums) {
 				for each (var p: Object in a['photos']) {
 					if (inMarkedPathes(p['src_big'])) {
-						if (!p.hasOwnProperty('marked') || p['marked'] == false) {
+						if (p.hasOwnProperty('marked') && p['marked'] == false) {
 							result.push(p);
 						}
 					}
@@ -198,6 +199,7 @@ package com.facecontrol.gui
 				_state = STATE_IN_PHOTOS;
 				removeAllItems();
 				if (!currentAlbum.hasOwnProperty('photos')) {
+					Util.scene.showModal(PreloaderSplash.instance);
 					_vk.getPhotos(aid);
 				}
 				else {
@@ -207,9 +209,7 @@ package com.facecontrol.gui
 							if ((curPhoto >= (pageIndex * maxPhotosOnPage)) && (curPhoto < ((pageIndex + 1) * maxPhotosOnPage))) {
 								var pGo: Photo = new Photo(scene, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
 								pGo.photoBorderColor = 0x453841;
-								if (inMarkedPathes(p['src_big'])) {
-									p['marked'] = true;
-								}
+								p['marked'] = inMarkedPathes(p['src_big']);
 								if (p.hasOwnProperty('marked') && p['marked'] == true) {
 									var icon: Bitmap = BitmapUtil.cloneBitmap(_markIcon);
 									icon.x = -6;
@@ -224,6 +224,9 @@ package com.facecontrol.gui
 						dispatchEvent(event);
 					}
 					else {
+						if (!PreloaderSplash.instance.isModal) {
+							Util.scene.showModal(PreloaderSplash.instance);
+						}
 						for each (p in currentAlbum['photos']) {
 							if ((curPhoto >= (pageIndex * maxPhotosOnPage)) && (curPhoto < ((pageIndex + 1) * maxPhotosOnPage))) {
 								if (!p.hasOwnProperty('src_image')) {
@@ -272,6 +275,7 @@ package com.facecontrol.gui
 			super.selectItem(value);
 			if (_state == STATE_IN_ALBUMS) {
 				_currentAlbumId = selectedItem;
+				showPhotos(_currentAlbumId);
 			}
 			else if (_state == STATE_IN_PHOTOS) {
 				var p: Object = getPhoto(selectedItem);
@@ -334,9 +338,7 @@ package com.facecontrol.gui
 					if ((curPhoto >= (_curPhotoPageIndex * maxPhotosOnPage)) && (curPhoto < ((_curPhotoPageIndex + 1) * maxPhotosOnPage))) {
 						var pGo: Photo = new Photo(scene, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
 						pGo.photoBorderColor = 0x453841;
-						if (inMarkedPathes(p['src_big'])) {
-							p['marked'] = true;
-						}
+						p['marked'] = inMarkedPathes(p['src_big']);
 						if (p.hasOwnProperty('marked') && p['marked'] == true) {
 							var icon: Bitmap = BitmapUtil.cloneBitmap(_markIcon);
 							icon.x = -6;

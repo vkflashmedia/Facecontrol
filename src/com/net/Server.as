@@ -11,8 +11,9 @@ package com.net
 	
 	public class Server extends EventDispatcher
 	{
+		private static const SERVER_URL:String = 'http://facecontrol.pe.mastertest.ru/';
 //		private static const SERVER_URL:String = 'http://facecontrol/';
-		private static const SERVER_URL:String = 'http://www.public.facecontrol/';
+//		private static const SERVER_URL:String = 'http://www.public.facecontrol/';
 		
 		private const topLoader:URLLoader = new URLLoader();
 		private const regLoader:URLLoader = new URLLoader();

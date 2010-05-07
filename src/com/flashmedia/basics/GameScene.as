@@ -36,6 +36,11 @@ package com.flashmedia.basics
 		private var _framesTimeStamp: Number;
 		private var _ticksTimeStamp: Number;
 		private var _modalBlockLayer: GameLayer;
+		/**
+		 * Сохраненные свойства объектов, которые показываются модально
+		 * ['zOrder'] - zOrder объекта до модального показа
+		 * ['added'] - был ли объект специально добавлен на слой
+		 */
 		private var _savedModalGameObjectsAttrs: Array;
 		
 		protected var _debug: Boolean;
@@ -144,6 +149,7 @@ package com.flashmedia.basics
 		public function showModal(value: GameObject): void {
 			_isModalShow = true;
 			updateModalBlockLayer();
+			value.isModal = true;
 			var attrs: Object = new Object();
 			attrs.zOrder = value.zOrder;
 			value.internalZOrder = MODAL_GAME_OBJECT_Z_ORDER;
@@ -172,6 +178,7 @@ package com.flashmedia.basics
 					_modalBlockLayer.removeChild(value);
 				}
 			}
+			value.isModal = false;
 			_isModalShow = (_savedModalGameObjectsAttrs.length > 0);
 			updateModalBlockLayer();
 		}

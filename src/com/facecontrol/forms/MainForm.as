@@ -584,6 +584,7 @@ package com.facecontrol.forms
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
 			scene.showModal(PreloaderSplash.instance);
+			AllUserPhotoForm.instance.returnForm = this;
 			AllUserPhotoForm.instance.show();
 		}
 		

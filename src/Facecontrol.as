@@ -9,7 +9,9 @@ package {
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MessageDialog;
 	import com.facecontrol.forms.MyPhotoForm;
+	import com.facecontrol.forms.PhotoAlbumForm;
 	import com.facecontrol.forms.PreloaderForm;
+	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
 	import com.facecontrol.util.Images;
@@ -45,7 +47,7 @@ package {
 		private var _preloaderShown: Boolean;
 		
 		public function Facecontrol() {
-			
+
 			Util.scene = this;
 			_images = new Images();
 			
@@ -122,18 +124,22 @@ package {
 		}
 		
 		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
+			this.showModal(PreloaderSplash.instance);
 			Util.api.getPhotos(Util.userId);
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
+			this.showModal(PreloaderSplash.instance);
 			Util.server.getTop(Util.userId);
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
+			this.showModal(PreloaderSplash.instance);
 			Util.api.favorites(Util.userId);
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
+			this.showModal(PreloaderSplash.instance);
 			Util.vkontakte.getFriends();
 		}
 		
@@ -162,6 +168,9 @@ package {
 		private function onTopLoaded(event:ServerEvent):void {
 			Top100.instance.users = event.response.users;
 			Top100.instance.show();
+			if (PreloaderSplash.instance.isModal) {
+				this.resetModal(PreloaderSplash.instance);
+			}
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -199,6 +208,9 @@ package {
 			var users:Array = event.response as Array;
 			FriendsForm.instance.users = users;
 			FriendsForm.instance.show();
+			if (PreloaderSplash.instance.isModal) {
+				this.resetModal(PreloaderSplash.instance);
+			}
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
@@ -246,14 +258,20 @@ package {
 					break;
 					
 					case 'get_photos':
-						this.resetModal(PreloaderForm.instance);
 						MyPhotoForm.instance.photos = response.photos;
+						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						MyPhotoForm.instance.show();
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
 					break;
 					
 					case 'del_photo':
 						Util.multiLoader.unload(response.pid);
-						
+						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
 					case 'set_main':
 						Util.api.getPhotos(Util.userId);
 					break;
@@ -261,6 +279,9 @@ package {
 					case 'friends':
 						FriendsForm.instance.users = response.users;
 						FriendsForm.instance.show();
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
 					break;
 					
 					case 'edit_photo':
@@ -274,6 +295,9 @@ package {
 					case 'favorites':
 						FavoritesForm.instance.users = response.users;
 						FavoritesForm.instance.show();
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
 					break;
 					
 					case 'add_favorite':

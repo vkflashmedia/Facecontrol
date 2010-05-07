@@ -1,5 +1,8 @@
 package com.facecontrol.gui
 {
+	import com.facecontrol.forms.AllUserPhotoForm;
+	import com.facecontrol.forms.FriendsForm;
+	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameObject;
@@ -39,6 +42,11 @@ package com.facecontrol.gui
 				morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 				morePhotos.textField.embedFonts = true;
 				morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
+				morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
+					scene.showModal(PreloaderSplash.instance);
+					AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
+					AllUserPhotoForm.instance.show();
+				});
 				addChild(morePhotos);
 			}
 			else if (Util.multiLoader.hasLoaded(userRaw.photo_big)) {

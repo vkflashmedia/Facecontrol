@@ -48,6 +48,8 @@ package com.facecontrol.forms
 		private var curPhotoIndex: int;
 		private var lastPhotoX: int;
 		
+		public var returnForm: Form;
+		
 		private static var _instance: AllUserPhotoForm;
 		public static function get instance():AllUserPhotoForm {
 			if (!_instance) _instance = new AllUserPhotoForm(Util.scene);
@@ -229,7 +231,9 @@ package com.facecontrol.forms
 					addChild(curBigPhoto);
 					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
-					scene.resetModal(PreloaderSplash.instance);
+					if (PreloaderSplash.instance.isModal) {
+						scene.resetModal(PreloaderSplash.instance);
+					}
 				}
 				else {
 					thumb.x = lastPhotoX;
@@ -250,7 +254,15 @@ package com.facecontrol.forms
 		}
 		
 		private function onCancelClick(event: GameObjectEvent): void {
-			(scene as Facecontrol).onFirstMenuButtonClick(null);
+			//(scene as Facecontrol).onFirstMenuButtonClick(null);
+			if (returnForm) {
+				if (returnForm as MainForm) {
+					MainForm.instance.show();
+				}
+				else if (returnForm as FriendsForm) {
+					FriendsForm.instance.show();
+				}
+			}
 		}
 		
 		private function onRequestCompleted(event: ApiEvent): void {

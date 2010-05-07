@@ -33,6 +33,8 @@ package com.facecontrol.forms
 		private var _currentAlbumPage: int = 0;
 		private var _currentPhotoPage: int = 0;
 		private var _pagination: Pagination;
+		private var newPhotos: Array;
+		private var delPhotos: Array;
 		
 		public function PhotoAlbumForm(value:GameScene)
 		{
@@ -124,6 +126,9 @@ package com.facecontrol.forms
 				//removeChild(waitText);
 				_pagination.pagesCount = _vkPhotoAlbum.selectedAlbumPhotosPages;
 				_pagination.x = 518 - _pagination.width;
+				if (PreloaderSplash.instance.isModal) {
+					Util.scene.resetModal(PreloaderSplash.instance);
+				}
 			});
 			addChild(_vkPhotoAlbum);
 		}
@@ -146,7 +151,8 @@ package com.facecontrol.forms
 			scene.showModal(PreloaderSplash.instance); 
 			_vkPhotoAlbum.showAlbums(0);
 			_pagination.currentPage = 0;
-			var newPhotos: Array = _vkPhotoAlbum.getPhotosToAdd();
+			newPhotosComplCount = 0;
+			newPhotos = _vkPhotoAlbum.getPhotosToAdd();
 			for each (var p: Object in newPhotos) {
 				var src: String = (p.hasOwnProperty('src')) ? p['src'] : null;
 				var src_small: String = (p.hasOwnProperty('src_small')) ? p['src_small'] : null;
@@ -154,7 +160,8 @@ package com.facecontrol.forms
 				_api.addPhoto(Util.userId, src, src_small, src_big, null);
 				wasChanges = true
 			}
-			var delPhotos: Array = _vkPhotoAlbum.getPhotosToDelete();
+			delPhotosComplCount = 0;
+			delPhotos = _vkPhotoAlbum.getPhotosToDelete();
 			var photos: Array = MyPhotoForm.instance.photos;
 			for each (p in delPhotos) {
 				src = (p.hasOwnProperty('src')) ? p['src'] : null;
@@ -170,8 +177,10 @@ package com.facecontrol.forms
 			}
 			_vkPhotoAlbum.clearMarks();
 			//Util.api.getPhotos(Util.userId);
-			_scene.resetModal(this);
-			if (!wasChanges) {
+			if (this.isModal) {
+				Util.scene.resetModal(this);
+			}
+			if (!wasChanges && PreloaderSplash.instance.isModal) {
 				scene.resetModal(PreloaderSplash.instance);
 			}
 		}
@@ -180,7 +189,9 @@ package com.facecontrol.forms
 			_vkPhotoAlbum.showAlbums(0);
 			_pagination.currentPage = 0;
 			_vkPhotoAlbum.clearMarks();
-			_scene.resetModal(this);
+			if (this.isModal) {
+				scene.resetModal(this);
+			}
 		}
 		
 		private function onPaginationChange(event: Event): void {
@@ -192,18 +203,21 @@ package com.facecontrol.forms
 			}
 		}
 		
+		private var newPhotosComplCount: int = 0;
+		private var delPhotosComplCount: int = 0;
 		private function onApiCompleted(event:ApiEvent):void {
 			var response:Object = event.response;
 			try {
 				switch (response.method) {
 					case 'add_photo':
-						//todo
-						Util.api.getPhotos(Util.userId);
+						newPhotosComplCount++;
 					break;
 					case 'del_photo':
-						//todo
-						Util.api.getPhotos(Util.userId);
+						delPhotosComplCount++
 					break;
+				}
+				if (newPhotosComplCount == newPhotos.length && delPhotosComplCount == delPhotos.length) {
+					Util.api.getPhotos(Util.userId);
 				}
 			}
 			catch (e:Error) {

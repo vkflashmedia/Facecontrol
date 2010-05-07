@@ -120,6 +120,8 @@ package com.flashmedia.basics
 		protected var _selectable: Boolean;
 		protected var _selectAutosize: Boolean;
 		protected var _selectRect: Rectangle;
+		// модальный показ объекта
+		protected var _isModal: Boolean;
 		// настройка свойств фокуса
 		protected var _focusEnabled: Boolean;
 		protected var _viewFocus: Boolean;
@@ -166,6 +168,7 @@ package com.flashmedia.basics
 			_backgroundAlpha = 1.0;
 			_fillBackground = false;
 			_zOrder = 1;
+			_isModal = false;
 			// границы объекта
 			_width = MIN_WIDTH;
 			_height = MIN_HEIGHT;
@@ -229,6 +232,14 @@ package com.flashmedia.basics
 			_debug = value;
 			drawDebugInfo();
 //			sortSprites();
+		}
+		
+		public function set isModal(value: Boolean): void {
+			_isModal = value;
+		}
+		
+		public function get isModal(): Boolean {
+			return _isModal;
 		}
 		
 		public function get debug(): Boolean {
