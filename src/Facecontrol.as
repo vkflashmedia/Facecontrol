@@ -14,28 +14,51 @@ package {
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Form;
 	import com.net.VKontakteEvent;
 	
+	import flash.events.Event;
 	import flash.system.Security;
+	import flash.text.TextField;
 	
 	public class Facecontrol extends GameScene {
 		private var _background:Background;
 		private var _preloaderShown: Boolean;
+		
+		private var params:Object;
+		private var debug:String;
 		
 		public function Facecontrol() {
 			Security.allowDomain('*');
 			MultiLoader.usingContext = true;
 			Util.scene = this;
 			
-//			Util.multiLoader = new MultiLoader();
-//			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-//			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-			loadPreloader();
+			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+//			loadPreloader();
 		}
+		
+		public function onAddedToStage(e: Event): void {
+	    	var wrapper:Object = Object(this.parent.parent);
+	    	if (wrapper.application) {
+	    		app = wrapper.application;
+	    		params = app.parameters;
+	    		wrapper.external.resizeWindow(Constants.APP_WIDTH, Constants.APP_HEIGHT);
+	    		
+//	    		debug = params.api_result;
+//	    		var json:Object = JSON.deserialize(params.api_result);
+//	    		Util.userId = params.viewer_id;
+	    	}
+	    	else {
+	    		app = stage;
+				params = stage.loaderInfo.parameters;
+				wrapper = stage;
+	    	}
+	    	loadPreloader();
+	  	}
 		
 		private function loadPreloader():void {
 			for each (var image: String in Images.PRE_IMAGES) {

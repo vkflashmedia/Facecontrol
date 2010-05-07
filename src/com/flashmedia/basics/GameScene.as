@@ -48,13 +48,19 @@ package com.flashmedia.basics
 
 		protected var _selectedGameObject: GameObject;		
 		protected var _timer: Timer;
+		public var app:Object;
 		
 		public function GameScene() {
 			super();
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			stage.displayState = StageDisplayState.NORMAL;
-			stage.stageFocusRect = false;
+//			stage.scaleMode = StageScaleMode.NO_SCALE;
+//			stage.align = StageAlign.TOP_LEFT;
+//			stage.displayState = StageDisplayState.NORMAL;
+//			stage.stageFocusRect = false;
+//			app.scaleMode = StageScaleMode.NO_SCALE;
+//			app.align = StageAlign.TOP_LEFT;
+//			app.displayState = StageDisplayState.NORMAL;
+//			app.stageFocusRect = false;
+			
 			fps = FPS_DEF;
 			tps = TPS_DEF;
 			_debug = false;
@@ -66,8 +72,11 @@ package com.flashmedia.basics
 			_ticksTimeStamp = 0;
 			_isModalShow = false;
 			_savedModalGameObjectsAttrs = new Array();
-			stage.addEventListener(MouseEvent.CLICK, mouseClickListener);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
+//			stage.addEventListener(MouseEvent.CLICK, mouseClickListener);
+//			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
+//			app.addEventListener(MouseEvent.CLICK, mouseClickListener);
+//			app.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
+			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			_timer = new Timer(1000 / _tps, 0);
 			_timer.addEventListener(TimerEvent.TIMER, onTimer);
@@ -101,7 +110,8 @@ package com.flashmedia.basics
 		
 		public function set fps(value: uint): void {
 			_fps = value;
-			stage.frameRate = _fps;
+//			stage.frameRate = _fps;
+//			app.frameRate = _fps;
 		}
 		
 		public function get tps(): uint {
@@ -248,7 +258,8 @@ package com.flashmedia.basics
 					super.addChild(_debugText);
 				}
 				graphics.lineStyle(1, GameObject.BORDERS_COLOR);
-				graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+//				graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+				graphics.drawRect(0, 0, app.stageWidth, app.stageHeight);
 			}
 			else {
 				if (_debugText) {
@@ -273,7 +284,9 @@ package com.flashmedia.basics
 	  		_modalBlockLayer.visible = _isModalShow;
 	  		if (_isModalShow) {
 		  		_modalBlockLayer.graphics.beginFill(0xffffff, 0.0);
-		  		_modalBlockLayer.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+//		  		_modalBlockLayer.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+				_modalBlockLayer.graphics.drawRect(0, 0, app.stageWidth, app.stageHeight);
+
 		  		_modalBlockLayer.graphics.endFill();
 				super.addChild(_modalBlockLayer); // делаем каждый раз, чтобы слой оказывался на верху
 	  		}
