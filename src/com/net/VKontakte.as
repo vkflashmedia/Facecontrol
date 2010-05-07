@@ -89,7 +89,7 @@ package com.net
 				
 				var vars: URLVariables = new URLVariables();
 				var fields:String = 'uid,first_name,last_name,nickname,sex,bdate,city,photo_big,country';
-				var sig:String = '57856825'+'api_id='+Util.apiId+
+				var sig:String = Util.viewer_id+'api_id='+Util.apiId+
 					'fields='+fields+
 					'format=json'+
 					'method=getProfiles'+'test_mode=1'+'uids='+idsString+'v=2.0'+'EqKl8Wg2be';
@@ -108,7 +108,7 @@ package com.net
 		
 		public function isAppUser():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = '57856825'+'api_id='+Util.apiId+'format=json'+'method=isAppUser'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+'api_id='+Util.apiId+'format=json'+'method=isAppUser'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
 			vars['api_id'] = Util.apiId;
 			vars['v'] = '2.0';
 			vars['method'] = 'isAppUser';
@@ -120,25 +120,21 @@ package com.net
 		}
 		
 		public function getFriends():void {
-//			if (state == STATE_NONE) {
-//				state = STATE_GET_FRIENDS;
-				
-				var vars: URLVariables = new URLVariables();
-				var sig:String = '57856825'+'api_id='+Util.apiId+'format=json'+'method=getFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
-				vars['api_id'] = Util.apiId;
-				vars['v'] = '2.0';
-				vars['method'] = 'getFriends';
-				vars['format'] = 'json';
-				vars['test_mode'] = '1';
-				vars['sig'] = MD5.encrypt(sig);
-				
-				request('getFriends', vars);
-//			}
+			var vars: URLVariables = new URLVariables();
+			var sig:String = Util.viewer_id+'api_id='+Util.apiId+'format=json'+'method=getFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+			vars['api_id'] = Util.apiId;
+			vars['v'] = '2.0';
+			vars['method'] = 'getFriends';
+			vars['format'] = 'json';
+			vars['test_mode'] = '1';
+			vars['sig'] = MD5.encrypt(sig);
+			
+			request('getFriends', vars);
 		}
 		
 		public function getAppFriends():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = '57856825'+'api_id=1827403'+'format=json'+'method=getAppFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+'api_id=1827403'+'format=json'+'method=getAppFriends'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
 			vars['api_id'] = '1827403';
 			vars['v'] = '2.0';
 			vars['method'] = 'getAppFriends';
@@ -152,7 +148,7 @@ package com.net
 		//77625236
 		public function getAlbums():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = '57856825'+'api_id=1827403'+'format=json'+'method=photos.getAlbums'+'test_mode=1'+'uid=77625236'+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+'api_id=1827403'+'format=json'+'method=photos.getAlbums'+'test_mode=1'+'uid=77625236'+'v=2.0'+'EqKl8Wg2be';
 			vars['api_id'] = '1827403';
 			vars['v'] = '2.0';
 			vars['uid'] = '77625236';
@@ -166,7 +162,7 @@ package com.net
 		
 		public function getPhotos(aid: String):void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = '57856825'+'aid='+aid+'api_id=1827403'+'format=json'+'method=photos.get'+'test_mode=1'+'uid=77625236'+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+'aid='+aid+'api_id=1827403'+'format=json'+'method=photos.get'+'test_mode=1'+'uid=77625236'+'v=2.0'+'EqKl8Wg2be';
 			vars['api_id'] = '1827403';
 			vars['v'] = '2.0';
 			vars['aid'] = aid;
@@ -181,7 +177,7 @@ package com.net
 		
 		public function getAds():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = '57856825'+'api_id=1827403'+'format=json'+'method=getAds'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+'api_id=1827403'+'format=json'+'method=getAds'+'test_mode=1'+'v=2.0'+'EqKl8Wg2be';
 			vars['api_id'] = '1827403';
 			vars['method'] = 'getAds';
 			vars['v'] = '2.0';

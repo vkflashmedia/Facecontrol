@@ -1,6 +1,7 @@
 package com.flashmedia.basics
 {
 	import flash.display.DisplayObject;
+	import flash.display.Scene;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
@@ -105,7 +106,11 @@ package com.flashmedia.basics
 				_appObject.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
 			}
 			catch (e: Error) {}
-		} 
+		}
+		
+		public function get appObject():Object {
+			return _appObject;
+		}
 		
 		public function destroy(): void {
 			_timer.stop();
@@ -134,7 +139,8 @@ package com.flashmedia.basics
 		
 		public function set fps(value: uint): void {
 			_fps = value;
-			_appObject['frameRate'] = _fps;
+			if (_appObject) _appObject['frameRate'] = _fps;
+			else if (stage) stage.frameRate = _fps;
 		}
 		
 		public function get tps(): uint {

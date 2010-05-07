@@ -18,6 +18,7 @@ package com.facecontrol.util
 		public static var user:Object;
 		
 		public static var userId:uint = 9028622;//11757602;//9028622;//4136593;
+		public static var viewer_id:uint = 57856825;
 		public static var firstName: String;
 		public static var nickname: String;
 		public static var lastName: String;

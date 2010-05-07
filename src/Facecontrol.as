@@ -23,7 +23,6 @@ package {
 	
 	import flash.events.Event;
 	import flash.system.Security;
-	import flash.text.TextField;
 	
 	public class Facecontrol extends GameScene {
 		private var _background:Background;
@@ -31,6 +30,7 @@ package {
 		
 		private var params:Object;
 		private var debug:String;
+		private var wrapper:Object;
 		
 		public function Facecontrol() {
 			Security.allowDomain('*');
@@ -42,20 +42,14 @@ package {
 		}
 		
 		public function onAddedToStage(e: Event): void {
-	    	var wrapper:Object = Object(this.parent.parent);
+	    	wrapper = Object(this.parent.parent);
 	    	if (wrapper.application) {
-	    		app = wrapper.application;
-	    		params = app.parameters;
+	    		appObject = wrapper.application;
 	    		wrapper.external.resizeWindow(Constants.APP_WIDTH, Constants.APP_HEIGHT);
 	    		
 //	    		debug = params.api_result;
 //	    		var json:Object = JSON.deserialize(params.api_result);
-//	    		Util.userId = params.viewer_id;
-	    	}
-	    	else {
-	    		app = stage;
-				params = stage.loaderInfo.parameters;
-				wrapper = stage;
+	    		Util.viewer_id  = Util.userId = appObject.parameters.viewer_id;
 	    	}
 	    	loadPreloader();
 	  	}
