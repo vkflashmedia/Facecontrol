@@ -66,8 +66,7 @@ package com.facecontrol.forms
 		
 		public function set users(value:Array):void {
 			_users = value;
-			var user:Object;
-			for each (user in _users) {
+			for each (var user:Object in _users) {
 				if (user.pid) {
 					if (!Util.multiLoader.hasLoaded(user.pid)) {
 						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
@@ -101,18 +100,22 @@ package com.facecontrol.forms
 			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
 			_pagination.visible = _pagination.pagesCount > 1;
 			
-			var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
-			var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
-			
 			_grid.removeAllItems();
-			for (i = start; i < end; ++i) {
-				var item:FriendGridItem = new FriendGridItem(_scene, _users[i], i != count - 1);
-				_grid.addItem(item);
+			if (_users && _users.length > 0) {
+				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
+				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
+				for (i = start; i < end; ++i) {
+					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], i != count - 1);
+					_grid.addItem(item);
+				}
+			} else {
+				_scene.showModal(new MessageDialog(_scene,
+				'Сообщение:', 'В приложении пока менее 100 человек с оцененными фотографиями. Приглашай друзей и оценивай больше фотографий.'));
 			}
 		}
 		
 		public override function refresh():void {
-			Util.server.getTop(Util.userId);
+			Util.api.getTop(Util.userId);
 		}
 		
 		public function show():void {
