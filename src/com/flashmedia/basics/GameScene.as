@@ -48,13 +48,24 @@ package com.flashmedia.basics
 
 		protected var _selectedGameObject: GameObject;		
 		protected var _timer: Timer;
+		/**
+		 * Объект доступа к параметрам сцены и настройкам приложения.
+		 * По умолчанию роль этого объекта исполняет stage
+		 * Но когда приложение запускается из ВКонтакте, то wrapper.application, так как объект stage недоступен.
+		 */
+		protected var _appObject: Object;
 		
 		public function GameScene() {
 			super();
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			stage.displayState = StageDisplayState.NORMAL;
-			stage.stageFocusRect = false;
+			if (stage) {
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.align = StageAlign.TOP_LEFT;
+				stage.displayState = StageDisplayState.NORMAL;
+				stage.stageFocusRect = false;
+				stage.addEventListener(MouseEvent.CLICK, mouseClickListener);
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
+				_appObject = stage;
+			}
 			fps = FPS_DEF;
 			tps = TPS_DEF;
 			_debug = false;
@@ -66,13 +77,32 @@ package com.flashmedia.basics
 			_ticksTimeStamp = 0;
 			_isModalShow = false;
 			_savedModalGameObjectsAttrs = new Array();
-			stage.addEventListener(MouseEvent.CLICK, mouseClickListener);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			_timer = new Timer(1000 / _tps, 0);
 			_timer.addEventListener(TimerEvent.TIMER, onTimer);
 			_timer.start();
 		}
+		
+		/**
+		 * Установка объекта для доступа к свойствам приложения
+		 * Для ВКонтакте это wrapper.application
+		 */
+		public function set appObject(value: Object): void {
+			_appObject = value;
+			_appObject.scaleMode = StageScaleMode.NO_SCALE;
+			_appObject.align = StageScaleMode.NO_SCALE;
+			if (!_appObject.hasOwnProperty('frameRate') ||
+				!_appObject.hasOwnProperty('stageWidth') ||
+				!_appObject.hasOwnProperty('stageHeight')) {
+				throw new ArgumentError('appObject doesn\'t have some properties!');
+			}
+			try {
+				//todo если не сработает, то придумать что-то еще
+				_appObject.addEventListener(MouseEvent.CLICK, mouseClickListener);
+				_appObject.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
+			}
+			catch (e: Error) {}
+		} 
 		
 		public function destroy(): void {
 			_timer.stop();
@@ -101,7 +131,7 @@ package com.flashmedia.basics
 		
 		public function set fps(value: uint): void {
 			_fps = value;
-			stage.frameRate = _fps;
+			_appObject['frameRate'] = _fps;
 		}
 		
 		public function get tps(): uint {
@@ -247,8 +277,10 @@ package com.flashmedia.basics
 				if (!contains(_debugText)) {
 					super.addChild(_debugText);
 				}
-				graphics.lineStyle(1, GameObject.BORDERS_COLOR);
-				graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+				if (_appObject) {
+					graphics.lineStyle(1, GameObject.BORDERS_COLOR);
+					graphics.drawRect(0, 0, _appObject['stageWidth'], _appObject['stageHeight']);
+				}
 			}
 			else {
 				if (_debugText) {
@@ -272,9 +304,11 @@ package com.flashmedia.basics
 	  		}
 	  		_modalBlockLayer.visible = _isModalShow;
 	  		if (_isModalShow) {
-		  		_modalBlockLayer.graphics.beginFill(0xffffff, 0.0);
-		  		_modalBlockLayer.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
-		  		_modalBlockLayer.graphics.endFill();
+	  			if (_appObject) {
+		  			_modalBlockLayer.graphics.beginFill(0xffffff, 0.0);
+		  			_modalBlockLayer.graphics.drawRect(0, 0, _appObject['stageWidth'], _appObject['stageHeight']);
+		  			_modalBlockLayer.graphics.endFill();
+		  		}
 				super.addChild(_modalBlockLayer); // делаем каждый раз, чтобы слой оказывался на верху
 	  		}
 		}
