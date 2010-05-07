@@ -21,6 +21,7 @@ package {
 	import com.flashmedia.gui.Form;
 	import com.net.VKontakteEvent;
 	
+	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.system.Security;
 	
