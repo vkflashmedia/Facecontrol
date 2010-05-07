@@ -57,7 +57,10 @@ package com.flashmedia.basics
 		
 		public function GameScene() {
 			super();
+			_fps = FPS_DEF;
+			_tps = TPS_DEF;
 			if (stage) {
+				stage.frameRate = _fps;
 				stage.scaleMode = StageScaleMode.NO_SCALE;
 				stage.align = StageAlign.TOP_LEFT;
 				stage.displayState = StageDisplayState.NORMAL;
@@ -66,8 +69,6 @@ package com.flashmedia.basics
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownListener);
 				_appObject = stage;
 			}
-			fps = FPS_DEF;
-			tps = TPS_DEF;
 			_debug = false;
 			_realFps = 0;
 			_realTps = 0;
@@ -91,6 +92,7 @@ package com.flashmedia.basics
 			_appObject = value;
 			_appObject.scaleMode = StageScaleMode.NO_SCALE;
 			_appObject.align = StageScaleMode.NO_SCALE;
+			_appObject.frameRate = _fps;
 			if (!_appObject.hasOwnProperty('frameRate') ||
 				!_appObject.hasOwnProperty('stageWidth') ||
 				!_appObject.hasOwnProperty('stageHeight')) {
@@ -131,7 +133,9 @@ package com.flashmedia.basics
 		
 		public function set fps(value: uint): void {
 			_fps = value;
-			_appObject['frameRate'] = _fps;
+			if (_appObject) {
+				_appObject['frameRate'] = _fps;
+			}
 		}
 		
 		public function get tps(): uint {
