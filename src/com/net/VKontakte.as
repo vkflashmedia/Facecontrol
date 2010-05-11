@@ -148,10 +148,10 @@ package com.net
 		//77625236
 		public function getAlbums():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id=1827403'+'format=json'+'method=photos.getAlbums'+'test_mode=1'+'uid=77625236'+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+'api_id=1827403'+'format=json'+'method=photos.getAlbums'+'test_mode=1'+'uid='+Util.viewer_id+'v=2.0'+'EqKl8Wg2be';
 			vars['api_id'] = '1827403';
 			vars['v'] = '2.0';
-			vars['uid'] = '77625236';
+			vars['uid'] = Util.viewer_id;//'77625236';
 			vars['method'] = 'photos.getAlbums';
 			vars['format'] = 'json';
 			vars['test_mode'] = '1';

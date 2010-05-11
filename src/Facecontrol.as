@@ -21,7 +21,6 @@ package {
 	import com.flashmedia.gui.Form;
 	import com.net.VKontakteEvent;
 	
-	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.system.Security;
 	
@@ -123,27 +122,38 @@ package {
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
+			if (!PreloaderSplash.instance.isModal) {
+				this.showModal(PreloaderSplash.instance);
+			}
 			Util.api.nextPhoto(Util.userId);
 			MainForm.instance.show();
 		}
 		
 		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
-			this.showModal(PreloaderSplash.instance);
+			if (!PreloaderSplash.instance.isModal) {
+				this.showModal(PreloaderSplash.instance);
+			}
 			Util.api.getPhotos(Util.userId);
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
-			this.showModal(PreloaderSplash.instance);
+			if (!PreloaderSplash.instance.isModal) {
+				this.showModal(PreloaderSplash.instance);
+			}
 			Util.api.getTop(Util.userId);
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-			this.showModal(PreloaderSplash.instance);
+			if (!PreloaderSplash.instance.isModal) {
+				this.showModal(PreloaderSplash.instance);
+			}
 			Util.api.favorites(Util.userId);
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
-			this.showModal(PreloaderSplash.instance);
+			if (!PreloaderSplash.instance.isModal) {
+				this.showModal(PreloaderSplash.instance);
+			}
 			Util.vkontakte.getFriends();
 		}
 		
@@ -152,6 +162,9 @@ package {
 				switch (event.errorCode) {
 					default:
 						trace('onVkontakteRequestError: ' + event.errorCode + ' ' + event.errorMessage);
+				}
+				if (PreloaderSplash.instance.isModal) {
+					this.resetModal(PreloaderSplash.instance);
 				}
 			}
 			catch (e:Error) {
@@ -189,6 +202,9 @@ package {
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
 			try {
+				if (PreloaderSplash.instance.isModal) {
+					this.resetModal(PreloaderSplash.instance);
+				}
 				switch (event.errorCode) {
 					default:
 						showModal(new MessageDialog(this, 'Ошибка:', event.errorMessage));
@@ -233,6 +249,9 @@ package {
 						_background.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
 					break;
 					
 					case 'vote':
@@ -292,6 +311,9 @@ package {
 									break;
 								}
 							} 
+						}
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
 						}
 					break;
 				}

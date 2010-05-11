@@ -1,6 +1,7 @@
 package com.facecontrol.forms
 {
 	import com.facecontrol.gui.MainMenu;
+	import com.facecontrol.gui.VkAdPanel;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -80,7 +81,11 @@ package com.facecontrol.forms
 			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
 			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
 			ad.y = Constants.APP_HEIGHT - ad.height;
+			//ad.y = Constants.APP_HEIGHT - 2 * ad.height;
 			addChild(ad);
+			
+			var advPanel: VkAdPanel = new VkAdPanel(Util.scene, ad.x + 10, ad.y + 10, ad.width - 20, ad.height - 20);
+			addChild(advPanel);
 		}
 		
 	}
