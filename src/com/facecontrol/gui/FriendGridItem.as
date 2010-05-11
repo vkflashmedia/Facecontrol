@@ -60,6 +60,7 @@ package com.facecontrol.gui
 				invite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xce7716, null, null, true), CONTROL_STATE_NORMAL);
 				invite.textField.embedFonts = true;
 				invite.textField.antiAliasType = AntiAliasType.ADVANCED;
+				invite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onInviteClick);
 				addChild(invite);
 			}
 			
@@ -238,6 +239,10 @@ package com.facecontrol.gui
 			else {
 				Util.api.addFavorite(Util.userId, _user.uid);
 			}
+		}
+		
+		public function onInviteClick(event:GameObjectEvent):void {
+			Util.wrapper.external.showInviteBox();
 		}
 	}
 }
