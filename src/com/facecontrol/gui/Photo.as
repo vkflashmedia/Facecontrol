@@ -73,24 +73,33 @@ package com.facecontrol.gui
 				
 				var matrix:Matrix = new Matrix();
 				var s:Number = (width - _photoBorder*2) / _thumbnail.width;
-				matrix.scale(s, s);
-				_thumbnail.transform.matrix = matrix;
-				
-				if (_thumbnail.height < (height - _photoBorder*2)) {
-					s = (height - _photoBorder*2) / _thumbnail.height;
+				if (s < 1) {
 					matrix.scale(s, s);
 					_thumbnail.transform.matrix = matrix;
 				}
+				
+				if (_thumbnail.height < (height - _photoBorder*2)) {
+					s = (height - _photoBorder*2) / _thumbnail.height;
+					if (s < 1) {
+						matrix.scale(s, s);
+						_thumbnail.transform.matrix = matrix;
+					}
+				}
+				
+				var photoWidth:int = _thumbnail.width;
+				var photoHeight:int = _thumbnail.height;
+				var transparentWidth:int = photoWidth + _photoBorder*2;
+				var transparentHeight:int = photoHeight + _photoBorder*2;
 					
 				_transparentSquare = new Sprite();
 				_transparentSquare.graphics.beginFill(_photoBorderColor, 0.5);
 
 				switch (_borderType) {
 					case BORDER_TYPE_ROUND_RECT:
-						_transparentSquare.graphics.drawRoundRect(0, 0, width, height, 15, 15);
+						_transparentSquare.graphics.drawRoundRect(0, 0, transparentWidth, transparentHeight, 15, 15);
 					break;
 					case BORDER_TYPE_RECT:
-						_transparentSquare.graphics.drawRect(0, 0, width, height);
+						_transparentSquare.graphics.drawRect(0, 0, transparentWidth, transparentHeight);
 					break;
 				}
 				
@@ -102,10 +111,10 @@ package com.facecontrol.gui
 				
 				switch (_borderType) {
 					case BORDER_TYPE_ROUND_RECT:
-						_squareMask.graphics.drawRoundRect(_photoBorder, _photoBorder, width - _photoBorder*2, height - _photoBorder*2, 15, 15);
+						_squareMask.graphics.drawRoundRect(_photoBorder, _photoBorder, photoWidth, photoHeight, 15, 15);
 					break;
 					case BORDER_TYPE_RECT:
-						_squareMask.graphics.drawRect(_photoBorder, _photoBorder, width - _photoBorder*2, height - _photoBorder*2);
+						_squareMask.graphics.drawRect(_photoBorder, _photoBorder, photoWidth, photoHeight);
 					break;
 				}
 				
@@ -114,12 +123,12 @@ package com.facecontrol.gui
 //				_thumbnail.x = _photoBorder;
 				switch (_align) {
 					case ALIGN_LEFT:
-						_thumbnail.x = (width - _thumbnail.width) / 2;
+						_thumbnail.x = _photoBorder;
 						_thumbnail.y = _photoBorder;
 					break;
 					case ALIGN_CENTER:
 						_thumbnail.x = (width - _thumbnail.width) / 2;
-						_thumbnail.y = _photoBorder;
+						_thumbnail.y = (height - _thumbnail.height) / 2;
 					break;
 				}
 				_thumbnail.mask = _squareMask;

@@ -32,17 +32,14 @@ package {
 		private static const SETTINGS_PHOTO_ACCESS:int = 0x04;
 		
 		private var _background:Background;
-		private var _preloaderShown: Boolean;
-		
-		private var params:Object;
-		private var debug:String;
+		private var _preloaderShown:Boolean;
 		
 		public function Facecontrol() {
 			Security.allowDomain('*');
 			MultiLoader.usingContext = true;
 			Util.scene = this;
 			
-			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 //			loadPreloader();
 		}
 		
@@ -56,8 +53,8 @@ package {
 //	    		var json:Object = JSON.deserialize(params.api_result);
 	    		Util.viewer_id  = Util.userId = appObject.parameters.viewer_id;
 	    		
-	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded); 
-	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged); 
+	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
+	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
 	    	}
 	    	loadPreloader();
 	  	}
@@ -66,22 +63,18 @@ package {
 			for each (var image: String in Images.PRE_IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
-			load();
+			
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-			
-			Util.api.addEventListener(ApiEvent.COMPLETED, onFacecontrolRequestComplited);
-			Util.api.addEventListener(ApiEvent.ERROR, onFacecontrolRequestError);
-			
-			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
-			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
-			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 		}
 		
 		private function load():void {
 			for each (var image:String in Images.IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
+			
+			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -90,10 +83,10 @@ package {
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+				
 				if (_preloaderShown) {
-					Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-					Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-					
 					_background = new Background(this);
 					_background.visible = false;
 					_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
@@ -124,8 +117,7 @@ package {
 					
 					Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
 					Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
-					
-					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
+//					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 				}
 			}
 		}
@@ -188,7 +180,6 @@ package {
 								}
 							break;
 							case '1':
-//								Util.vkontakte.getProfiles(new Array('' + Util.userId));
 								Util.vkontakte.getUserSettings();
 							break;
 						}
@@ -196,26 +187,15 @@ package {
 					
 					case 'getUserSettings':
 						var settings:int = response as int;
-					
-//						var b1:Boolean = (settings & SETTINGS_NOTICE_ACCEPT) != 0;
-//						var b2:Boolean = (settings & SETTINGS_FRIENDS_ACCESS) != 0;
-//						var b3:Boolean = (settings & SETTINGS_PHOTO_ACCESS) != 0;
-//						
-//						var t:TextField = new TextField();
-//						t.autoSize = TextFieldAutoSize.LEFT;
-//						t.text = 'response = '+response + ' b1: ' + b1 + ' b2: ' + b2 + ' b3: ' + b3;
-//						addChild(t);
 						
-						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
-							(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
-							(settings & SETTINGS_PHOTO_ACCESS) == 0) {
-							if (Util.wrapper.external) {
-								var installSettings:int = 0;
-								installSettings |= SETTINGS_NOTICE_ACCEPT;
-								installSettings |= SETTINGS_FRIENDS_ACCESS;
-								installSettings |= SETTINGS_PHOTO_ACCESS;
-								Util.wrapper.external.showSettingsBox(installSettings);
-							}
+						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 || (settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+							(settings & SETTINGS_PHOTO_ACCESS) == 0)
+						{
+							var installSettings:int = 0;
+							installSettings |= SETTINGS_NOTICE_ACCEPT;
+							installSettings |= SETTINGS_FRIENDS_ACCESS;
+							installSettings |= SETTINGS_PHOTO_ACCESS;
+							Util.wrapper.external.showSettingsBox(installSettings);
 						}
 						else {
 							Util.vkontakte.getProfiles(new Array('' + Util.userId));
@@ -228,14 +208,14 @@ package {
 			}
 		}
 		
-		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
-			var users:Array = event.response as Array;
-			FriendsForm.instance.users = users;
-			FriendsForm.instance.show();
-			if (PreloaderSplash.instance.isModal) {
-				this.resetModal(PreloaderSplash.instance);
-			}
-		}
+//		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
+//			var users:Array = event.response as Array;
+//			FriendsForm.instance.users = users;
+//			FriendsForm.instance.show();
+//			if (PreloaderSplash.instance.isModal) {
+//				this.resetModal(PreloaderSplash.instance);
+//			}
+//		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
 			try {
@@ -352,16 +332,16 @@ package {
 		}
 		
 		public function onApplicationAdded(e:Object):void {
+			var t:TextField = new TextField();
+			t.text = 'onApplicationAdded';
+			t.autoSize = TextFieldAutoSize.LEFT;
+			addChild(t);
 			
+			Util.vkontakte.getUserSettings();
 		}
 		
 		public function onSettingsChanged(e:Object):void {
 			var settings:Number = e.settings;
-			
-//			var t:TextField = new TextField();
-//			t.autoSize = TextFieldAutoSize.LEFT;
-//			t.text = 'onSettingsChanged = '+settings;
-//			addChild(t);
 			
 			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
 				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||

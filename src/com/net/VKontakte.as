@@ -30,6 +30,7 @@ package com.net
 			timer = new Timer(500, 0);
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 			timer.start();
+			
 			loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			loader.addEventListener(Event.COMPLETE, completeHandler);
 		}
