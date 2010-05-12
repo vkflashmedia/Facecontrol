@@ -199,7 +199,9 @@ package com.facecontrol.gui
 				_state = STATE_IN_PHOTOS;
 				removeAllItems();
 				if (!currentAlbum.hasOwnProperty('photos')) {
-					Util.scene.showModal(PreloaderSplash.instance);
+					if (!PreloaderSplash.instance.isModal) {
+						Util.scene.showModal(PreloaderSplash.instance);
+					}
 					_vk.getPhotos(aid);
 				}
 				else {
@@ -320,6 +322,9 @@ package com.facecontrol.gui
 		}
 		
 		private function onVKRequestError(event: VKontakteEvent): void {
+			if (PreloaderSplash.instance.isModal) {
+				Util.scene.resetModal(PreloaderSplash.instance);
+			}
 			trace('onVKRequestError: ' + event.errorMessage);
 		}
 		
