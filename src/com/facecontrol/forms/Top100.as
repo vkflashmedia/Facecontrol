@@ -80,13 +80,21 @@ package com.facecontrol.forms
 			}
 			
 			if (Util.multiLoader.isLoaded) updateGrid();
-			else Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+			else {
+				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+				if (!PreloaderSplash.instance.isModal) {
+					Util.scene.showModal(PreloaderSplash.instance);
+				}
+			}
 		}
 		
 		public function loadCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 				updateGrid();
+				if (PreloaderSplash.instance.isModal) {
+					Util.scene.resetModal(PreloaderSplash.instance);
+				}
 			}
 		}
 		

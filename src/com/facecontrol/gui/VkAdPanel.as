@@ -2,6 +2,7 @@ package com.facecontrol.gui
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameScene;
 	import com.net.VKontakte;
@@ -13,9 +14,12 @@ package com.facecontrol.gui
 	import flash.events.TimerEvent;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.utils.Timer;
+	import flash.utils.describeType;
 
 	public class VkAdPanel extends GameLayer
 	{
@@ -38,7 +42,8 @@ package com.facecontrol.gui
 		public function VkAdPanel(value: GameScene, x: int = 0, y: int = 0, width: int = 100, height: int = 50)
 		{
 			super(value);
-			setSelect(true);
+			setSelect(true, true);
+			buttonMode = true;
 			useHandCursor = true;
 			this.x = x;
 			this.y = y;
@@ -62,16 +67,24 @@ package com.facecontrol.gui
 			if (_currentAdIndex >= _ads.length) {
 				_currentAdIndex = 0;
 			}
-			if (!_title) {
-				_title = new TextField();
-				_title.autoSize = TextFieldAutoSize.LEFT;
-				addChild(_title);
-			}
-			if (!_description) {
-				_description = new TextField();
-				_description.autoSize = TextFieldAutoSize.LEFT;
-				addChild(_description);
-			}
+//			if (!_title) {
+//				_title = new TextField();
+//				_title.selectable = false;
+//				_title.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x241b1e));
+//				_title.embedFonts = true;
+//				_title.antiAliasType = AntiAliasType.ADVANCED;
+//				_title.autoSize = TextFieldAutoSize.LEFT;
+//				addChild(_title);
+//			}
+//			if (!_description) {
+//				_description = new TextField();
+//				_description.selectable = false;
+//				_description.setTextFormat(new TextFormat(Util.opiumBold.fontName, 10, 0x241b1e));
+//				_description.embedFonts = true;
+//				_description.antiAliasType = AntiAliasType.ADVANCED;
+//				_description.autoSize = TextFieldAutoSize.LEFT;
+//				addChild(_description);
+//			}
 //			if (!_photo) {
 //				_photo = new Bitmap();
 //				addChild(_photo);
@@ -89,12 +102,37 @@ package com.facecontrol.gui
 				addChild(_photo);
 				_photo.x = 10;
 				_photo.y = 10;
+				
+				if (_title) {
+					removeChild(_title);
+				}
+				_title = new TextField();
 				_title.text = _ads[_currentAdIndex]['title'];
 				_title.x = _photo.x + _photo.width + 10;
 				_title.y = 10;
+				//_title.selectable = false;
+				_title.setTextFormat(new TextFormat(Util.opiumBold.fontName, 16, 0x241b1e));
+				_title.embedFonts = true;
+				_title.antiAliasType = AntiAliasType.ADVANCED;
+				_title.autoSize = TextFieldAutoSize.LEFT;
+				addChild(_title);
+				
+				if (_description) {
+					removeChild(_description);
+				}
+				_description = new TextField();
 				_description.text = _ads[_currentAdIndex]['description'];
 				_description.x = _photo.x + _photo.width + 10;;
 				_description.y = 40;
+				_description.selectable = false;
+				_description.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x241b1e));
+				_description.embedFonts = true;
+				_description.antiAliasType = AntiAliasType.ADVANCED;
+				_description.autoSize = TextFieldAutoSize.LEFT;
+				addChild(_description);
+				
+				width =	_photo.x + Math.max(_title.x + _title.width, _description.x + _description.width) + 10;
+				height = Math.max(_photo.y + _photo.height, _description.y + _description.height) + 10; 
 			}
 		}
 		
@@ -124,7 +162,8 @@ package com.facecontrol.gui
 						_multiLoader.load(ad.photo, ad.photo, 'Bitmap');
 					}
 				}
-//				_ads.push({'title': 'shop title', 'description': 'two desct', 'photo': 'dsgdfg', 'link': '45', 'showCount': 0});
+				_ads.push({'title': 'Фейсконтроль запущен!', 'description': 'Узнай, кто пройдет твой фейсконтроль!', 'photo': 'http://facecontrol.pe.mastertest.ru/images/big_star.png', 'link': '', 'showCount': 0});
+				_multiLoader.load('http://facecontrol.pe.mastertest.ru/images/big_star.png', 'http://facecontrol.pe.mastertest.ru/images/big_star.png', 'Bitmap');
 			}
 		}
 		
