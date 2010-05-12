@@ -299,6 +299,9 @@ package com.facecontrol.forms
 					update();
 				}
 				else {
+					if (!PreloaderSplash.instance.isModal) {
+						Util.scene.showModal(PreloaderSplash.instance);
+					}
 					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 				}
 			}
@@ -312,6 +315,9 @@ package com.facecontrol.forms
 					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
 				}
 				update();
+				if (PreloaderSplash.instance.isModal) {
+					Util.scene.resetModal(PreloaderSplash.instance);
+				}
 			}
 		}
 		
@@ -328,7 +334,9 @@ package com.facecontrol.forms
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) {
-				scene.showModal(PreloaderSplash.instance);
+				if (!PreloaderSplash.instance.isModal) {
+					scene.showModal(PreloaderSplash.instance);
+				}
 				Util.api.deletePhoto(gridItem.photoData.pid);
 			}
 			else {
