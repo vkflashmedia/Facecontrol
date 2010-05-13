@@ -111,7 +111,7 @@ package com.facecontrol.gui
 			name.x = 89;
 			name.y = 39;
 			name.autoSize = TextFieldAutoSize.LEFT;
-			name.text = userRaw.first_name;
+			name.text = Util.fullName(userRaw);
 			name.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e));
 			name.embedFonts = true;
 			name.antiAliasType = AntiAliasType.ADVANCED;
@@ -242,7 +242,9 @@ package com.facecontrol.gui
 		}
 		
 		public function onInviteClick(event:GameObjectEvent):void {
-			Util.wrapper.external.showInviteBox();
+			if (Util.wrapper.external) {
+				Util.wrapper.external.showInviteBox();
+			}
 		}
 	}
 }

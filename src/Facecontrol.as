@@ -40,7 +40,6 @@ package {
 			Util.scene = this;
 			
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-//			loadPreloader();
 		}
 		
 		public function onAddedToStage(e: Event): void {
@@ -51,7 +50,7 @@ package {
 	    		
 //	    		debug = params.api_result;
 //	    		var json:Object = JSON.deserialize(params.api_result);
-	    		Util.viewer_id  = Util.userId = appObject.parameters.viewer_id;
+	    		Util.viewer_id = Util.userId = appObject.parameters.viewer_id;
 	    		
 	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
 	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
@@ -103,8 +102,12 @@ package {
 					addChild(FriendsForm.instance);
 					addChild(AllUserPhotoForm.instance);
 					
-//					Util.vkontakte.getProfiles(new Array('' + Util.userId));
-					Util.vkontakte.isAppUser();
+//					if (Util.wrapper.application) {
+//						Util.vkontakte.isAppUser();
+//					}
+//					else {
+						Util.vkontakte.getProfiles(new Array('' + Util.userId));
+//					}
 				}
 				else {
 					_preloaderShown = true;
@@ -155,7 +158,9 @@ package {
 			if (!PreloaderSplash.instance.isModal) {
 				this.showModal(PreloaderSplash.instance);
 			}
-			Util.vkontakte.getFriends();
+//			Util.vkontakte.getFriends();
+//			Util.vkontakte.getAppFriends();
+			FriendsForm.instance.requestFriends();
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -182,8 +187,16 @@ package {
 						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
 					break;
 					
-					case 'getFriends':
+					case 'getAppFriends':
 						Util.api.friends(response as Array);
+					break;
+					
+					case 'getFriends':
+						FriendsForm.instance.users = response.users;
+						FriendsForm.instance.show();
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
 					break;
 					
 					case 'isAppUser':
@@ -221,15 +234,6 @@ package {
 				trace(e.message);
 			}
 		}
-		
-//		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
-//			var users:Array = event.response as Array;
-//			FriendsForm.instance.users = users;
-//			FriendsForm.instance.show();
-//			if (PreloaderSplash.instance.isModal) {
-//				this.resetModal(PreloaderSplash.instance);
-//			}
-//		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
 			try {
@@ -309,11 +313,11 @@ package {
 					break;
 					
 					case 'friends':
-						FriendsForm.instance.users = response.users;
-						FriendsForm.instance.show();
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+//						FriendsForm.instance.users = response.users;
+//						FriendsForm.instance.show();
+//						if (PreloaderSplash.instance.isModal) {
+//							this.resetModal(PreloaderSplash.instance);
+//						}
 					break;
 					
 					case 'edit_photo':

@@ -1,6 +1,8 @@
 package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
+	import com.facecontrol.api.Api;
+	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.gui.FriendGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -11,6 +13,8 @@ package com.facecontrol.forms
 	import com.flashmedia.gui.GridBox;
 	import com.flashmedia.gui.Pagination;
 	import com.flashmedia.util.BitmapUtil;
+	import com.net.VKontakte;
+	import com.net.VKontakteEvent;
 	
 	import flash.display.Bitmap;
 	import flash.events.Event;
@@ -34,10 +38,23 @@ package com.facecontrol.forms
 		private var _grid:GridBox;
 		private var _users:Array;
 		
+		private var cities:Array;
+		private var countries:Array;
+		private var _friends:Array;
+		private var _appFriends:Array;
+		private var _vkontakte:VKontakte = new VKontakte();
+		private var _api:Api = new Api();
+		
 		public function FriendsForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
+			
+			_vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestCompleted);
+			_vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
+			
+			_api.addEventListener(ApiEvent.COMPLETED, onApiRequestCompleted);
+			_api.addEventListener(ApiEvent.ERROR, onApiRequestError);
 			
 			var label:TextField = Util.createLabel('Мои друзья', 150, 75);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
@@ -87,6 +104,9 @@ package com.facecontrol.forms
 		}
 		
 		public function set users(value:Array):void {
+			if (!PreloaderSplash.instance.isModal) {
+				Util.scene.showModal(PreloaderSplash.instance);
+			}
 			_users = value;
 			var user:Object;
 			
@@ -103,12 +123,17 @@ package com.facecontrol.forms
 				}
 			}
 			
-			if (Util.multiLoader.isLoaded) updateGrid();
-			else {
-				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-				if (!PreloaderSplash.instance.isModal) {
-					Util.scene.showModal(PreloaderSplash.instance);
+			if (Util.multiLoader.isLoaded) {
+				updateGrid();
+				if (PreloaderSplash.instance.isModal) {
+					Util.scene.resetModal(PreloaderSplash.instance);
 				}
+			}
+			else {
+//				if (!PreloaderSplash.instance.isModal) {
+//					Util.scene.showModal(PreloaderSplash.instance);
+//				}
+				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 			}
 		}
 		
@@ -139,7 +164,7 @@ package com.facecontrol.forms
 				
 				var item:FriendGridItem;
 				for (i = start; i < end; ++i) {
-					item = new FriendGridItem(_scene, _users[i], i != count - 1);
+					item = new FriendGridItem(_scene, _users[i], i != end - 1);
 					_grid.addItem(item);
 				}
 			}
@@ -158,6 +183,103 @@ package com.facecontrol.forms
 					} 
 				}
 			}
+		}
+		
+		public function requestFriends():void {
+			_vkontakte.getAppFriends();
+		}
+		
+		public function onVkontakteRequestCompleted(event:VKontakteEvent):void {
+			var response:Object = event.response;
+			switch (event.method) {
+				case 'getProfiles':
+					cities = new Array();
+					countries = new Array();
+					_friends = _appFriends;
+					var notAppFriends:Array = response as Array;
+					
+					for each (var notAppFriend:Object in notAppFriends) {
+						if (notAppFriend.city == 0) notAppFriend.city = null;
+						else cities.push(notAppFriend.city);
+						
+						if (notAppFriend.country == 0) notAppFriend.country = null;
+						else countries.push(notAppFriend.country);
+						
+						_friends = _friends.concat(notAppFriend);
+					}
+					
+					_vkontakte.getCities(cities);
+				break;
+				
+				case 'getCities':
+					cities = response as Array;
+					for each (var friend:Object in _friends) {
+						for each (var city:Object in cities) {
+							if (friend.city == city.cid) {
+								friend.city = city.name;
+							}
+						}
+					}
+					_vkontakte.getCountries(countries);
+				break;
+				
+				case 'getCountries':
+					countries = response as Array;
+					for each (friend in _friends) {
+						for each (var country:Object in countries) {
+							if (friend.country == country.cid) {
+								friend.country = country.name;
+							}
+						}
+					}
+					
+					if (PreloaderSplash.instance.isModal) {
+						_scene.resetModal(PreloaderSplash.instance);
+					}
+					users = _friends;
+					show();
+				break;
+				
+				case 'getAppFriends':
+					_api.friends(response as Array);
+				break;
+				
+				case 'getFriends':
+					var friendsIds:Array = response as Array;
+					var notAppFriendsIds:Array = new Array();
+					for each (var id:String in friendsIds) {
+						var isAppFriendId:Boolean = false;
+						for each (var appFriend:Object in _appFriends) {
+							if (appFriend.uid == id) {
+								isAppFriendId = true;
+								break;
+							}
+						}
+						if (!isAppFriendId) {
+							notAppFriendsIds.push(id);
+						}
+					}
+					_vkontakte.getProfiles(notAppFriendsIds);
+				break;
+			}
+		}
+		
+		public function onVkontakteRequestError(event:VKontakteEvent):void {
+			
+		}
+		
+		public function onApiRequestCompleted(event:ApiEvent):void {
+			var response:Object = event.response;
+			switch (response.method) {
+				case 'friends':
+					_appFriends = response.users;
+					_vkontakte.getFriends();
+				break;
+			}
+		}
+		
+		public function onApiRequestError(event:ApiEvent):void {
+			
 		}
 	}
 }

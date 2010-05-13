@@ -61,7 +61,7 @@ package com.facecontrol.gui
 				label.y = 40;
 				label.width = 45;
 				label.height = 30;
-				label.text = "голосов";
+				label.text = Util.votes(_photoData.votes_count);
 				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 10, 0x9a9a9a));
 				label.embedFonts = true;
 				label.antiAliasType = AntiAliasType.ADVANCED;
