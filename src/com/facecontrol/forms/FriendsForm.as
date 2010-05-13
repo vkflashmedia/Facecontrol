@@ -164,7 +164,7 @@ package com.facecontrol.forms
 				
 				var item:FriendGridItem;
 				for (i = start; i < end; ++i) {
-					item = new FriendGridItem(_scene, _users[i], i != end - 1);
+					item = new FriendGridItem(_scene, _users[i], i != end - 1, true, this);
 					_grid.addItem(item);
 				}
 			}
