@@ -164,8 +164,8 @@ package com.facecontrol.forms
 				
 				allPhotos = new Array();
 				//todo fix
-				api.getPhotos(Util.userId);//4136593);
-				//api.getPhotos(MainForm.instance.currentUser['uid']);
+				//api.getPhotos(Util.userId);//4136593);
+				api.getPhotos(MainForm.instance.currentUser['uid']);
 			}
 			else {
 				if (multiloader) {
