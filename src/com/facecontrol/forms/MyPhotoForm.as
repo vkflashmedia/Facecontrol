@@ -129,7 +129,7 @@ package com.facecontrol.forms
 			_ratingAverageField.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_ratingAverageField);
 			
-			_votesCountField = Util.createLabel('10345 голосов', 140, 386);
+			_votesCountField = Util.createLabel(Util.votesCount(0), 140, 386);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
@@ -225,7 +225,6 @@ package com.facecontrol.forms
 			_grid.indentBetweenRows = 0;
 			_grid.indentBetweenCols= 0;
 			_grid.padding = 3;
-//			_grid.debug = true;
 			addChild(_grid);
 			
 			_pagination = new Pagination(_scene, 500, 462);
@@ -257,11 +256,12 @@ package com.facecontrol.forms
 		private function update():void {
 			if (_main) {
 				var format:TextFormat = _ratingAverageField.getTextFormat();
+				_ratingAverageField.defaultTextFormat = format;
 				_ratingAverageField.text = (_main.rating_average) ? _main.rating_average : '';
-				_ratingAverageField.setTextFormat(format);
+				
 				
 				format = _votesCountField.getTextFormat();
-				_votesCountField.text = _main.votes_count + ' голосов';
+				_votesCountField.text = Util.votesCount(_main.votes_count);
 				_votesCountField.setTextFormat(format);
 				_votesCountField.visible = _bigStar.visible = (_main.votes_count > 0);
 				

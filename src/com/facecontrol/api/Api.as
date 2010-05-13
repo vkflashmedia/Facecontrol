@@ -14,7 +14,8 @@ package com.facecontrol.api
 	
 	public class Api extends EventDispatcher
 	{
-		private static const FC_API_SERVER:String = 'http://facecontrol.pe.mastertest.ru/';
+		private static const FC_API_SERVER:String = 'http://www.fcapi.ru/';
+//		private static const FC_API_SERVER:String = 'http://facecontrol/';
 		
 		private const loader:URLLoader = new URLLoader();
 		private var requestQueue: Array;

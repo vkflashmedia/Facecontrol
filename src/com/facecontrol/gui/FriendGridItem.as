@@ -60,6 +60,7 @@ package com.facecontrol.gui
 				invite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xce7716, null, null, true), CONTROL_STATE_NORMAL);
 				invite.textField.embedFonts = true;
 				invite.textField.antiAliasType = AntiAliasType.ADVANCED;
+				invite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onInviteClick);
 				addChild(invite);
 			}
 			
@@ -110,7 +111,7 @@ package com.facecontrol.gui
 			name.x = 89;
 			name.y = 39;
 			name.autoSize = TextFieldAutoSize.LEFT;
-			name.text = userRaw.first_name;
+			name.text = Util.fullName(userRaw);
 			name.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e));
 			name.embedFonts = true;
 			name.antiAliasType = AntiAliasType.ADVANCED;
@@ -237,6 +238,12 @@ package com.facecontrol.gui
 			}
 			else {
 				Util.api.addFavorite(Util.userId, _user.uid);
+			}
+		}
+		
+		public function onInviteClick(event:GameObjectEvent):void {
+			if (Util.wrapper.external) {
+				Util.wrapper.external.showInviteBox();
 			}
 		}
 	}

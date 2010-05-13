@@ -42,6 +42,10 @@ package com.flashmedia.gui
 			_iconsOff = new Array();
 		}
 		
+		public function set enabled(value:Boolean):void {
+			setSelect(value);
+		}
+		
 		public override function set bitmap(value:Bitmap):void {
 			super.bitmap = value;
 			width = value.width;

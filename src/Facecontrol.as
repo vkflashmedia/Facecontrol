@@ -23,33 +23,37 @@ package {
 	
 	import flash.events.Event;
 	import flash.system.Security;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	
 	public class Facecontrol extends GameScene {
-		private var _background:Background;
-		private var _preloaderShown: Boolean;
+		private static const SETTINGS_NOTICE_ACCEPT:int = 0x01;
+		private static const SETTINGS_FRIENDS_ACCESS:int = 0x02;
+		private static const SETTINGS_PHOTO_ACCESS:int = 0x04;
 		
-		private var params:Object;
-		private var debug:String;
-		private var wrapper:Object;
+		private var _background:Background;
+		private var _preloaderShown:Boolean;
 		
 		public function Facecontrol() {
 			Security.allowDomain('*');
 			MultiLoader.usingContext = true;
 			Util.scene = this;
 			
-			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-//			loadPreloader();
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
 		public function onAddedToStage(e: Event): void {
-	    	wrapper = Object(this.parent.parent);
-	    	if (wrapper.application) {
-	    		appObject = wrapper.application;
-	    		wrapper.external.resizeWindow(Constants.APP_WIDTH, Constants.APP_HEIGHT);
+	    	Util.wrapper = Object(this.parent.parent);
+	    	if (Util.wrapper.application) {
+	    		appObject = Util.wrapper.application;
+	    		Util.wrapper.external.resizeWindow(Constants.APP_WIDTH, Constants.APP_HEIGHT);
 	    		
 //	    		debug = params.api_result;
 //	    		var json:Object = JSON.deserialize(params.api_result);
-	    		Util.viewer_id  = Util.userId = appObject.parameters.viewer_id;
+	    		Util.viewer_id = Util.userId = appObject.parameters.viewer_id;
+	    		
+	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
+	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
 	    	}
 	    	loadPreloader();
 	  	}
@@ -58,22 +62,18 @@ package {
 			for each (var image: String in Images.PRE_IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
-			load();
+			
 			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-			
-			Util.api.addEventListener(ApiEvent.COMPLETED, onFacecontrolRequestComplited);
-			Util.api.addEventListener(ApiEvent.ERROR, onFacecontrolRequestError);
-			
-			Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
-			Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
-			Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 		}
 		
 		private function load():void {
 			for each (var image:String in Images.IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
+			
+			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 		}
 		
 		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
@@ -82,10 +82,10 @@ package {
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+				
 				if (_preloaderShown) {
-					Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
-					Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
-					
 					_background = new Background(this);
 					_background.visible = false;
 					_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
@@ -102,7 +102,12 @@ package {
 					addChild(FriendsForm.instance);
 					addChild(AllUserPhotoForm.instance);
 					
-					Util.vkontakte.getProfiles(new Array('' + Util.userId));
+//					if (Util.wrapper.application) {
+//						Util.vkontakte.isAppUser();
+//					}
+//					else {
+						Util.vkontakte.getProfiles(new Array('' + Util.userId));
+//					}
 				}
 				else {
 					_preloaderShown = true;
@@ -115,8 +120,7 @@ package {
 					
 					Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
 					Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
-					
-					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
+//					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 				}
 			}
 		}
@@ -154,7 +158,9 @@ package {
 			if (!PreloaderSplash.instance.isModal) {
 				this.showModal(PreloaderSplash.instance);
 			}
-			Util.vkontakte.getFriends();
+//			Util.vkontakte.getFriends();
+//			Util.vkontakte.getAppFriends();
+			FriendsForm.instance.requestFriends();
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -181,22 +187,51 @@ package {
 						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
 					break;
 					
-					case 'getFriends':
+					case 'getAppFriends':
 						Util.api.friends(response as Array);
+					break;
+					
+					case 'getFriends':
+						FriendsForm.instance.users = response.users;
+						FriendsForm.instance.show();
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
+						}
+					break;
+					
+					case 'isAppUser':
+						switch (response) {
+							case '0':
+								if (Util.wrapper.external) {
+									Util.wrapper.external.showInstallBox();
+								}
+							break;
+							case '1':
+								Util.vkontakte.getUserSettings();
+							break;
+						}
+					break;
+					
+					case 'getUserSettings':
+						var settings:int = response as int;
+						
+						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 || (settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+							(settings & SETTINGS_PHOTO_ACCESS) == 0)
+						{
+							var installSettings:int = 0;
+							installSettings |= SETTINGS_NOTICE_ACCEPT;
+							installSettings |= SETTINGS_FRIENDS_ACCESS;
+							installSettings |= SETTINGS_PHOTO_ACCESS;
+							Util.wrapper.external.showSettingsBox(installSettings);
+						}
+						else {
+							Util.vkontakte.getProfiles(new Array('' + Util.userId));
+						}
 					break;
 				}
 			}
 			catch (e:Error) {
 				trace(e.message);
-			}
-		}
-		
-		public function onFriendsProfilesResponse(event:VKontakteEvent):void {
-			var users:Array = event.response as Array;
-			FriendsForm.instance.users = users;
-			FriendsForm.instance.show();
-			if (PreloaderSplash.instance.isModal) {
-				this.resetModal(PreloaderSplash.instance);
 			}
 		}
 		
@@ -278,11 +313,11 @@ package {
 					break;
 					
 					case 'friends':
-						FriendsForm.instance.users = response.users;
-						FriendsForm.instance.show();
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+//						FriendsForm.instance.users = response.users;
+//						FriendsForm.instance.show();
+//						if (PreloaderSplash.instance.isModal) {
+//							this.resetModal(PreloaderSplash.instance);
+//						}
 					break;
 					
 					case 'edit_photo':
@@ -320,6 +355,34 @@ package {
 			}
 			catch (e:Error) {
 				trace(e.message);
+			}
+		}
+		
+		public function onApplicationAdded(e:Object):void {
+			var t:TextField = new TextField();
+			t.text = 'onApplicationAdded';
+			t.autoSize = TextFieldAutoSize.LEFT;
+			addChild(t);
+			
+			Util.vkontakte.getUserSettings();
+		}
+		
+		public function onSettingsChanged(e:Object):void {
+			var settings:Number = e.settings;
+			
+			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+				(settings & SETTINGS_PHOTO_ACCESS) == 0) {
+				if (Util.wrapper.external) {
+					var installSettings:int = 0;
+					installSettings |= SETTINGS_NOTICE_ACCEPT;
+					installSettings |= SETTINGS_FRIENDS_ACCESS;
+					installSettings |= SETTINGS_PHOTO_ACCESS;
+					Util.wrapper.external.showSettingsBox(installSettings);
+				}
+			}
+			else {
+				Util.vkontakte.getProfiles(new Array('' + Util.userId));
 			}
 		}
 	}

@@ -366,7 +366,7 @@ package com.facecontrol.forms
 			if (Util.multiLoader.hasLoaded(_current.pid)) {
 				bigPhoto = Util.multiLoader.get(_current.pid);
 				
-				_nameField.text = _current.first_name;
+				_nameField.text = Util.fullName(_current);
 				_nameField.setTextFormat(_nameTextFormat);
 				
 				if (_current.comment && _commentField) {
@@ -473,11 +473,12 @@ package com.facecontrol.forms
 				_morePhotos.visible = true;
 				_morePhotos.label = Util.getMorePhotoString(_current.sex);
 				
+				_rateBar.enabled = true;
 				_favorite.visible = true;
 				_favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 				
 				if (_nameField) {
-					_nameField.y = _bigPhoto.y + _bigPhoto.height + 4;
+					_nameField.y = _bigPhoto.y + ((_bigPhoto.bitmap) ? _bigPhoto.bitmap.height : _bigPhoto.height) + 4;
 				}
 				
 				if (_commentField) {
@@ -489,6 +490,7 @@ package com.facecontrol.forms
 				_bigPhoto.photo = null;
 				_morePhotos.visible = false;
 				_favorite.visible = false;
+				_rateBar.enabled = false;
 			}
 		}
 		

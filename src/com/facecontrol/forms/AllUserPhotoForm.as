@@ -192,6 +192,7 @@ package com.facecontrol.forms
 				}
 				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
 				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
+				curBigPhoto.align = Photo.ALIGN_CENTER;
 				curBigPhoto.photoBorderColor = 0x3a2426;
 				addChild(curBigPhoto);
 				thumbsLayer.scroll(-THUMB_WIDTH - THUMB_BETWEEN_INDENT, 0);
@@ -213,6 +214,7 @@ package com.facecontrol.forms
 				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
 				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
 				curBigPhoto.photoBorderColor = 0x3a2426;
+				curBigPhoto.align = Photo.ALIGN_CENTER;
 				addChild(curBigPhoto);
 				thumbsLayer.scroll(THUMB_WIDTH + THUMB_BETWEEN_INDENT, 0);
 			}
@@ -228,6 +230,7 @@ package com.facecontrol.forms
 					//curBigPhoto = new Photo(scene, photo['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
 					curBigPhoto = new Photo(scene, photo['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
 					curBigPhoto.photoBorderColor = 0x3a2426;
+					curBigPhoto.align = Photo.ALIGN_CENTER;
 					addChild(curBigPhoto);
 					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
@@ -254,7 +257,6 @@ package com.facecontrol.forms
 		}
 		
 		private function onCancelClick(event: GameObjectEvent): void {
-			//(scene as Facecontrol).onFirstMenuButtonClick(null);
 			if (returnForm) {
 				if (returnForm as MainForm) {
 					MainForm.instance.show();

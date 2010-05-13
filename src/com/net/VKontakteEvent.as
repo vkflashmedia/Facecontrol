@@ -5,7 +5,7 @@ package com.net
 	public class VKontakteEvent extends Event
 	{
 		public static const ERROR:String = 'VKontakteEvent::ERROR';
-		public static const FRIEDNS_PROFILES_LOADED:String = 'VKontakteEvent::FRIEDNS_PROFILES_LOADED';
+//		public static const FRIEDNS_PROFILES_LOADED:String = 'VKontakteEvent::FRIEDNS_PROFILES_LOADED';
 		public static const COMPLETED:String = 'VKontakteEvent::COMPLETED';
 		
 		public var method:String;
