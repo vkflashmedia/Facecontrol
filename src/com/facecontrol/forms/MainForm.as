@@ -440,12 +440,26 @@ package com.facecontrol.forms
 			spr.graphics.drawRoundRect(0, 0, width, 15, 12);
 			spr.graphics.endFill();
 			
+			var sprD: Sprite = new Sprite();
+			sprD.graphics.beginFill(0xffffff);
+			sprD.graphics.drawRect(0, 0, width, 15);
+			sprD.graphics.endFill();
+			var sprDmask: Sprite = new Sprite();
+			sprDmask.graphics.beginFill(0xffffff);
+			sprDmask.graphics.drawRoundRect(0, 0, width, 30, 12);
+			sprDmask.graphics.endFill();
+			sprD.mask = sprDmask;
+			
 			var bd: BitmapData = new BitmapData(width, 15, true, undefined);
 			bd.draw(spr);
+			
+			var bdDropped: BitmapData = new BitmapData(width, 15, true, undefined);
+			bdDropped.draw(sprD);
 			
 			var box:ComboBox = new ComboBox(_scene);
 			box.setDropListHoverColor(0xd0d0d0, 1, 0xababab, 1);
 			box.bitmap = new Bitmap(bd);
+			box.bitmapDropped = new Bitmap(bdDropped);
 			box.dropIcon = new Bitmap(Util.multiLoader.get(Images.CHOOSE_BUTTON).bitmapData);
 			box.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
 			box.horizontalAlign = View.ALIGN_HOR_RIGHT;

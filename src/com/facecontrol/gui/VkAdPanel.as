@@ -162,8 +162,8 @@ package com.facecontrol.gui
 						_multiLoader.load(ad.photo, ad.photo, 'Bitmap');
 					}
 				}
-				_ads.push({'title': 'Фейсконтроль запущен!', 'description': 'Узнай, кто пройдет твой фейсконтроль!', 'photo': 'http://www.fcapi.ru/images/big_star.png', 'link': '', 'showCount': 0});
-				_multiLoader.load('http://www.fcapi.ru/images/big_star.png', 'http://www.fcapi.ru/images/big_star.png', 'Bitmap');
+//				_ads.push({'title': 'Фейсконтроль запущен!', 'description': 'Узнай, кто пройдет твой фейсконтроль!', 'photo': 'http://www.fcapi.ru/images/big_star.png', 'link': '', 'showCount': 0});
+//				_multiLoader.load('http://www.fcapi.ru/images/big_star.png', 'http://www.fcapi.ru/images/big_star.png', 'Bitmap');
 			}
 		}
 		
