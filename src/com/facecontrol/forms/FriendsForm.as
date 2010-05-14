@@ -114,18 +114,18 @@ package com.facecontrol.forms
 			_users = value;
 			var user:Object;
 			
-			for each (user in _users) {
-				if (user.pid) {
-					if (!Util.multiLoader.hasLoaded(user.pid)) {
-						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-					}
-				}
-				else if (user.photo_big) {
-					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
-					}
-				}
-			}
+//			for each (user in _users) {
+//				if (user.pid) {
+//					if (!Util.multiLoader.hasLoaded(user.pid)) {
+//						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+//					}
+//				}
+//				else if (user.photo_big) {
+//					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
+//						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+//					}
+//				}
+//			}
 			
 			if (Util.multiLoader.isLoaded) {
 				updateGrid();
@@ -171,8 +171,33 @@ package com.facecontrol.forms
 				
 				var item:FriendGridItem;
 				for (i = start, j = 1; i < end; ++i, ++j) {
+					var user:Object = _users[i];
+					if (user.pid) {
+						if (!Util.multiLoader.hasLoaded(user.pid)) {
+							if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+						}
+					}
+					else if (user.photo_big) {
+						if (!Util.multiLoader.hasLoaded(user.photo_big)) {
+							if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+						}
+					}
+					
 					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
+				}
+				
+				if (Util.multiLoader.isLoaded) {
+//					updateGrid();
+					if (PreloaderSplash.instance.isModal) {
+						Util.scene.resetModal(PreloaderSplash.instance);
+					}
+				}
+				else {
+					if (!PreloaderSplash.instance.isModal) {
+						Util.scene.showModal(PreloaderSplash.instance);
+					}
+					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 				}
 			}
 		}
@@ -206,10 +231,10 @@ package com.facecontrol.forms
 					var notAppFriends:Array = response as Array;
 					
 					for each (var notAppFriend:Object in notAppFriends) {
-						if (notAppFriend.city == 0) notAppFriend.city = null;
+						if (!notAppFriend.city || notAppFriend.city == 0) notAppFriend.city = null;
 						else cities.push(notAppFriend.city);
 						
-						if (notAppFriend.country == 0) notAppFriend.country = null;
+						if (!notAppFriend.country || notAppFriend.country == 0) notAppFriend.country = null;
 						else countries.push(notAppFriend.country);
 						
 						_friends = _friends.concat(notAppFriend);
