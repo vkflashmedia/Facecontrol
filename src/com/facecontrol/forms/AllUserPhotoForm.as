@@ -266,11 +266,14 @@ package com.facecontrol.forms
 		
 		private function onCancelClick(event: GameObjectEvent): void {
 			if (returnForm) {
-				if (returnForm as MainForm) {
+				if (returnForm is MainForm) {
 					MainForm.instance.show();
 				}
-				else if (returnForm as FriendsForm) {
+				else if (returnForm is FriendsForm) {
 					FriendsForm.instance.show();
+				}
+				else if (returnForm is FavoritesForm) {
+					FavoritesForm.instance.show();
 				}
 			}
 		}

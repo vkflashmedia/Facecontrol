@@ -127,7 +127,7 @@ package com.facecontrol.forms
 				
 				var item:FriendGridItem;
 				for (i = start, j = 1; i < end; ++i, ++j) {
-					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true);
+					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			}

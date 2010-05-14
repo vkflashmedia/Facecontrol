@@ -1,6 +1,7 @@
 package com.facecontrol.gui
 {
 	import com.facecontrol.forms.AllUserPhotoForm;
+	import com.facecontrol.forms.FavoritesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.util.Images;
@@ -8,6 +9,7 @@ package com.facecontrol.gui
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
 	
@@ -20,7 +22,7 @@ package com.facecontrol.gui
 	public class FriendGridItem extends GameObject
 	{
 		private var _user:Object;
-		public function FriendGridItem(value:GameScene, userRaw:Object, drawLine:Boolean, showFavoriteLink:Boolean=true)
+		public function FriendGridItem(value:GameScene, userRaw:Object, drawLine:Boolean, showFavoriteLink:Boolean=true, ownerForm:Form=null)
 		{
 			super(value);
 			_user = userRaw;
@@ -46,7 +48,12 @@ package com.facecontrol.gui
 				morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
 				morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
 					scene.showModal(PreloaderSplash.instance);
-					AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
+					if (ownerForm is FriendsForm) {
+						AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
+					}
+					else if (ownerForm is FavoritesForm) {
+						AllUserPhotoForm.instance.returnForm = FavoritesForm.instance;
+					}
 					AllUserPhotoForm.instance.show();
 				});
 				addChild(morePhotos);
