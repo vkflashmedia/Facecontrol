@@ -36,6 +36,8 @@ package com.facecontrol.gui
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
+				photo.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+				photo.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
 				addChild(photo);
 				
 				var morePhotos:LinkButton = new LinkButton(value, Util.getMorePhotoString(userRaw.sex), 14, 75);

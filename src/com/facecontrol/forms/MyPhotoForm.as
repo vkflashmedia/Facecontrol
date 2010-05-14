@@ -115,6 +115,7 @@ package com.facecontrol.forms
 			
 			_mainPhoto = new Photo(_scene, null, 38, 189, 192, 177);
 			_mainPhoto.photoBorder = 1;
+			_mainPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			addChild(_mainPhoto);
 			
 			_bigStar = BitmapUtil.cloneImageNamed(Images.BIG_STAR);

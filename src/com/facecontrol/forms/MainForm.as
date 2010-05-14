@@ -124,6 +124,7 @@ package com.facecontrol.forms
 			addChild(_favorite);
 			
 			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
+			_bigPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			addChild(_bigPhoto);
 			
 			_previousLayer = new Sprite();
@@ -131,6 +132,7 @@ package com.facecontrol.forms
 			addChild(_previousLayer);
 			
 			_smallPhoto = new Photo(_scene, null, 38, 176, 132, 176);
+			_smallPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			_previousLayer.addChild(_smallPhoto);
 			
 			
