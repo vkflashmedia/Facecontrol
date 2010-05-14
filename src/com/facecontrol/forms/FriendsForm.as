@@ -42,8 +42,12 @@ package com.facecontrol.forms
 		private var countries:Array;
 		private var _friends:Array;
 		private var _appFriends:Array;
+		private var _friendsIds:Array;
 		private var _vkontakte:VKontakte = new VKontakte();
 		private var _api:Api = new Api();
+		
+		private var _startIndex:int = 0;
+		private var _endIndex:int = 5;
 		
 		public function FriendsForm(value:GameScene)
 		{
@@ -130,9 +134,6 @@ package com.facecontrol.forms
 				}
 			}
 			else {
-//				if (!PreloaderSplash.instance.isModal) {
-//					Util.scene.showModal(PreloaderSplash.instance);
-//				}
 				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 			}
 		}
@@ -161,10 +162,15 @@ package com.facecontrol.forms
 			
 			if (_users.length > 0) {
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
-				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
+				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _friendsIds.length ? start + MAX_PHOTO_COUNT_IN_GRID : _friendsIds.length;
+				
+				_startIndex = start - 5;
+				_endIndex = end + 5;
+				if (_startIndex < 0) _startIndex = 0;
+				if (_endIndex >= count) _endIndex = count - 1;
 				
 				var item:FriendGridItem;
-				for (i = start, j = 0; i < end; ++i, ++j) {
+				for (i = start, j = 1; i < end; ++i, ++j) {
 					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID);
 					_grid.addItem(item);
 				}
@@ -181,7 +187,7 @@ package com.facecontrol.forms
 					if (_scene.getChildAt(i) is Form) {
 						var form:Form = _scene.getChildAt(i) as Form;
 						form.visible = (form is FriendsForm);
-					} 
+					}
 				}
 			}
 		}
@@ -242,15 +248,79 @@ package com.facecontrol.forms
 				break;
 				
 				case 'getAppFriends':
-					_api.friends(response as Array);
+//					var appFriendsIds:Array = response as Array;
+//					var needRequest:Boolean = _appFriends || appFriendsIds.length > 0;
+//					var count:int = (appFriendsIds.length < _endIndex) ? appFriendsIds.length : _endIndex;
+//					for each (var appFriend:Object in _appFriends) {
+//						needRequest = true;
+//						for (var i:int = _startIndex; i < count; ++i) {
+//							var uid:int = appFriendsIds[i];
+//							if (appFriend.uid == uid) {
+//								needRequest = false;
+//								break;
+//							}
+//						}
+//						
+//						if (needRequest) {
+//							break;
+//						}
+//					}
+//					
+//					if (needRequest) {
+//						_api.friends(appFriendsIds);
+//					}
+				
+					var appFriendsIds:Array = response as Array;
+					var needRequest:Boolean = _appFriends || appFriendsIds.length > 0;
+					for each (var appFriend:Object in _appFriends) {
+						needRequest = true;
+						for each (var uid:int in appFriendsIds) {
+							if (appFriend.uid == uid) {
+								needRequest = false;
+								break;
+							}
+						}
+						
+						if (needRequest) {
+							break;
+						}
+					}
+					
+					if (needRequest) {
+						_api.friends(appFriendsIds);
+					}
+					else {
+						_vkontakte.getFriends();
+					}
 				break;
 				
 				case 'getFriends':
-					var friendsIds:Array = response as Array;
+//					var friendsIds:Array = response as Array;
+//					var notAppFriendsIds:Array = new Array();
+//					
+//					var start:int = _startIndex > _appFriends.length ? _startIndex : _appFriends.length;
+//					
+//					count = _endIndex - start;
+//					for each (var id:String in friendsIds) {
+//						var isAppFriendId:Boolean = false;
+//						for each (appFriend in _appFriends) {
+//							if (appFriend.uid == id) {
+//								isAppFriendId = true;
+//								break;
+//							}
+//						}
+//						if (!isAppFriendId) {
+//							notAppFriendsIds.push(id);
+//							if (notAppFriendsIds.length >= count) break;
+//						}
+//					}
+//					_vkontakte.getProfiles(notAppFriendsIds);
+					
+					_friendsIds = response as Array;
 					var notAppFriendsIds:Array = new Array();
-					for each (var id:String in friendsIds) {
+					for each (var id:String in _friendsIds) {
 						var isAppFriendId:Boolean = false;
-						for each (var appFriend:Object in _appFriends) {
+						for each (appFriend in _appFriends) {
 							if (appFriend.uid == id) {
 								isAppFriendId = true;
 								break;

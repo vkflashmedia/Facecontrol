@@ -126,7 +126,7 @@ package com.facecontrol.forms
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				
 				var item:FriendGridItem;
-				for (i = start, j =0; i < end; ++i, ++j) {
+				for (i = start, j = 1; i < end; ++i, ++j) {
 					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true);
 					_grid.addItem(item);
 				}
