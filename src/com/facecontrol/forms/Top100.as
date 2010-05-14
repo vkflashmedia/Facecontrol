@@ -14,6 +14,9 @@ package com.facecontrol.forms
 	
 	import flash.display.Bitmap;
 	import flash.events.Event;
+	import flash.text.AntiAliasType;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
 	public class Top100 extends Form
@@ -36,10 +39,30 @@ package com.facecontrol.forms
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			visible = false;
 			
-			var background:Bitmap = BitmapUtil.cloneImageNamed(Images.FRIENDS_BACKGROUND);
+			var background:Bitmap = BitmapUtil.cloneImageNamed(Images.TOP_BACKGROUND);
 			background.x = 152;
 			background.y = 104;
 			addChild(background);
+			
+			var top100:Bitmap = BitmapUtil.cloneImageNamed(Images.TOP_100);
+			top100.x = 34;
+			top100.y = 129;
+			addChild(top100);
+			
+			var smile:Bitmap = BitmapUtil.cloneImageNamed(Images.TOP_SMILE);
+			smile.x = 113;
+			smile.y = 92;
+			addChild(smile);
+			
+			var label:TextField = new TextField();
+			label.x = 31;
+			label.y = 145;
+			label.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xb23835);
+			label.text = '100 самых горячих';
+			label.embedFonts = true;
+			label.antiAliasType = AntiAliasType.ADVANCED;
+			label.autoSize = TextFieldAutoSize.LEFT;
+			addChild(label);
 			
 			_pagination = new Pagination(_scene, 383, 600);
 			_pagination.width = 83;
@@ -104,6 +127,7 @@ package com.facecontrol.forms
 		
 		public function updateGrid():void {
 			var i:int = 0;
+			var j:int = 0;
 			var count:int = _users.length;
 			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
 			_pagination.visible = _pagination.pagesCount > 1;
@@ -112,8 +136,8 @@ package com.facecontrol.forms
 			if (_users && _users.length > 0) {
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
-				for (i = start; i < end; ++i) {
-					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], i != count - 1);
+				for (i = start, j = 0; i < end; ++i, ++j) {
+					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID);
 					_grid.addItem(item);
 				}
 			} else {
