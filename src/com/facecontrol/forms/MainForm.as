@@ -144,7 +144,7 @@ package com.facecontrol.forms
 			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
 			_previousLayer.addChild(line);
 			
-			_ratingAverageField = Util.createLabel('', 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
+			_ratingAverageField = Util.createLabel('0', 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
@@ -167,7 +167,7 @@ package com.facecontrol.forms
 			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
 			_previousLayer.addChild(votesLabel);
 			
-			_votesCountField = Util.createLabel('', 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
+			_votesCountField = Util.createLabel('0', 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
@@ -306,7 +306,12 @@ package com.facecontrol.forms
 			if (!obj.hasOwnProperty('pid')) {
 				if (_current) {
 					bigPhoto = null;
-					Util.multiLoader.unload(_current.pid);
+					
+					if (_previous) {
+						Util.multiLoader.unload(_previous.pid);
+					}
+					_previous = _current;
+					previousPhoto();
 				}
 				
 				_current = null;
@@ -374,21 +379,23 @@ package com.facecontrol.forms
 					_commentField.setTextFormat(_commentTextFormat);
 				}
 				
-				_previousLayer.visible = _previous && _previous.votes_count;
-				if (_previousLayer.visible) {
-					smallPhoto = Util.multiLoader.get(_previous.pid);
-					
-					var format:TextFormat = _ratingAverageField.getTextFormat();
-					_ratingAverageField.text = _previous.rating_average;
-					_ratingAverageField.setTextFormat(format);
-					
-					format = _votesCountField.getTextFormat();
-					_votesCountField.text = _previous.votes_count;
-					_votesCountField.setTextFormat(format);
-				}
+				previousPhoto();
 			}
 			
 			Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+		}
+		
+		private function previousPhoto():void {
+			_previousLayer.visible = _previous && _previous.votes_count;
+			if (_previousLayer.visible) {
+				smallPhoto = Util.multiLoader.get(_previous.pid);
+				
+				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
+				_ratingAverageField.text = _previous.rating_average;
+				
+				_votesCountField.defaultTextFormat = _votesCountField.getTextFormat();
+				_votesCountField.text = _previous.votes_count;
+			}
 		}
 		
 		public override function refresh():void {

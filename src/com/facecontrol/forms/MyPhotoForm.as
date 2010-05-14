@@ -255,17 +255,16 @@ package com.facecontrol.forms
 		
 		private function update():void {
 			if (_main) {
-				var format:TextFormat = _ratingAverageField.getTextFormat();
-				_ratingAverageField.defaultTextFormat = format;
-				_ratingAverageField.text = (_main.rating_average) ? _main.rating_average : '';
-				
-				
-				format = _votesCountField.getTextFormat();
-				_votesCountField.text = Util.votesCount(_main.votes_count);
-				_votesCountField.setTextFormat(format);
-				_votesCountField.visible = _bigStar.visible = (_main.votes_count > 0);
-				
 				_noVotesField.visible = (_main.votes_count == 0);
+				
+				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
+				_ratingAverageField.text = (_main.rating_average) ? _main.rating_average : '';
+				_ratingAverageField.visible = !_noVotesField.visible;
+				
+				
+				_votesCountField.defaultTextFormat = _votesCountField.getTextFormat();
+				_votesCountField.text = Util.votesCount(_main.votes_count);
+				_votesCountField.visible = _bigStar.visible = !_noVotesField.visible;
 			}
 			
 			_pagination.pagesCount = Math.ceil(_photos.length / MAX_PHOTO_COUNT_IN_GRID);
