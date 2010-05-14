@@ -57,7 +57,7 @@ package com.facecontrol.forms
 			var label:TextField = new TextField();
 			label.x = 31;
 			label.y = 145;
-			label.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xb23835);
+			label.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xff352b);
 			label.text = '100 самых горячих';
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;

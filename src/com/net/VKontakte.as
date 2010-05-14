@@ -20,6 +20,8 @@ package com.net
 		private static const APP_ID:String = '1827403';
 		
 		private const loader:URLLoader = new URLLoader();
+		
+		public var testMode:uint = 1;
 		private var requestQueue: Array;
 		private var timer: Timer;
 		private var currentMethod: String;
@@ -92,7 +94,10 @@ package com.net
 				var sig:String = Util.viewer_id+'api_id='+APP_ID+
 					'fields='+fields+
 					'format=json'+
-					'method=getProfiles'+'test_mode=1'+'uids='+uidsString+'v=2.0'+APP_KEY;
+					'method=getProfiles'+
+					'test_mode='+testMode+
+					'uids='+uidsString+
+					'v=2.0'+APP_KEY;
 					
 				vars['api_id'] = APP_ID;
 				vars['v'] = '2.0';
@@ -100,7 +105,7 @@ package com.net
 				vars['uids'] = uidsString;
 				vars['fields'] = fields;
 				vars['format'] = 'json';
-				vars['test_mode'] = 1;
+				vars['test_mode'] = testMode;
 				vars['sig'] = MD5.encrypt(sig);
 				
 				request('getProfiles', vars);
@@ -111,12 +116,14 @@ package com.net
 			var sig:String = Util.viewer_id+'api_id='+APP_ID+
 				'format=json'+
 				'method=isAppUser'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['v'] = '2.0';
 			vars['method'] = 'isAppUser';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('isAppUser', vars);
@@ -127,12 +134,14 @@ package com.net
 			var sig:String = Util.viewer_id+'api_id='+APP_ID+
 				'format=json'+
 				'method=getUserSettings'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['v'] = '2.0';
 			vars['method'] = 'getUserSettings';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('getUserSettings', vars);
@@ -143,12 +152,14 @@ package com.net
 			var sig:String = Util.viewer_id+'api_id='+APP_ID+
 				'format=json'+
 				'method=getFriends'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['v'] = '2.0';
 			vars['method'] = 'getFriends';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('getFriends', vars);
@@ -159,27 +170,35 @@ package com.net
 			var sig:String = Util.viewer_id+'api_id='+APP_ID+
 				'format=json'+
 				'method=getAppFriends'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['v'] = '2.0';
 			vars['method'] = 'getAppFriends';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('getAppFriends', vars);
 		}
 		
-		//77625236
 		public function getAlbums():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+'format=json'+'method=photos.getAlbums'+'test_mode=1'+'uid='+Util.viewer_id+'v=2.0'+'EqKl8Wg2be';
+			var sig:String = Util.viewer_id+
+				'api_id='+APP_ID+
+				'format=json'+
+				'method=photos.getAlbums'+
+				'test_mode='+testMode+
+				'uid='+Util.viewer_id+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['v'] = '2.0';
 			vars['uid'] = Util.viewer_id;
 			vars['method'] = 'photos.getAlbums';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('photos.getAlbums', vars);
@@ -187,18 +206,22 @@ package com.net
 		
 		public function getPhotos(aid: String):void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'aid='+aid+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+
+				'aid='+aid+
+				'api_id='+APP_ID+
 				'format=json'+
 				'method=photos.get'+
-				'test_mode=1'+
-				'uid='+Util.viewer_id+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'uid='+Util.viewer_id+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['v'] = '2.0';
 			vars['aid'] = aid;
 			vars['uid'] = Util.viewer_id;
 			vars['method'] = 'photos.get';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('photos.get', vars);
@@ -206,15 +229,18 @@ package com.net
 		
 		public function getAds():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+
+				'api_id='+APP_ID+
 				'format=json'+
 				'method=getAds'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['method'] = 'getAds';
 			vars['v'] = '2.0';
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('getAds', vars);
@@ -223,17 +249,20 @@ package com.net
 		public function getCities(cids:Array):void {
 			var vars: URLVariables = new URLVariables();
 			var cidsString:String = cids.join(',');
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+
+				'api_id='+APP_ID+
 				'cids=' + cidsString + 
 				'format=json'+
 				'method=getCities'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode='+testMode+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['method'] = 'getCities';
 			vars['v'] = '2.0';
 			vars['cids'] = cidsString;
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('getCities', vars);
@@ -242,17 +271,20 @@ package com.net
 		public function getCountries(cids:Array):void {
 			var vars: URLVariables = new URLVariables();
 			var cidsString:String = cids.join(',');
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+
+				'api_id='+APP_ID+
 				'cids=' + cidsString + 
 				'format=json'+
 				'method=getCountries'+
-				'test_mode=1'+'v=2.0'+APP_KEY;
+				'test_mode=1'+
+				'v=2.0'+APP_KEY;
+				
 			vars['api_id'] = APP_ID;
 			vars['method'] = 'getCountries';
 			vars['v'] = '2.0';
 			vars['cids'] = cidsString;
 			vars['format'] = 'json';
-			vars['test_mode'] = '1';
+			vars['test_mode'] = testMode;
 			vars['sig'] = MD5.encrypt(sig);
 			
 			request('getCountries', vars);
