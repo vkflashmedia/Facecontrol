@@ -137,7 +137,7 @@ package com.facecontrol.forms
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				for (i = start, j = 1; i < end; ++i, ++j) {
-					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID);
+					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			} else {
@@ -150,7 +150,7 @@ package com.facecontrol.forms
 			Util.api.getTop(Util.userId);
 		}
 		
-		public function show():void {
+		public override function show():void {
 			if (_scene) {
 				for (var i:int = 0; i < _scene.numChildren; ++i) {
 					if (_scene.getChildAt(i) is Form) {

@@ -268,15 +268,7 @@ package com.facecontrol.forms
 		
 		private function onCancelClick(event: GameObjectEvent): void {
 			if (returnForm) {
-				if (returnForm is MainForm) {
-					MainForm.instance.show();
-				}
-				else if (returnForm is FriendsForm) {
-					FriendsForm.instance.show();
-				}
-				else if (returnForm is FavoritesForm) {
-					FavoritesForm.instance.show();
-				}
+				returnForm.show();
 			}
 		}
 		
@@ -323,7 +315,7 @@ package com.facecontrol.forms
 			trace('multiLoaderFaultListener :: ' + event.entry);
 		}
 		
-		public function show():void {
+		public override function show():void {
 			if (_scene) {
 				for (var i:int = 0; i < _scene.numChildren; ++i) {
 					if (_scene.getChildAt(i) is Form) {

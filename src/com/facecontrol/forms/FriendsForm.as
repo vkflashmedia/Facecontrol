@@ -206,17 +206,6 @@ package com.facecontrol.forms
 			Util.vkontakte.getFriends();
 		}
 		
-		public function show():void {
-			if (_scene) {
-				for (var i:int = 0; i < _scene.numChildren; ++i) {
-					if (_scene.getChildAt(i) is Form) {
-						var form:Form = _scene.getChildAt(i) as Form;
-						form.visible = (form is FriendsForm);
-					}
-				}
-			}
-		}
-		
 		public function requestFriends():void {
 			_vkontakte.getAppFriends();
 		}
@@ -361,7 +350,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onVkontakteRequestError(event:VKontakteEvent):void {
-			
+			Util.showError(event.errorCode, event.errorMessage);
 		}
 		
 		public function onApiRequestCompleted(event:ApiEvent):void {
@@ -375,7 +364,18 @@ package com.facecontrol.forms
 		}
 		
 		public function onApiRequestError(event:ApiEvent):void {
-			
+			Util.showError(event.errorCode, event.errorMessage);
+		}
+		
+		public override function show():void {
+			if (_scene) {
+				for (var i:int = 0; i < _scene.numChildren; ++i) {
+					if (_scene.getChildAt(i) is Form) {
+						var form:Form = _scene.getChildAt(i) as Form;
+						form.visible = (form is FriendsForm);
+					}
+				}
+			}
 		}
 	}
 }

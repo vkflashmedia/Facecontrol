@@ -2,9 +2,12 @@ package com.facecontrol.util
 {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
+	import com.facecontrol.forms.MessageDialog;
+	import com.facecontrol.forms.PreloaderSplash;
 	import com.flashmedia.basics.GameScene;
 	import com.net.VKontakte;
 	
+	import flash.events.Event;
 	import flash.text.Font;
 	import flash.text.TextField;
 	
@@ -37,6 +40,16 @@ package com.facecontrol.util
 			label.selectable = false;
 			
 			return label;
+		}
+		
+		public static function showError(errorCode:int, errorMessage:String):void {
+			if (PreloaderSplash.instance.isModal) {
+				scene.resetModal(PreloaderSplash.instance);
+			}
+			switch (errorCode) {
+				default:
+					scene.showModal(new MessageDialog(scene, 'Ошибка:', errorMessage));
+			}
 		}
 		
 		public static function getMorePhotoString(sex:String):String {

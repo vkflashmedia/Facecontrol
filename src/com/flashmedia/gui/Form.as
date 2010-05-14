@@ -244,7 +244,9 @@ package com.flashmedia.gui
 		}
 		
 		public function refresh():void {
-			
+		}
+		
+		public function show():void {
 		}
 	}
 }

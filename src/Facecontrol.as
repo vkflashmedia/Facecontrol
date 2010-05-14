@@ -164,18 +164,7 @@ package {
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
-			try {
-				switch (event.errorCode) {
-					default:
-						trace('onVkontakteRequestError: ' + event.errorCode + ' ' + event.errorMessage);
-				}
-				if (PreloaderSplash.instance.isModal) {
-					this.resetModal(PreloaderSplash.instance);
-				}
-			}
-			catch (e:Error) {
-				trace(e.message);
-			}
+			Util.showError(event.errorCode, event.errorMessage);
 		}
 		
 		private function onVkontakteRequestComplited(event:VKontakteEvent):void {
@@ -236,18 +225,7 @@ package {
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
-			try {
-				if (PreloaderSplash.instance.isModal) {
-					this.resetModal(PreloaderSplash.instance);
-				}
-				switch (event.errorCode) {
-					default:
-						showModal(new MessageDialog(this, 'Ошибка:', event.errorMessage));
-				}
-			}
-			catch (e:Error) {
-				trace(e.message);
-			}
+			Util.showError(event.errorCode, event.errorMessage);
 		}
 		
 		private function onFacecontrolRequestComplited(event:ApiEvent):void {

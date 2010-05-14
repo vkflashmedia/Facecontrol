@@ -49,12 +49,16 @@ package com.facecontrol.gui
 				morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
 					scene.showModal(PreloaderSplash.instance);
 					AllUserPhotoForm.instance.user = userRaw;
-					if (ownerForm is FriendsForm) {
-						AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
-					}
-					else if (ownerForm is FavoritesForm) {
-						AllUserPhotoForm.instance.returnForm = FavoritesForm.instance;
-					}
+					AllUserPhotoForm.instance.returnForm = ownerForm;
+//					if (ownerForm is FriendsForm) {
+//						AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
+//					}
+//					else if (ownerForm is FavoritesForm) {
+//						AllUserPhotoForm.instance.returnForm = FavoritesForm.instance;
+//					}
+//					else if (ownerForm is FavoritesForm) {
+//						AllUserPhotoForm.instance.returnForm = FavoritesForm.instance;
+//					}
 					AllUserPhotoForm.instance.show();
 				});
 				addChild(morePhotos);

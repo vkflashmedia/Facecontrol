@@ -20,7 +20,6 @@ package com.facecontrol.forms
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.FocusEvent;
-	import flash.events.MouseEvent;
 	import flash.events.TextEvent;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
@@ -43,9 +42,6 @@ package com.facecontrol.forms
 			return _instance;
 		}
 		
-		public var _userProfileBtn: GameObject;
-		public var _mainPhoto: GameObject;
-		
 		protected var _bigPhoto:Photo;
 		protected var _smallPhoto:Photo;
 		protected var _ratingAverageField:TextField;
@@ -65,6 +61,12 @@ package com.facecontrol.forms
 		private var _previous:Object;
 		
 		private var _previousLayer:Sprite;
+		
+		private var bigStar:Bitmap;
+		private var line:Bitmap;
+		private var ratingLabel:TextField;
+		private var votesLabel:TextField;
+		
 		private var _morePhotos:LinkButton;
 		private var _favorite:LinkButton;
 		
@@ -96,9 +98,8 @@ package com.facecontrol.forms
 			_rateBar.bitmap = Util.multiLoader.get(Images.RATING_BACKGROUND);
 			_rateBar.rateIconOff = Util.multiLoader.get(Images.RATING_OFF);
 			_rateBar.rateIconOn = Util.multiLoader.get(Images.RATING_ON);
-			_rateBar.buttonMode = true;
-			_rateBar.useHandCursor = true;
-			_rateBar.addEventListener(MouseEvent.CLICK, onRateClicked);
+//			_rateBar.addEventListener(MouseEvent.CLICK, onRateClicked);
+			_rateBar.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onRateClicked);
 			
 			addChild(_rateBar);
 			
@@ -135,13 +136,12 @@ package com.facecontrol.forms
 			_smallPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			_previousLayer.addChild(_smallPhoto);
 			
-			
-			var bigStar:Bitmap = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
+			bigStar = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
 			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;
 			bigStar.x = 44;
 			_previousLayer.addChild(bigStar);
 			
-			var line:Bitmap = Util.multiLoader.get(Images.LINE);
+			line = Util.multiLoader.get(Images.LINE);
 			line.x = 38;
 			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
 			_previousLayer.addChild(line);
@@ -154,7 +154,7 @@ package com.facecontrol.forms
 			_previousLayer.addChild(_ratingAverageField);
 			
 			
-			var ratingLabel:TextField = Util.createLabel('средний балл', 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
+			ratingLabel = Util.createLabel('средний балл', 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
 			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
 			ratingLabel.embedFonts = true;
 			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
@@ -162,7 +162,7 @@ package com.facecontrol.forms
 			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
 			_previousLayer.addChild(ratingLabel);
 			
-			var votesLabel:TextField = Util.createLabel('голосовало:', 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
+			votesLabel = Util.createLabel('голосовало:', 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
 			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
 			votesLabel.embedFonts = true;
 			votesLabel.autoSize = TextFieldAutoSize.CENTER;
@@ -207,7 +207,7 @@ package com.facecontrol.forms
 			
 			var spr: Sprite = new Sprite();
 			spr.graphics.beginFill(0xffffff);
-			spr.graphics.drawRoundRect(502, 367, 84, 15, 12);
+			spr.graphics.drawRoundRect(502, 367, 83, 15, 12);
 			spr.graphics.endFill();
 			addChild(spr);
 			
@@ -235,13 +235,13 @@ package com.facecontrol.forms
 			
 			spr = new Sprite();
 			spr.graphics.beginFill(0xffffff);
-			spr.graphics.drawRoundRect(502, 385, 84, 15, 12);
+			spr.graphics.drawRoundRect(502, 385, 83, 15, 12);
 			spr.graphics.endFill();
 			addChild(spr);
 			
 			_maxAgeBox = new TextField();
 			_maxAgeBox.selectable = true;
-			_maxAgeBox.x = 480;
+			_maxAgeBox.x = 479;
 			_maxAgeBox.y = 385;
 			_maxAgeBox.maxChars = 3;
 			_maxAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
@@ -317,12 +317,15 @@ package com.facecontrol.forms
 				}
 				
 				_current = null;
+				_rateBar.enabled = false;
 				
 				_nameField.text = '';
 				_nameField.setTextFormat(_nameTextFormat);
 				
 				_commentField.text = '';
 				_commentField.setTextFormat(_commentTextFormat);
+				
+				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Ты проголосовал за всех пользователей. Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.'));
 			}
 			else {
 				if (_current && _current.pid != obj.pid) {
@@ -338,6 +341,7 @@ package com.facecontrol.forms
 				}
 				
 				_current = obj;
+				_rateBar.enabled = true;
 				if (_current) _favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
 		}
@@ -483,7 +487,6 @@ package com.facecontrol.forms
 				_morePhotos.visible = true;
 				_morePhotos.label = Util.getMorePhotoString(_current.sex);
 				
-				_rateBar.enabled = true;
 				_favorite.visible = true;
 				_favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 				
@@ -500,13 +503,19 @@ package com.facecontrol.forms
 				_bigPhoto.photo = null;
 				_morePhotos.visible = false;
 				_favorite.visible = false;
-				_rateBar.enabled = false;
 			}
 		}
 		
 		public function set smallPhoto(image:Bitmap):void {
 			if (image) {
 				_smallPhoto.photo = image;
+				
+				bigStar.y = _smallPhoto.y + _smallPhoto.bitmap.height + 8;
+				line.y = _smallPhoto.y + _smallPhoto.bitmap.height + 68;;
+				_ratingAverageField.y = _smallPhoto.y + _smallPhoto.bitmap.height + 3;
+				ratingLabel.y = _smallPhoto.y + _smallPhoto.bitmap.height + 43;
+				votesLabel.y = _smallPhoto.y + _smallPhoto.bitmap.height + 72;
+				_votesCountField.y = _smallPhoto.y + _smallPhoto.bitmap.height + 90;
 			}
 		}
 		
@@ -515,7 +524,7 @@ package com.facecontrol.forms
 			updateFilter();
 		}
 		
-		public function onRateClicked(event:MouseEvent):void {
+		public function onRateClicked(event:GameObjectEvent):void {
 			Util.api.vote(Util.userId, _current.pid, _rateBar.rating);
 		}
 		
@@ -612,7 +621,7 @@ package com.facecontrol.forms
 			}
 		}
 		
-		public function show():void {
+		public override function show():void {
 			if (_scene) {
 				for (var i:int = 0; i < _scene.numChildren; ++i) {
 					if (_scene.getChildAt(i) is Form) {
