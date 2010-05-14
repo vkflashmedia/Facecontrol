@@ -6,6 +6,7 @@ package com.flashmedia.gui
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.text.AntiAliasType;
@@ -27,6 +28,8 @@ package com.flashmedia.gui
 		private var _horizontalAlign: int;
 		private var _embed:Boolean = false;
 		private var _antiAliasType:String = AntiAliasType.NORMAL;
+		private var _bitmapCommon: Bitmap;
+		private var _bitmapDropped: Bitmap;
 		
 		public function ComboBox(value:GameScene)
 		{
@@ -35,11 +38,13 @@ package com.flashmedia.gui
 			height = 20;
 			setSelect(true);
 			setFocus(true, false);
+			_bitmapCommon = null;
+			_bitmapDropped = null;
 //			canHover = true;
 			//fillBackground(0xfafaff, 1.0);
 			_horizontalAlign = View.ALIGN_HOR_LEFT;
 			_dropList = new GridBox(value, 1);
-			_dropList.fillBackground(0xffffff, 1.0);
+			//_dropList.fillBackground(0xffffff, 1.0);
 			_dropList.visible = false;
 			_dropList.x = 0;
 			_dropList.y = height;
@@ -80,6 +85,7 @@ package com.flashmedia.gui
 		
 		public function addItem(value: String): void {
 			_dropList.addItem(value);
+			updateComboBox();
 		}
 		
 		public function setTextFormat(value: TextFormat, embed:Boolean = false, antiAliasType:String = AntiAliasType.NORMAL): void {
@@ -110,8 +116,13 @@ package com.flashmedia.gui
 		public override function set bitmap(value: Bitmap): void {
 			clearBackground();
 			super.bitmap = value;
+			_bitmapCommon = value;
 		}
 		
+		public function set bitmapDropped(value: Bitmap): void {
+			_bitmapDropped = value;
+		}
+	
 		public function get selectedIndex(): uint {
 			return _dropList.selectedRowIndex;
 		}
@@ -129,6 +140,7 @@ package com.flashmedia.gui
 			super.focus = value;
 			if (!value) {
 				_dropList.visible = false;
+				updateBitmap();
 				if (zOrder == GameObject.MAX_Z_ORDER) {
 					zOrder = _savedZOrder;
 				}
@@ -150,6 +162,15 @@ package com.flashmedia.gui
 			var m: Matrix = new Matrix(1, 0, 0, 1, width - value.width, 0);
 			bd.draw(value, m);
 			bitmap = b;
+			
+			var bdD: BitmapData = null;
+			var bD: Bitmap = null;
+			if (_bitmapDropped) {
+				bdD = _bitmapDropped.bitmapData;
+				bD = _bitmapDropped;
+				bdD.draw(value, m);
+				bitmapDropped = bD;
+			}
 			updateComboBox();
 		}
 		
@@ -182,11 +203,32 @@ package com.flashmedia.gui
 				setTextField(tf, View.ALIGN_HOR_NONE | View.ALIGN_VER_CENTER);
 			}
 			_dropList.horizontalItemsAlign = _horizontalAlign;
+			
+			var mask: Sprite = new Sprite();
+			mask.graphics.beginFill(0xffffff);
+			mask.graphics.drawRoundRect(0, -12, _dropList.width, _dropList.height + 12, 12);
+			mask.graphics.endFill();
+			var bd: BitmapData = new BitmapData(_dropList.width, _dropList.height, false, 0xffffff);
+			var b: Bitmap = new Bitmap(bd);
+			_dropList.bitmap = b;
+			_dropList.bitmapMask = mask;
+		}
+		
+		private function updateBitmap(): void {
+			if (_bitmapDropped) {
+				if (_dropList.visible) {
+					super.bitmap = _bitmapDropped;
+				}
+				else {
+					super.bitmap = _bitmapCommon;
+				}
+			}
 		}
 		
 		protected override function mouseClickListener(event: MouseEvent): void {
 			super.mouseClickListener(event);
 			_dropList.visible = !_dropList.visible;
+			updateBitmap();
 			if (_dropList.visible) {
 				_savedZOrder = zOrder;
 				zOrder = GameObject.MAX_Z_ORDER;
@@ -198,6 +240,7 @@ package com.flashmedia.gui
 		
 		private function onItemClickListener(event: GridBoxEvent): void {
 			_dropList.visible = false;
+			updateBitmap();
 			zOrder = _savedZOrder;
 			updateComboBox();
 			dispatchEvent(new ComboBoxEvent(ComboBoxEvent.ITEM_SELECT));
