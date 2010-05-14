@@ -50,15 +50,6 @@ package com.facecontrol.gui
 					scene.showModal(PreloaderSplash.instance);
 					AllUserPhotoForm.instance.user = userRaw;
 					AllUserPhotoForm.instance.returnForm = ownerForm;
-//					if (ownerForm is FriendsForm) {
-//						AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
-//					}
-//					else if (ownerForm is FavoritesForm) {
-//						AllUserPhotoForm.instance.returnForm = FavoritesForm.instance;
-//					}
-//					else if (ownerForm is FavoritesForm) {
-//						AllUserPhotoForm.instance.returnForm = FavoritesForm.instance;
-//					}
 					AllUserPhotoForm.instance.show();
 				});
 				addChild(morePhotos);
@@ -141,7 +132,7 @@ package com.facecontrol.gui
 			label.selectable = false;
 			addChild(label);
 			
-			if (userRaw.age) {
+			if (userRaw.age && userRaw.age > 0) {
 				label.text = userRaw.age + ' ' + ageString(userRaw.age);
 				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff), 0, label.text.length);
 			}

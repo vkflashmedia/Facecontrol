@@ -24,7 +24,6 @@ package com.flashmedia.gui
 		private var _tY: int;
 		private var _rateCellWidth: uint;
 		private var _rateCellHeight: uint;
-//		private var _enabled:Boolean;
 		
 		public function RatingBar(value: GameScene, pointsCount: uint = POINTS_COUNT_DEF)
 		{
@@ -45,9 +44,6 @@ package com.flashmedia.gui
 		}
 		
 		public function set enabled(value:Boolean):void {
-//			_enabled = value;
-//			buttonMode = _enabled;
-//			useHandCursor = _enabled;
 			setSelect(value);
 			buttonMode = selectable;
 			useHandCursor = selectable;
