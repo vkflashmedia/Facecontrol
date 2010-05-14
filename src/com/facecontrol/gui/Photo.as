@@ -16,6 +16,18 @@ package com.facecontrol.gui
 		public static const ALIGN_LEFT:uint = 0;
 		public static const ALIGN_CENTER:uint = 1;
 		
+		public static const VERTICAL_ALIGN_TOP:uint = 0;
+		public static const VERTICAL_ALIGN_CENTER:uint = 1;
+		
+		public static const HORIZONTAL_ALIGN_LEFT:uint = 0;
+		public static const HORIZONTAL_ALIGN_CENTER:uint = 1;
+		
+		public static const VERTICAL_SCALE_AUTO:uint = 0;
+		public static const VERTICAL_SCALE_ALWAYS:uint = 1;
+		
+		public static const HORIZONTAL_SCALE_AUTO:uint = 0;
+		public static const HORIZONTAL_SCALE_ALWAYS:uint = 1;
+		
 		private var _align:uint = ALIGN_LEFT;
 		
 		private var _photoBorder:uint;
@@ -26,6 +38,12 @@ package com.facecontrol.gui
 		private var _thumbnail:Bitmap;
 		private var _transparentSquare:Sprite;
 		private var _squareMask:Sprite;
+		
+		private var _valign:uint;
+		private var _halign:uint;
+		
+		private var _vscale:uint;
+		private var _hscale:uint;
 		
 		public function Photo(value:GameScene, image:Bitmap, x:int, y:int, width:int, height:int, type:uint=0)
 		{
@@ -41,6 +59,26 @@ package com.facecontrol.gui
 			this.height = height;
 			autoSize = false;
 			photo = image;
+		}
+		
+		public function set verticalScale(value:uint):void {
+			_vscale = value;
+			update();
+		}
+		
+		public function set horizontalScale(value:uint):void {
+			_hscale = value;
+			update();
+		}
+		
+		public function set verticalAlign(value:uint):void {
+			_valign = value;
+			update();
+		}
+		
+		public function set horizontalAlign(value:uint):void {
+			_halign = value;
+			update();
 		}
 		
 		public function set photoBorder(value:uint):void {
@@ -73,35 +111,96 @@ package com.facecontrol.gui
 				
 			if (_photo) {
 				_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
-				if (_thumbnail.width > (width - _photoBorder*2)) {
-					var s:Number = (width - _photoBorder*2) / _thumbnail.width;
-					if (s < 1) {
-						var matrix:Matrix = new Matrix();
-						matrix.scale(s, s);
-						_thumbnail.transform.matrix = matrix;
-					}
-					else matrix = null;
-				}
 				
-				if (_thumbnail.height < (height - _photoBorder*2)) {
-					_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
-					s = (height - _photoBorder*2) / _thumbnail.height;
-					if (s < 1) {
+				if (_hscale == HORIZONTAL_SCALE_ALWAYS && _vscale == VERTICAL_SCALE_ALWAYS) {
+					var s:Number = (width - _photoBorder*2) / _thumbnail.width;
+					var matrix:Matrix = new Matrix();
+					matrix.scale(s, s);
+					_thumbnail.transform.matrix = matrix;
+					
+					if (_thumbnail.height < (height - _photoBorder*2)) {
+						_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
+						s = (height - _photoBorder*2) / _thumbnail.height;
 						matrix = new Matrix();
 						matrix.scale(s, s);
 						_thumbnail.transform.matrix = matrix;
 					}
-					else matrix = null;
 				}
+				else if (_hscale == HORIZONTAL_SCALE_ALWAYS && _vscale == VERTICAL_SCALE_AUTO) {
+					_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
+					s = (width - _photoBorder*2) / _thumbnail.width;
+					matrix = new Matrix();
+					matrix.scale(s, s);
+					_thumbnail.transform.matrix = matrix;
+				}
+				else if (_hscale == HORIZONTAL_SCALE_AUTO && _vscale == VERTICAL_SCALE_ALWAYS) {
+					_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
+					s = (height - _photoBorder*2) / _thumbnail.height;
+					matrix = new Matrix();
+					matrix.scale(s, s);
+					_thumbnail.transform.matrix = matrix;
+				}
+				else if (_hscale == HORIZONTAL_SCALE_AUTO && _vscale == VERTICAL_SCALE_AUTO) {
+					if (_thumbnail.width > (width - _photoBorder*2)) {
+						s = (width - _photoBorder*2) / _thumbnail.width;
+						if (s < 1) {
+							matrix = new Matrix();
+							matrix.scale(s, s);
+							_thumbnail.transform.matrix = matrix;
+						}
+						else matrix = null;
+					}
+					
+					if (_thumbnail.height < (height - _photoBorder*2)) {
+						_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
+						s = (height - _photoBorder*2) / _thumbnail.height;
+						if (s < 1) {
+							matrix = new Matrix();
+							matrix.scale(s, s);
+							_thumbnail.transform.matrix = matrix;
+						}
+						else matrix = null;
+					}
+				}
+				
+//				if (_thumbnail.width > (width - _photoBorder*2)) {
+//					var s:Number = (width - _photoBorder*2) / _thumbnail.width;
+//					if (s < 1) {
+//						var matrix:Matrix = new Matrix();
+//						matrix.scale(s, s);
+//						_thumbnail.transform.matrix = matrix;
+//					}
+//					else matrix = null;
+//				}
+//				else if (_hscale == HORIZONTAL_SCALE_ALWAYS) {
+//					s = (width - _photoBorder*2) / _thumbnail.width;
+//					matrix = new Matrix();
+//					matrix.scale(s, s);
+//					_thumbnail.transform.matrix = matrix;
+//				}
+				
+//				if (_thumbnail.height < (height - _photoBorder*2)) {
+//					_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
+//					s = (height - _photoBorder*2) / _thumbnail.height;
+//					if (s < 1) {
+//						matrix = new Matrix();
+//						matrix.scale(s, s);
+//						_thumbnail.transform.matrix = matrix;
+//					}
+//					else matrix = null;
+//				}
 				
 				var photoWidth:Number = width;
 				var photoHeight:Number = height;
 				var xIndent:int = 0;
 				var yIndent:int = 0;
 				
-				if (matrix == null) {
-					photoWidth = _thumbnail.width + _photoBorder * 2;
-					photoHeight = _thumbnail.height + _photoBorder * 2;
+				photoWidth = (_thumbnail.width < width) ? _thumbnail.width : width - _photoBorder * 2;
+				photoHeight = (_thumbnail.height < height) ? _thumbnail.height : height - _photoBorder * 2;
+				
+				if (!matrix) {
+//					photoWidth = (_thumbnail.width < width) ? _thumbnail.width : width + _photoBorder * 2;
+//					photoHeight = (_thumbnail.height < height) ? _thumbnail.height : height + _photoBorder * 2;
 					
 					if (_align == ALIGN_CENTER) {
 						xIndent = (width - photoWidth) / 2;
@@ -143,89 +242,32 @@ package com.facecontrol.gui
 				addChild(_thumbnail);
 				addChild(_squareMask);
 				
-				_thumbnail.x = xIndent + (photoWidth - _thumbnail.width) / 2;
-				_thumbnail.y = yIndent + (photoHeight - _thumbnail.height) / 2;
+				switch (_valign) {
+					case VERTICAL_ALIGN_TOP:
+						_thumbnail.y = yIndent;
+					break;
+					case VERTICAL_ALIGN_CENTER:
+						_thumbnail.y = yIndent + (photoHeight - _thumbnail.height) / 2;
+						break;
+				}
+					
+				switch (_halign) {
+					case HORIZONTAL_ALIGN_LEFT:
+						_thumbnail.x = xIndent;
+					break;
+					case HORIZONTAL_ALIGN_CENTER:
+						_thumbnail.x = xIndent + (photoWidth - _thumbnail.width) / 2;
+						break;
+				}
+				
+//				_thumbnail.x = xIndent + (photoWidth - _thumbnail.width) / 2;
+//				_thumbnail.y = yIndent + (photoHeight - _thumbnail.height) / 2;
 				if (_thumbnail.x > xIndent + _photoBorder) _thumbnail.x = xIndent + _photoBorder;
 				if (_thumbnail.y > yIndent + _photoBorder) _thumbnail.y = yIndent + _photoBorder;
 				
 				_thumbnail.mask = _squareMask;
 			}
 		}
-		
-//		private function update():void {
-//			while (numChildren > 0) {
-//				removeChildAt(0);
-//			}
-//				
-//			if (_photo) {
-//				_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
-//				var s:Number = (width - _photoBorder*2) / _thumbnail.width;
-//				if (s < 1) {
-//					var matrix:Matrix = new Matrix();
-//					matrix.scale(s, s);
-//					_thumbnail.transform.matrix = matrix;
-//				}
-//				
-//				if (_thumbnail.height < (height - _photoBorder*2)) {
-//					_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
-//					s = (height - _photoBorder*2) / _thumbnail.height;
-//					if (s < 1) {
-//						matrix = new Matrix();
-//						matrix.scale(s, s);
-//						_thumbnail.transform.matrix = matrix;
-//					}
-//				}
-//				
-//				var photoWidth:Number = _thumbnail.width;
-//				var photoHeight:Number = _thumbnail.height;
-//				var transparentWidth:Number = (photoWidth > width) ? width : photoWidth + _photoBorder*2;
-//				var transparentHeight:Number = (photoHeight > height) ? height : photoHeight + _photoBorder*2;
-//					
-//				_transparentSquare = new Sprite();
-//				_transparentSquare.graphics.beginFill(_photoBorderColor, 0.5);
-//
-//				switch (_borderType) {
-//					case BORDER_TYPE_ROUND_RECT:
-//						_transparentSquare.graphics.drawRoundRect(0, 0, transparentWidth, transparentHeight, 15, 15);
-//					break;
-//					case BORDER_TYPE_RECT:
-//						_transparentSquare.graphics.drawRect(0, 0, transparentWidth, transparentHeight);
-//					break;
-//				}
-//				
-//				addChild(_transparentSquare);
-//				addChild(_thumbnail);
-//				
-//				_squareMask = new Sprite();
-//				_squareMask.graphics.beginFill(_photoBorderColor);
-//
-//				var squareWidth:Number = transparentWidth - _photoBorder * 2;
-//				var squareHeight:Number = transparentHeight - _photoBorder * 2;
-//				
-//				switch (_borderType) {
-//					case BORDER_TYPE_ROUND_RECT:
-//						_squareMask.graphics.drawRoundRect(_photoBorder, _photoBorder, squareWidth, squareHeight, 15, 15);
-//					break;
-//					case BORDER_TYPE_RECT:
-//						_squareMask.graphics.drawRect(_photoBorder, _photoBorder, squareWidth, squareHeight);
-//					break;
-//				}
-//				
-//				addChild(_squareMask);
-//				
-//				switch (_align) {
-//					case ALIGN_LEFT:
-//						_thumbnail.x = _photoBorder + (transparentWidth - _thumbnail.width) / 2;
-//						_thumbnail.y = _photoBorder + (transparentHeight - _thumbnail.height) / 2;
-//					break;
-//					case ALIGN_CENTER:
-//						_thumbnail.x = (width - _thumbnail.width) / 2;
-//						_thumbnail.y = (height - _thumbnail.height) / 2;
-//					break;
-//				}
-//				_thumbnail.mask = _squareMask;
-//			}
-//		}
 		
 		public function get photoWidth():int {
 			return (_thumbnail) ? _thumbnail.width + _photoBorder*2 : width;

@@ -111,6 +111,7 @@ package com.facecontrol.forms
 		
 		public function updateGrid():void {
 			var i:int = 0;
+			var j:int = 0;
 			var count:int = _users.length;
 			var format:TextFormat = _favoritesCount.getTextFormat();
 			_favoritesCount.text = 'всего: ' + count;
@@ -125,8 +126,8 @@ package com.facecontrol.forms
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				
 				var item:FriendGridItem;
-				for (i = start; i < end; ++i) {
-					item = new FriendGridItem(_scene, _users[i], i != count - 1, true, this);
+				for (i = start, j = 1; i < end; ++i, ++j) {
+					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			}

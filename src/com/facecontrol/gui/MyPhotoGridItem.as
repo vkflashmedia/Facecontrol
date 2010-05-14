@@ -28,6 +28,8 @@ package com.facecontrol.gui
 			var photo:Photo = new Photo(_scene, photoBitmap, 4, 4, 61, 57, Photo.BORDER_TYPE_RECT);
 			photo.photoBorderColor = 0x824e4c;
 			photo.photoBorder = 1;
+			photo.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			photo.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
 			addChild(photo);
 			
 			if (_photoData.votes_count > 0) {

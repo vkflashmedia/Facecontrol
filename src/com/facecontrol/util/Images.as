@@ -53,6 +53,10 @@ package com.facecontrol.util
 		public static const ADD_PHOTO_BUTTON_ORANGE:String = 'http://www.fcapi.ru/images/add_foto/button_orange.png';
 		public static const ADD_PHOTO_BUTTON_GREY:String = 'http://www.fcapi.ru/images/add_foto/button_grey.png';
 		
+		public static const TOP_BACKGROUND:String = 'http://www.fcapi.ru/images/top/bgr.png';
+		public static const TOP_SMILE:String = 'http://www.fcapi.ru/images/top/smile.png';
+		public static const TOP_100:String = 'http://www.fcapi.ru/images/top/top100.png';
+		
 		public static const FRIENDS_BACKGROUND:String = 'http://www.fcapi.ru/images/my_friends/bgr.png';
 		public static const FRIENDS_LINE:String = 'http://www.fcapi.ru/images/my_friends/line.png';
 		
@@ -198,7 +202,11 @@ package com.facecontrol.util
 			PHOTO_ALBUM_RED_BTN,
 			PHOTO_ALBUM_FOLDER,
 			PHOTO_ALBUM_SELECT,
-		
+			
+			TOP_BACKGROUND,
+			TOP_SMILE,
+			TOP_100,
+			
 			FRIENDS_BACKGROUND,
 			FRIENDS_LINE,
 		
