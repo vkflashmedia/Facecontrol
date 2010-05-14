@@ -335,20 +335,6 @@ package com.facecontrol.forms
 			}
 		}
 		
-		public function fullNameCurrentUser(limit: int = 20): String {
-			if (_current) {
-				if (limit < 3) {
-					limit = 3;
-				}
-				var fn: String = _current.fname + ' ' + ((_current.nickname) ? (_current.nickname + ' ') : '') + _current.lname;
-				if (fn.length > limit) {
-					fn = fn.substr(0, limit) + '...';
-				}
-				return fn;
-			}
-			return '';
-		}
-		
 		public function get currentUser(): Object {
 			return _current;
 		}
@@ -449,6 +435,7 @@ package com.facecontrol.forms
 			bd.draw(spr);
 			
 			var box:ComboBox = new ComboBox(_scene);
+			box.setDropListHoverColor(0xd0d0d0, 1, 0xababab, 1);
 			box.bitmap = new Bitmap(bd);
 			box.dropIcon = new Bitmap(Util.multiLoader.get(Images.CHOOSE_BUTTON).bitmapData);
 			box.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
@@ -586,6 +573,7 @@ package com.facecontrol.forms
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
 			AllUserPhotoForm.instance.returnForm = this;
+			AllUserPhotoForm.instance.user = _current;
 			AllUserPhotoForm.instance.show();
 			if (!PreloaderSplash.instance.isModal) {
 				scene.showModal(PreloaderSplash.instance);

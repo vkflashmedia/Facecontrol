@@ -48,6 +48,7 @@ package com.facecontrol.forms
 		private var curPhotoIndex: int;
 		private var lastPhotoX: int;
 		
+		public var user: Object;
 		public var returnForm: Form;
 		
 		private static var _instance: AllUserPhotoForm;
@@ -83,7 +84,7 @@ package com.facecontrol.forms
 			addChild(label);
 			
 			var labelNameFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff);
-			labelName = Util.createLabel(MainForm.instance.fullNameCurrentUser(), label.x + label.width, 88);
+			labelName = Util.createLabel(Util.fullName(user, 20), label.x + label.width, 88);
 			labelName.setTextFormat(labelNameFormat);
 			labelName.embedFonts = true;
 			labelName.antiAliasType = AntiAliasType.ADVANCED;
@@ -138,7 +139,7 @@ package com.facecontrol.forms
 					removeChild(labelName);
 				}
 				var labelNameFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff);
-				labelName = Util.createLabel(MainForm.instance.fullNameCurrentUser(), label.x + label.width, 88);
+				labelName = Util.createLabel(Util.fullName(user, 20), label.x + label.width, 88);
 				labelName.setTextFormat(labelNameFormat);
 				labelName.embedFonts = true;
 				labelName.antiAliasType = AntiAliasType.ADVANCED;
@@ -165,7 +166,8 @@ package com.facecontrol.forms
 				allPhotos = new Array();
 				//todo fix
 				//api.getPhotos(Util.userId);//4136593);
-				api.getPhotos(MainForm.instance.currentUser['uid']);
+				//api.getPhotos(MainForm.instance.currentUser['uid']);
+				api.getPhotos(user['uid']);
 			}
 			else {
 				if (multiloader) {

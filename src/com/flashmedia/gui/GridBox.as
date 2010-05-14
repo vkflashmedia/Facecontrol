@@ -95,9 +95,26 @@ package com.flashmedia.gui
 		protected var _embed:Boolean = false;
 		protected var _antiAliasType:String = AntiAliasType.NORMAL;
 		
+		protected var _focusItemsFillColor: int;
+		protected var _focusItemsFillAlpha: Number;
+		protected var _focusItemsBorderColor: int;
+		protected var _focusItemsBorderAlpha: Number;
+		protected var _hoverItemsFillColor: int;
+		protected var _hoverItemsFillAlpha: Number;
+		protected var _hoverItemsBorderColor: int;
+		protected var _hoverItemsBorderAlpha: Number;
+		
 		public function GridBox(value:GameScene, maxColumnsCount: uint = COLUMNS_DEF_COUNT, maxRowsCount: uint = ROWS_DEF_COUNT)
 		{
 			super(value, 0, 0, 100, 100);
+			_focusItemsFillColor = FOCUS_COLOR;
+			_focusItemsFillAlpha = FOCUS_ALPHA;
+			_focusItemsBorderColor = FOCUS_COLOR;
+			_focusItemsBorderAlpha = 1;
+			_hoverItemsFillColor = HOVER_COLOR;
+			_hoverItemsFillAlpha = HOVER_ALPHA;
+			_hoverItemsBorderColor = HOVER_COLOR;
+			_hoverItemsBorderAlpha = 1;
 			_paddingLeft = 0;
 			_paddingTop = 0;
 			_paddingBottom = 0;
@@ -128,6 +145,8 @@ package com.flashmedia.gui
 		public function addItem(value: *, go: GameObject = null): void {
 			_items.push(value);
 			var g: GameObject = (go) ? go : createGameObject(value);
+			g.setFocusColor(_focusItemsFillColor, _focusItemsFillAlpha, _focusItemsBorderColor, _focusItemsBorderAlpha);
+			g.setHoverColor(_hoverItemsFillColor, _hoverItemsFillAlpha, _hoverItemsBorderColor, _hoverItemsBorderAlpha);
 			g.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 			g.addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
 			_gameObjects.push(g);
@@ -141,11 +160,33 @@ package com.flashmedia.gui
 					removeComponent(_gameObjects[i]);
 					_gameObjects[i] = null;
 					_gameObjects[i] = (newGo) ? newGo : createGameObject(newItem);
+					(_gameObjects[i] as GameObject).setFocusColor(_focusItemsFillColor, _focusItemsFillAlpha, _focusItemsBorderColor, _focusItemsBorderAlpha);
+					(_gameObjects[i] as GameObject).setHoverColor(_hoverItemsFillColor, _hoverItemsFillAlpha, _hoverItemsBorderColor, _hoverItemsBorderAlpha);
 					_gameObjects[i].addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, itemMouseClickListener);
 					_gameObjects[i].addEventListener(GameObjectEvent.TYPE_MOUSE_DOUBLECLICK, itemMouseDoubleClickListener);
 				}
 			}
 			updateLayout(true, true);
+		}
+		
+		public function setItemsHoverColor(fillColor: int, fillAlpha: Number, borderColor: int, borderAlpha: Number): void {
+			_hoverItemsFillColor = fillColor;
+			_hoverItemsFillAlpha = fillAlpha;
+			_hoverItemsBorderColor = borderColor;
+			_hoverItemsBorderAlpha = borderAlpha;
+			for (var i: int = 0; i < _gameObjects.length; i++) {
+				(_gameObjects[i] as GameObject).setHoverColor(fillColor, fillAlpha, borderColor, borderAlpha);
+			}
+		}
+		
+		public function setItemsFocusColor(fillColor: int, fillAlpha: Number, borderColor: int, borderAlpha: Number): void {
+			_focusItemsFillColor = fillColor;
+			_focusItemsFillAlpha = fillAlpha;
+			_focusItemsBorderColor = borderColor;
+			_focusItemsBorderAlpha = borderAlpha;
+			for (var i: int = 0; i < _gameObjects.length; i++) {
+				(_gameObjects[i] as GameObject).setFocusColor(fillColor, fillAlpha, borderColor, borderAlpha);
+			}
 		}
 		
 		public function removeAllItems(): void {

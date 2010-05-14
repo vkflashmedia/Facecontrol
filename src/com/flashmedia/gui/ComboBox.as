@@ -70,6 +70,10 @@ package com.flashmedia.gui
 			}
 		}
 		
+		public function setDropListHoverColor(fillColor: int, fillAlpha: Number, borderColor: int, borderAlpha: Number): void {
+			_dropList.setItemsHoverColor(fillColor, fillAlpha, borderColor, borderAlpha);
+		}
+		
 		public function clear():void {
 			_dropList.removeAllItems();
 		}

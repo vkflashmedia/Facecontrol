@@ -129,6 +129,10 @@ package com.flashmedia.basics
 		protected var _focus: DisplayObject;
 		protected var _focusSizeMode: String;
 		protected var _focusLayout: int;
+		protected var _focusFillColor: int;
+		protected var _focusFillAlpha: Number;
+		protected var _focusBorderColor: int;
+		protected var _focusBorderAlpha: Number;
 		// настройка свойств рамки при наведении
 		protected var _hoverEnabled: Boolean;
 		protected var _viewHover: Boolean;
@@ -136,6 +140,10 @@ package com.flashmedia.basics
 		protected var _hover: DisplayObject;
 		protected var _hoverSizeMode: String;
 		protected var _hoverLayout: int;
+		protected var _hoverFillColor: int;
+		protected var _hoverFillAlpha: Number;
+		protected var _hoverBorderColor: int;
+		protected var _hoverBorderAlpha: Number;
 		// цвет фона
 		protected var _fillBackground: Boolean;
 		protected var _backgroundColor: uint;
@@ -161,7 +169,9 @@ package com.flashmedia.basics
 			_debug = false;
 			_autoSize = true;
 			setSelect(false, true);
+			setFocusColor(FOCUS_COLOR, FOCUS_ALPHA, FOCUS_COLOR, 1);
 			setFocus(false, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, SIZE_MODE_BORDER);
+			setHoverColor(HOVER_COLOR, HOVER_ALPHA, HOVER_COLOR, 1);
 			setHover(false, true, null, View.ALIGN_HOR_NONE | View.ALIGN_VER_NONE, SIZE_MODE_BORDER);
 			_type = 'GameObject';
 			_backgroundColor = BACKGROUNG_COLOR;
@@ -429,6 +439,14 @@ package com.flashmedia.basics
 			return _selectable;
 		}
 		
+		public function setFocusColor(fillColor: int, fillAlpha: Number, borderColor: int, borderAlpha: Number): void {
+			_focusFillColor = fillColor;
+			_focusFillAlpha = fillAlpha;
+			_focusBorderColor = borderColor;
+			_focusBorderAlpha = borderAlpha;
+			updateFocus();
+		}
+		
 		public function setFocus(enabled: Boolean, viewFocus: Boolean = true, focusDisplayObject: DisplayObject = null, layout: int = 0, sizeMode: String = SIZE_MODE_BORDER): void {
 			_focusEnabled = enabled;
 			_viewFocus = viewFocus;
@@ -463,6 +481,14 @@ package com.flashmedia.basics
 //			updateFocus();
 //			//sortSprites();
 //		}
+		
+		public function setHoverColor(fillColor: int, fillAlpha: Number, borderColor: int, borderAlpha: Number): void {
+			_hoverFillColor = fillColor;
+			_hoverFillAlpha = fillAlpha;
+			_hoverBorderColor = borderColor;
+			_hoverBorderAlpha = borderAlpha;
+			updateHover();
+		}
 		
 		public function setHover(enabled: Boolean, viewHover: Boolean = true, hoverDisplayObject: DisplayObject = null, layout: int = 0, sizeMode: String = SIZE_MODE_BORDER): void {
 			_hoverEnabled = enabled;
@@ -707,8 +733,8 @@ package com.flashmedia.basics
 						_focus = s;
 					}
 					(_focus as Sprite).graphics.clear();
-					(_focus as Sprite).graphics.lineStyle(1, FOCUS_COLOR);
-					(_focus as Sprite).graphics.beginFill(FOCUS_COLOR, FOCUS_ALPHA);
+					(_focus as Sprite).graphics.lineStyle(1, _focusBorderColor, _focusBorderAlpha);
+					(_focus as Sprite).graphics.beginFill(_focusFillColor, _focusFillAlpha);
 					switch (_focusSizeMode) {
 						case SIZE_MODE_SELECT:
 							if (_select) {
@@ -748,8 +774,8 @@ package com.flashmedia.basics
 					}
 					(_hover as Sprite).visible = false;
 					(_hover as Sprite).graphics.clear();
-					(_hover as Sprite).graphics.lineStyle(1, HOVER_COLOR);
-					(_hover as Sprite).graphics.beginFill(HOVER_COLOR, HOVER_ALPHA);
+					(_hover as Sprite).graphics.lineStyle(1, _hoverBorderColor, _hoverBorderAlpha);
+					(_hover as Sprite).graphics.beginFill(_hoverFillColor, _hoverFillAlpha);
 					switch (_hoverSizeMode) {
 						case SIZE_MODE_SELECT:
 							if (_select) {

@@ -199,10 +199,10 @@ package com.facecontrol.forms
 					var notAppFriends:Array = response as Array;
 					
 					for each (var notAppFriend:Object in notAppFriends) {
-						if (notAppFriend.city == 0) notAppFriend.city = null;
+						if (!notAppFriend.city || notAppFriend.city == 0) notAppFriend.city = null;
 						else cities.push(notAppFriend.city);
 						
-						if (notAppFriend.country == 0) notAppFriend.country = null;
+						if (!notAppFriend.country || notAppFriend.country == 0) notAppFriend.country = null;
 						else countries.push(notAppFriend.country);
 						
 						_friends = _friends.concat(notAppFriend);

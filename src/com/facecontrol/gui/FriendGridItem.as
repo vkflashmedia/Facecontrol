@@ -46,6 +46,7 @@ package com.facecontrol.gui
 				morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
 				morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
 					scene.showModal(PreloaderSplash.instance);
+					AllUserPhotoForm.instance.user = userRaw;
 					if (ownerForm is FriendsForm) {
 						AllUserPhotoForm.instance.returnForm = FriendsForm.instance;
 					}
