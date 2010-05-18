@@ -28,6 +28,8 @@ package com.facecontrol.gui
 		public static const HORIZONTAL_SCALE_AUTO:uint = 0;
 		public static const HORIZONTAL_SCALE_ALWAYS:uint = 1;
 		
+		public var index:int = 0;
+		
 		private var _align:uint = ALIGN_LEFT;
 		
 		private var _photoBorder:uint;
@@ -44,6 +46,9 @@ package com.facecontrol.gui
 		
 		private var _vscale:uint;
 		private var _hscale:uint;
+		
+		private var _photoWidth:int;
+		private var _photoHeight:int;
 		
 		public function Photo(value:GameScene, image:Bitmap, x:int, y:int, width:int, height:int, type:uint=0)
 		{
@@ -163,53 +168,23 @@ package com.facecontrol.gui
 					}
 				}
 				
-//				if (_thumbnail.width > (width - _photoBorder*2)) {
-//					var s:Number = (width - _photoBorder*2) / _thumbnail.width;
-//					if (s < 1) {
-//						var matrix:Matrix = new Matrix();
-//						matrix.scale(s, s);
-//						_thumbnail.transform.matrix = matrix;
-//					}
-//					else matrix = null;
-//				}
-//				else if (_hscale == HORIZONTAL_SCALE_ALWAYS) {
-//					s = (width - _photoBorder*2) / _thumbnail.width;
-//					matrix = new Matrix();
-//					matrix.scale(s, s);
-//					_thumbnail.transform.matrix = matrix;
-//				}
-				
-//				if (_thumbnail.height < (height - _photoBorder*2)) {
-//					_thumbnail = new Bitmap(_photo.bitmapData, 'auto', true);
-//					s = (height - _photoBorder*2) / _thumbnail.height;
-//					if (s < 1) {
-//						matrix = new Matrix();
-//						matrix.scale(s, s);
-//						_thumbnail.transform.matrix = matrix;
-//					}
-//					else matrix = null;
-//				}
-				
-				var photoWidth:Number = width;
-				var photoHeight:Number = height;
+				_photoWidth = width;
+				_photoHeight = height;
 				var xIndent:int = 0;
 				var yIndent:int = 0;
 				
-				photoWidth = (_thumbnail.width < width) ? _thumbnail.width : width - _photoBorder * 2;
-				photoHeight = (_thumbnail.height < height) ? _thumbnail.height : height - _photoBorder * 2;
+				_photoWidth = (_thumbnail.width < width) ? _thumbnail.width : width;
+				_photoHeight = (_thumbnail.height < height) ? _thumbnail.height : height;
 				
 				if (!matrix) {
-//					photoWidth = (_thumbnail.width < width) ? _thumbnail.width : width + _photoBorder * 2;
-//					photoHeight = (_thumbnail.height < height) ? _thumbnail.height : height + _photoBorder * 2;
-					
 					if (_align == ALIGN_CENTER) {
-						xIndent = (width - photoWidth) / 2;
-						yIndent = (height - photoHeight) / 2;
+						xIndent = (width - _photoWidth) / 2;
+						yIndent = (height - _photoHeight) / 2;
 					}
 				}
 				
-				var squareWidth:Number = photoWidth - _photoBorder * 2;
-				var squareHeight:Number = photoHeight - _photoBorder * 2;
+				var squareWidth:Number = _photoWidth - _photoBorder * 2;
+				var squareHeight:Number = _photoHeight - _photoBorder * 2;
 				
 				_squareMask = new Sprite();
 				_squareMask.graphics.beginFill(_photoBorderColor);
@@ -247,21 +222,20 @@ package com.facecontrol.gui
 						_thumbnail.y = yIndent;
 					break;
 					case VERTICAL_ALIGN_CENTER:
-						_thumbnail.y = yIndent + (photoHeight - _thumbnail.height) / 2;
+						_thumbnail.y = yIndent + (_photoHeight - _thumbnail.height) / 2;
 						break;
 				}
-					
+				
 				switch (_halign) {
 					case HORIZONTAL_ALIGN_LEFT:
 						_thumbnail.x = xIndent;
 					break;
 					case HORIZONTAL_ALIGN_CENTER:
-						_thumbnail.x = xIndent + (photoWidth - _thumbnail.width) / 2;
+						_thumbnail.x = xIndent + (_photoWidth - _thumbnail.width) / 2;
+//						_thumbnail.x = xIndent + (width - _photoBorder*2 - _thumbnail.width) / 2;
 						break;
 				}
 				
-//				_thumbnail.x = xIndent + (photoWidth - _thumbnail.width) / 2;
-//				_thumbnail.y = yIndent + (photoHeight - _thumbnail.height) / 2;
 				if (_thumbnail.x > xIndent + _photoBorder) _thumbnail.x = xIndent + _photoBorder;
 				if (_thumbnail.y > yIndent + _photoBorder) _thumbnail.y = yIndent + _photoBorder;
 				
@@ -270,11 +244,11 @@ package com.facecontrol.gui
 		}
 		
 		public function get photoWidth():int {
-			return (_thumbnail) ? _thumbnail.width + _photoBorder*2 : width;
+			return (_photoWidth > 0) ? _photoWidth + _photoBorder*2 : width;
 		}
 		
 		public function get photoHeight():int {
-			return (_thumbnail) ? _thumbnail.height + _photoBorder*2 : height;
+			return (_photoHeight > 0) ? _photoHeight + _photoBorder*2 : height;
 		}
 		
 		public function set photo(value:Bitmap):void {

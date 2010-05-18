@@ -36,9 +36,10 @@ package com.flashmedia.gui
 			buttonMode = true;
 			useHandCursor = true;
 			setSelect(true);
+			
 		}
 		
-		private function update():void {
+		public function update():void {
 			switch (_state) {
 				case CONTROL_STATE_NORMAL:
 					textField.setTextFormat(_normalStateTextFormat);
@@ -75,7 +76,7 @@ package com.flashmedia.gui
 		}
 		
 		public function get label():String {
-			return textField.text;
+			return (textField) ? textField.text : '';
 		}
 		
 		public function set label(text:String):void {
@@ -124,6 +125,10 @@ package com.flashmedia.gui
 				_state = CONTROL_STATE_NORMAL;
 				update();
 			}
+		}
+		
+		protected override function mouseClickListener(event: MouseEvent): void {
+			super.mouseClickListener(event);
 		}
 	}
 }

@@ -181,13 +181,13 @@ package {
 						Util.api.friends(response as Array);
 					break;
 					
-					case 'getFriends':
-						FriendsForm.instance.users = response.users;
-						FriendsForm.instance.show();
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
-					break;
+//					case 'getFriends':
+//						FriendsForm.instance.users = response.users;
+//						FriendsForm.instance.show();
+//						if (PreloaderSplash.instance.isModal) {
+//							this.resetModal(PreloaderSplash.instance);
+//						}
+//					break;
 					
 					case 'isAppUser':
 						switch (response) {
@@ -325,9 +325,6 @@ package {
 									break;
 								}
 							} 
-						}
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
 						}
 					break;
 				}

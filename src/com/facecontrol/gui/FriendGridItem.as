@@ -116,7 +116,7 @@ package com.facecontrol.gui
 			name.x = 89;
 			name.y = 39;
 			name.autoSize = TextFieldAutoSize.LEFT;
-			name.text = Util.fullName(userRaw);
+			name.text = Util.fullName(userRaw, 30);
 			name.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e));
 			name.embedFonts = true;
 			name.antiAliasType = AntiAliasType.ADVANCED;
@@ -162,6 +162,8 @@ package com.facecontrol.gui
 			if (userRaw.hasOwnProperty('favorite') && showFavoriteLink) {
 				var favorite:LinkButton = new LinkButton(value, (userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 214, 75, TextFieldAutoSize.RIGHT);
 				favorite.width = 100;
+				favorite.height = favorite.textField.height;
+				favorite.update();
 				favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xce7716, null, null, true), CONTROL_STATE_NORMAL);
 				favorite.textField.embedFonts = true;
 				favorite.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -238,6 +240,10 @@ package com.facecontrol.gui
 		}
 		
 		public function onFavoriteClick(event:GameObjectEvent):void {
+			if (!PreloaderSplash.instance.isModal) {
+				_scene.showModal(PreloaderSplash.instance);
+			}
+			
 			if (_user.favorite) {
 				Util.api.deleteFavorite(Util.userId, _user.uid);
 			}

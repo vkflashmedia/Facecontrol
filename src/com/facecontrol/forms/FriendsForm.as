@@ -112,8 +112,7 @@ package com.facecontrol.forms
 				Util.scene.showModal(PreloaderSplash.instance);
 			}
 			_users = value;
-			var user:Object;
-			
+//			var user:Object;
 //			for each (user in _users) {
 //				if (user.pid) {
 //					if (!Util.multiLoader.hasLoaded(user.pid)) {
@@ -203,10 +202,13 @@ package com.facecontrol.forms
 		}
 		
 		public override function refresh():void {
-			Util.vkontakte.getFriends();
+			requestFriends();
 		}
 		
 		public function requestFriends():void {
+			if (!PreloaderSplash.instance.isModal) {
+				_scene.showModal(PreloaderSplash.instance);
+			}
 			_vkontakte.getAppFriends();
 		}
 		
@@ -254,87 +256,23 @@ package com.facecontrol.forms
 						}
 					}
 					
-					if (PreloaderSplash.instance.isModal) {
-						_scene.resetModal(PreloaderSplash.instance);
-					}
+//					if (PreloaderSplash.instance.isModal) {
+//						_scene.resetModal(PreloaderSplash.instance);
+//					}
 					users = _friends;
 					show();
 				break;
 				
 				case 'getAppFriends':
-//					var appFriendsIds:Array = response as Array;
-//					var needRequest:Boolean = _appFriends || appFriendsIds.length > 0;
-//					var count:int = (appFriendsIds.length < _endIndex) ? appFriendsIds.length : _endIndex;
-//					for each (var appFriend:Object in _appFriends) {
-//						needRequest = true;
-//						for (var i:int = _startIndex; i < count; ++i) {
-//							var uid:int = appFriendsIds[i];
-//							if (appFriend.uid == uid) {
-//								needRequest = false;
-//								break;
-//							}
-//						}
-//						
-//						if (needRequest) {
-//							break;
-//						}
-//					}
-//					
-//					if (needRequest) {
-//						_api.friends(appFriendsIds);
-//					}
-				
-					var appFriendsIds:Array = response as Array;
-					var needRequest:Boolean = _appFriends || appFriendsIds.length > 0;
-					for each (var appFriend:Object in _appFriends) {
-						needRequest = true;
-						for each (var uid:int in appFriendsIds) {
-							if (appFriend.uid == uid) {
-								needRequest = false;
-								break;
-							}
-						}
-						
-						if (needRequest) {
-							break;
-						}
-					}
-					
-					if (needRequest) {
-						_api.friends(appFriendsIds);
-					}
-					else {
-						_vkontakte.getFriends();
-					}
+					_api.friends(response as Array);
 				break;
 				
 				case 'getFriends':
-//					var friendsIds:Array = response as Array;
-//					var notAppFriendsIds:Array = new Array();
-//					
-//					var start:int = _startIndex > _appFriends.length ? _startIndex : _appFriends.length;
-//					
-//					count = _endIndex - start;
-//					for each (var id:String in friendsIds) {
-//						var isAppFriendId:Boolean = false;
-//						for each (appFriend in _appFriends) {
-//							if (appFriend.uid == id) {
-//								isAppFriendId = true;
-//								break;
-//							}
-//						}
-//						if (!isAppFriendId) {
-//							notAppFriendsIds.push(id);
-//							if (notAppFriendsIds.length >= count) break;
-//						}
-//					}
-//					_vkontakte.getProfiles(notAppFriendsIds);
-					
 					_friendsIds = response as Array;
 					var notAppFriendsIds:Array = new Array();
 					for each (var id:String in _friendsIds) {
 						var isAppFriendId:Boolean = false;
-						for each (appFriend in _appFriends) {
+						for each (var appFriend:Object in _appFriends) {
 							if (appFriend.uid == id) {
 								isAppFriendId = true;
 								break;

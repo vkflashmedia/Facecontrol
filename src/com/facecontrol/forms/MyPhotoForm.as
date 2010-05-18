@@ -40,7 +40,7 @@ package com.facecontrol.forms
 		private var _mainPhoto:Photo;
 		private var _main:Object;
 		
-		private var _enterCommentLabel:TextField;
+		private var _commentPlaceholder:TextField;
 		private var _ratingAverageField:TextField;
 		private var _votesCountField:TextField;
 		private var _noVotesField:TextField;
@@ -49,6 +49,8 @@ package com.facecontrol.forms
 		private var _grid:GridBox;
 		private var _pagination:Pagination;
 		private var _commentInput:TextField;
+		private var _commentLabel:TextField;
+		private var _commentForm:Bitmap;
 		
 		public function MyPhotoForm(value:GameScene)
 		{
@@ -121,24 +123,24 @@ package com.facecontrol.forms
 			
 			_bigStar = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
 			_bigStar.x = 38;
-			_bigStar.y = 376;
+			_bigStar.y = _mainPhoto.y + _mainPhoto.photoHeight + 8;
 			addChild(_bigStar);
 			
-			_ratingAverageField = Util.createLabel('9,5', 77, 371);
+			_ratingAverageField = Util.createLabel('9,5', 77, _mainPhoto.y + _mainPhoto.photoHeight + 3);
 			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
 			_ratingAverageField.embedFonts = true;
 			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
 			_ratingAverageField.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_ratingAverageField);
 			
-			_votesCountField = Util.createLabel(Util.votesCount(0), 140, 386);
+			_votesCountField = Util.createLabel(Util.votesCount(0), 140, _mainPhoto.y + _mainPhoto.photoHeight + 18);
 			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
 			_votesCountField.embedFonts = true;
 			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
 			_votesCountField.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_votesCountField);
 			
-			_noVotesField = Util.createLabel('нет голосов', 38, 386);
+			_noVotesField = Util.createLabel('нет голосов', 38, _votesCountField.y);
 			_noVotesField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
 			_noVotesField.embedFonts = true;
 			_noVotesField.antiAliasType = AntiAliasType.ADVANCED;
@@ -146,33 +148,33 @@ package com.facecontrol.forms
 			_noVotesField.visible = false;
 			addChild(_noVotesField);
 			
-			label = Util.createLabel('Комментарий к фото:', 38, 430);
-			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
-			label.embedFonts = true;
-			label.antiAliasType = AntiAliasType.ADVANCED;
-			label.autoSize = TextFieldAutoSize.LEFT;
-			addChild(label);
+			_commentLabel = Util.createLabel('Комментарий к фото:', 38, _mainPhoto.y + _mainPhoto.photoHeight + 62);
+			_commentLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
+			_commentLabel.embedFonts = true;
+			_commentLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_commentLabel.autoSize = TextFieldAutoSize.LEFT;
+			addChild(_commentLabel);
 			
-			var commentForm:Bitmap = Util.multiLoader.get(Images.MY_PHOTO_COMMENT_FORM);
-			commentForm.x = 37;
-			commentForm.y = 454;
-			addChild(commentForm);
+			_commentForm = Util.multiLoader.get(Images.MY_PHOTO_COMMENT_FORM);
+			_commentForm.x = 37;
+			_commentForm.y = _mainPhoto.y + _mainPhoto.photoHeight + 85;
+			addChild(_commentForm);
 			
-			_enterCommentLabel = new TextField();
-			_enterCommentLabel.x = 46;
-			_enterCommentLabel.y = 472;
-			_enterCommentLabel.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
-			_enterCommentLabel.text = 'Введите комментарий';
-			_enterCommentLabel.embedFonts = true;
-			_enterCommentLabel.selectable = false;
-			_enterCommentLabel.antiAliasType = AntiAliasType.ADVANCED;
-			_enterCommentLabel.autoSize = TextFieldAutoSize.LEFT;
-			addChild(_enterCommentLabel);
+			_commentPlaceholder = new TextField();
+			_commentPlaceholder.x = 46;
+			_commentPlaceholder.y = _mainPhoto.y + _mainPhoto.photoHeight + 103;
+			_commentPlaceholder.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
+			_commentPlaceholder.text = 'Введите комментарий';
+			_commentPlaceholder.embedFonts = true;
+			_commentPlaceholder.selectable = false;
+			_commentPlaceholder.antiAliasType = AntiAliasType.ADVANCED;
+			_commentPlaceholder.autoSize = TextFieldAutoSize.LEFT;
+			addChild(_commentPlaceholder);
 			
 			_commentInput = new TextField();
 			_commentInput.selectable = true;
 			_commentInput.x = 46;
-			_commentInput.y = 472;
+			_commentInput.y = _commentPlaceholder.y;
 			_commentInput.width = 176;
 			_commentInput.height = 121;
 			_commentInput.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
@@ -269,6 +271,15 @@ package com.facecontrol.forms
 		
 		private function update():void {
 			if (_main) {
+				_bigStar.y = _mainPhoto.y + _mainPhoto.photoHeight + 8;
+				_ratingAverageField.y = _mainPhoto.y + _mainPhoto.photoHeight + 3;
+				_votesCountField.y = _mainPhoto.y + _mainPhoto.photoHeight + 18;
+				_noVotesField.y = _votesCountField.y;
+				_commentLabel.y = _mainPhoto.y + _mainPhoto.photoHeight + 62;
+				_commentForm.y = _mainPhoto.y + _mainPhoto.photoHeight + 85;
+				_commentPlaceholder.y = _mainPhoto.y + _mainPhoto.photoHeight + 103;
+				_commentInput.y = _commentPlaceholder.y;
+				
 				_noVotesField.visible = (_main.votes_count == 0);
 				
 				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
@@ -303,7 +314,7 @@ package com.facecontrol.forms
 						_main = photo;
 						_commentInput.defaultTextFormat = _commentInput.getTextFormat();
 						_commentInput.text = (_main.comment) ? _main.comment : '';
-						_enterCommentLabel.visible = (_commentInput.text == '');
+						_commentPlaceholder.visible = (_commentInput.text == '');
 					}
 				}
 				
@@ -362,11 +373,11 @@ package com.facecontrol.forms
 		}
 		
 		public function onMouseIn(event:FocusEvent):void {
-			_enterCommentLabel.visible = false;
+			_commentPlaceholder.visible = false;
 		}
 		
 		public function onMouseOut(event:FocusEvent):void {
-			_enterCommentLabel.visible = (_commentInput.text == '');
+			_commentPlaceholder.visible = (_commentInput.text == '');
 			if (_main.comment != _commentInput.text) {
 				Util.api.setComment(_main.pid, _commentInput.text);
 			}

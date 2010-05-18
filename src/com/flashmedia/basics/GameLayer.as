@@ -233,7 +233,7 @@ package com.flashmedia.basics
 			sumDX += dX;
 			_deltaX -= dX;
 			_deltaY -= dY;
-			if (_deltaX == 0) {
+			if (debug && _deltaX == 0) {
 				trace('sumDX = ' + sumDX);				
 			}
 		}

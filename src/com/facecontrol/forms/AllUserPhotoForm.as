@@ -121,7 +121,7 @@ package com.facecontrol.forms
 			addChild(rightBtn);
 			
 			var format:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
-			var cancel:Button = new Button(_scene, 259, 572);
+			var cancel:Button = new Button(_scene, 251, 572);
 			cancel.setBackgroundImageForState(Util.multiLoader.get(Images.ADD_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
 			cancel.setTitleForState('Назад', CONTROL_STATE_NORMAL);
 			cancel.setTextFormatForState(format, CONTROL_STATE_NORMAL);
@@ -150,11 +150,11 @@ package com.facecontrol.forms
 					removeChild(thumbsLayer);
 				}
 				thumbsLayer = new GameLayer(scene);
-				//thumbsLayer.debug = true;
+//				thumbsLayer.debug = true;
 				thumbsLayer.smoothScroll = 0.7;
-				thumbsLayer.x = 96;
-				thumbsLayer.y = 496;
-				thumbsLayer.width = 435;
+				thumbsLayer.x = 99;
+				thumbsLayer.y = 498;
+				thumbsLayer.width = 432;
 				thumbsLayer.height = THUMB_HEIGHT;
 				thumbsLayer.scrollRect = new Rectangle(0, 0, thumbsLayer.width, THUMB_HEIGHT);
 				addChild(thumbsLayer);
@@ -181,9 +181,9 @@ package com.facecontrol.forms
 		}
 		
 		private function createBigPhoto(photo:Object):void {
-//			curBigPhoto = new Photo(scene, photo['src_big'], 73, 144, 494, 341, Photo.BORDER_TYPE_ROUND_RECT);
-			curBigPhoto = new Photo(scene, photo['src_big'], 83, 154, 474, 321, Photo.BORDER_TYPE_ROUND_RECT);
+			curBigPhoto = new Photo(scene, photo['src_big'], 85, 155, 470, 315, Photo.BORDER_TYPE_ROUND_RECT);
 			curBigPhoto.align = Photo.ALIGN_CENTER;
+//			curBigPhoto.verticalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
 			curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
 			curBigPhoto.photoBorderColor = 0x3a2426;
@@ -228,12 +228,13 @@ package com.facecontrol.forms
 			if (photo.hasOwnProperty('src_big')) {
 				photo['index'] = addedPhotosCount;
 				var thumb: Photo = new Photo(scene, photo['src_big'], 0, 0, THUMB_WIDTH, THUMB_HEIGHT, Photo.BORDER_TYPE_RECT);
+				thumb.photoBorder = 1;
 				thumb.photoBorderColor = 0x563645;
 				thumb.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 				thumb.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
 				if (addedPhotosCount == 0) {
 					createBigPhoto(photo);
-					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
+					thumb.x = 189;//(thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
 					if (PreloaderSplash.instance.isModal) {
 						scene.resetModal(PreloaderSplash.instance);
@@ -244,9 +245,29 @@ package com.facecontrol.forms
 					thumbsLayer.width += THUMB_BETWEEN_INDENT + THUMB_WIDTH;
 					lastPhotoX += THUMB_BETWEEN_INDENT + THUMB_WIDTH;
 				}
+				thumb.buttonMode = true;
+				thumb.useHandCursor = true;
+				thumb.setSelect(true);
+				thumb.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onThumbClick);
+				thumb.index = addedPhotosCount;
 				thumbsLayer.addChild(thumb);
 				addedPhotosCount++;
 			}
+		}
+		
+		public function onThumbClick(event: GameObjectEvent): void {
+			curPhotoIndex = event.target.index;
+			if (curBigPhoto && contains(curBigPhoto)) {
+				removeChild(curBigPhoto);
+			}
+			var cp: Object = null;
+			for each (var p: Object in allPhotos) {
+				if (p['index'] == curPhotoIndex) {
+					cp = p;
+				}
+			}
+			createBigPhoto(cp);
+			thumbsLayer.scroll(event.target.x - 189 - thumbsLayer.scrollRect.x, 0);
 		}
 		
 		private function onLeftBtnClick(event: GameObjectEvent): void {

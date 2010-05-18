@@ -98,7 +98,6 @@ package com.facecontrol.forms
 			_rateBar.bitmap = Util.multiLoader.get(Images.RATING_BACKGROUND);
 			_rateBar.rateIconOff = Util.multiLoader.get(Images.RATING_OFF);
 			_rateBar.rateIconOn = Util.multiLoader.get(Images.RATING_ON);
-//			_rateBar.addEventListener(MouseEvent.CLICK, onRateClicked);
 			_rateBar.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onRateClicked);
 			
 			addChild(_rateBar);
@@ -309,11 +308,13 @@ package com.facecontrol.forms
 				if (_current) {
 					bigPhoto = null;
 					
-					if (_previous) {
-						Util.multiLoader.unload(_previous.pid);
+					if (_current.votes_count) {
+						if (_previous) {
+							Util.multiLoader.unload(_previous.pid);
+						}
+						_previous = _current;
+						previousPhoto();
 					}
-					_previous = _current;
-					previousPhoto();
 				}
 				
 				_current = null;
@@ -335,12 +336,27 @@ package com.facecontrol.forms
 					_previous = _current;
 				}
 				
+//				if (Util.multiLoader.hasLoaded(obj.pid)) {
 				if (!_current || _current.pid != obj.pid) {
 					Util.multiLoader.load(obj.src_big, obj.pid, 'Bitmap');
 					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				}
 				
 				_current = obj;
+				_nameField.text = Util.fullName(_current);
+				_nameField.setTextFormat(_nameTextFormat);
+				
+				if (_commentField) {
+					if (_current.comment) {
+						_commentField.text = _current.comment ? _current.comment : '';
+						_commentField.setTextFormat(_commentTextFormat);
+						_commentField.visible = true;
+					}
+					else {
+						_commentField.visible = false;
+					}
+				}
+				
 				_rateBar.enabled = true;
 				if (_current) _favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
@@ -362,15 +378,6 @@ package com.facecontrol.forms
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.hasLoaded(_current.pid)) {
 				bigPhoto = Util.multiLoader.get(_current.pid);
-				
-				_nameField.text = Util.fullName(_current);
-				_nameField.setTextFormat(_nameTextFormat);
-				
-				if (_current.comment && _commentField) {
-					_commentField.text = _current.comment ? _current.comment : '';
-					_commentField.setTextFormat(_commentTextFormat);
-				}
-				
 				previousPhoto();
 			}
 			
@@ -603,7 +610,9 @@ package com.facecontrol.forms
 			if (_countryBox.selectedItem != COUNTRY_DEFAULT) {
 				country = Util.user.country;
 			}
-			
+			if (!PreloaderSplash.instance.isModal) {
+				scene.showModal(PreloaderSplash.instance);
+			}
 			Util.api.saveSettings(Util.userId, sex, ageMin, ageMax, city, country);
 		}
 		
@@ -617,6 +626,9 @@ package com.facecontrol.forms
 		}
 		
 		public function onFavoriteClick(event: GameObjectEvent):void {
+			if (!PreloaderSplash.instance.isModal) {
+				scene.showModal(PreloaderSplash.instance);
+			}
 			if (_current.favorite) {
 				Util.api.deleteFavorite(Util.userId, _current.uid);
 			}
