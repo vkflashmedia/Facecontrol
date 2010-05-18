@@ -5,6 +5,7 @@ package com.efnx.net
 {
 	
 	import com.efnx.events.MultiLoaderEvent;
+	import com.facecontrol.util.Images;
 	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
@@ -100,7 +101,11 @@ package com.efnx.net
 	 	 *	@param returnType The expected return type. Valid types are "MovieClip", "Sprite", "Bitmap" or "BitmapData"
 		 */
 		public function load(path:String, entryName:String = "", returnType:String = ""):void
-		{			
+		{
+			if (path == 'http://vkontakte.ru/images/question_a.gif') {
+				path = Images.QUESTION_A;
+			}
+			
 			if(testing) trace("MultiLoader::load() " + path,entryName,returnType);
 			/*just in case no name is included*/
 			if(entryName == "") entryName = "Data_";

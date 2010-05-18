@@ -144,7 +144,7 @@ package com.facecontrol.forms
 			Util.api.favorites(Util.userId);
 		}
 		
-		public function show():void {
+		public override function show():void {
 			if (_scene) {
 				for (var i:int = 0; i < _scene.numChildren; ++i) {
 					if (_scene.getChildAt(i) is Form) {

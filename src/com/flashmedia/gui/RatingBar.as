@@ -1,6 +1,7 @@
 package com.flashmedia.gui
 {
 	import com.flashmedia.basics.GameObject;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	
 	import flash.display.Bitmap;
@@ -23,7 +24,6 @@ package com.flashmedia.gui
 		private var _tY: int;
 		private var _rateCellWidth: uint;
 		private var _rateCellHeight: uint;
-		private var _enabled:Boolean;
 		
 		public function RatingBar(value: GameScene, pointsCount: uint = POINTS_COUNT_DEF)
 		{
@@ -44,8 +44,12 @@ package com.flashmedia.gui
 		}
 		
 		public function set enabled(value:Boolean):void {
-//			setSelect(value);
-			_enabled = value;
+			setSelect(value);
+			buttonMode = selectable;
+			useHandCursor = selectable;
+			
+			if (!selectable) _hoverRating = 0;
+			update(false);
 		}
 		
 		public override function set bitmap(value:Bitmap):void {
@@ -131,7 +135,7 @@ package com.flashmedia.gui
 		}
 		
 		protected override function mouseMoveListener(event: MouseEvent): void {
-			if (_enabled) {
+			if (selectable) {
 				super.mouseMoveListener(event);
 				if (event.localX > _tX && event.localY > _tY &&
 					event.localX < (_tX + _pointsCount * _rateCellWidth) &&
@@ -146,7 +150,7 @@ package com.flashmedia.gui
 		}
 		
 		protected override function mouseOutListener(event: MouseEvent): void {
-			if (_enabled) {
+			if (selectable) {
 				super.mouseOutListener(event);
 				_hoverRating = 0;
 				update(false);
@@ -154,13 +158,14 @@ package com.flashmedia.gui
 		}
 		
 		protected override function mouseClickListener(event: MouseEvent): void {
-			if (_enabled) {
-				super.mouseClickListener(event);
+			if (selectable) {
 				if (event.localX > _tX && event.localY > _tY &&
 					event.localX < (_tX + _pointsCount * _rateCellWidth) &&
 					event.localY < (_tY + _rateCellHeight)) {
 					rating = (event.localX - _tX) / _rateCellWidth + 1;
 				}
+				
+				super.mouseClickListener(event);
 			}
 		}
 	}

@@ -4,6 +4,9 @@ package com.facecontrol.util
 	
 	public class Images
 	{
+		
+		public static const QUESTION_A:String = 'http://www.fcapi.ru/images/question_a.gif';
+		
 		public static const HEAD_BUTTON1:String = 'http://www.fcapi.ru/images/head/01.png';
 		public static const HEAD_BUTTON2:String = 'http://www.fcapi.ru/images/head/02.png';
 		public static const HEAD_BUTTON3:String = 'http://www.fcapi.ru/images/head/03.png';

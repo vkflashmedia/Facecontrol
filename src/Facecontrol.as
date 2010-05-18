@@ -102,12 +102,13 @@ package {
 					addChild(FriendsForm.instance);
 					addChild(AllUserPhotoForm.instance);
 					
-//					if (Util.wrapper.application) {
+					if (Util.wrapper.application) {
 //						Util.vkontakte.isAppUser();
-//					}
-//					else {
+						Util.vkontakte.getUserSettings();
+					}
+					else {
 						Util.vkontakte.getProfiles(new Array('' + Util.userId));
-//					}
+					}
 				}
 				else {
 					_preloaderShown = true;
@@ -164,18 +165,7 @@ package {
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
-			try {
-				switch (event.errorCode) {
-					default:
-						trace('onVkontakteRequestError: ' + event.errorCode + ' ' + event.errorMessage);
-				}
-				if (PreloaderSplash.instance.isModal) {
-					this.resetModal(PreloaderSplash.instance);
-				}
-			}
-			catch (e:Error) {
-				trace(e.message);
-			}
+			Util.showError(event.errorCode, event.errorMessage);
 		}
 		
 		private function onVkontakteRequestComplited(event:VKontakteEvent):void {
@@ -236,18 +226,7 @@ package {
 		}
 		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
-			try {
-				if (PreloaderSplash.instance.isModal) {
-					this.resetModal(PreloaderSplash.instance);
-				}
-				switch (event.errorCode) {
-					default:
-						showModal(new MessageDialog(this, 'Ошибка:', event.errorMessage));
-				}
-			}
-			catch (e:Error) {
-				trace(e.message);
-			}
+			Util.showError(event.errorCode, event.errorMessage);
 		}
 		
 		private function onFacecontrolRequestComplited(event:ApiEvent):void {
@@ -370,20 +349,20 @@ package {
 		public function onSettingsChanged(e:Object):void {
 			var settings:Number = e.settings;
 			
-			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
-				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
-				(settings & SETTINGS_PHOTO_ACCESS) == 0) {
-				if (Util.wrapper.external) {
-					var installSettings:int = 0;
-					installSettings |= SETTINGS_NOTICE_ACCEPT;
-					installSettings |= SETTINGS_FRIENDS_ACCESS;
-					installSettings |= SETTINGS_PHOTO_ACCESS;
-					Util.wrapper.external.showSettingsBox(installSettings);
-				}
-			}
-			else {
+//			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+//				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+//				(settings & SETTINGS_PHOTO_ACCESS) == 0) {
+//				if (Util.wrapper.external) {
+//					var installSettings:int = 0;
+//					installSettings |= SETTINGS_NOTICE_ACCEPT;
+//					installSettings |= SETTINGS_FRIENDS_ACCESS;
+//					installSettings |= SETTINGS_PHOTO_ACCESS;
+//					Util.wrapper.external.showSettingsBox(installSettings);
+//				}
+//			}
+//			else {
 				Util.vkontakte.getProfiles(new Array('' + Util.userId));
-			}
+//			}
 		}
 	}
 }

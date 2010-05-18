@@ -40,9 +40,10 @@ package com.facecontrol.forms
 		private var _mainPhoto:Photo;
 		private var _main:Object;
 		
-		protected var _ratingAverageField:TextField;
-		protected var _votesCountField:TextField;
-		protected var _noVotesField:TextField;
+		private var _enterCommentLabel:TextField;
+		private var _ratingAverageField:TextField;
+		private var _votesCountField:TextField;
+		private var _noVotesField:TextField;
 		private var _bigStar:Bitmap;
 		
 		private var _grid:GridBox;
@@ -157,6 +158,17 @@ package com.facecontrol.forms
 			commentForm.y = 454;
 			addChild(commentForm);
 			
+			_enterCommentLabel = new TextField();
+			_enterCommentLabel.x = 46;
+			_enterCommentLabel.y = 472;
+			_enterCommentLabel.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
+			_enterCommentLabel.text = 'Введите комментарий';
+			_enterCommentLabel.embedFonts = true;
+			_enterCommentLabel.selectable = false;
+			_enterCommentLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_enterCommentLabel.autoSize = TextFieldAutoSize.LEFT;
+			addChild(_enterCommentLabel);
+			
 			_commentInput = new TextField();
 			_commentInput.selectable = true;
 			_commentInput.x = 46;
@@ -170,6 +182,7 @@ package com.facecontrol.forms
 			_commentInput.type = TextFieldType.INPUT;
 			_commentInput.wordWrap = true;
 			_commentInput.addEventListener(FocusEvent.FOCUS_OUT, onMouseOut);
+			_commentInput.addEventListener(FocusEvent.FOCUS_IN, onMouseIn);
 			addChild(_commentInput);
 			
 			var photoListBck:Bitmap = Util.multiLoader.get(Images.MY_PHOTO_BACKGROUND);
@@ -248,7 +261,7 @@ package com.facecontrol.forms
 			var p:MyPhotoGridItem;
 			
 			for (var i:uint = start; i < end; ++i) {
-				p = new MyPhotoGridItem(_scene, _photos[i], 127, 64);
+				p = new MyPhotoGridItem(_scene, _photos[i], 140, 64);
 				p.setFocus(true, true, BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SELECTION));
 				_grid.addItem(p);
 			}
@@ -288,9 +301,9 @@ package com.facecontrol.forms
 					}
 					if (photo.main == 1) {
 						_main = photo;
-						var format:TextFormat = _commentInput.getTextFormat();
+						_commentInput.defaultTextFormat = _commentInput.getTextFormat();
 						_commentInput.text = (_main.comment) ? _main.comment : '';
-						_commentInput.setTextFormat(format);
+						_enterCommentLabel.visible = (_commentInput.text == '');
 					}
 				}
 				
@@ -348,9 +361,15 @@ package com.facecontrol.forms
 			var text:String = _commentInput.text;
 		}
 		
+		public function onMouseIn(event:FocusEvent):void {
+			_enterCommentLabel.visible = false;
+		}
+		
 		public function onMouseOut(event:FocusEvent):void {
-			_main.comment = _commentInput.text;
-			Util.api.setComment(_main.pid, _main.comment);
+			_enterCommentLabel.visible = (_commentInput.text == '');
+			if (_main.comment != _commentInput.text) {
+				Util.api.setComment(_main.pid, _commentInput.text);
+			}
 		}
 		
 		public function onPreviewClick(event:GameObjectEvent):void {
@@ -362,7 +381,7 @@ package com.facecontrol.forms
 			}
 		}
 		
-		public function show():void {
+		public override function show():void {
 			if (_scene) {
 				for (var i:int = 0; i < _scene.numChildren; ++i) {
 					if (_scene.getChildAt(i) is Form) {
