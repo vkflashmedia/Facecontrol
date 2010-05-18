@@ -225,7 +225,7 @@ package com.facecontrol.forms
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
 			_grid.indentBetweenRows = 0;
 			_grid.indentBetweenCols= 0;
-			_grid.padding = 3;
+			_grid.setPaddings(3,3,3,3);
 			addChild(_grid);
 			
 			_pagination = new Pagination(_scene, 500, 462);

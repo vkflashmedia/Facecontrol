@@ -7,6 +7,11 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.actions.intervalactions.Animation;
 	import com.flashmedia.gui.Form;
+	
+	import flash.text.AntiAliasType;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 
 	public class PreloaderForm extends Form
 	{
@@ -22,9 +27,18 @@ package com.facecontrol.forms
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			
+			bitmap = Util.multiLoader.get(Images.SPLASH);
+			
+			var label: TextField = Util.createLabel('Загрузка', 0, 520);
+			label.antiAliasType = AntiAliasType.ADVANCED;
+			label.autoSize = TextFieldAutoSize.LEFT;
+			label.x = (Constants.APP_WIDTH - label.width) / 2 - 5;
+			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 16, 0xcac4c8));
+			addChild(label);
+			
 			_preloader = new GameObject(scene);
 			_preloader.x = (Constants.APP_WIDTH - Util.multiLoader.get(Images.PRELOADER_ANIM1).width) / 2;
-			_preloader.y = (Constants.APP_HEIGHT - Util.multiLoader.get(Images.PRELOADER_ANIM1).height) / 2;
+			_preloader.y = 550;
 			addChild(_preloader);
 						
 			var anm: Animation = new Animation(_scene, 'round', _preloader);

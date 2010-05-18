@@ -51,7 +51,7 @@ package com.flashmedia.gui
 			_dropList.widthPolicy = GridBox.WIDTH_POLICY_STRETCH_BY_WIDTH;
 			_dropList.heightPolicy = GridBox.HEIGHT_POLICY_AUTO_SIZE;
 			_dropList.width = width;
-			_dropList.padding = 0;
+			_dropList.setPaddings(0, 0, 10, 0);
 			_dropList.indentBetweenCols = 0;
 			_dropList.indentBetweenRows = 0;
 			_dropList.horizontalItemsAlign = View.ALIGN_HOR_LEFT;

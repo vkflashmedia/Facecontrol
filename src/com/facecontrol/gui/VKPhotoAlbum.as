@@ -49,7 +49,7 @@ package com.facecontrol.gui
 		public function VKPhotoAlbum(value: GameScene, maxColumnsCount: uint = COLUMNS_DEF_COUNT, maxRowsCount: uint = ROWS_DEF_COUNT)
 		{
 			super(value, maxColumnsCount, maxRowsCount);
-			padding = 10;
+			setPaddings(10,10,10,10);
 			indentBetweenCols = 0;
 			indentBetweenRows = 0;
 			_state = STATE_LOADING;
