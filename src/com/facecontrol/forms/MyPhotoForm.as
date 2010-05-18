@@ -161,7 +161,7 @@ package com.facecontrol.forms
 			_enterCommentLabel = new TextField();
 			_enterCommentLabel.x = 46;
 			_enterCommentLabel.y = 472;
-			_enterCommentLabel.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6);
+			_enterCommentLabel.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
 			_enterCommentLabel.text = 'Введите комментарий';
 			_enterCommentLabel.embedFonts = true;
 			_enterCommentLabel.selectable = false;

@@ -117,7 +117,7 @@ package com.facecontrol.forms
 			addChild(_morePhotos);
 			
 			_favorite = new LinkButton(value, '', 305, 150);
-			_favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
+			_favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x63cdff, null, null, true), CONTROL_STATE_NORMAL);
 			_favorite.textField.embedFonts = true;
 			_favorite.textField.antiAliasType = AntiAliasType.ADVANCED;
 			_favorite.visible = false;

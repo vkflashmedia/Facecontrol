@@ -180,6 +180,16 @@ package com.facecontrol.forms
 			}
 		}
 		
+		private function createBigPhoto(photo:Object):void {
+//			curBigPhoto = new Photo(scene, photo['src_big'], 73, 144, 494, 341, Photo.BORDER_TYPE_ROUND_RECT);
+			curBigPhoto = new Photo(scene, photo['src_big'], 83, 154, 474, 321, Photo.BORDER_TYPE_ROUND_RECT);
+			curBigPhoto.align = Photo.ALIGN_CENTER;
+			curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
+			curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
+			curBigPhoto.photoBorderColor = 0x3a2426;
+			addChild(curBigPhoto);
+		}
+		
 		private function toLeftPhoto(): void {
 			if (curPhotoIndex > 0) {
 				curPhotoIndex--;
@@ -193,12 +203,13 @@ package com.facecontrol.forms
 					}
 				}
 				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
-				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
-				curBigPhoto.align = Photo.ALIGN_CENTER;
-				curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
-				curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
-				curBigPhoto.photoBorderColor = 0x3a2426;
-				addChild(curBigPhoto);
+				createBigPhoto(cp);
+//				curBigPhoto = new Photo(scene, cp['src_big'], 73, 144, 490, 337, Photo.BORDER_TYPE_ROUND_RECT);
+//				curBigPhoto.align = Photo.ALIGN_CENTER;
+//				curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
+//				curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
+//				curBigPhoto.photoBorderColor = 0x3a2426;
+//				addChild(curBigPhoto);
 				thumbsLayer.scroll(-THUMB_WIDTH - THUMB_BETWEEN_INDENT, 0);
 			}
 		}
@@ -216,12 +227,13 @@ package com.facecontrol.forms
 					}
 				}
 				//curBigPhoto = new Photo(scene, cp['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
-				curBigPhoto = new Photo(scene, cp['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
-				curBigPhoto.photoBorderColor = 0x3a2426;
-				curBigPhoto.align = Photo.ALIGN_CENTER;
-				curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
-				curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
-				addChild(curBigPhoto);
+				createBigPhoto(cp);
+//				curBigPhoto = new Photo(scene, cp['src_big'], 73, 144, 490, 337, Photo.BORDER_TYPE_ROUND_RECT);
+//				curBigPhoto.photoBorderColor = 0x3a2426;
+//				curBigPhoto.align = Photo.ALIGN_CENTER;
+//				curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
+//				curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
+//				addChild(curBigPhoto);
 				thumbsLayer.scroll(THUMB_WIDTH + THUMB_BETWEEN_INDENT, 0);
 			}
 		}
@@ -236,11 +248,12 @@ package com.facecontrol.forms
 				thumb.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
 				if (addedPhotosCount == 0) {
 					//curBigPhoto = new Photo(scene, photo['src_big'], 201, 152, 235, 317, Photo.BORDER_TYPE_ROUND_RECT);
-					curBigPhoto = new Photo(scene, photo['src_big'], 86, 152, 463, 317, Photo.BORDER_TYPE_ROUND_RECT);
-					curBigPhoto.photoBorderColor = 0x3a2426;
-					curBigPhoto.align = Photo.ALIGN_CENTER;
-					curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
-					curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
+					createBigPhoto(photo);
+//					curBigPhoto = new Photo(scene, photo['src_big'], 73, 144, 490, 337, Photo.BORDER_TYPE_ROUND_RECT);
+//					curBigPhoto.photoBorderColor = 0x3a2426;
+//					curBigPhoto.align = Photo.ALIGN_CENTER;
+//					curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
+//					curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
 					addChild(curBigPhoto);
 					thumb.x = (thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
