@@ -261,7 +261,7 @@ package com.facecontrol.forms
 			var p:MyPhotoGridItem;
 			
 			for (var i:uint = start; i < end; ++i) {
-				p = new MyPhotoGridItem(_scene, _photos[i], 127, 64);
+				p = new MyPhotoGridItem(_scene, _photos[i], 140, 64);
 				p.setFocus(true, true, BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SELECTION));
 				_grid.addItem(p);
 			}

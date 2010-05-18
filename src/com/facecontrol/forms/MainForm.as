@@ -367,7 +367,7 @@ package com.facecontrol.forms
 				_nameField.setTextFormat(_nameTextFormat);
 				
 				if (_current.comment && _commentField) {
-					_commentField.text = _current.comment;
+					_commentField.text = _current.comment ? _current.comment : '';
 					_commentField.setTextFormat(_commentTextFormat);
 				}
 				
@@ -383,10 +383,10 @@ package com.facecontrol.forms
 				smallPhoto = Util.multiLoader.get(_previous.pid);
 				
 				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
-				_ratingAverageField.text = _previous.rating_average;
+				_ratingAverageField.text = _previous.rating_average ? _previous.rating_average : '';
 				
 				_votesCountField.defaultTextFormat = _votesCountField.getTextFormat();
-				_votesCountField.text = _previous.votes_count;
+				_votesCountField.text = _previous.votes_count ? _previous.votes_count : '';
 			}
 		}
 		
@@ -411,13 +411,17 @@ package com.facecontrol.forms
 				break;
 			}
 			
-			var format:TextFormat = _minAgeBox.getTextFormat();
-			_minAgeBox.text = ((_filter.age_min == 60) ? '60+' : _filter.age_min);;
-			_minAgeBox.setTextFormat(format);
+			if (_filter.age_min) {
+				var format:TextFormat = _minAgeBox.getTextFormat();
+				_minAgeBox.text = (_filter.age_min == 60) ? '60+' : _filter.age_min;
+				_minAgeBox.setTextFormat(format);
+			}
 			
-			format = _maxAgeBox.getTextFormat();
-			_maxAgeBox.text = ((_filter.age_max == 60) ? '60+' : _filter.age_max);
-			_maxAgeBox.setTextFormat(format);
+			if (_filter.age_max) {
+				format = _maxAgeBox.getTextFormat();
+				_maxAgeBox.text = (_filter.age_max == 60) ? '60+' : _filter.age_max;
+				_maxAgeBox.setTextFormat(format);
+			}
 			
 			_countryBox.clear();
 			if (Util.user.country_name) {
