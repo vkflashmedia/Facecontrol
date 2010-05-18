@@ -82,7 +82,7 @@ package com.facecontrol.forms
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
 			_grid.indentBetweenRows = 0;
 			_grid.indentBetweenCols= 0;
-			_grid.padding = 0;
+			_grid.setPaddings(0,0,0,0);
 //			_grid.debug = true;
 			addChild(_grid);
 		}

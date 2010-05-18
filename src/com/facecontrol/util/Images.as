@@ -75,7 +75,7 @@ package com.facecontrol.util
 		public static const PRELOADER_ANIM6:String = 'http://www.fcapi.ru/images/preloader/06.png';
 		public static const PRELOADER_ANIM7:String = 'http://www.fcapi.ru/images/preloader/07.png';
 		public static const PRELOADER_ANIM8:String = 'http://www.fcapi.ru/images/preloader/08.png';
-		public static const SPLASH:String = 'http://www.fcapi.ru/images/preloader/splash.png';
+		public static const SPLASH:String = 'http://www.fcapi.ru/images/preloader/splash.jpg';
 
 //		public static const HEAD_BUTTON1:String = 'facecontrol/images/head/01.png';
 //		public static const HEAD_BUTTON2:String = 'facecontrol/images/head/02.png';
@@ -144,6 +144,7 @@ package com.facecontrol.util
 //		public static const SPLASH:String = 'facecontrol/images/preloader/splash.png';
 		
 		public static const PRE_IMAGES: Array = new Array(
+			SPLASH,
 			PRELOADER_ANIM1,
 			PRELOADER_ANIM2,
 			PRELOADER_ANIM3,
