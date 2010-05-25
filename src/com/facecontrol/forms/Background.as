@@ -85,6 +85,7 @@ package com.facecontrol.forms
 			addChild(ad);
 			
 			var advPanel: VkAdPanel = new VkAdPanel(Util.scene, ad.x + 10, ad.y + 10, ad.width - 20, ad.height - 20);
+//			advPanel.debug = true;
 			addChild(advPanel);
 		}
 		

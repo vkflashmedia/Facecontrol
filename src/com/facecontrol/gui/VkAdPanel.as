@@ -42,20 +42,25 @@ package com.facecontrol.gui
 		public function VkAdPanel(value: GameScene, x: int = 0, y: int = 0, width: int = 100, height: int = 50)
 		{
 			super(value);
-			setSelect(true, true);
-			buttonMode = true;
-			useHandCursor = true;
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
+			
+//			setSelect(true, true);
+			setSelect(true, false);
+			buttonMode = true;
+			useHandCursor = true;
+			
 			_multiLoader = new MultiLoader();
 			_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, onLoad);
+			
 			_ads = new Array();
 			_vk = new VKontakte();
 			_vk.addEventListener(VKontakteEvent.COMPLETED, onVKRequestSuccess);
 			_vk.addEventListener(VKontakteEvent.ERROR, onVKRequestError);
 			_vk.getAds();
+			
 			_currentAdIndex = 0;
 			_timer = new Timer(5000, 0);
 			_timer.addEventListener(TimerEvent.TIMER, onTimer);
@@ -110,7 +115,7 @@ package com.facecontrol.gui
 				_title.text = _ads[_currentAdIndex]['title'];
 				_title.x = _photo.x + _photo.width + 10;
 				_title.y = 10;
-				//_title.selectable = false;
+				_title.selectable = false;
 				_title.setTextFormat(new TextFormat(Util.opiumBold.fontName, 16, 0x241b1e));
 				_title.embedFonts = true;
 				_title.antiAliasType = AntiAliasType.ADVANCED;
@@ -131,8 +136,8 @@ package com.facecontrol.gui
 				_description.autoSize = TextFieldAutoSize.LEFT;
 				addChild(_description);
 				
-				width =	_photo.x + Math.max(_title.x + _title.width, _description.x + _description.width) + 10;
-				height = Math.max(_photo.y + _photo.height, _description.y + _description.height) + 10; 
+//				width =	_photo.x + Math.max(_title.x + _title.width, _description.x + _description.width) + 10;
+//				height = Math.max(_photo.y + _photo.height, _description.y + _description.height) + 10; 
 			}
 		}
 		
