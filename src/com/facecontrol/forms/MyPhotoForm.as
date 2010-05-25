@@ -245,7 +245,7 @@ package com.facecontrol.forms
 			_grid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
 			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
 			_grid.indentBetweenRows = 0;
-			_grid.indentBetweenCols= 0;
+			_grid.indentBetweenCols = 0;
 			_grid.setPaddings(3,3,3,3);
 			addChild(_grid);
 			
@@ -372,6 +372,7 @@ package com.facecontrol.forms
 		public function onMarkAsMainClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) Util.api.setMain(gridItem.photoData.pid);
+			else _scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
 		}
 		
 		public function onAddPhotoClick(event:GameObjectEvent):void {

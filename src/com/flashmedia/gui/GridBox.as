@@ -237,6 +237,11 @@ package com.flashmedia.gui
 		 * Тукущее значение GridBox.
 		 */
 		public function get selectedItem(): * {
+			if (_selectedItem is GameObject) {
+				var object:GameObject = _selectedItem as GameObject;
+				return (object == _scene.selectedGameObject) ? object : null;
+			}
+			
 			return _selectedItem;
 		}
 		
