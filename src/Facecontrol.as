@@ -7,7 +7,6 @@ package {
 	import com.facecontrol.forms.FavoritesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
-	import com.facecontrol.forms.MessageDialog;
 	import com.facecontrol.forms.MyPhotoForm;
 	import com.facecontrol.forms.PhotoAlbumForm;
 	import com.facecontrol.forms.PreloaderForm;
@@ -21,10 +20,9 @@ package {
 	import com.flashmedia.gui.Form;
 	import com.net.VKontakteEvent;
 	
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.system.Security;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
 	
 	public class Facecontrol extends GameScene {
 		private static const SETTINGS_NOTICE_ACCEPT:int = 0x01;
@@ -59,11 +57,11 @@ package {
 	  	}
 		
 		private function loadPreloader():void {
+			Util.multiLoader.addEventListener(ErrorEvent.ERROR, multiloaderError);
 			for each (var image: String in Images.PRE_IMAGES) {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
 			
-			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 		}
 		
@@ -72,17 +70,16 @@ package {
 				Util.multiLoader.load(image, image, 'Bitmap');
 			}
 			
-			Util.multiLoader.addEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
 			Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 		}
 		
-		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
-			
+		private function multiloaderError(event:ErrorEvent):void {
+//			TODO: show alert
 		}
 		
 		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
 			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.PROGRESS, multiLoaderProgressListener);
+				Util.multiLoader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
 				if (_preloaderShown) {
@@ -103,8 +100,7 @@ package {
 					addChild(AllUserPhotoForm.instance);
 					
 					if (Util.wrapper.application) {
-//						Util.vkontakte.isAppUser();
-						Util.vkontakte.getUserSettings();
+						Util.vkontakte.isAppUser();
 					}
 					else {
 						Util.vkontakte.getProfiles(new Array('' + Util.userId));
@@ -127,10 +123,12 @@ package {
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				this.showModal(PreloaderSplash.instance);
+			if (!MainForm.instance.bigPhoto) {
+				if (!PreloaderSplash.instance.isModal) {
+					this.showModal(PreloaderSplash.instance);
+				}
+				Util.api.nextPhoto(Util.userId);
 			}
-			Util.api.nextPhoto(Util.userId);
 			MainForm.instance.show();
 		}
 		
@@ -159,8 +157,6 @@ package {
 			if (!PreloaderSplash.instance.isModal) {
 				this.showModal(PreloaderSplash.instance);
 			}
-//			Util.vkontakte.getFriends();
-//			Util.vkontakte.getAppFriends();
 			FriendsForm.instance.requestFriends();
 		}
 		
@@ -282,7 +278,10 @@ package {
 					break;
 					
 					case 'del_photo':
-						Util.multiLoader.unload(response.pid);
+						try {
+							Util.multiLoader.unload(response.pid);
+						}
+						catch (e:Error) {}
 						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						if (PreloaderSplash.instance.isModal) {
 							this.resetModal(PreloaderSplash.instance);
@@ -335,11 +334,6 @@ package {
 		}
 		
 		public function onApplicationAdded(e:Object):void {
-			var t:TextField = new TextField();
-			t.text = 'onApplicationAdded';
-			t.autoSize = TextFieldAutoSize.LEFT;
-			addChild(t);
-			
 			Util.vkontakte.getUserSettings();
 		}
 		

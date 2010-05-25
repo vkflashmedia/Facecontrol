@@ -132,9 +132,9 @@ package com.facecontrol.api
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'add_photo';
 			vars['uid'] = uid;
-			vars['src'] = src;
-			vars['src_small'] = src_small;
-			vars['src_big'] = src_big;
+			if (src) vars['src'] = src;
+			if (src_small) vars['src_small'] = src_small;
+			if (src_big) vars['src_big'] = src_big;
 			if (comment) vars['comment'] = comment;
 			if (vkPid) vars['vk_pid'] = vkPid;
 			

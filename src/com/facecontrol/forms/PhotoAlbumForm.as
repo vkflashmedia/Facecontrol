@@ -103,7 +103,7 @@ package com.facecontrol.forms
 			addChild(cancel);
 			
 			_pagination = new Pagination(_scene, 430, 522, 0, 3);
-			_pagination.debug = true;
+//			_pagination.debug = true;
 			_pagination.width = 83;
 			_pagination.textFormatForDefaultButton = new TextFormat(Util.tahoma.fontName, 9, 0xbcbcbc);
 			_pagination.textFormatForSelectedButton = new TextFormat(Util.tahomaBold.fontName, 9, 0x00ccff);
@@ -121,11 +121,13 @@ package com.facecontrol.forms
 				//removeChild(waitText);
 				_pagination.pagesCount = _vkPhotoAlbum.albumsPages;
 				_pagination.x = 518 - _pagination.width;
+				_pagination.visible = _pagination.pagesCount > 1;
 			});
 			_vkPhotoAlbum.addEventListener(VKPhotoAlbumEvent.PHOTOS_LOADED, function onPhotosLoad(event: VKPhotoAlbumEvent): void {
 				//removeChild(waitText);
 				_pagination.pagesCount = _vkPhotoAlbum.selectedAlbumPhotosPages;
 				_pagination.x = 518 - _pagination.width;
+				_pagination.visible = _pagination.pagesCount > 1;
 				if (PreloaderSplash.instance.isModal) {
 					Util.scene.resetModal(PreloaderSplash.instance);
 				}

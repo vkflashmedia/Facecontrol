@@ -1,6 +1,7 @@
 package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
+	import com.efnx.net.MultiLoader;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;
@@ -18,6 +19,7 @@ package com.facecontrol.forms
 	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.text.AntiAliasType;
@@ -52,9 +54,13 @@ package com.facecontrol.forms
 		private var _commentLabel:TextField;
 		private var _commentForm:Bitmap;
 		
+		private var _multiloader:MultiLoader;
+		
 		public function MyPhotoForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+			
+			_multiloader = new MultiLoader();
 			visible = false;
 
 			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
@@ -263,7 +269,7 @@ package com.facecontrol.forms
 			var p:MyPhotoGridItem;
 			
 			for (var i:uint = start; i < end; ++i) {
-				p = new MyPhotoGridItem(_scene, _photos[i], 140, 64);
+				p = new MyPhotoGridItem(_scene, _photos[i], _multiloader.get(_photos[i].pid), 140, 64);
 				p.setFocus(true, true, BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SELECTION));
 				_grid.addItem(p);
 			}
@@ -306,9 +312,13 @@ package com.facecontrol.forms
 				_photos = value;
 				var photo:Object;
 				
+				_multiloader.addEventListener(ErrorEvent.ERROR, multiLoaderError);
 				for each (photo in _photos) {
-					if (!Util.multiLoader.hasLoaded(photo.pid)) {
-						Util.multiLoader.load(photo.src_big, photo.pid, 'Bitmap');
+//					if (!Util.multiLoader.hasLoaded(photo.pid)) {
+//						Util.multiLoader.load(photo.src_big, photo.pid, 'Bitmap');
+//					}
+					if (!_multiloader.hasLoaded(photo.pid)) {
+						_multiloader.load(photo.src_big, photo.pid, 'Bitmap');
 					}
 					if (photo.main == 1) {
 						_main = photo;
@@ -318,25 +328,39 @@ package com.facecontrol.forms
 					}
 				}
 				
-				if (Util.multiLoader.isLoaded) {
-					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+				if (_multiloader.isLoaded) {
+//				if (Util.multiLoader.isLoaded) {
+//					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+					_mainPhoto.photo = _multiloader.get(_main.pid);
+					
 					update();
 				}
 				else {
 					if (!PreloaderSplash.instance.isModal) {
 						Util.scene.showModal(PreloaderSplash.instance);
 					}
-					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+					
+					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
+//					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 				}
 			}
 		}
 		
-		public function multiLoaderCompliteListener(event:MultiLoaderEvent):void {
-			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
-				
+		public function multiLoaderError(event:ErrorEvent):void {
+			if (PreloaderSplash.instance.isModal) {
+				scene.resetModal(PreloaderSplash.instance);
+			}
+			_scene.showModal(new MessageDialog(_scene, 'Ошибка:', 'Не удалось загрузить фотографию.'));
+		}
+		
+		public function multiLoaderComplite(event:MultiLoaderEvent):void {
+//			if (Util.multiLoader.isLoaded) {
+//				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
+			if (_multiloader.isLoaded) {
+				_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
 				if (_main) {
-					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+//					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
+					_mainPhoto.photo = _multiloader.get(_main.pid);
 				}
 				update();
 				if (PreloaderSplash.instance.isModal) {
@@ -386,7 +410,8 @@ package com.facecontrol.forms
 		public function onPreviewClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) {
-				_scene.showModal(new PhotoPreviewDialog(_scene, Util.multiLoader.get(gridItem.photoData.pid)));
+//				_scene.showModal(new PhotoPreviewDialog(_scene, Util.multiLoader.get(gridItem.photoData.pid)));
+				_scene.showModal(new PhotoPreviewDialog(_scene, _multiloader.get(gridItem.photoData.pid)));
 			} else {
 				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
 			}

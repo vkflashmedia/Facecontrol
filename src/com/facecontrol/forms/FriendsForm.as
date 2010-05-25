@@ -1,6 +1,7 @@
 package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
+	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.gui.FriendGridItem;
@@ -17,6 +18,7 @@ package com.facecontrol.forms
 	import com.net.VKontakteEvent;
 	
 	import flash.display.Bitmap;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
@@ -49,9 +51,13 @@ package com.facecontrol.forms
 		private var _startIndex:int = 0;
 		private var _endIndex:int = 5;
 		
+		private var _multiloader:MultiLoader;
+		
 		public function FriendsForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+			
+			_multiloader = new MultiLoader();
 			visible = false;
 			
 			_vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestCompleted);
@@ -112,34 +118,49 @@ package com.facecontrol.forms
 				Util.scene.showModal(PreloaderSplash.instance);
 			}
 			_users = value;
-//			var user:Object;
-//			for each (user in _users) {
-//				if (user.pid) {
-//					if (!Util.multiLoader.hasLoaded(user.pid)) {
-//						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-//					}
-//				}
-//				else if (user.photo_big) {
-//					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-//						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
-//					}
-//				}
-//			}
+			/*
+			var user:Object;
+			for each (user in _users) {
+				if (user.pid) {
+					if (!Util.multiLoader.hasLoaded(user.pid)) {
+						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+					}
+				}
+				else if (user.photo_big) {
+					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
+						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+					}
+				}
+			}
+			*/
 			
-			if (Util.multiLoader.isLoaded) {
+			updateGrid();
+			/*
+//			if (Util.multiLoader.isLoaded) {
+			if (_multiloader.isLoaded) {
 				updateGrid();
 				if (PreloaderSplash.instance.isModal) {
 					Util.scene.resetModal(PreloaderSplash.instance);
 				}
 			}
 			else {
-				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+//				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+				_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
 			}
+			*/
 		}
 		
-		public function loadCompleteListener(event:MultiLoaderEvent):void {
-			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+		public function loadError(event:ErrorEvent):void {
+			
+		}
+		
+		public function loadComplete(event:MultiLoaderEvent):void {
+//			if (Util.multiLoader.isLoaded) {
+//				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+			if (_multiloader.isLoaded) {
+				_multiloader.removeEventListener(ErrorEvent.ERROR, loadError);
+				_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
+				
 				updateGrid();
 				if (PreloaderSplash.instance.isModal) {
 					Util.scene.resetModal(PreloaderSplash.instance);
@@ -168,25 +189,45 @@ package com.facecontrol.forms
 				if (_startIndex < 0) _startIndex = 0;
 				if (_endIndex >= count) _endIndex = count - 1;
 				
+				_multiloader.addEventListener(ErrorEvent.ERROR, loadError);
+				
 				var item:FriendGridItem;
 				for (i = start, j = 1; i < end; ++i, ++j) {
 					var user:Object = _users[i];
+//					if (user.pid) {
+//						if (!Util.multiLoader.hasLoaded(user.pid)) {
+//							if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+//						}
+//					}
+//					else if (user.photo_big) {
+//						if (!Util.multiLoader.hasLoaded(user.photo_big)) {
+//							if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+//						}
+//					}
 					if (user.pid) {
-						if (!Util.multiLoader.hasLoaded(user.pid)) {
-							if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
+						if (!_multiloader.hasLoaded(user.pid)) {
+							if (user.src_big) _multiloader.load(user.src_big, user.pid, 'Bitmap');
 						}
 					}
 					else if (user.photo_big) {
-						if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-							if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+						if (!_multiloader.hasLoaded(user.photo_big)) {
+							if (user.photo_big) _multiloader.load(user.photo_big, user.photo_big, 'Bitmap');
 						}
 					}
-					
-					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+					var photoBitmap:Bitmap = null;
+					if (_multiloader.hasLoaded(_users[i].pid)) {
+						photoBitmap = new Bitmap(_multiloader.get(_users[i].pid).bitmapData);
+					}
+					else if (_multiloader.hasLoaded(_users[i].photo_big)) {
+						photoBitmap = new Bitmap(_multiloader.get(_users[i].photo_big).bitmapData);
+					}
+//					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+					item = new FriendGridItem(_scene, _users[i], photoBitmap, j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 				
-				if (Util.multiLoader.isLoaded) {
+//				if (Util.multiLoader.isLoaded) {
+				if (_multiloader.isLoaded) {
 //					updateGrid();
 					if (PreloaderSplash.instance.isModal) {
 						Util.scene.resetModal(PreloaderSplash.instance);
@@ -196,7 +237,8 @@ package com.facecontrol.forms
 					if (!PreloaderSplash.instance.isModal) {
 						Util.scene.showModal(PreloaderSplash.instance);
 					}
-					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+//					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
 				}
 			}
 		}

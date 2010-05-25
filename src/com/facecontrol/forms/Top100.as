@@ -1,6 +1,7 @@
 package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
+	import com.efnx.net.MultiLoader;
 	import com.facecontrol.gui.FriendGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -13,6 +14,7 @@ package com.facecontrol.forms
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
@@ -34,9 +36,13 @@ package com.facecontrol.forms
 		private var _grid:GridBox;
 		private var _users:Array;
 		
+		private var _multiLoader:MultiLoader;
+		
 		public function Top100(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+			
+			_multiLoader = new MultiLoader();
 			visible = false;
 			
 			var background:Bitmap = BitmapUtil.cloneImageNamed(Images.TOP_BACKGROUND);
@@ -89,6 +95,7 @@ package com.facecontrol.forms
 		
 		public function set users(value:Array):void {
 			_users = value;
+			/*
 			for each (var user:Object in _users) {
 				if (user.pid) {
 					if (!Util.multiLoader.hasLoaded(user.pid)) {
@@ -109,11 +116,38 @@ package com.facecontrol.forms
 					Util.scene.showModal(PreloaderSplash.instance);
 				}
 			}
+			*/
+			_multiLoader.addEventListener(ErrorEvent.ERROR, loadError);
+			for each (var user:Object in _users) {
+				if (user.pid) {
+					if (!_multiLoader.hasLoaded(user.pid)) {
+						if (user.src_big) _multiLoader.load(user.src_big, user.pid, 'Bitmap');
+					}
+				}
+				else if (user.photo_big) {
+					if (!_multiLoader.hasLoaded(user.photo_big)) {
+						if (user.photo_big) _multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
+					}
+				}
+			}
+			
+			if (_multiLoader.isLoaded) updateGrid();
+			else {
+				_multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
+				if (!PreloaderSplash.instance.isModal) {
+					Util.scene.showModal(PreloaderSplash.instance);
+				}
+			}
 		}
 		
-		public function loadCompleteListener(event:MultiLoaderEvent):void {
-			if (Util.multiLoader.isLoaded) {
-				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
+		public function loadError(event:ErrorEvent):void {
+			
+		}
+		
+		public function loadComplete(event:MultiLoaderEvent):void {
+			if (_multiLoader.isLoaded) {
+				_multiLoader.removeEventListener(ErrorEvent.ERROR, loadError);
+				_multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
 				updateGrid();
 				if (PreloaderSplash.instance.isModal) {
 					Util.scene.resetModal(PreloaderSplash.instance);
@@ -137,7 +171,8 @@ package com.facecontrol.forms
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				for (i = start, j = 1; i < end; ++i, ++j) {
-					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+//					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			} else {

@@ -8,7 +8,6 @@ package com.facecontrol.gui
 	
 	import flash.display.Bitmap;
 	import flash.text.AntiAliasType;
-	import flash.text.Font;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -17,14 +16,15 @@ package com.facecontrol.gui
 	{
 		private var _photoData:Object;
 		
-		public function MyPhotoGridItem(value:GameScene, photoData:Object, width:Number, height:Number)
+		public function MyPhotoGridItem(value:GameScene, photoData:Object, photoBitmap:Bitmap, width:Number, height:Number)
 		{
 			super(value);
 			_photoData = photoData;
 			this.width = width;
 			this.height = height;
 			
-			var photoBitmap:Bitmap = new Bitmap(Util.multiLoader.get(_photoData.pid).bitmapData);
+//			var photoBitmap:Bitmap = new Bitmap(Util.multiLoader.get(_photoData.pid).bitmapData);
+			var photoBitmap:Bitmap = new Bitmap(photoBitmap.bitmapData);
 			var photo:Photo = new Photo(_scene, photoBitmap, 4, 4, 61, 57, Photo.BORDER_TYPE_RECT);
 			photo.photoBorderColor = 0x824e4c;
 			photo.photoBorder = 1;

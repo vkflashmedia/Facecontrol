@@ -1,11 +1,11 @@
 package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
+	import com.efnx.net.MultiLoader;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
-	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
@@ -19,6 +19,7 @@ package com.facecontrol.forms
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import flash.events.ErrorEvent;
 	import flash.events.FocusEvent;
 	import flash.events.TextEvent;
 	import flash.text.AntiAliasType;
@@ -70,10 +71,13 @@ package com.facecontrol.forms
 		private var _morePhotos:LinkButton;
 		private var _favorite:LinkButton;
 		
+		private var _multiloader:MultiLoader;
+		
 		public function MainForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			
+			_multiloader = new MultiLoader();
 			visible = false;
 			
 			width = Constants.APP_WIDTH;
@@ -310,7 +314,11 @@ package com.facecontrol.forms
 					
 					if (_current.votes_count) {
 						if (_previous) {
-							Util.multiLoader.unload(_previous.pid);
+							try {
+//								Util.multiLoader.unload(_previous.pid);
+								_multiloader.unload(_previous.pid);
+							}
+							catch (e:Error) {}
 						}
 						_previous = _current;
 						previousPhoto();
@@ -331,15 +339,22 @@ package com.facecontrol.forms
 			else {
 				if (_current && _current.pid != obj.pid) {
 					if (_previous) {
-						Util.multiLoader.unload(_previous.pid);
+						try {
+//							Util.multiLoader.unload(_previous.pid);
+							_multiloader.unload(_previous.pid);
+						}
+						catch (e:Error) {}
 					}
 					_previous = _current;
 				}
 				
-//				if (Util.multiLoader.hasLoaded(obj.pid)) {
 				if (!_current || _current.pid != obj.pid) {
-					Util.multiLoader.load(obj.src_big, obj.pid, 'Bitmap');
-					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+					_multiloader.addEventListener(ErrorEvent.ERROR, multiloaderError);
+					_multiloader.load(obj.src_big, obj.pid, 'Bitmap');
+					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
+//					Util.multiLoader.addEventListener(ErrorEvent.ERROR, multiloaderError);
+//					Util.multiLoader.load(obj.src_big, obj.pid, 'Bitmap');
+//					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				}
 				
 				_current = obj;
@@ -372,22 +387,32 @@ package com.facecontrol.forms
 			Util.api.nextPhoto(Util.userId);
 		}
 		
-		private function multiLoaderProgressListener(event:MultiLoaderEvent):void {
+		private function multiloaderError(event:ErrorEvent):void {
+			if (!PreloaderSplash.instance.isModal) {
+				_scene.showModal(PreloaderSplash.instance);
+			}
+			Util.api.nextPhoto(Util.userId);
 		}
 		
-		private function multiLoaderCompleteListener(event:MultiLoaderEvent):void {
-			if (Util.multiLoader.hasLoaded(_current.pid)) {
-				bigPhoto = Util.multiLoader.get(_current.pid);
+		private function multiLoaderComplete(event:MultiLoaderEvent):void {
+//			if (Util.multiLoader.hasLoaded(_current.pid)) {
+			if (_multiloader.hasLoaded(_current.pid)) {
+//				bigPhoto = Util.multiLoader.get(_current.pid);
+				bigPhoto = _multiloader.get(_current.pid);
 				previousPhoto();
 			}
 			
-			Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
+			_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
+			_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
+//			Util.multiLoader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
+//			Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 		}
 		
 		private function previousPhoto():void {
 			_previousLayer.visible = _previous && _previous.votes_count;
 			if (_previousLayer.visible) {
-				smallPhoto = Util.multiLoader.get(_previous.pid);
+//				smallPhoto = Util.multiLoader.get(_previous.pid);
+				smallPhoto = _multiloader.get(_previous.pid);
 				
 				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
 				_ratingAverageField.text = _previous.rating_average ? _previous.rating_average : '';
@@ -475,7 +500,7 @@ package com.facecontrol.forms
 			box.setDropListHoverColor(0xd0d0d0, 1, 0xababab, 1);
 			box.bitmap = new Bitmap(bd);
 			box.bitmapDropped = new Bitmap(bdDropped);
-			box.dropIcon = new Bitmap(Util.multiLoader.get(Images.CHOOSE_BUTTON).bitmapData);
+			box.dropIcon = new Bitmap(BitmapUtil.cloneImageNamed(Images.CHOOSE_BUTTON).bitmapData);
 			box.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
 			box.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			box.x = x;
@@ -490,6 +515,10 @@ package com.facecontrol.forms
 				removeChildAt(0);
 			}
 			super.destroy();
+		}
+		
+		public function get bigPhoto():Bitmap {
+			return _bigPhoto.photo;
 		}
 		
 		public function set bigPhoto(image:Bitmap):void {

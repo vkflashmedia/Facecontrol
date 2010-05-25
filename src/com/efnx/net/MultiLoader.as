@@ -11,6 +11,7 @@ package com.efnx.net
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -373,7 +374,8 @@ package com.efnx.net
 		}
 		private function errorLoad(event:IOErrorEvent):void
 		{
-			throw new Error("MultiLoader::ERROR #4: loading error: " + event);
+//			throw new Error("MultiLoader::ERROR #4: loading error: " + event);
+			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "MultiLoader::ERROR #4: loading error: " + event));
 		}
 	}
 }

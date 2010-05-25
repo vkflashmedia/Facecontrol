@@ -1,8 +1,6 @@
 package com.facecontrol.gui
 {
 	import com.facecontrol.forms.AllUserPhotoForm;
-	import com.facecontrol.forms.FavoritesForm;
-	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -22,7 +20,7 @@ package com.facecontrol.gui
 	public class FriendGridItem extends GameObject
 	{
 		private var _user:Object;
-		public function FriendGridItem(value:GameScene, userRaw:Object, drawLine:Boolean, showFavoriteLink:Boolean=true, ownerForm:Form=null)
+		public function FriendGridItem(value:GameScene, userRaw:Object, photoBitmap:Bitmap, drawLine:Boolean, showFavoriteLink:Boolean=true, ownerForm:Form=null)
 		{
 			super(value);
 			_user = userRaw;
@@ -31,10 +29,11 @@ package com.facecontrol.gui
 			this.width = 329;
 			this.height = 99;
 			
-			var photoBitmap:Bitmap;
+//			var photoBitmap:Bitmap;
 			var photo:Photo;
-			if (Util.multiLoader.hasLoaded(userRaw.pid)) {
-				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.pid);
+//			if (Util.multiLoader.hasLoaded(userRaw.pid)) {
+			if (userRaw.pid) {
+//				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.pid);
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
@@ -54,8 +53,9 @@ package com.facecontrol.gui
 				});
 				addChild(morePhotos);
 			}
-			else if (Util.multiLoader.hasLoaded(userRaw.photo_big)) {
-				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.photo_big);
+//			else if (Util.multiLoader.hasLoaded(userRaw.photo_big)) {
+			else if (userRaw.photo_big) {
+//				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.photo_big);
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
