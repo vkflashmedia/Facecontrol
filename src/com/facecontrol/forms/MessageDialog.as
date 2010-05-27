@@ -6,9 +6,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
-	import com.flashmedia.util.BitmapUtil;
 	
-	import flash.display.Sprite;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -34,13 +32,12 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.CENTER;
 			addChild(label);
 			
-			label = Util.createLabel('', 193, 271, 250, 35);
-			label.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xffffff);
+			label = Util.createLabel(message, 193, 271, 250, 35);
+			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.multiline = true;
 			label.wordWrap = true;
-			label.text = message;
 			switch (label.numLines) {
 				case 3:
 					label.height = 50;
@@ -51,11 +48,10 @@ package com.facecontrol.forms
 			}
 			addChild(label);
 			
-			var format:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
 			var ok:Button = new Button(_scene, 249, (label.numLines < 3) ? 322 : 332);
 			ok.setBackgroundImageForState(Util.multiLoader.get(Images.MESSAGE_DIALOG_BUTTON), CONTROL_STATE_NORMAL);
 			ok.setTitleForState('Oк', CONTROL_STATE_NORMAL);
-			ok.setTextFormatForState(format, CONTROL_STATE_NORMAL);
+			ok.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			ok.textField.embedFonts = true;
 			ok.textField.antiAliasType = AntiAliasType.ADVANCED;
 			ok.setTextPosition(58, 11);
@@ -65,6 +61,11 @@ package com.facecontrol.forms
 		
 		public function onOkClick(event:GameObjectEvent):void {
 			_scene.resetModal(this);
+		}
+		
+		public static function dialog(title:String, message:String):void {
+			var dialog:MessageDialog = new MessageDialog(Util.scene, title, message);
+			Util.scene.showModal(dialog);
 		}
 	}
 }

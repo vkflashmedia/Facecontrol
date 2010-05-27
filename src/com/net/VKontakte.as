@@ -17,11 +17,17 @@ package com.net
 	{
 		private static const FC_API_SERVER:String = 'http://api.vkontakte.ru/api.php';
 		private static const APP_KEY:String = 'EqKl8Wg2be';
+		private static const APP_KEY_SAND_BOX:String = 'ZJEJl8y2Wl';
 		private static const APP_ID:String = '1827403';
+		private static const APP_ID_SAND_BOX:String = '1882789';
+		
+		public static var apiUrl:String = FC_API_SERVER;
+		public static var appId:String = APP_ID_SAND_BOX;
+		public static var appKey:String = APP_KEY_SAND_BOX;
 		
 		private const loader:URLLoader = new URLLoader();
 		
-		public var testMode:uint = 0;
+		public var testMode:uint = 1;
 		private var requestQueue: Array;
 		private var timer: Timer;
 		private var currentMethod: String;
@@ -50,7 +56,7 @@ package com.net
 			if (!currentMethod) {
 				currentMethod = method;
 				var request: URLRequest = new URLRequest();
-				request.url = FC_API_SERVER;
+				request.url = apiUrl;
 				request.data = vars;
 				loader.load(request);
 			}
@@ -90,16 +96,16 @@ package com.net
 		public function getProfiles(uids:Array):void {
 				var uidsString:String = uids.join(',');
 				var vars: URLVariables = new URLVariables();
-				var fields:String = 'uid,first_name,last_name,nickname,sex,bdate,city,photo_big,country';
-				var sig:String = Util.viewer_id+'api_id='+APP_ID+
+				var fields:String = 'nickname,sex,bdate,photo_big,city,country';
+				var sig:String = Util.viewer_id+'api_id='+appId+
 					'fields='+fields+
 					'format=json'+
 					'method=getProfiles'+
 					'test_mode='+testMode+
 					'uids='+uidsString+
-					'v=2.0'+APP_KEY;
+					'v=2.0'+appKey;
 					
-				vars['api_id'] = APP_ID;
+				vars['api_id'] = appId;
 				vars['v'] = '2.0';
 				vars['method'] = 'getProfiles';
 				vars['uids'] = uidsString;
@@ -113,13 +119,13 @@ package com.net
 		
 		public function isAppUser():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+'api_id='+appId+
 				'format=json'+
 				'method=isAppUser'+
 				'test_mode='+testMode+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['method'] = 'isAppUser';
 			vars['format'] = 'json';
@@ -131,13 +137,13 @@ package com.net
 		
 		public function getUserSettings():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+'api_id='+appId+
 				'format=json'+
 				'method=getUserSettings'+
 				'test_mode='+testMode+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['method'] = 'getUserSettings';
 			vars['format'] = 'json';
@@ -149,13 +155,13 @@ package com.net
 		
 		public function getFriends():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+'api_id='+appId+
 				'format=json'+
 				'method=getFriends'+
 				'test_mode='+testMode+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['method'] = 'getFriends';
 			vars['format'] = 'json';
@@ -167,13 +173,13 @@ package com.net
 		
 		public function getAppFriends():void {
 			var vars: URLVariables = new URLVariables();
-			var sig:String = Util.viewer_id+'api_id='+APP_ID+
+			var sig:String = Util.viewer_id+'api_id='+appId+
 				'format=json'+
 				'method=getAppFriends'+
 				'test_mode='+testMode+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['method'] = 'getAppFriends';
 			vars['format'] = 'json';
@@ -186,14 +192,14 @@ package com.net
 		public function getAlbums():void {
 			var vars: URLVariables = new URLVariables();
 			var sig:String = Util.viewer_id+
-				'api_id='+APP_ID+
+				'api_id='+appId+
 				'format=json'+
 				'method=photos.getAlbums'+
 				'test_mode='+testMode+
 				'uid='+Util.viewer_id+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['uid'] = Util.viewer_id;
 			vars['method'] = 'photos.getAlbums';
@@ -208,14 +214,14 @@ package com.net
 			var vars: URLVariables = new URLVariables();
 			var sig:String = Util.viewer_id+
 				'aid='+aid+
-				'api_id='+APP_ID+
+				'api_id='+appId+
 				'format=json'+
 				'method=photos.get'+
 				'test_mode='+testMode+
 				'uid='+Util.viewer_id+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['aid'] = aid;
 			vars['uid'] = Util.viewer_id;
@@ -230,13 +236,13 @@ package com.net
 		public function getAds():void {
 			var vars: URLVariables = new URLVariables();
 			var sig:String = Util.viewer_id+
-				'api_id='+APP_ID+
+				'api_id='+appId+
 				'format=json'+
 				'method=getAds'+
 				'test_mode='+testMode+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['method'] = 'getAds';
 			vars['v'] = '2.0';
 			vars['format'] = 'json';
@@ -250,14 +256,14 @@ package com.net
 			var vars: URLVariables = new URLVariables();
 			var cidsString:String = cids.join(',');
 			var sig:String = Util.viewer_id+
-				'api_id='+APP_ID+
+				'api_id='+appId+
 				'cids=' + cidsString + 
 				'format=json'+
 				'method=getCities'+
 				'test_mode='+testMode+
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['method'] = 'getCities';
 			vars['v'] = '2.0';
 			vars['cids'] = cidsString;
@@ -272,14 +278,14 @@ package com.net
 			var vars: URLVariables = new URLVariables();
 			var cidsString:String = cids.join(',');
 			var sig:String = Util.viewer_id+
-				'api_id='+APP_ID+
+				'api_id='+appId+
 				'cids=' + cidsString + 
 				'format=json'+
 				'method=getCountries'+
 				'test_mode='+ testMode +
-				'v=2.0'+APP_KEY;
+				'v=2.0'+appKey;
 				
-			vars['api_id'] = APP_ID;
+			vars['api_id'] = appId;
 			vars['method'] = 'getCountries';
 			vars['v'] = '2.0';
 			vars['cids'] = cidsString;

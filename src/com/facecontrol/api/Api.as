@@ -86,20 +86,18 @@ package com.facecontrol.api
 			currentMethod = null;
 		}
 		
-		public function registerUser(uid:int, fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int):void
+		public function registerUser(user:Object/*fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int*/):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'reg_user';
-			vars['uid'] = uid;
-			vars['fname'] = fname;
-			vars['lname'] = lname;
-			
-			if (nickname != null) vars['nickname'] = nickname;
-			vars['sex'] = sex;
-			
-			if (bdate != null) vars['bdate'] = bdate;
-			vars['city'] = city;
-			vars['country'] = country;
+			vars['uid'] = user.uid;
+			vars['fname'] = user.first_name;
+			vars['lname'] = user.last_name;
+			if (user.nickname) vars['nickname'] = user.nickname;
+			vars['sex'] = user.sex;
+			if (user.bdate) vars['bdate'] = user.bdate;
+			vars['city'] = user.city;
+			vars['country'] = user.country;
 			
 			request('reg_user', vars);
 		}

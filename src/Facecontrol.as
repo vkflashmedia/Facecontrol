@@ -18,7 +18,9 @@ package {
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Form;
+	import com.net.VKontakte;
 	import com.net.VKontakteEvent;
+	import com.serialization.json.JSON;
 	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
@@ -31,6 +33,7 @@ package {
 		
 		private var _background:Background;
 		private var _preloaderShown:Boolean;
+		private var api_result:String;
 		
 		public function Facecontrol() {
 			Security.allowDomain('*');
@@ -46,8 +49,8 @@ package {
 	    		appObject = Util.wrapper.application;
 	    		Util.wrapper.external.resizeWindow(Constants.APP_WIDTH, Constants.APP_HEIGHT);
 	    		
-//	    		debug = params.api_result;
-//	    		var json:Object = JSON.deserialize(params.api_result);
+	    		VKontakte.apiUrl = appObject.parameters.api_url;
+	    		api_result = appObject.parameters.api_result;
 	    		Util.viewer_id = Util.userId = appObject.parameters.viewer_id;
 	    		
 	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
@@ -117,46 +120,35 @@ package {
 					
 					Util.vkontakte.addEventListener(VKontakteEvent.COMPLETED, onVkontakteRequestComplited);
 					Util.vkontakte.addEventListener(VKontakteEvent.ERROR, onVkontakteRequestError);
-//					Util.vkontakte.addEventListener(VKontakteEvent.FRIEDNS_PROFILES_LOADED, onFriendsProfilesResponse);
 				}
 			}
 		}
 		
 		public function onFirstMenuButtonClick(event:MainMenuEvent):void {
 			if (!MainForm.instance.bigPhoto) {
-				if (!PreloaderSplash.instance.isModal) {
-					this.showModal(PreloaderSplash.instance);
-				}
+				PreloaderSplash.instance.resetModal();
 				Util.api.nextPhoto(Util.userId);
 			}
 			MainForm.instance.show();
 		}
 		
 		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				this.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.resetModal();
 			Util.api.getPhotos(Util.userId);
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				this.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.resetModal();
 			Util.api.getTop(Util.userId);
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				this.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.resetModal();
 			Util.api.favorites(Util.userId);
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				this.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.resetModal();
 			FriendsForm.instance.requestFriends();
 		}
 		
@@ -170,7 +162,15 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						Util.user = response[0];
-						Util.api.registerUser(Util.userId, Util.user.first_name, Util.user.last_name, Util.user.nickname, Util.user.sex, Util.user.bdate, Util.user.city, Util.user.country);
+//						Util.api.registerUser(Util.userId,
+//												Util.user.first_name,
+//												Util.user.last_name,
+//												Util.user.nickname,
+//												Util.user.sex,
+//												Util.user.bdate,
+//												Util.user.city,
+//												Util.user.country);
+						Util.api.registerUser(Util.user);
 					break;
 					
 					case 'getAppFriends':
@@ -203,7 +203,22 @@ package {
 							Util.wrapper.external.showSettingsBox(installSettings);
 						}
 						else {
-							Util.vkontakte.getProfiles(new Array('' + Util.userId));
+							if (api_result) {
+								var json:Object = JSON.deserialize(api_result);
+								Util.user = json.response[0];
+//								Util.api.registerUser(Util.userId,
+//														Util.user.first_name,
+//														Util.user.last_name,
+//														Util.user.nickname,
+//														Util.user.sex,
+//														Util.user.bdate,
+//														Util.user.city,
+//														Util.user.country);
+								Util.api.registerUser(Util.user);
+							}
+							else {
+								Util.vkontakte.getProfiles(new Array(Util.userId as String));
+							}
 						}
 					break;
 				}
@@ -231,9 +246,7 @@ package {
 					break;
 					
 					case 'top100':
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
 						Top100.instance.users = event.response.users;
 						Top100.instance.show();
 					break;
@@ -251,9 +264,7 @@ package {
 						_background.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'vote':
@@ -274,7 +285,9 @@ package {
 							Util.multiLoader.unload(response.pid);
 						}
 						catch (e:Error) {}
+						
 						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+						
 						if (PreloaderSplash.instance.isModal) {
 							this.resetModal(PreloaderSplash.instance);
 						}

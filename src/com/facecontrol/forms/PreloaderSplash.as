@@ -62,5 +62,8 @@ package com.facecontrol.forms
 		//todo run anim onShowModal event
 		//todo stop anim onHideModal event
 		
+		public function resetModal():void {
+			_scene.resetModal(this);
+		}
 	}
 }
