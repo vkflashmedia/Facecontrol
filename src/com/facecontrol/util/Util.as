@@ -7,6 +7,8 @@ package com.facecontrol.util
 	import com.flashmedia.basics.GameScene;
 	import com.net.VKontakte;
 	
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.text.Font;
 	import flash.text.TextField;
 	
@@ -106,6 +108,10 @@ package com.facecontrol.util
 		
 		public static function votesCount(value:int):String {
 			return value + ' ' + votes(value);
+		}
+		
+		public static function gotoUserProfile(uid:String):void {
+			navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
 		}
 	}
 }

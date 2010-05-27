@@ -24,6 +24,8 @@ package {
 	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.system.Security;
 	
 	public class Facecontrol extends GameScene {

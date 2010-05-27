@@ -9,6 +9,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.ComboBoxEvent;
 	import com.flashmedia.gui.Form;
@@ -50,6 +51,7 @@ package com.facecontrol.forms
 		protected var _nameField:TextField;
 		protected var _commentField:TextField;
 		protected var _rateBar:RatingBar;
+		private var _goto:Button;
 		
 		protected var _sexBox:ComboBox;
 		protected var _minAgeBox:TextField;
@@ -303,6 +305,15 @@ package com.facecontrol.forms
 			_commentField.multiline = true;
 			_commentField.wordWrap = true;
 			addChild(_commentField);
+			
+			_goto = new Button(_scene, _bigPhoto.x + _bigPhoto.photoWidth + 10, _bigPhoto.y);
+			_goto.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO), CONTROL_STATE_NORMAL);
+			_goto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+				function(event:GameObjectEvent):void {
+					Util.gotoUserProfile(currentUser.uid);
+				}
+			);
+			addChild(_goto);
 		}
 		
 		public function nextPhoto(obj:Object):void {
@@ -315,7 +326,6 @@ package com.facecontrol.forms
 					if (_current.votes_count) {
 						if (_previous) {
 							try {
-//								Util.multiLoader.unload(_previous.pid);
 								_multiloader.unload(_previous.pid);
 							}
 							catch (e:Error) {}
@@ -352,9 +362,6 @@ package com.facecontrol.forms
 					_multiloader.addEventListener(ErrorEvent.ERROR, multiloaderError);
 					_multiloader.load(obj.src_big, obj.pid, 'Bitmap');
 					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
-//					Util.multiLoader.addEventListener(ErrorEvent.ERROR, multiloaderError);
-//					Util.multiLoader.load(obj.src_big, obj.pid, 'Bitmap');
-//					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				}
 				
 				_current = obj;
@@ -517,6 +524,9 @@ package com.facecontrol.forms
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
 				_bigPhoto.photo = image;
+				_goto.visible = true;
+				_goto.x = _bigPhoto.x + _bigPhoto.photoWidth + 10;
+				
 				_morePhotos.visible = true;
 				_morePhotos.label = Util.getMorePhotoString(_current.sex);
 				
@@ -536,6 +546,7 @@ package com.facecontrol.forms
 				_bigPhoto.photo = null;
 				_morePhotos.visible = false;
 				_favorite.visible = false;
+				_goto.visible = false;
 			}
 		}
 		
