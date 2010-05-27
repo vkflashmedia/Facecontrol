@@ -49,10 +49,14 @@ package {
 	    		appObject = Util.wrapper.application;
 	    		Util.wrapper.external.resizeWindow(Constants.APP_WIDTH, Constants.APP_HEIGHT);
 	    		
-	    		VKontakte.apiUrl = appObject.parameters.api_url;
 	    		api_result = appObject.parameters.api_result;
+	    		VKontakte.apiUrl = appObject.parameters.api_url;
 	    		Util.viewer_id = appObject.parameters.viewer_id;
 	    		Util.user_id = appObject.parameters.user_id;
+	    		
+	    		if (Util.viewer_id != Util.user_id) {
+	    			Util.api.invite();
+	    		}
 	    		
 	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
 	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
@@ -104,7 +108,7 @@ package {
 					addChild(AllUserPhotoForm.instance);
 					
 					if (Util.wrapper.application) Util.vkontakte.isAppUser();
-					else Util.vkontakte.getProfiles(new Array(Util.viewer_id as String));
+					else Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
 				}
 				else {
 					_preloaderShown = true;
@@ -182,7 +186,8 @@ package {
 					case 'getUserSettings':
 						var settings:int = response as int;
 						
-						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 || (settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+							(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
 							(settings & SETTINGS_PHOTO_ACCESS) == 0)
 						{
 							var installSettings:int = 0;
@@ -198,14 +203,14 @@ package {
 								Util.api.registerUser(Util.user);
 							}
 							else {
-								Util.vkontakte.getProfiles(new Array(Util.viewer_id as String));
+								Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
 							}
 						}
 					break;
 				}
 			}
 			catch (e:Error) {
-				trace(e.message);
+				if (Util.DEBUG) trace(e.message);
 			}
 		}
 		
@@ -221,7 +226,10 @@ package {
 						Util.user.city_name = response.city_name;
 						Util.user.country_name = response.country_name;
 						if (response.photo_count == 0) {
-							Util.api.addPhoto(Util.viewer_id, Util.user.photo, Util.user.photo_medium, Util.user.photo_big);
+							Util.api.addPhoto(Util.viewer_id,
+												Util.user.photo,
+												Util.user.photo_medium,
+												Util.user.photo_big);
 						}
 						else Util.api.loadSettings(Util.viewer_id);
 					break;
@@ -266,16 +274,9 @@ package {
 							Util.multiLoader.unload(response.pid);
 						}
 						catch (e:Error) {}
-						
 						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
-						
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
 					case 'set_main':
-						Util.api.getPhotos(Util.viewer_id);
-					break;
-					
 					case 'edit_photo':
 						Util.api.getPhotos(Util.viewer_id);
 					break;
@@ -287,9 +288,7 @@ package {
 					case 'favorites':
 						FavoritesForm.instance.users = response.users;
 						FavoritesForm.instance.show();
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'add_favorite':
@@ -316,7 +315,7 @@ package {
 				}
 			}
 			catch (e:Error) {
-				trace(e.message);
+				if (Util.DEBUG) trace(e.message);
 			}
 		}
 		
@@ -338,7 +337,7 @@ package {
 //				}
 //			}
 //			else {
-				Util.vkontakte.getProfiles(new Array(Util.viewer_id as String));
+				Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
 //			}
 		}
 	}

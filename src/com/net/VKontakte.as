@@ -73,7 +73,7 @@ package com.net
 		
 		private function completeHandler(event:Event):void
 		{
-			trace("VKontakte:completeHandler: " + loader.data);
+			if (Util.DEBUG) trace('VKontakte: ' + currentMethod + ': ' + loader.data);
 			try {
 				var response:Object = JSON.deserialize(loader.data);
 				
@@ -94,27 +94,27 @@ package com.net
 		}
 		
 		public function getProfiles(uids:Array):void {
-				var uidsString:String = uids.join(',');
-				var vars: URLVariables = new URLVariables();
-				var fields:String = 'nickname,sex,bdate,photo_big,city,country';
-				var sig:String = Util.viewer_id+'api_id='+appId+
-					'fields='+fields+
-					'format=json'+
-					'method=getProfiles'+
-					'test_mode='+testMode+
-					'uids='+uidsString+
-					'v=2.0'+appKey;
-					
-				vars['api_id'] = appId;
-				vars['v'] = '2.0';
-				vars['method'] = 'getProfiles';
-				vars['uids'] = uidsString;
-				vars['fields'] = fields;
-				vars['format'] = 'json';
-				vars['test_mode'] = testMode;
-				vars['sig'] = MD5.encrypt(sig);
+			var uidsString:String = uids.join(',');
+			var vars: URLVariables = new URLVariables();
+			var fields:String = 'nickname,sex,bdate,photo_big,city,country';
+			var sig:String = Util.viewer_id+'api_id='+appId+
+				'fields='+fields+
+				'format=json'+
+				'method=getProfiles'+
+				'test_mode='+testMode+
+				'uids='+uidsString+
+				'v=2.0'+appKey;
 				
-				request('getProfiles', vars);
+			vars['api_id'] = appId;
+			vars['v'] = '2.0';
+			vars['method'] = 'getProfiles';
+			vars['uids'] = uidsString;
+			vars['fields'] = fields;
+			vars['format'] = 'json';
+			vars['test_mode'] = testMode;
+			vars['sig'] = MD5.encrypt(sig);
+			
+			request('getProfiles', vars);
 		}
 		
 		public function isAppUser():void {

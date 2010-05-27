@@ -7,7 +7,6 @@ package com.facecontrol.util
 	import com.flashmedia.basics.GameScene;
 	import com.net.VKontakte;
 	
-	import flash.events.Event;
 	import flash.text.Font;
 	import flash.text.TextField;
 	
@@ -16,17 +15,15 @@ package com.facecontrol.util
 		public static const opiumBold:Font = new EmbeddedFonts_OpiumBold();
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
+		public static const DEBUG:Boolean = true;
 		
 		public static var wrapper:Object;
 		public static var user:Object;
 		
 		public static var user_id:uint = 11854430;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
 		public static var viewer_id:uint = 11854430;//77625236;//57856825;//11854430;
-		public static var firstName: String;
-		public static var nickname: String;
-		public static var lastName: String;
-		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var scene:GameScene;
+		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var api:Api = new Api();
 		public static var vkontakte:VKontakte = new VKontakte();
 		
@@ -38,14 +35,11 @@ package com.facecontrol.util
 			label.width = width;
 			label.height = height;
 			label.selectable = false;
-			
 			return label;
 		}
 		
 		public static function showError(errorCode:int, errorMessage:String):void {
-			if (PreloaderSplash.instance.isModal) {
-				scene.resetModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.resetModal();
 			switch (errorCode) {
 				default:
 					scene.showModal(new MessageDialog(scene, 'Ошибка:', errorMessage));
@@ -76,7 +70,6 @@ package com.facecontrol.util
 				if (user.nickname) fn += user.nickname + ' ';
 				if (user.last_name) fn += user.last_name;
 			}
-//			var fn: String = firstName + ' ' + ((nickname) ? (nickname + ' ') : '') + lastName;
 			if (fn.length > limit) {
 				fn = fn.substr(0, limit) + '...';
 			}

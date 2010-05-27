@@ -15,7 +15,6 @@ package com.facecontrol.api
 	public class Api extends EventDispatcher
 	{
 		private static const FC_API_SERVER:String = 'http://www.fcapi.ru/';
-//		private static const FC_API_SERVER:String = 'http://facecontrol/';
 		
 		private const loader:URLLoader = new URLLoader();
 		private var requestQueue: Array;
@@ -55,14 +54,14 @@ package com.facecontrol.api
 		}
 
 		private function errorHandler(e:IOErrorEvent):void {
-			trace("errorHandler: "+e.text);
+			if (Util.DEBUG) trace('errorHandler: ' + e.text);
 			dispatchEvent(new ApiEvent(ApiEvent.ERROR, e.text, 255));
 			currentMethod = null;
 		}
 		
 		private function completeHandler(event:Event):void
 		{
-			trace("Api:completeHandler: "+loader.data);
+			if (Util.DEBUG) trace('Api: '+currentMethod+': '+loader.data);
 			try {
 				var json:Object = JSON.deserialize(loader.data);
 				
@@ -86,7 +85,7 @@ package com.facecontrol.api
 			currentMethod = null;
 		}
 		
-		public function registerUser(user:Object/*fname:String, lname:String, nickname:String, sex:int, bdate:String, city:int, country:int*/):void
+		public function registerUser(user:Object):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'reg_user';
@@ -250,6 +249,14 @@ package com.facecontrol.api
 			vars['viewer_id'] = Util.viewer_id;
 			vars['uid'] = uid;
 			request('main_photo', vars);
+		}
+		
+		public function invite():void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'invite';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['user_id'] = Util.user_id;
+			request('invite', vars);
 		}
 	}
 }
