@@ -384,34 +384,27 @@ package com.facecontrol.forms
 		public function vote(obj:Object):void {
 			_current.rating_average = obj.rating_average;
 			_current.votes_count = obj.votes_count;
-			Util.api.nextPhoto(Util.userId);
+			Util.api.nextPhoto(Util.viewer_id);
 		}
 		
 		private function multiloaderError(event:ErrorEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				_scene.showModal(PreloaderSplash.instance);
-			}
-			Util.api.nextPhoto(Util.userId);
+			PreloaderSplash.instance.showModal();
+			Util.api.nextPhoto(Util.viewer_id);
 		}
 		
 		private function multiLoaderComplete(event:MultiLoaderEvent):void {
-//			if (Util.multiLoader.hasLoaded(_current.pid)) {
 			if (_multiloader.hasLoaded(_current.pid)) {
-//				bigPhoto = Util.multiLoader.get(_current.pid);
 				bigPhoto = _multiloader.get(_current.pid);
 				previousPhoto();
 			}
 			
 			_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
 			_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
-//			Util.multiLoader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
-//			Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 		}
 		
 		private function previousPhoto():void {
 			_previousLayer.visible = _previous && _previous.votes_count;
 			if (_previousLayer.visible) {
-//				smallPhoto = Util.multiLoader.get(_previous.pid);
 				smallPhoto = _multiloader.get(_previous.pid);
 				
 				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
@@ -423,7 +416,6 @@ package com.facecontrol.forms
 		}
 		
 		public override function refresh():void {
-//			Util.api.nextPhoto(Util.userId);
 			Util.api.mainPhoto(_current.uid);
 		}
 		
@@ -566,7 +558,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onRateClicked(event:GameObjectEvent):void {
-			Util.api.vote(Util.userId, _current.pid, _rateBar.rating);
+			Util.api.vote(Util.viewer_id, _current.pid, _rateBar.rating);
 		}
 		
 		public function onFilterChanged(event:ComboBoxEvent):void {
@@ -643,7 +635,7 @@ package com.facecontrol.forms
 			if (!PreloaderSplash.instance.isModal) {
 				scene.showModal(PreloaderSplash.instance);
 			}
-			Util.api.saveSettings(Util.userId, sex, ageMin, ageMax, city, country);
+			Util.api.saveSettings(Util.viewer_id, sex, ageMin, ageMax, city, country);
 		}
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
@@ -660,10 +652,10 @@ package com.facecontrol.forms
 				scene.showModal(PreloaderSplash.instance);
 			}
 			if (_current.favorite) {
-				Util.api.deleteFavorite(Util.userId, _current.uid);
+				Util.api.deleteFavorite(Util.viewer_id, _current.uid);
 			}
 			else {
-				Util.api.addFavorite(Util.userId, _current.uid);
+				Util.api.addFavorite(Util.viewer_id, _current.uid);
 			}
 		}
 		

@@ -205,7 +205,7 @@ package com.facecontrol.api
 			for each (uid in uids) {
 				uidsString += uid + ',';
 			}
-			vars['viewer_id'] = Util.userId;
+			vars['viewer_id'] = Util.viewer_id;
 			vars['uids'] = uidsString;
 			
 			request('friends', vars);
@@ -247,7 +247,7 @@ package com.facecontrol.api
 		public function mainPhoto(uid:uint):void {
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'main_photo';
-			vars['self_uid'] = Util.userId;
+			vars['viewer_id'] = Util.viewer_id;
 			vars['uid'] = uid;
 			request('main_photo', vars);
 		}

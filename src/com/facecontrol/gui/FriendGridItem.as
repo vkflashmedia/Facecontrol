@@ -240,16 +240,9 @@ package com.facecontrol.gui
 		}
 		
 		public function onFavoriteClick(event:GameObjectEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				_scene.showModal(PreloaderSplash.instance);
-			}
-			
-			if (_user.favorite) {
-				Util.api.deleteFavorite(Util.userId, _user.uid);
-			}
-			else {
-				Util.api.addFavorite(Util.userId, _user.uid);
-			}
+			PreloaderSplash.instance.showModal();
+			if (_user.favorite) Util.api.deleteFavorite(Util.viewer_id, _user.uid);
+			else Util.api.addFavorite(Util.viewer_id, _user.uid);
 		}
 		
 		public function onInviteClick(event:GameObjectEvent):void {

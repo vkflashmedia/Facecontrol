@@ -162,7 +162,7 @@ package com.facecontrol.forms
 		}
 		
 		public override function refresh():void {
-			Util.api.favorites(Util.userId);
+			Util.api.favorites(Util.viewer_id);
 		}
 		
 		public override function show():void {

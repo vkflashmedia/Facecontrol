@@ -65,5 +65,9 @@ package com.facecontrol.forms
 		public function resetModal():void {
 			_scene.resetModal(this);
 		}
+		
+		public function showModal():void {
+			_scene.showModal(this);
+		}
 	}
 }

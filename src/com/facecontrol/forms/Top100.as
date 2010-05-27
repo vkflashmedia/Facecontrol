@@ -182,7 +182,7 @@ package com.facecontrol.forms
 		}
 		
 		public override function refresh():void {
-			Util.api.getTop(Util.userId);
+			Util.api.getTop(Util.viewer_id);
 		}
 		
 		public override function show():void {

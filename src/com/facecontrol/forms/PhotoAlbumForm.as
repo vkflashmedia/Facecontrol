@@ -159,7 +159,7 @@ package com.facecontrol.forms
 				var src: String = (p.hasOwnProperty('src')) ? p['src'] : null;
 				var src_small: String = (p.hasOwnProperty('src_small')) ? p['src_small'] : null;
 				var src_big: String = (p.hasOwnProperty('src_big')) ? p['src_big'] : null;
-				_api.addPhoto(Util.userId, src, src_small, src_big, null);
+				_api.addPhoto(Util.viewer_id, src, src_small, src_big, null);
 				wasChanges = true
 			}
 			delPhotosComplCount = 0;
@@ -219,7 +219,7 @@ package com.facecontrol.forms
 					break;
 				}
 				if (newPhotosComplCount == newPhotos.length && delPhotosComplCount == delPhotos.length) {
-					Util.api.getPhotos(Util.userId);
+					Util.api.getPhotos(Util.viewer_id);
 				}
 			}
 			catch (e:Error) {
