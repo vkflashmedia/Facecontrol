@@ -284,7 +284,7 @@ package com.facecontrol.forms
 			_nameField = Util.createLabel(
 				null,
 				_bigPhoto.x,
-				_bigPhoto.y + ((_bigPhoto.bitmap) ? _bigPhoto.bitmap.height : _bigPhoto.height) + 4,
+				_bigPhoto.y + _bigPhoto.photoHeight + 4,
 				_bigPhoto.width);
 			_nameField.setTextFormat(_nameTextFormat);
 			_nameField.embedFonts = true;
@@ -423,7 +423,8 @@ package com.facecontrol.forms
 		}
 		
 		public override function refresh():void {
-			Util.api.nextPhoto(Util.userId);
+//			Util.api.nextPhoto(Util.userId);
+			Util.api.mainPhoto(_current.uid);
 		}
 		
 		public function updateFilter():void {
@@ -531,7 +532,7 @@ package com.facecontrol.forms
 				_favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 				
 				if (_nameField) {
-					_nameField.y = _bigPhoto.y + ((_bigPhoto.bitmap) ? _bigPhoto.bitmap.height : _bigPhoto.height) + 4;
+					_nameField.y = _bigPhoto.y + _bigPhoto.photoHeight + 4;
 				}
 				
 				if (_commentField) {
@@ -550,12 +551,12 @@ package com.facecontrol.forms
 			if (image) {
 				_smallPhoto.photo = image;
 				
-				bigStar.y = _smallPhoto.y + _smallPhoto.bitmap.height + 8;
-				line.y = _smallPhoto.y + _smallPhoto.bitmap.height + 68;;
-				_ratingAverageField.y = _smallPhoto.y + _smallPhoto.bitmap.height + 3;
-				ratingLabel.y = _smallPhoto.y + _smallPhoto.bitmap.height + 43;
-				votesLabel.y = _smallPhoto.y + _smallPhoto.bitmap.height + 72;
-				_votesCountField.y = _smallPhoto.y + _smallPhoto.bitmap.height + 90;
+				bigStar.y = _smallPhoto.y + _smallPhoto.photoHeight + 8;
+				line.y = _smallPhoto.y + _smallPhoto.photoHeight + 68;;
+				_ratingAverageField.y = _smallPhoto.y + _smallPhoto.photoHeight + 3;
+				ratingLabel.y = _smallPhoto.y + _smallPhoto.photoHeight + 43;
+				votesLabel.y = _smallPhoto.y + _smallPhoto.photoHeight + 72;
+				_votesCountField.y = _smallPhoto.y + _smallPhoto.photoHeight + 90;
 			}
 		}
 		

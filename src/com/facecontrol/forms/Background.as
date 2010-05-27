@@ -78,15 +78,15 @@ package com.facecontrol.forms
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
 			addChild(menu);
 			
-			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
-			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
-			ad.y = Constants.APP_HEIGHT - ad.height;
-			//ad.y = Constants.APP_HEIGHT - 2 * ad.height;
-			addChild(ad);
+//			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
+//			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
+//			ad.y = Constants.APP_HEIGHT - ad.height;
+//			//ad.y = Constants.APP_HEIGHT - 2 * ad.height;
+//			addChild(ad);
 			
-			var advPanel: VkAdPanel = new VkAdPanel(Util.scene, ad.x + 10, ad.y + 10, ad.width - 20, ad.height - 20);
-//			advPanel.debug = true;
-			addChild(advPanel);
+//			var advPanel: VkAdPanel = new VkAdPanel(Util.scene, ad.x + 10, ad.y + 10, ad.width - 20, ad.height - 20);
+////			advPanel.debug = true;
+//			addChild(advPanel);
 		}
 		
 	}

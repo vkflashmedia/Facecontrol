@@ -245,5 +245,13 @@ package com.facecontrol.api
 			vars['uid'] = uid;
 			request('top100', vars);
 		}
+		
+		public function mainPhoto(uid:uint):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'main_photo';
+			vars['self_uid'] = Util.userId;
+			vars['uid'] = uid;
+			request('main_photo', vars);
+		}
 	}
 }

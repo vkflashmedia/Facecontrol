@@ -106,6 +106,9 @@ package com.efnx.net
 			if (path == 'http://vkontakte.ru/images/question_a.gif') {
 				path = Images.QUESTION_A;
 			}
+			if (path.indexOf('mvkontakte') != -1) {
+				path = Images.QUESTION_A;
+			}
 			
 			if(testing) trace("MultiLoader::load() " + path,entryName,returnType);
 			/*just in case no name is included*/
@@ -302,6 +305,7 @@ package com.efnx.net
 		private function loadFromPath(path:String, entryName:String, returnType:String = ""):void
 		{	
 			if(testing) trace("MultiLoader::loadFromPath() " + path,entryName,returnType);
+			
 			/*create loader and url to get bitmapData*/
 			var loaderContext:LoaderContext = new LoaderContext(true, ApplicationDomain.currentDomain);
 			var loader:Loader = new Loader();

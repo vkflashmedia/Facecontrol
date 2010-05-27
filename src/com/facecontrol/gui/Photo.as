@@ -259,9 +259,5 @@ package com.facecontrol.gui
 		public function get photo():Bitmap {
 			return _photo;
 		}
-		
-		public override function get bitmap():Bitmap {
-			return _thumbnail;
-		}
 	}
 }

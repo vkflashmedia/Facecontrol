@@ -21,7 +21,7 @@ package com.net
 		
 		private const loader:URLLoader = new URLLoader();
 		
-		public var testMode:uint = 1;
+		public var testMode:uint = 0;
 		private var requestQueue: Array;
 		private var timer: Timer;
 		private var currentMethod: String;
@@ -276,7 +276,7 @@ package com.net
 				'cids=' + cidsString + 
 				'format=json'+
 				'method=getCountries'+
-				'test_mode=1'+
+				'test_mode='+ testMode +
 				'v=2.0'+APP_KEY;
 				
 			vars['api_id'] = APP_ID;

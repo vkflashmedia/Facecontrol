@@ -177,14 +177,6 @@ package {
 						Util.api.friends(response as Array);
 					break;
 					
-//					case 'getFriends':
-//						FriendsForm.instance.users = response.users;
-//						FriendsForm.instance.show();
-//						if (PreloaderSplash.instance.isModal) {
-//							this.resetModal(PreloaderSplash.instance);
-//						}
-//					break;
-					
 					case 'isAppUser':
 						switch (response) {
 							case '0':
@@ -239,11 +231,11 @@ package {
 					break;
 					
 					case 'top100':
-						Top100.instance.users = event.response.users;
-						Top100.instance.show();
 						if (PreloaderSplash.instance.isModal) {
 							this.resetModal(PreloaderSplash.instance);
 						}
+						Top100.instance.users = event.response.users;
+						Top100.instance.show();
 					break;
 					
 					case 'add_photo':
@@ -290,14 +282,6 @@ package {
 						Util.api.getPhotos(Util.userId);
 					break;
 					
-					case 'friends':
-//						FriendsForm.instance.users = response.users;
-//						FriendsForm.instance.show();
-//						if (PreloaderSplash.instance.isModal) {
-//							this.resetModal(PreloaderSplash.instance);
-//						}
-					break;
-					
 					case 'edit_photo':
 						Util.api.getPhotos(Util.userId);
 					break;
@@ -324,6 +308,15 @@ package {
 									break;
 								}
 							} 
+						}
+					break;
+					
+					case 'main_photo':
+						_background.visible = true;
+						MainForm.instance.show();
+						MainForm.instance.nextPhoto(response);
+						if (PreloaderSplash.instance.isModal) {
+							this.resetModal(PreloaderSplash.instance);
 						}
 					break;
 				}
