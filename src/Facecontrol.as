@@ -107,7 +107,15 @@ package {
 					addChild(FriendsForm.instance);
 					addChild(AllUserPhotoForm.instance);
 					
-					if (Util.wrapper.application) Util.vkontakte.isAppUser();
+					if (Util.wrapper.application) {
+						if (appObject.parameters.is_app_user) {
+							checkAppSettings();
+						}
+						else {
+							Util.wrapper.external.showInstallBox();
+						}
+					}
+//					if (Util.wrapper.application) Util.vkontakte.isAppUser();
 					else Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
 				}
 				else {
@@ -170,43 +178,43 @@ package {
 						Util.api.friends(response as Array);
 					break;
 					
-					case 'isAppUser':
-						switch (response) {
-							case '0':
-								if (Util.wrapper.external) {
-									Util.wrapper.external.showInstallBox();
-								}
-							break;
-							case '1':
-								Util.vkontakte.getUserSettings();
-							break;
-						}
-					break;
+//					case 'isAppUser':
+//						switch (response) {
+//							case '0':
+//								if (Util.wrapper.external) {
+//									Util.wrapper.external.showInstallBox();
+//								}
+//							break;
+//							case '1':
+//								Util.vkontakte.getUserSettings();
+//							break;
+//						}
+//					break;
 					
-					case 'getUserSettings':
-						var settings:int = response as int;
-						
-						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
-							(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
-							(settings & SETTINGS_PHOTO_ACCESS) == 0)
-						{
-							var installSettings:int = 0;
-							installSettings |= SETTINGS_NOTICE_ACCEPT;
-							installSettings |= SETTINGS_FRIENDS_ACCESS;
-							installSettings |= SETTINGS_PHOTO_ACCESS;
-							Util.wrapper.external.showSettingsBox(installSettings);
-						}
-						else {
-							if (api_result) {
-								var json:Object = JSON.deserialize(api_result);
-								Util.user = json.response[0];
-								Util.api.registerUser(Util.user);
-							}
-							else {
-								Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
-							}
-						}
-					break;
+//					case 'getUserSettings':
+//						var settings:int = response as int;
+//						
+//						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+//							(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+//							(settings & SETTINGS_PHOTO_ACCESS) == 0)
+//						{
+//							var installSettings:int = 0;
+//							installSettings |= SETTINGS_NOTICE_ACCEPT;
+//							installSettings |= SETTINGS_FRIENDS_ACCESS;
+//							installSettings |= SETTINGS_PHOTO_ACCESS;
+//							Util.wrapper.external.showSettingsBox(installSettings);
+//						}
+//						else {
+//							if (api_result) {
+//								var json:Object = JSON.deserialize(api_result);
+//								Util.user = json.response[0];
+//								Util.api.registerUser(Util.user);
+//							}
+//							else {
+//								Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
+//							}
+//						}
+//					break;
 				}
 			}
 			catch (e:Error) {
@@ -320,10 +328,14 @@ package {
 		}
 		
 		public function onApplicationAdded(e:Object):void {
-			Util.vkontakte.getUserSettings();
+//			Util.vkontakte.getUserSettings();
+			checkAppSettings();
 		}
 		
 		public function onSettingsChanged(e:Object):void {
+			if (appObject.parameters) {
+				appObject.parameters.api_settings = e.settings;
+			}
 //			var settings:Number = e.settings;
 //			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
 //				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
@@ -339,6 +351,29 @@ package {
 //			else {
 				Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
 //			}
+		}
+		
+		public function checkAppSettings():void {
+			if ((appObject.parameters.api_settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+			(appObject.parameters.api_settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+			(appObject.parameters.api_settings & SETTINGS_PHOTO_ACCESS) == 0)
+			{
+				var installSettings:int = 0;
+				installSettings |= SETTINGS_NOTICE_ACCEPT;
+				installSettings |= SETTINGS_FRIENDS_ACCESS;
+				installSettings |= SETTINGS_PHOTO_ACCESS;
+				Util.wrapper.external.showSettingsBox(installSettings);
+			}
+			else {
+				if (api_result) {
+					var json:Object = JSON.deserialize(api_result);
+					Util.user = json.response[0];
+					Util.api.registerUser(Util.user);
+				}
+				else {
+					Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
+				}
+			}
 		}
 	}
 }
