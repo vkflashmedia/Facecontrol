@@ -648,9 +648,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onFavoriteClick(event: GameObjectEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				scene.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.showModal();
 			if (_current.favorite) {
 				Util.api.deleteFavorite(Util.viewer_id, _current.uid);
 			}

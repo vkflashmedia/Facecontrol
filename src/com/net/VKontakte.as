@@ -29,7 +29,7 @@ package com.net
 		
 		private const loader:URLLoader = new URLLoader();
 		
-		public var testMode:uint = 1;
+		public var testMode:uint = 0;
 		private var requestQueue: Array;
 		private var timer: Timer;
 		private var currentMethod: String;

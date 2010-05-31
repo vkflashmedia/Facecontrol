@@ -42,7 +42,7 @@ package com.facecontrol.util
 			PreloaderSplash.instance.resetModal();
 			switch (errorCode) {
 				default:
-					scene.showModal(new MessageDialog(scene, 'Ошибка:', errorMessage));
+					scene.showModal(new MessageDialog(scene, 'Ошибка:', /*errorCode+': '+*/errorMessage));
 			}
 		}
 		

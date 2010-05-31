@@ -32,20 +32,20 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.CENTER;
 			addChild(label);
 			
-			label = Util.createLabel(message, 193, 271, 250, 35);
+			label = Util.createLabel(message, 193, 271, 250, 45);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.multiline = true;
 			label.wordWrap = true;
-			switch (label.numLines) {
-				case 3:
-					label.height = 50;
-				break;
-				case 4:
+//			switch (label.numLines) {
+//				case 3:
+//					label.height = 50;
+//				break;
+//				case 4:
 					label.height = 70;
-				break;
-			}
+//				break;
+//			}
 			addChild(label);
 			
 			var ok:Button = new Button(_scene, 249, (label.numLines < 3) ? 322 : 332);
