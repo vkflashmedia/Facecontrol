@@ -76,6 +76,8 @@ package com.facecontrol.util
 		public static const PRELOADER_ANIM7:String = 'http://www.fcapi.ru/images/preloader/07.png';
 		public static const PRELOADER_ANIM8:String = 'http://www.fcapi.ru/images/preloader/08.png';
 		public static const SPLASH:String = 'http://www.fcapi.ru/images/preloader/splash.jpg';
+		
+		public static const VK_ICON:String = 'http://www.fcapi.ru/images/gotoProfile.png';
 
 //		public static const HEAD_BUTTON1:String = 'facecontrol/images/head/01.png';
 //		public static const HEAD_BUTTON2:String = 'facecontrol/images/head/02.png';
@@ -220,7 +222,8 @@ package com.facecontrol.util
 			ALL_USER_PHOTO_RIGHT_BTN,
 		
 			MESSAGE_DIALOG_BACKGROUND,
-			MESSAGE_DIALOG_BUTTON
+			MESSAGE_DIALOG_BUTTON,
+			VK_ICON
 		);
 	}
 }

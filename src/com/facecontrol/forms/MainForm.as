@@ -306,8 +306,13 @@ package com.facecontrol.forms
 			_commentField.wordWrap = true;
 			addChild(_commentField);
 			
-			_goto = new Button(_scene, _bigPhoto.x + _bigPhoto.photoWidth + 10, _bigPhoto.y);
-			_goto.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO), CONTROL_STATE_NORMAL);
+			var gotoProfileBitmap:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
+			_goto = new Button(
+				_scene,
+				_bigPhoto.x + _bigPhoto.photoWidth - gotoProfileBitmap.width - 10,
+				_bigPhoto.y + 10
+			);
+			_goto.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.VK_ICON), CONTROL_STATE_NORMAL);
 			_goto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
 				function(event:GameObjectEvent):void {
 					Util.gotoUserProfile(currentUser.uid);
@@ -524,8 +529,11 @@ package com.facecontrol.forms
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
 				_bigPhoto.photo = image;
+				
+				var gotoProfileBitmap:Bitmap = _goto.backgroundImageForState(CONTROL_STATE_NORMAL);
 				_goto.visible = true;
-				_goto.x = _bigPhoto.x + _bigPhoto.photoWidth + 10;
+				_goto.x = _bigPhoto.x + _bigPhoto.photoWidth - gotoProfileBitmap.width - 10;
+				_goto.y = _bigPhoto.y + 6;
 				
 				_morePhotos.visible = true;
 				_morePhotos.label = Util.getMorePhotoString(_current.sex);

@@ -7,6 +7,7 @@ package com.facecontrol.gui
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
@@ -29,11 +30,8 @@ package com.facecontrol.gui
 			this.width = 329;
 			this.height = 99;
 			
-//			var photoBitmap:Bitmap;
 			var photo:Photo;
-//			if (Util.multiLoader.hasLoaded(userRaw.pid)) {
 			if (userRaw.pid) {
-//				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.pid);
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
@@ -53,9 +51,7 @@ package com.facecontrol.gui
 				});
 				addChild(morePhotos);
 			}
-//			else if (Util.multiLoader.hasLoaded(userRaw.photo_big)) {
 			else if (userRaw.photo_big) {
-//				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.photo_big);
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
@@ -68,6 +64,16 @@ package com.facecontrol.gui
 				invite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onInviteClick);
 				addChild(invite);
 			}
+			
+			var gotoProfileBitmap:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
+			var goto:Button = new Button(_scene, photo.x + photo.photoWidth - gotoProfileBitmap.width - 2, photo.y);
+			goto.setBackgroundImageForState(gotoProfileBitmap, CONTROL_STATE_NORMAL);
+			goto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+				function(event:GameObjectEvent):void {
+					Util.gotoUserProfile(userRaw.uid);
+				}
+			);
+			addChild(goto);
 			
 			if (userRaw.votes_count && userRaw.votes_count > 0) {
 				var star:Bitmap = BitmapUtil.cloneImageNamed(Images.RATING_ON);
