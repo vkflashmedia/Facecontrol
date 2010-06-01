@@ -225,6 +225,7 @@ package {
 			try {
 				switch (response.method) {
 					case 'reg_user':
+						Util.user.account = response.account;
 						Util.user.city_name = response.city_name;
 						Util.user.country_name = response.country_name;
 						if (response.photo_count == 0) {
