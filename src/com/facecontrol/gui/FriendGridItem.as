@@ -29,11 +29,8 @@ package com.facecontrol.gui
 			this.width = 329;
 			this.height = 99;
 			
-//			var photoBitmap:Bitmap;
 			var photo:Photo;
-//			if (Util.multiLoader.hasLoaded(userRaw.pid)) {
 			if (userRaw.pid) {
-//				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.pid);
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
@@ -53,9 +50,7 @@ package com.facecontrol.gui
 				});
 				addChild(morePhotos);
 			}
-//			else if (Util.multiLoader.hasLoaded(userRaw.photo_big)) {
 			else if (userRaw.photo_big) {
-//				photoBitmap = BitmapUtil.cloneImageNamed(userRaw.photo_big);
 				photo = new Photo(_scene, photoBitmap, 16, 18, 61, 57, Photo.BORDER_TYPE_RECT);
 				photo.photoBorderColor = 0x4c3542;
 				photo.photoBorder = 1;
@@ -116,7 +111,7 @@ package com.facecontrol.gui
 			name.x = 89;
 			name.y = 39;
 			name.autoSize = TextFieldAutoSize.LEFT;
-			name.text = Util.fullName(userRaw, 30);
+			name.text = Util.fullName(userRaw, 25);
 			name.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e));
 			name.embedFonts = true;
 			name.antiAliasType = AntiAliasType.ADVANCED;
