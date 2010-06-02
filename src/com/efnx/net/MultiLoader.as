@@ -106,9 +106,9 @@ package com.efnx.net
 			if (path == 'http://vkontakte.ru/images/question_a.gif') {
 				path = Images.QUESTION_A;
 			}
-			if (path.indexOf('mvkontakte') != -1) {
-				path = Images.QUESTION_A;
-			}
+//			if (path.indexOf('mvkontakte') != -1) {
+//				path = Images.QUESTION_A;
+//			}
 			
 			if(testing) trace("MultiLoader::load() " + path,entryName,returnType);
 			/*just in case no name is included*/

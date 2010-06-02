@@ -2,6 +2,7 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;

@@ -258,5 +258,30 @@ package com.facecontrol.api
 			vars['user_id'] = Util.user_id;
 			request('invite', vars);
 		}
+		
+		public function writeIn(debt:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'write_in';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['debt'] = debt;
+			request(vars['method'], vars);
+		}
+		
+		public function writeOff(debt:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'write_off';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['debt'] = debt;
+			request(vars['method'], vars);
+		}
+		
+		public function withdrawVotes(authKey:String, votes:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'withdraw_votes';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['auth_key'] = authKey;
+			vars['votes'] = votes;
+			request(vars['method'], vars);
+		}
 	}
 }

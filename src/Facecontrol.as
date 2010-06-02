@@ -2,6 +2,7 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.FavoritesForm;
@@ -24,8 +25,6 @@ package {
 	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
-	import flash.net.URLRequest;
-	import flash.net.navigateToURL;
 	import flash.system.Security;
 	
 	public class Facecontrol extends GameScene {
@@ -33,7 +32,7 @@ package {
 		private static const SETTINGS_FRIENDS_ACCESS:int = 0x02;
 		private static const SETTINGS_PHOTO_ACCESS:int = 0x04;
 		
-		private var _background:Background;
+//		private var _background:Background;
 		private var _preloaderShown:Boolean;
 		private var api_result:String;
 		
@@ -93,14 +92,13 @@ package {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
 				if (_preloaderShown) {
-					_background = new Background(this);
-					_background.visible = false;
-					_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
-					addChild(_background);
+					Background.instance.visible = false;
+					Background.instance.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
+					addChild(Background.instance);
 					
 					addChild(MainForm.instance);
 					addChild(MyPhotoForm.instance);
@@ -216,8 +214,34 @@ package {
 			}
 		}
 		
+		private function resetPaymentListeners():void {
+			Util.wrapper.removeEventListener('onMerchantPaymentCancel');
+			Util.wrapper.removeEventListener('onMerchantPaymentSuccess');
+			Util.wrapper.removeEventListener('onMerchantPaymentFail');
+		}
+		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
-			Util.showError(event.errorCode, event.errorMessage);
+			switch (event.errorCode) {
+				case 502:
+					if (Util.wrapper.external) {
+						Util.wrapper.addEventListener('onMerchantPaymentCancel', function():void {
+							resetPaymentListeners();
+							Util.requestVotes = 0;
+						});
+	    				Util.wrapper.addEventListener('onMerchantPaymentSuccess', function(merchantOrderId: String):void {
+	    					resetPaymentListeners();
+	    					Util.api.withdrawVotes('', Util.requestVotes);
+	    				});
+	    				Util.wrapper.addEventListener('onMerchantPaymentFail', function():void {
+	    					resetPaymentListeners();
+	    					Util.requestVotes = 0;
+	    				});
+						Util.wrapper.external.showPaymentBox(Util.requestVotes);
+					}
+				break;
+				default:
+					Util.showError(event.errorCode, event.errorMessage);
+			}
 		}
 		
 		private function onFacecontrolRequestComplited(event:ApiEvent):void {
@@ -226,6 +250,7 @@ package {
 				switch (response.method) {
 					case 'reg_user':
 						Util.user.account = response.account;
+						Background.instance.updateAccount();
 						Util.user.city_name = response.city_name;
 						Util.user.country_name = response.country_name;
 						if (response.photo_count == 0) {
@@ -253,7 +278,7 @@ package {
 					break;
 					
 					case 'next_photo':
-						_background.visible = true;
+						Background.instance.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 						PreloaderSplash.instance.resetModal();
@@ -267,9 +292,7 @@ package {
 						MyPhotoForm.instance.photos = response.photos;
 						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						MyPhotoForm.instance.show();
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'del_photo':
@@ -308,12 +331,22 @@ package {
 					break;
 					
 					case 'main_photo':
-						_background.visible = true;
+						Background.instance.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
+					break;
+					
+					case 'write_in':
+					case 'write_off':
+						Util.user.account = response.account;
+						Background.instance.updateAccount();
+					break;
+					
+					case 'withdraw_votes':
+						Util.requestVotes = 0;
+						Util.user.account = response.account;
+						Background.instance.updateAccount();
 					break;
 				}
 			}

@@ -1,4 +1,4 @@
-package com.facecontrol.forms
+package com.facecontrol.dialog
 {
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;

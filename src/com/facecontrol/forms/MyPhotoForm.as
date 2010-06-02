@@ -2,6 +2,8 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.PhotoPreviewDialog;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;

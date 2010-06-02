@@ -2,7 +2,8 @@ package com.facecontrol.util
 {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
-	import com.facecontrol.forms.MessageDialog;
+	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.flashmedia.basics.GameScene;
 	import com.net.VKontakte;
@@ -22,6 +23,7 @@ package com.facecontrol.util
 		public static var wrapper:Object;
 		public static var user:Object;
 		
+		public static var requestVotes:int = 0;
 		public static var user_id:uint = 11854430;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
 		public static var viewer_id:uint = 11854430;//77625236;//57856825;//11854430;
 		public static var scene:GameScene;
@@ -111,7 +113,12 @@ package com.facecontrol.util
 		}
 		
 		public static function gotoUserProfile(uid:String):void {
-			navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
+			if (Util.user.account > 0) {
+				Util.api.writeOff(1);
+				Util.user.account -= 1;
+				Background.instance.updateAccount();
+				navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
+			}
 		}
 	}
 }

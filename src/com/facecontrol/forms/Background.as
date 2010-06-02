@@ -1,22 +1,31 @@
 package com.facecontrol.forms
 {
+	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.gui.MainMenu;
-	import com.facecontrol.gui.VkAdPanel;
-	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
+	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.util.BitmapUtil;
 	
-	import flash.display.Bitmap;
 	import flash.text.AntiAliasType;
 	import flash.text.Font;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
 	public class Background extends GameLayer
 	{
+		private static var _instance:Background = null;
+		public static function get instance():Background {
+			if (!_instance) _instance = new Background(Util.scene);
+			return _instance;
+		}
+		
 		public var menu:MainMenu;
+		private var _goldLabel:TextField;
 		public function Background(value:GameScene)
 		{
 			super(value);
@@ -78,6 +87,24 @@ package com.facecontrol.forms
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
 			addChild(menu);
 			
+			var goldButton:Button = new Button(scene, 550, 70);
+			goldButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.GOLD), CONTROL_STATE_NORMAL);
+			goldButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
+				_scene.showModal(new PaymentDialog(_scene));
+			});
+			addChild(goldButton);
+			
+			var account:String = '0';
+			if (Util.user && Util.user.hasOwnProperty('account')) {
+				account = Util.user.account;
+			}
+			_goldLabel = Util.createLabel(account, 575, 65);
+			_goldLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
+			_goldLabel.embedFonts = true;
+			_goldLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_goldLabel.autoSize = TextFieldAutoSize.LEFT;
+			addChild(_goldLabel);
+			
 //			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
 //			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
 //			ad.y = Constants.APP_HEIGHT - ad.height;
@@ -89,5 +116,13 @@ package com.facecontrol.forms
 //			addChild(advPanel);
 		}
 		
+		public function updateAccount():void {
+			var account:String = '0';
+			if (Util.user && Util.user.hasOwnProperty('account')) {
+				account = Util.user.account;
+			}
+			_goldLabel.defaultTextFormat = _goldLabel.getTextFormat();
+			_goldLabel.text = account;
+		}
 	}
 }
