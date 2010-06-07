@@ -3,6 +3,8 @@ package com.facecontrol.util
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
 	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.MessageDialogEvent;
+	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.flashmedia.basics.GameScene;
@@ -46,7 +48,7 @@ package com.facecontrol.util
 			PreloaderSplash.instance.resetModal();
 			switch (errorCode) {
 				default:
-					scene.showModal(new MessageDialog(scene, 'Ошибка:', errorMessage));
+					MessageDialog.dialog('Ошибка:', errorMessage);
 			}
 		}
 		
@@ -118,6 +120,14 @@ package com.facecontrol.util
 				Util.user.account -= 1;
 				Background.instance.updateAccount();
 				navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
+			}
+			else {
+				var message:MessageDialog = new MessageDialog(Util.scene, 'Сообщение', 'На вашем счету недостаточно' + 
+						' монет. Пополнить счет?', 'Да', 'Нет');
+				message.addEventListener(MessageDialogEvent.CANCEL_BUTTON_CLICKED, function(event:MessageDialogEvent):void {
+					PaymentDialog.showPayment();
+				});
+				Util.scene.showModal(message);
 			}
 		}
 	}

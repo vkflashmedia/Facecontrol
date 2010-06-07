@@ -91,8 +91,8 @@ package com.facecontrol.forms
 		public override function set visible(value:Boolean):void {
 			super.visible = value;
 			if (value && _users && _users.length == 0) {
-				_scene.showModal(new MessageDialog(_scene,
-				'Сообщение:', 'У вас нет избранных пользователей. Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.'));
+				MessageDialog.dialog('Сообщение:', 'У вас нет избранных пользователей. ' + 
+						'Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.');
 			}
 		}
 		

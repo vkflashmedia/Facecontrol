@@ -188,7 +188,6 @@ package com.facecontrol.forms
 			addChild(filterBackgruond);
 			
 			var filterLabelFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xf2c3ff);
-			
 			var filterLabel:TextField = Util.createLabel('Я ищу:', 470, 315);
 			filterLabel.embedFonts = true;
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
@@ -350,7 +349,8 @@ package com.facecontrol.forms
 				_commentField.text = '';
 				_commentField.setTextFormat(_commentTextFormat);
 				
-				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Ты проголосовал за всех пользователей. Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.'));
+				MessageDialog.dialog('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
+						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.');
 			}
 			else {
 				if (_current && _current.pid != obj.pid) {

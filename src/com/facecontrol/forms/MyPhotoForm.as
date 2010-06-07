@@ -349,10 +349,8 @@ package com.facecontrol.forms
 		}
 		
 		public function multiLoaderError(event:ErrorEvent):void {
-			if (PreloaderSplash.instance.isModal) {
-				scene.resetModal(PreloaderSplash.instance);
-			}
-			_scene.showModal(new MessageDialog(_scene, 'Ошибка:', 'Не удалось загрузить фотографию.'));
+			PreloaderSplash.instance.resetModal();
+			MessageDialog.dialog('Ошибка:', 'Не удалось загрузить фотографию.');
 		}
 		
 		public function multiLoaderComplite(event:MultiLoaderEvent):void {
@@ -365,16 +363,14 @@ package com.facecontrol.forms
 					_mainPhoto.photo = _multiloader.get(_main.pid);
 				}
 				update();
-				if (PreloaderSplash.instance.isModal) {
-					Util.scene.resetModal(PreloaderSplash.instance);
-				}
+				PreloaderSplash.instance.resetModal();
 			}
 		}
 		
 		public function onMarkAsMainClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) Util.api.setMain(gridItem.photoData.pid);
-			else _scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+			else MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
 		}
 		
 		public function onAddPhotoClick(event:GameObjectEvent):void {
@@ -385,13 +381,11 @@ package com.facecontrol.forms
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) {
-				if (!PreloaderSplash.instance.isModal) {
-					scene.showModal(PreloaderSplash.instance);
-				}
+				PreloaderSplash.instance.showModal();
 				Util.api.deletePhoto(gridItem.photoData.pid);
 			}
 			else {
-				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+				MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
 			}
 		}
 		
@@ -413,10 +407,9 @@ package com.facecontrol.forms
 		public function onPreviewClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _grid.selectedItem;
 			if (gridItem) {
-//				_scene.showModal(new PhotoPreviewDialog(_scene, Util.multiLoader.get(gridItem.photoData.pid)));
 				_scene.showModal(new PhotoPreviewDialog(_scene, _multiloader.get(gridItem.photoData.pid)));
 			} else {
-				_scene.showModal(new MessageDialog(_scene, 'Сообщение:', 'Необходимо выбрать фотографию'));
+				MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
 			}
 		}
 		

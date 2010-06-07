@@ -1,12 +1,15 @@
 package com.facecontrol.dialog
 {
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.util.BitmapUtil;
 	
+	import flash.display.Bitmap;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -14,7 +17,7 @@ package com.facecontrol.dialog
 
 	public class MessageDialog extends GameLayer
 	{
-		public function MessageDialog(value:GameScene, title:String, message:String)
+		public function MessageDialog(value:GameScene, title:String, message:String, cancelButton:String, secondButton:String=null)
 		{
 			super(value);
 			
@@ -22,7 +25,7 @@ package com.facecontrol.dialog
 			this.graphics.drawRect(0, 0, _scene.width, _scene.height);
 			
 			bitmap = Util.multiLoader.get(Images.MESSAGE_DIALOG_BACKGROUND);
-			bitmap.x = 166;
+			bitmap.x = (Constants.APP_WIDTH - bitmap.width) / 2;
 			bitmap.y = 214;
 			
 			var label:TextField = Util.createLabel(title, 175, 232, 282, 20);
@@ -48,23 +51,45 @@ package com.facecontrol.dialog
 			}
 			addChild(label);
 			
-			var ok:Button = new Button(_scene, 249, (label.numLines < 3) ? 322 : 332);
-			ok.setBackgroundImageForState(Util.multiLoader.get(Images.MESSAGE_DIALOG_BUTTON), CONTROL_STATE_NORMAL);
-			ok.setTitleForState('Oк', CONTROL_STATE_NORMAL);
-			ok.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
-			ok.textField.embedFonts = true;
-			ok.textField.antiAliasType = AntiAliasType.ADVANCED;
-			ok.setTextPosition(58, 11);
-			ok.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onOkClick);
-			addChild(ok);
+			var buttonTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
+			var buttonY:int = (label.numLines < 3) ? 322 : 332;
+			var buttonImage:Bitmap = BitmapUtil.cloneImageNamed(Images.MESSAGE_DIALOG_BUTTON);
+			var cancelX:int = secondButton ? bitmap.x + 14 : bitmap.x + (bitmap.width - buttonImage.width) / 2;
+			var cancel:Button = new Button(_scene, cancelX, buttonY);
+			cancel.setBackgroundImageForState(buttonImage, CONTROL_STATE_NORMAL);
+			cancel.setTitleForState(cancelButton, CONTROL_STATE_NORMAL);
+			cancel.setTextFormatForState(buttonTextFormat, CONTROL_STATE_NORMAL);
+			cancel.textField.embedFonts = true;
+			cancel.textField.antiAliasType = AntiAliasType.ADVANCED;
+			cancel.setTextPosition(58, 11);
+			cancel.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onCancelButtonClicked);
+			addChild(cancel);
+			
+			if (secondButton) {
+				var second:Button = new Button(_scene, cancel.x + cancel.width, buttonY);
+				second.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.ADD_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
+				second.setTitleForState(secondButton, CONTROL_STATE_NORMAL);
+				second.setTextFormatForState(buttonTextFormat, CONTROL_STATE_NORMAL);
+				second.textField.embedFonts = true;
+				second.textField.antiAliasType = AntiAliasType.ADVANCED;
+				second.setTextPosition(58, 11);
+				second.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onSecondButtonClicked);
+				addChild(second);
+			}
 		}
 		
-		public function onOkClick(event:GameObjectEvent):void {
+		public function onCancelButtonClicked(event:GameObjectEvent):void {
 			_scene.resetModal(this);
+			dispatchEvent(new MessageDialogEvent(MessageDialogEvent.CANCEL_BUTTON_CLICKED));
+		}
+		
+		public function onSecondButtonClicked(event:GameObjectEvent):void {
+			_scene.resetModal(this);
+			dispatchEvent(new MessageDialogEvent(MessageDialogEvent.SECOND_BUTTON_CLICKED));
 		}
 		
 		public static function dialog(title:String, message:String):void {
-			var dialog:MessageDialog = new MessageDialog(Util.scene, title, message);
+			var dialog:MessageDialog = new MessageDialog(Util.scene, title, message, 'Oк');
 			Util.scene.showModal(dialog);
 		}
 	}
