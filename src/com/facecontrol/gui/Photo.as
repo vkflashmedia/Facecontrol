@@ -1,5 +1,6 @@
 package com.facecontrol.gui
 {
+	import com.facecontrol.util.Images;
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.util.BitmapUtil;
@@ -50,10 +51,14 @@ package com.facecontrol.gui
 		private var _photoWidth:int;
 		private var _photoHeight:int;
 		
-		public function Photo(value:GameScene, image:Bitmap, x:int, y:int, width:int, height:int, type:uint=0)
+		private var _frameIndex:int;
+		private var _photoRaw:Object;
+		
+		public function Photo(value:GameScene, image:Bitmap, x:int, y:int, width:int, height:int, type:uint=0, frameIndex:int=0)
 		{
 			super(value);
 			
+//			_photoRaw = photoRaw;
 			_photoBorderColor = 0x000000;
 			_borderType = type;
 			_photoBorder = 2;
@@ -240,6 +245,21 @@ package com.facecontrol.gui
 				if (_thumbnail.y > yIndent + _photoBorder) _thumbnail.y = yIndent + _photoBorder;
 				
 				_thumbnail.mask = _squareMask;
+			}
+			
+			if (_frameIndex > 0) {
+				var frame:Bitmap = BitmapUtil.cloneImageNamed(Images.FRAME_DRAGON);
+				var frameScale:Number = 1;
+				if (frame.height > photoHeight - 50) {
+					frameScale = (photoHeight - 50) / frame.height;
+					var frameMatrix:Matrix = new Matrix();
+					frameMatrix.scale(frameScale, frameScale);
+					frame.transform.matrix = frameMatrix;
+				}
+				
+				frame.x = xIndent + photoWidth - frame.width + 27*frameScale;
+				frame.y = yIndent + photoHeight - frame.height - 6*frameScale;
+				addChild(frame);
 			}
 		}
 		

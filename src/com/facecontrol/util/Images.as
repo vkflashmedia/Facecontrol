@@ -80,6 +80,8 @@ package com.facecontrol.util
 		public static const VK_ICON:String = 'http://www.fcapi.ru/images/gotoProfile.png';
 		public static const GOLD:String = 'http://www.fcapi.ru/images/gold.png';
 		public static const PAYMENT_FORM:String = 'http://www.fcapi.ru/images/payment/form.png';
+		
+		public static const FRAME_DRAGON:String = 'http://www.fcapi.ru/images/ramki/dragon.png';
 
 		public static const PRE_IMAGES: Array = new Array(
 			SPLASH,
@@ -162,7 +164,9 @@ package com.facecontrol.util
 			
 			VK_ICON,
 			GOLD,
-			PAYMENT_FORM
+			PAYMENT_FORM,
+			
+			FRAME_DRAGON
 		);
 	}
 }
