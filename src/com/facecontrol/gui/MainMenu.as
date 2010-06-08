@@ -8,28 +8,28 @@ package com.facecontrol.gui
 	public class MainMenu extends GameObject
 	{
 		private var _buttons:Array;
-		
+		private var _context:ProfileContextMenu;
 		public function MainMenu(value:GameScene)
 		{
 			super(value);
+			_context = new ProfileContextMenu(value);
+			addChild(_context);
+			_context.visible = false;
 		}
 		
 		public function set buttons(array:Array):void {
-			var i:uint = 0;
-			var count:uint = 0;
 			if (_buttons) {
-				count = _buttons.length;
-				for (i = 0; i < count; ++i) {
-					removeChild(_buttons[i]);
+				for each (var button:Button in _buttons) {
+					removeChild(button);
 				}
 			}
 			
 			_buttons = array;
-			count = _buttons.length;
-			for (i = 0; i < count; ++i) {
-				var button:Button = _buttons[i];
-				addChild(_buttons[i]);
-				button.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClick);
+			if (_buttons) {
+				for each (button in _buttons) {
+					addChild(button);
+					button.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onButtonClick);
+				}
 			}
 		}
 		
@@ -45,18 +45,25 @@ package com.facecontrol.gui
 			var menuEvent:MainMenuEvent = null;
 			switch (event.gameObject) {
 				case _buttons[0]:
+					_context.visible = false;
 					menuEvent = new MainMenuEvent(MainMenuEvent.FIRST_BUTTON_CLICK);
 				break;
 				case _buttons[1]:
-					menuEvent = new MainMenuEvent(MainMenuEvent.SECOND_BUTTON_CLICK);
+//					menuEvent = new MainMenuEvent(MainMenuEvent.SECOND_BUTTON_CLICK);
+//					if (contains(_context)) removeChild(_context);
+//					else addChild(_context);
+					_context.visible = !_context.visible;
 				break;
 				case _buttons[2]:
+					_context.visible = false;
 					menuEvent = new MainMenuEvent(MainMenuEvent.THIRD_BUTTON_CLICK);
 				break;
 				case _buttons[3]:
+					_context.visible = false;
 					menuEvent = new MainMenuEvent(MainMenuEvent.FOURTH_BUTTON_CLICK);
 				break;
 				case _buttons[4]:
+					_context.visible = false;
 					menuEvent = new MainMenuEvent(MainMenuEvent.FIFTH_BUTTON_CLICK);
 				break;
 			}

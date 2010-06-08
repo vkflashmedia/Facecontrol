@@ -35,11 +35,7 @@ package com.facecontrol.forms
 			menu.x = 1;
 			menu.y = 1;
 			
-			var f:Font = new EmbeddedFonts_University();
-			
-			var format:TextFormat = new TextFormat();
-			format.font = f.fontName;
-			format.size = 21;
+			var format:TextFormat = new TextFormat(Util.university.fontName, 21);
 			
 			var b1:Button = new Button(scene, 0, 0);
 			b1.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON1), CONTROL_STATE_NORMAL);
@@ -52,7 +48,7 @@ package com.facecontrol.forms
 			
 			var b2:Button = new Button(scene, 149, 0);
 			b2.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON2), CONTROL_STATE_NORMAL);
-			b2.setTitleForState('мои фото', CONTROL_STATE_NORMAL);
+			b2.setTitleForState('профиль', CONTROL_STATE_NORMAL);
 			b2.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b2.textField.embedFonts = true;
 			b2.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -85,7 +81,6 @@ package com.facecontrol.forms
 			b5.setTextPosition(25, 7);
 			
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
-			addChild(menu);
 			
 			var goldButton:Button = new Button(scene, 550, 70);
 			goldButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.GOLD), CONTROL_STATE_NORMAL);

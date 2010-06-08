@@ -20,6 +20,7 @@ package com.facecontrol.util
 		public static const opiumBold:Font = new EmbeddedFonts_OpiumBold();
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
+		public static const university:Font = new EmbeddedFonts_University();
 		public static const DEBUG:Boolean = true;
 		
 		public static var wrapper:Object;

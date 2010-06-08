@@ -2,7 +2,6 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
-	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.FavoritesForm;
@@ -14,6 +13,7 @@ package {
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
+	import com.facecontrol.gui.ProfileContextMenu;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -32,7 +32,6 @@ package {
 		private static const SETTINGS_FRIENDS_ACCESS:int = 0x02;
 		private static const SETTINGS_PHOTO_ACCESS:int = 0x04;
 		
-//		private var _background:Background;
 		private var _preloaderShown:Boolean;
 		private var api_result:String;
 		
@@ -94,10 +93,10 @@ package {
 				if (_preloaderShown) {
 					Background.instance.visible = false;
 					Background.instance.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
-					Background.instance.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
 					Background.instance.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
 					Background.instance.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
 					Background.instance.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
+					Background.instance.menu.visible = false;
 					addChild(Background.instance);
 					
 					addChild(MainForm.instance);
@@ -106,6 +105,8 @@ package {
 					addChild(FavoritesForm.instance);
 					addChild(FriendsForm.instance);
 					addChild(AllUserPhotoForm.instance);
+					
+					addChild(Background.instance.menu);
 					
 					if (Util.wrapper.application) Util.vkontakte.isAppUser();
 					else Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
@@ -131,11 +132,6 @@ package {
 				Util.api.nextPhoto(Util.viewer_id);
 			}
 			MainForm.instance.show();
-		}
-		
-		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
-			PreloaderSplash.instance.showModal();
-			Util.api.getPhotos(Util.viewer_id);
 		}
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
@@ -279,6 +275,7 @@ package {
 					
 					case 'next_photo':
 						Background.instance.visible = true;
+						Background.instance.menu.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 						PreloaderSplash.instance.resetModal();
