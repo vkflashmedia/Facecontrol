@@ -10,7 +10,6 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
-	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.ComboBoxEvent;
 	import com.flashmedia.gui.Form;
@@ -33,11 +32,21 @@ package com.facecontrol.forms
 	
 	public class MainForm extends Form
 	{
-		private static const _commentTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4);
-		private static const _nameTextFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be);
-		
 		private static const COUNTRY_DEFAULT:String = 'Весь мир';
 		private static const CITY_DEFAULT:String = 'Вся страна';
+		
+		private static const CURRENT_PHOTO_COMMENT_HEIGHT:int = 100;
+		private static const CURRENT_USER_NAME_HEIGHT:int = 25;
+
+		private static const INDENT_BETWEEN_CURRENT_PHOTO_AND_NAME:int = 4;
+		private static const INDENT_BETWEEN_CURRENT_PHOTO_AND_COMMENT:int = 32;
+		
+		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_STAR_ICON:int = 8;
+		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_DELIMITER_ICON:int = 68;
+		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_RATING_AVERAGE:int = 3;
+		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_RATING_AVERAGE_LABEL:int = 43;
+		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT:int = 90;
+		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT_LABEL:int = 72;
 		
 		private static var _instance:MainForm = null;
 		public static function get instance():MainForm {
@@ -45,34 +54,33 @@ package com.facecontrol.forms
 			return _instance;
 		}
 		
-		protected var _bigPhoto:Photo;
-		protected var _smallPhoto:Photo;
-		protected var _ratingAverageField:TextField;
-		protected var _votesCountField:TextField;
-		protected var _nameField:TextField;
-		protected var _commentField:TextField;
-		protected var _rateBar:RatingBar;
+		private var _currentUser:Object;
+		private var _currentUserArea:Sprite;
+		private var _currentUserPhoto:Photo;
+		private var _currentUserName:LinkButton;
+		private var _currentUserPhotoComment:TextField;
+		private var _currentUserMorePhotosButton:LinkButton;
+		private var _currentUserSetFavoriteButton:LinkButton;
 		
-		protected var _sexBox:ComboBox;
-		protected var _minAgeBox:TextField;
-		protected var _maxAgeBox:TextField;
-		protected var _countryBox:ComboBox;
-		protected var _cityBox:ComboBox;
+		private var _previousUser:Object;
+		private var _previousUserPhoto:Photo;
+		private var _previousUserPhotoRatingAverage:TextField;
+		private var _previousUserPhotoVotesCount:TextField;
+		private var _previousUserPhotoRatingAverageLabel:TextField;
+		private var _previousUserPhotoVotesCountLabel:TextField;
+		private var _previousUserArea:Sprite;
+		private var _previousUserStarIcon:Bitmap;
+		private var _previousUserDelimiterIcon:Bitmap;
+		
+		private var _rateBar:RatingBar;
+		
+		private var _sexBox:ComboBox;
+		private var _minAgeBox:TextField;
+		private var _maxAgeBox:TextField;
+		private var _countryBox:ComboBox;
+		private var _cityBox:ComboBox;
 		
 		private var _filter:Object;
-		private var _current:Object;
-		private var _previous:Object;
-		
-		private var _previousLayer:Sprite;
-		
-		private var bigStar:Bitmap;
-		private var line:Bitmap;
-		private var ratingLabel:TextField;
-		private var votesLabel:TextField;
-		
-		private var _morePhotos:LinkButton;
-		private var _favorite:LinkButton;
-		
 		private var _multiloader:MultiLoader;
 		
 		public function MainForm(value:GameScene)
@@ -113,73 +121,8 @@ package com.facecontrol.forms
 			superIcon.y = 75;
 			addChild(superIcon);
 			
-			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
-			_bigPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
-			addChild(_bigPhoto);
-			
-			_morePhotos = new LinkButton(value, '', 195, 150);
-			_morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
-			_morePhotos.textField.embedFonts = true;
-			_morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
-			_morePhotos.visible = false;
-			_morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onOtherPhotosClick);
-			addChild(_morePhotos);
-			
-			_favorite = new LinkButton(value, '', 305, 150);
-			_favorite.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x63cdff, null, null, true), CONTROL_STATE_NORMAL);
-			_favorite.textField.embedFonts = true;
-			_favorite.textField.antiAliasType = AntiAliasType.ADVANCED;
-			_favorite.visible = false;
-			_favorite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFavoriteClick);
-			addChild(_favorite);
-			
-			_previousLayer = new Sprite();
-			_previousLayer.visible = false;
-			addChild(_previousLayer);
-			
-			_smallPhoto = new Photo(_scene, null, 38, 176, 132, 176);
-			_smallPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
-			_previousLayer.addChild(_smallPhoto);
-			
-			bigStar = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
-			bigStar.y = _smallPhoto.y + _smallPhoto.height + 8;
-			bigStar.x = 44;
-			_previousLayer.addChild(bigStar);
-			
-			line = Util.multiLoader.get(Images.LINE);
-			line.x = 38;
-			line.y = _smallPhoto.y + _smallPhoto.height + 68;;
-			_previousLayer.addChild(line);
-			
-			_ratingAverageField = Util.createLabel('0', 38, _smallPhoto.y + _smallPhoto.height + 3, line.width);
-			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
-			_ratingAverageField.embedFonts = true;
-			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
-			_ratingAverageField.autoSize = TextFieldAutoSize.CENTER;
-			_previousLayer.addChild(_ratingAverageField);
-			
-			
-			ratingLabel = Util.createLabel('средний балл', 38, _smallPhoto.y + _smallPhoto.height + 43, line.width);
-			ratingLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
-			ratingLabel.embedFonts = true;
-			ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
-			ratingLabel.type = TextFieldType.DYNAMIC;
-			ratingLabel.autoSize = TextFieldAutoSize.CENTER;
-			_previousLayer.addChild(ratingLabel);
-			
-			votesLabel = Util.createLabel('голосовало:', 38, _smallPhoto.y + _smallPhoto.height + 72, line.width);
-			votesLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
-			votesLabel.embedFonts = true;
-			votesLabel.autoSize = TextFieldAutoSize.CENTER;
-			votesLabel.antiAliasType = AntiAliasType.ADVANCED;
-			_previousLayer.addChild(votesLabel);
-			
-			_votesCountField = Util.createLabel('0', 38, _smallPhoto.y + _smallPhoto.height + 90, line.width);
-			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
-			_votesCountField.embedFonts = true;
-			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
-			_votesCountField.autoSize = TextFieldAutoSize.CENTER;
-			_previousLayer.addChild(_votesCountField);
+			initCurrentUserArea();
+			initPreviousUserArea();
 			
 			var filterBackgruond:Bitmap = Util.multiLoader.get(Images.FILTER_BACKGROUND);
 			filterBackgruond.x = 452;
@@ -281,107 +224,166 @@ package com.facecontrol.forms
 			_cityBox = createComboBox(472, 465, 113);
 			_cityBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_cityBox);
+		}
+		
+		private function initCurrentUserArea():void {
+			_currentUserArea = new Sprite();
+			_currentUserArea.visible = false;
+			addChild(_currentUserArea);
 			
-			_nameField = Util.createLabel(
-				null,
-				_bigPhoto.x,
-				_bigPhoto.y + _bigPhoto.photoHeight + 4,
-				_bigPhoto.width);
-			_nameField.setTextFormat(_nameTextFormat);
-			_nameField.embedFonts = true;
-			_nameField.autoSize = TextFieldAutoSize.CENTER;
-			addChild(_nameField);
+			_currentUserPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
+			_currentUserPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			_currentUserArea.addChild(_currentUserPhoto);
 			
-			var commentY:int = _nameField.y + 28;
-			_commentField = Util.createLabel(
-				null,
-				commentY < 495 ? _bigPhoto.x : 180,
-				commentY,
-				commentY < 495 ? _bigPhoto.width : 300,
-				100);
-			_commentField.setTextFormat(_commentTextFormat);
-			_commentField.embedFonts = true;
-			_commentField.multiline = true;
-			_commentField.wordWrap = true;
-			addChild(_commentField);
+			_currentUserMorePhotosButton = new LinkButton(_scene, '', 195, 150);
+			_currentUserMorePhotosButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
+			_currentUserMorePhotosButton.textField.embedFonts = true;
+			_currentUserMorePhotosButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_currentUserMorePhotosButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onOtherPhotosClick);
+			_currentUserArea.addChild(_currentUserMorePhotosButton);
+			
+			_currentUserSetFavoriteButton = new LinkButton(_scene, '', 305, 150);
+			_currentUserSetFavoriteButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x63cdff, null, null, true), CONTROL_STATE_NORMAL);
+			_currentUserSetFavoriteButton.textField.embedFonts = true;
+			_currentUserSetFavoriteButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_currentUserSetFavoriteButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFavoriteClick);
+			_currentUserArea.addChild(_currentUserSetFavoriteButton);
+			
+			_currentUserName = new LinkButton(_scene, null, _currentUserPhoto.x, _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_NAME,
+				TextFieldAutoSize.CENTER);
+			_currentUserName.width = _currentUserPhoto.width;
+			_currentUserName.height = CURRENT_USER_NAME_HEIGHT;
+			_currentUserName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be), CONTROL_STATE_NORMAL);
+			_currentUserName.textField.embedFonts = true;
+			_currentUserName.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_currentUserArea.addChild(_currentUserName);
+			
+			_currentUserPhotoComment = Util.createLabel(null, 180, _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_COMMENT,
+				_currentUserPhoto.width, CURRENT_PHOTO_COMMENT_HEIGHT);
+			_currentUserPhotoComment.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xa7b3b4));
+			_currentUserPhotoComment.embedFonts = true;
+			_currentUserPhotoComment.multiline = true;
+			_currentUserPhotoComment.wordWrap = true;
+			_currentUserArea.addChild(_currentUserPhotoComment);
+		}
+		
+		private function initPreviousUserArea():void {
+			_previousUserArea = new Sprite();
+			_previousUserArea.visible = false;
+			addChild(_previousUserArea);
+			
+			_previousUserPhoto = new Photo(_scene, null, 38, 176, 132, 176);
+			_previousUserPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			_previousUserArea.addChild(_previousUserPhoto);
+			
+			_previousUserStarIcon = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
+			_previousUserStarIcon.y = _previousUserPhoto.y + _previousUserPhoto.height + 8;
+			_previousUserStarIcon.x = 44;
+			_previousUserArea.addChild(_previousUserStarIcon);
+			
+			_previousUserDelimiterIcon = BitmapUtil.cloneImageNamed(Images.LINE);
+			_previousUserDelimiterIcon.x = 38;
+			_previousUserDelimiterIcon.y = _previousUserPhoto.y + _previousUserPhoto.height + 68;;
+			_previousUserArea.addChild(_previousUserDelimiterIcon);
+			
+			_previousUserPhotoRatingAverage = Util.createLabel('0', 38, _previousUserPhoto.y + _previousUserPhoto.height + 3, _previousUserDelimiterIcon.width);
+			_previousUserPhotoRatingAverage.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
+			_previousUserPhotoRatingAverage.embedFonts = true;
+			_previousUserPhotoRatingAverage.antiAliasType = AntiAliasType.ADVANCED;
+			_previousUserPhotoRatingAverage.autoSize = TextFieldAutoSize.CENTER;
+			_previousUserArea.addChild(_previousUserPhotoRatingAverage);
+			
+			
+			_previousUserPhotoRatingAverageLabel = Util.createLabel('средний балл', 38, _previousUserPhoto.y + _previousUserPhoto.height + 43, _previousUserDelimiterIcon.width);
+			_previousUserPhotoRatingAverageLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 13, 0xd2dee0));
+			_previousUserPhotoRatingAverageLabel.embedFonts = true;
+			_previousUserPhotoRatingAverageLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_previousUserPhotoRatingAverageLabel.type = TextFieldType.DYNAMIC;
+			_previousUserPhotoRatingAverageLabel.autoSize = TextFieldAutoSize.CENTER;
+			_previousUserArea.addChild(_previousUserPhotoRatingAverageLabel);
+			
+			_previousUserPhotoVotesCountLabel = Util.createLabel('голосовало:', 38, _previousUserPhoto.y + _previousUserPhoto.height + 72, _previousUserDelimiterIcon.width);
+			_previousUserPhotoVotesCountLabel.setTextFormat(new TextFormat(Util.opiumBold.fontName, 12, 0x86a4a8));
+			_previousUserPhotoVotesCountLabel.embedFonts = true;
+			_previousUserPhotoVotesCountLabel.autoSize = TextFieldAutoSize.CENTER;
+			_previousUserPhotoVotesCountLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_previousUserArea.addChild(_previousUserPhotoVotesCountLabel);
+			
+			_previousUserPhotoVotesCount = Util.createLabel('0', 38, _previousUserPhoto.y + _previousUserPhoto.height + 90, _previousUserDelimiterIcon.width);
+			_previousUserPhotoVotesCount.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
+			_previousUserPhotoVotesCount.embedFonts = true;
+			_previousUserPhotoVotesCount.antiAliasType = AntiAliasType.ADVANCED;
+			_previousUserPhotoVotesCount.autoSize = TextFieldAutoSize.CENTER;
+			_previousUserArea.addChild(_previousUserPhotoVotesCount);
 		}
 		
 		public function nextPhoto(obj:Object):void {
 			_rateBar.rating = 0;
 			
 			if (!obj.hasOwnProperty('pid')) {
-				if (_current) {
+				if (_currentUser) {
 					bigPhoto = null;
 					
-					if (_current.votes_count) {
-						if (_previous) {
+					if (_currentUser.votes_count) {
+						if (_previousUser) {
 							try {
-								_multiloader.unload(_previous.pid);
+								_multiloader.unload(_previousUser.pid);
 							}
 							catch (e:Error) {}
 						}
-						_previous = _current;
+						_previousUser = _currentUser;
 						previousPhoto();
 					}
 				}
 				
-				_current = null;
+				_currentUser = null;
 				_rateBar.enabled = false;
 				
-				_nameField.text = '';
-				_nameField.setTextFormat(_nameTextFormat);
-				
-				_commentField.text = '';
-				_commentField.setTextFormat(_commentTextFormat);
+				_currentUserName.title = '';
+				_currentUserPhotoComment.text = '';
+//				_commentField.setTextFormat(_commentTextFormat);
 				
 				MessageDialog.dialog('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
 						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.');
 			}
 			else {
-				if (_current && _current.pid != obj.pid) {
-					if (_previous) {
+				if (_currentUser && _currentUser.pid != obj.pid) {
+					if (_previousUser) {
 						try {
-//							Util.multiLoader.unload(_previous.pid);
-							_multiloader.unload(_previous.pid);
+							_multiloader.unload(_previousUser.pid);
 						}
 						catch (e:Error) {}
 					}
-					_previous = _current;
+					_previousUser = _currentUser;
 				}
 				
-				if (!_current || _current.pid != obj.pid) {
+				if (!_currentUser || _currentUser.pid != obj.pid) {
 					_multiloader.addEventListener(ErrorEvent.ERROR, multiloaderError);
 					_multiloader.load(obj.src_big, obj.pid, 'Bitmap');
 					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
 				}
 				
-				_current = obj;
-				_nameField.text = Util.fullName(_current);
-				_nameField.setTextFormat(_nameTextFormat);
+				_currentUser = obj;
+				_currentUserName.title = Util.fullName(_currentUser);
 				
-				if (_commentField) {
-					if (_current.comment) {
-						_commentField.text = _current.comment ? _current.comment : '';
-						_commentField.setTextFormat(_commentTextFormat);
-						_commentField.visible = true;
-					}
-					else {
-						_commentField.visible = false;
-					}
+				if (_currentUserPhotoComment) {
+					_currentUserPhotoComment.defaultTextFormat = _currentUserPhotoComment.getTextFormat();
+					_currentUserPhotoComment.text = _currentUser.comment ? _currentUser.comment : '';
+					_currentUserPhotoComment.visible = true;
 				}
 				
 				_rateBar.enabled = true;
-				if (_current) _favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
+				if (_currentUser) _currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
 		}
 		
 		public function get currentUser(): Object {
-			return _current;
+			return _currentUser;
 		}
 		
 		public function vote(obj:Object):void {
-			_current.rating_average = obj.rating_average;
-			_current.votes_count = obj.votes_count;
+			_currentUser.rating_average = obj.rating_average;
+			_currentUser.votes_count = obj.votes_count;
 			Util.api.nextPhoto(Util.viewer_id);
 		}
 		
@@ -391,8 +393,8 @@ package com.facecontrol.forms
 		}
 		
 		private function multiLoaderComplete(event:MultiLoaderEvent):void {
-			if (_multiloader.hasLoaded(_current.pid)) {
-				bigPhoto = _multiloader.get(_current.pid);
+			if (_multiloader.hasLoaded(_currentUser.pid)) {
+				bigPhoto = _multiloader.get(_currentUser.pid);
 				previousPhoto();
 			}
 			
@@ -401,20 +403,20 @@ package com.facecontrol.forms
 		}
 		
 		private function previousPhoto():void {
-			_previousLayer.visible = _previous && _previous.votes_count;
-			if (_previousLayer.visible) {
-				smallPhoto = _multiloader.get(_previous.pid);
+			_previousUserArea.visible = _previousUser && _previousUser.votes_count;
+			if (_previousUserArea.visible) {
+				smallPhoto = _multiloader.get(_previousUser.pid);
 				
-				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
-				_ratingAverageField.text = _previous.rating_average ? _previous.rating_average : '';
+				_previousUserPhotoRatingAverage.defaultTextFormat = _previousUserPhotoRatingAverage.getTextFormat();
+				_previousUserPhotoRatingAverage.text = _previousUser.rating_average ? _previousUser.rating_average : '';
 				
-				_votesCountField.defaultTextFormat = _votesCountField.getTextFormat();
-				_votesCountField.text = _previous.votes_count ? _previous.votes_count : '';
+				_previousUserPhotoVotesCount.defaultTextFormat = _previousUserPhotoVotesCount.getTextFormat();
+				_previousUserPhotoVotesCount.text = _previousUser.votes_count ? _previousUser.votes_count : '';
 			}
 		}
 		
 		public override function refresh():void {
-			Util.api.mainPhoto(_current.uid);
+			Util.api.mainPhoto(_currentUser.uid);
 		}
 		
 		public function updateFilter():void {
@@ -509,46 +511,35 @@ package com.facecontrol.forms
 		}
 		
 		public function get bigPhoto():Bitmap {
-			return _bigPhoto.photo;
+			return _currentUserPhoto.photo;
 		}
 		
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
-				_bigPhoto.photo = image;
+				_currentUserPhoto.photo = image;
+				_currentUserMorePhotosButton.title = Util.getMorePhotoString(_currentUser.sex);
+				_currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' :
+					 'Добавить в избранные';
+				_currentUserName.y = _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_NAME;
+				_currentUserPhotoComment.y = _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_COMMENT;
 				
-				_morePhotos.visible = true;
-				_morePhotos.label = Util.getMorePhotoString(_current.sex);
-				
-				_favorite.visible = true;
-				_favorite.label = (_current.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
-				
-				if (_nameField) {
-					_nameField.y = _bigPhoto.y + _bigPhoto.photoHeight + 4;
-				}
-				
-				if (_commentField) {
-					_commentField.y = _nameField.y + 28;
-					_commentField.x = _commentField.y < 495 ? _bigPhoto.x : 180;
-					_commentField.width = _commentField.y < 495 ? _bigPhoto.width : 300;
-				}
+				_currentUserArea.visible = true;
 			} else {
-				_bigPhoto.photo = null;
-				_morePhotos.visible = false;
-				_favorite.visible = false;
-				_goto.visible = false;
+				_currentUserArea.visible = false;
+				_currentUserPhoto.photo = null;
 			}
 		}
 		
 		public function set smallPhoto(image:Bitmap):void {
 			if (image) {
-				_smallPhoto.photo = image;
-				
-				bigStar.y = _smallPhoto.y + _smallPhoto.photoHeight + 8;
-				line.y = _smallPhoto.y + _smallPhoto.photoHeight + 68;;
-				_ratingAverageField.y = _smallPhoto.y + _smallPhoto.photoHeight + 3;
-				ratingLabel.y = _smallPhoto.y + _smallPhoto.photoHeight + 43;
-				votesLabel.y = _smallPhoto.y + _smallPhoto.photoHeight + 72;
-				_votesCountField.y = _smallPhoto.y + _smallPhoto.photoHeight + 90;
+				_previousUserPhoto.photo = image;
+				var photoBottomY:int = _previousUserPhoto.y + _previousUserPhoto.photoHeight;
+				_previousUserStarIcon.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_STAR_ICON;
+				_previousUserDelimiterIcon.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_DELIMITER_ICON;
+				_previousUserPhotoRatingAverage.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_RATING_AVERAGE;
+				_previousUserPhotoRatingAverageLabel.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_RATING_AVERAGE_LABEL;
+				_previousUserPhotoVotesCountLabel.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT_LABEL;
+				_previousUserPhotoVotesCount.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT;
 			}
 		}
 		
@@ -558,7 +549,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onRateClicked(event:GameObjectEvent):void {
-			Util.api.vote(Util.viewer_id, _current.pid, _rateBar.rating);
+			Util.api.vote(Util.viewer_id, _currentUser.pid, _rateBar.rating);
 		}
 		
 		public function onFilterChanged(event:ComboBoxEvent):void {
@@ -640,7 +631,7 @@ package com.facecontrol.forms
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
 			AllUserPhotoForm.instance.returnForm = this;
-			AllUserPhotoForm.instance.user = _current;
+			AllUserPhotoForm.instance.user = _currentUser;
 			AllUserPhotoForm.instance.show();
 			if (!PreloaderSplash.instance.isModal) {
 				scene.showModal(PreloaderSplash.instance);
@@ -651,11 +642,11 @@ package com.facecontrol.forms
 			if (!PreloaderSplash.instance.isModal) {
 				scene.showModal(PreloaderSplash.instance);
 			}
-			if (_current.favorite) {
-				Util.api.deleteFavorite(Util.viewer_id, _current.uid);
+			if (_currentUser.favorite) {
+				Util.api.deleteFavorite(Util.viewer_id, _currentUser.uid);
 			}
 			else {
-				Util.api.addFavorite(Util.viewer_id, _current.uid);
+				Util.api.addFavorite(Util.viewer_id, _currentUser.uid);
 			}
 		}
 		

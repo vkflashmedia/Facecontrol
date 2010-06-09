@@ -56,13 +56,11 @@ package com.facecontrol.gui
 		
 		private var _frameIndex:int;
 		private var _photoRaw:Object;
-		private var _userRaw:Object;
 		
-		public function Photo(value:GameScene, userRaw:Object, image:Bitmap, x:int, y:int, width:int, height:int, type:uint=0, frameIndex:int=0)
+		public function Photo(value:GameScene, image:Bitmap, x:int, y:int, width:int, height:int, type:uint=0, frameIndex:int=0)
 		{
 			super(value);
 			
-			_userRaw = userRaw;
 //			_photoRaw = photoRaw;
 			_photoBorderColor = 0x000000;
 			_borderType = type;
@@ -252,7 +250,7 @@ package com.facecontrol.gui
 				_thumbnail.mask = _squareMask;
 			}
 			
-			_frameIndex = 7;
+			_frameIndex = randomNumber(1, 8);
 			if (_frameIndex > 0) {
 				var bottomFrame:Bitmap;
 				switch (_frameIndex) {
@@ -411,21 +409,7 @@ package com.facecontrol.gui
 					break;
 				}
 				addChild(bottomFrame);
-				
-				var gotoProfileBitmap:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
-				var gotoProfileButton:Button = new Button(
-					_scene,
-					xIndent + photoWidth - gotoProfileBitmap.width - 10,
-					yIndent + 10
-				);
-				gotoProfileButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.VK_ICON), CONTROL_STATE_NORMAL);
-				gotoProfileButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, goto);
-				addChild(gotoProfileButton);
 			}
-		}
-		
-		private function goto(event:GameObjectEvent):void {
-			Util.gotoUserProfile(_userRaw.uid);
 		}
 		
 		public function get photoWidth():int {
@@ -444,5 +428,20 @@ package com.facecontrol.gui
 		public function get photo():Bitmap {
 			return _photo;
 		}
+		
+		private function randomNumber(low:Number=NaN, high:Number=NaN):Number
+		{
+			var low:Number = low;
+			var high:Number = high;
+			if(isNaN(low))
+			{
+				throw new Error("low must be defined");
+			}
+			if(isNaN(high))
+			{
+				throw new Error("high must be defined");
+			}
+			return Math.round(Math.random() * (high - low)) + low;
+}
 	}
 }

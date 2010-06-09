@@ -7,7 +7,6 @@ package com.facecontrol.gui
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
-	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
@@ -65,16 +64,6 @@ package com.facecontrol.gui
 				addChild(invite);
 			}
 			
-			var gotoProfileBitmap:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
-			var goto:Button = new Button(_scene, photo.x + photo.photoWidth - gotoProfileBitmap.width - 2, photo.y);
-			goto.setBackgroundImageForState(gotoProfileBitmap, CONTROL_STATE_NORMAL);
-			goto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
-				function(event:GameObjectEvent):void {
-					Util.gotoUserProfile(userRaw.uid);
-				}
-			);
-			addChild(goto);
-			
 			if (userRaw.votes_count && userRaw.votes_count > 0) {
 				var star:Bitmap = BitmapUtil.cloneImageNamed(Images.RATING_ON);
 				star.x = 89;
@@ -118,20 +107,19 @@ package com.facecontrol.gui
 				addChild(noVotes);
 			}
 			
-			var name:TextField = new TextField();
-			name.x = 89;
-			name.y = 39;
-			name.autoSize = TextFieldAutoSize.LEFT;
-			name.text = Util.fullName(userRaw, 30);
-			name.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e));
-			name.embedFonts = true;
-			name.antiAliasType = AntiAliasType.ADVANCED;
-			name.selectable = false;
+			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 30), 89, 39);
+			name.textField.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e, false, false, true));
+			name.textField.embedFonts = true;
+			name.textField.antiAliasType = AntiAliasType.ADVANCED;
+			name.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+				function(event:GameObjectEvent):void {
+					Util.gotoUserProfile(userRaw.uid);
+				}
+			);
 			addChild(name);
 			
-			var label:TextField = new TextField();
-			label.x = 89;
-			label.y = 60;
+			
+			var label:TextField = Util.createLabel(null, 89, 60);
 			label.autoSize = TextFieldAutoSize.LEFT;
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;

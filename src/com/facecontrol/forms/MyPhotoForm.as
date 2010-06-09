@@ -331,8 +331,6 @@ package com.facecontrol.forms
 				}
 				
 				if (_multiloader.isLoaded) {
-//				if (Util.multiLoader.isLoaded) {
-//					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
 					_mainPhoto.photo = _multiloader.get(_main.pid);
 					
 					update();
@@ -343,7 +341,6 @@ package com.facecontrol.forms
 					}
 					
 					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
-//					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 				}
 			}
 		}
@@ -354,12 +351,9 @@ package com.facecontrol.forms
 		}
 		
 		public function multiLoaderComplite(event:MultiLoaderEvent):void {
-//			if (Util.multiLoader.isLoaded) {
-//				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
 			if (_multiloader.isLoaded) {
 				_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
 				if (_main) {
-//					_mainPhoto.photo = Util.multiLoader.get(_main.pid);
 					_mainPhoto.photo = _multiloader.get(_main.pid);
 				}
 				update();
