@@ -8,11 +8,10 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
+	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.text.AntiAliasType;
-	import flash.text.Font;
-	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
@@ -25,7 +24,7 @@ package com.facecontrol.forms
 		}
 		
 		public var menu:MainMenu;
-		private var _goldLabel:TextField;
+		private var _goldLinkButton:LinkButton;
 		public function Background(value:GameScene)
 		{
 			super(value);
@@ -82,7 +81,7 @@ package com.facecontrol.forms
 			
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
 			
-			var goldButton:Button = new Button(scene, 550, 70);
+			var goldButton:Button = new Button(scene, 550, 75);
 			goldButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.GOLD), CONTROL_STATE_NORMAL);
 			goldButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
 				_scene.showModal(new PaymentDialog(_scene));
@@ -93,12 +92,15 @@ package com.facecontrol.forms
 			if (Util.user && Util.user.hasOwnProperty('account')) {
 				account = Util.user.account;
 			}
-			_goldLabel = Util.createLabel(account, 575, 65);
-			_goldLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 20, 0xb0dee6));
-			_goldLabel.embedFonts = true;
-			_goldLabel.antiAliasType = AntiAliasType.ADVANCED;
-			_goldLabel.autoSize = TextFieldAutoSize.LEFT;
-			addChild(_goldLabel);
+			_goldLinkButton = new LinkButton(value, account, 572, 72);
+			_goldLinkButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 15, 0xb0dee6), CONTROL_STATE_NORMAL);
+			_goldLinkButton.textField.embedFonts = true;
+			_goldLinkButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_goldLinkButton.textField.autoSize = TextFieldAutoSize.LEFT;
+			_goldLinkButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
+				_scene.showModal(new PaymentDialog(_scene));
+			});
+			addChild(_goldLinkButton);
 			
 //			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
 //			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
@@ -116,8 +118,8 @@ package com.facecontrol.forms
 			if (Util.user && Util.user.hasOwnProperty('account')) {
 				account = Util.user.account;
 			}
-			_goldLabel.defaultTextFormat = _goldLabel.getTextFormat();
-			_goldLabel.text = account;
+			_goldLinkButton.textField.defaultTextFormat = _goldLinkButton.textField.getTextFormat();
+			_goldLinkButton.textField.text = account;
 		}
 	}
 }

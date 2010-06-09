@@ -78,10 +78,21 @@ package com.facecontrol.util
 		public static const SPLASH:String = 'http://www.fcapi.ru/images/preloader/splash.jpg';
 		
 		public static const VK_ICON:String = 'http://www.fcapi.ru/images/gotoProfile.png';
-		public static const GOLD:String = 'http://www.fcapi.ru/images/gold.png';
+		public static const GOLD:String = 'http://www.fcapi.ru/images/coins.png';
 		public static const PAYMENT_FORM:String = 'http://www.fcapi.ru/images/payment/form.png';
 		
 		public static const FRAME_DRAGON:String = 'http://www.fcapi.ru/images/ramki/dragon.png';
+		public static const FRAME_FLOWERS:String = 'http://www.fcapi.ru/images/ramki/flowers.png';
+		public static const FRAME_GRAFFITI:String = 'http://www.fcapi.ru/images/ramki/graffiti.png';
+		public static const FRAME_HEARTS1:String = 'http://www.fcapi.ru/images/ramki/hearts01.png';
+		public static const FRAME_HEARTS2:String = 'http://www.fcapi.ru/images/ramki/hearts02.png';
+		public static const FRAME_MUSIC:String = 'http://www.fcapi.ru/images/ramki/music.png';
+		public static const FRAME_PINK1:String = 'http://www.fcapi.ru/images/ramki/pink01.png';
+		public static const FRAME_PINK2:String = 'http://www.fcapi.ru/images/ramki/pink02.png';
+		public static const FRAME_SOM1:String = 'http://www.fcapi.ru/images/ramki/som01.png';
+		public static const FRAME_SOM2:String = 'http://www.fcapi.ru/images/ramki/som02.png';
+		public static const FRAME_STR1:String = 'http://www.fcapi.ru/images/ramki/str01.png';
+		public static const FRAME_STR2:String = 'http://www.fcapi.ru/images/ramki/str02.png';
 
 		public static const PRE_IMAGES: Array = new Array(
 			SPLASH,
@@ -166,7 +177,18 @@ package com.facecontrol.util
 			GOLD,
 			PAYMENT_FORM,
 			
-			FRAME_DRAGON
+			FRAME_DRAGON,
+			FRAME_FLOWERS,
+			FRAME_GRAFFITI,
+			FRAME_HEARTS1,
+			FRAME_HEARTS2,
+			FRAME_MUSIC,
+			FRAME_PINK1,
+			FRAME_PINK2,
+			FRAME_SOM1,
+			FRAME_SOM2,
+			FRAME_STR1,
+			FRAME_STR2
 		);
 	}
 }

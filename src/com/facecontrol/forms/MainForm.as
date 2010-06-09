@@ -52,7 +52,6 @@ package com.facecontrol.forms
 		protected var _nameField:TextField;
 		protected var _commentField:TextField;
 		protected var _rateBar:RatingBar;
-		private var _goto:Button;
 		
 		protected var _sexBox:ComboBox;
 		protected var _minAgeBox:TextField;
@@ -114,6 +113,10 @@ package com.facecontrol.forms
 			superIcon.y = 75;
 			addChild(superIcon);
 			
+			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
+			_bigPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			addChild(_bigPhoto);
+			
 			_morePhotos = new LinkButton(value, '', 195, 150);
 			_morePhotos.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0x8bbe79, null, null, true), CONTROL_STATE_NORMAL);
 			_morePhotos.textField.embedFonts = true;
@@ -129,10 +132,6 @@ package com.facecontrol.forms
 			_favorite.visible = false;
 			_favorite.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFavoriteClick);
 			addChild(_favorite);
-			
-			_bigPhoto = new Photo(_scene, null, (Constants.APP_WIDTH - 234) / 2, 176, 234, 317);
-			_bigPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
-			addChild(_bigPhoto);
 			
 			_previousLayer = new Sprite();
 			_previousLayer.visible = false;
@@ -305,20 +304,6 @@ package com.facecontrol.forms
 			_commentField.multiline = true;
 			_commentField.wordWrap = true;
 			addChild(_commentField);
-			
-			var gotoProfileBitmap:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
-			_goto = new Button(
-				_scene,
-				_bigPhoto.x + _bigPhoto.photoWidth - gotoProfileBitmap.width - 10,
-				_bigPhoto.y + 10
-			);
-			_goto.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.VK_ICON), CONTROL_STATE_NORMAL);
-			_goto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
-				function(event:GameObjectEvent):void {
-					Util.gotoUserProfile(currentUser.uid);
-				}
-			);
-			addChild(_goto);
 		}
 		
 		public function nextPhoto(obj:Object):void {
@@ -530,11 +515,6 @@ package com.facecontrol.forms
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
 				_bigPhoto.photo = image;
-				
-				var gotoProfileBitmap:Bitmap = _goto.backgroundImageForState(CONTROL_STATE_NORMAL);
-				_goto.visible = true;
-				_goto.x = _bigPhoto.x + _bigPhoto.photoWidth - gotoProfileBitmap.width - 10;
-				_goto.y = _bigPhoto.y + 6;
 				
 				_morePhotos.visible = true;
 				_morePhotos.label = Util.getMorePhotoString(_current.sex);
