@@ -33,6 +33,9 @@ package com.facecontrol.forms
 	public class MyPhotoForm extends Form
 	{
 		private static const MAX_PHOTO_COUNT_IN_GRID:uint = 6;
+		private static const INDENT_BETWEEN_MAIN_PHOTO_AND_COMMENT_AREA:uint = 62;
+		private static const COMMENT_TEXT_X:uint = 46;
+		private static const COMMENT_TEXT_Y:uint = 41;
 		
 		private static var _instance:MyPhotoForm;
 		public static function get instance():MyPhotoForm {
@@ -41,21 +44,21 @@ package com.facecontrol.forms
 		}
 		
 		private var _photos:Array;
-		private var _mainPhoto:Photo;
+		
 		private var _main:Object;
+		private var _mainPhoto:Photo;
+		private var _mainPhotoRatingAverage:TextField;
+		private var _mainPhotoVotesCount:TextField;
+		private var _mainPhotoNoVotes:TextField
+		private var _mainPhotoArea:Sprite;
+		private var _mainPhotoNoVotesArea:Sprite;
 		
-		private var _commentPlaceholder:TextField;
-		private var _ratingAverageField:TextField;
-		private var _votesCountField:TextField;
-		private var _noVotesField:TextField;
-		private var _bigStar:Bitmap;
+		private var _photoCommentArea:Sprite;
+		private var _photoCommentPlaceholder:TextField;
+		private var _photoComment:TextField;
 		
-		private var _grid:GridBox;
+		private var _photoGrid:GridBox;
 		private var _pagination:Pagination;
-		private var _commentInput:TextField;
-		private var _commentLabel:TextField;
-		private var _commentForm:Bitmap;
-		
 		private var _multiloader:MultiLoader;
 		
 		public function MyPhotoForm(value:GameScene)
@@ -70,22 +73,21 @@ package com.facecontrol.forms
 			smileIco.y = 97;
 			addChild(smileIco);
 			
-			var labelFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff);
 			var label:TextField = Util.createLabel('Мои фото', 62, 92);
-			label.setTextFormat(labelFormat);
+			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			var border:Sprite = new Sprite();
-			border.x = 41;
-			border.y = 125;
-			border.graphics.beginFill(0xf5dc8c, 1);
-			border.graphics.drawRect(0, 0, 1, 11);
-			addChild(border);
+			var verticalBorder:Sprite = new Sprite();
+			verticalBorder.x = 41;
+			verticalBorder.y = 125;
+			verticalBorder.graphics.beginFill(0xf5dc8c, 1);
+			verticalBorder.graphics.drawRect(0, 0, 1, 11);
+			addChild(verticalBorder);
 			
-			label = Util.createLabel('Главное фото', border.x + 4, 118);
+			label = Util.createLabel('Главное фото', verticalBorder.x + 4, 118);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 14, 0xffa200));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -101,14 +103,14 @@ package com.facecontrol.forms
 			label.wordWrap = true;
 			addChild(label);
 			
-			border = new Sprite();
-			border.x = 276;
-			border.y = 125;
-			border.graphics.beginFill(0xf5dc8c, 1);
-			border.graphics.drawRect(0, 0, 1, 11);
-			addChild(border);
+			verticalBorder = new Sprite();
+			verticalBorder.x = 276;
+			verticalBorder.y = 125;
+			verticalBorder.graphics.beginFill(0xf5dc8c, 1);
+			verticalBorder.graphics.drawRect(0, 0, 1, 11);
+			addChild(verticalBorder);
 			
-			label = Util.createLabel('Твои фото в приложении', border.x + 4, 118);
+			label = Util.createLabel('Твои фото в приложении', verticalBorder.x + 4, 118);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 14, 0xffa200));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
@@ -129,83 +131,94 @@ package com.facecontrol.forms
 			_mainPhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			addChild(_mainPhoto);
 			
-			_bigStar = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
-			_bigStar.x = 38;
-			_bigStar.y = _mainPhoto.y + _mainPhoto.photoHeight + 8;
-			addChild(_bigStar);
+			_mainPhotoNoVotesArea = new Sprite();
+			_mainPhotoNoVotesArea.y = _mainPhoto.y + _mainPhoto.photoHeight;
+			addChild(_mainPhotoNoVotesArea);
 			
-			_ratingAverageField = Util.createLabel('9,5', 77, _mainPhoto.y + _mainPhoto.photoHeight + 3);
-			_ratingAverageField.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
-			_ratingAverageField.embedFonts = true;
-			_ratingAverageField.antiAliasType = AntiAliasType.ADVANCED;
-			_ratingAverageField.autoSize = TextFieldAutoSize.LEFT;
-			addChild(_ratingAverageField);
+			_mainPhotoArea = new Sprite();
+			_mainPhotoArea.y = _mainPhoto.y + _mainPhoto.photoHeight;
+			addChild(_mainPhotoArea);
 			
-			_votesCountField = Util.createLabel(Util.votesCount(0), 140, _mainPhoto.y + _mainPhoto.photoHeight + 18);
-			_votesCountField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
-			_votesCountField.embedFonts = true;
-			_votesCountField.antiAliasType = AntiAliasType.ADVANCED;
-			_votesCountField.autoSize = TextFieldAutoSize.LEFT;
-			addChild(_votesCountField);
+			var mainPhotoMetaStarIcon:Bitmap = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
+			mainPhotoMetaStarIcon.x = 38;
+			mainPhotoMetaStarIcon.y = 8;
+			_mainPhotoArea.addChild(mainPhotoMetaStarIcon);
 			
-			_noVotesField = Util.createLabel('нет голосов', 38, _votesCountField.y);
-			_noVotesField.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
-			_noVotesField.embedFonts = true;
-			_noVotesField.antiAliasType = AntiAliasType.ADVANCED;
-			_noVotesField.autoSize = TextFieldAutoSize.LEFT;
-			_noVotesField.visible = false;
-			addChild(_noVotesField);
+			_mainPhotoRatingAverage = Util.createLabel('9,5', 77, 3);
+			_mainPhotoRatingAverage.setTextFormat(new TextFormat(Util.tahoma.fontName, 30, 0xffffff));
+			_mainPhotoRatingAverage.embedFonts = true;
+			_mainPhotoRatingAverage.antiAliasType = AntiAliasType.ADVANCED;
+			_mainPhotoRatingAverage.autoSize = TextFieldAutoSize.LEFT;
+			_mainPhotoArea.addChild(_mainPhotoRatingAverage);
 			
-			_commentLabel = Util.createLabel('Комментарий к фото:', 38, _mainPhoto.y + _mainPhoto.photoHeight + 62);
-			_commentLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
-			_commentLabel.embedFonts = true;
-			_commentLabel.antiAliasType = AntiAliasType.ADVANCED;
-			_commentLabel.autoSize = TextFieldAutoSize.LEFT;
-			addChild(_commentLabel);
+			_mainPhotoVotesCount = Util.createLabel(Util.votesCount(0), 140, 18);
+			_mainPhotoVotesCount.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
+			_mainPhotoVotesCount.embedFonts = true;
+			_mainPhotoVotesCount.antiAliasType = AntiAliasType.ADVANCED;
+			_mainPhotoVotesCount.autoSize = TextFieldAutoSize.LEFT;
+			_mainPhotoArea.addChild(_mainPhotoVotesCount);
 			
-			_commentForm = Util.multiLoader.get(Images.MY_PHOTO_COMMENT_FORM);
-			_commentForm.x = 37;
-			_commentForm.y = _mainPhoto.y + _mainPhoto.photoHeight + 85;
-			addChild(_commentForm);
+			_mainPhotoNoVotes = Util.createLabel('Нет голосов', 38, _mainPhotoVotesCount.y);
+			_mainPhotoNoVotes.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
+			_mainPhotoNoVotes.embedFonts = true;
+			_mainPhotoNoVotes.antiAliasType = AntiAliasType.ADVANCED;
+			_mainPhotoNoVotes.autoSize = TextFieldAutoSize.LEFT;
+			_mainPhotoNoVotesArea.addChild(_mainPhotoNoVotes);
 			
-			_commentPlaceholder = new TextField();
-			_commentPlaceholder.x = 46;
-			_commentPlaceholder.y = _mainPhoto.y + _mainPhoto.photoHeight + 103;
-			_commentPlaceholder.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
-			_commentPlaceholder.text = 'Введите комментарий';
-			_commentPlaceholder.embedFonts = true;
-			_commentPlaceholder.selectable = false;
-			_commentPlaceholder.antiAliasType = AntiAliasType.ADVANCED;
-			_commentPlaceholder.autoSize = TextFieldAutoSize.LEFT;
-			addChild(_commentPlaceholder);
+			_photoCommentArea = new Sprite();
+			_photoCommentArea.y = _mainPhoto.y + _mainPhoto.photoHeight + INDENT_BETWEEN_MAIN_PHOTO_AND_COMMENT_AREA;
+			addChild(_photoCommentArea);
 			
-			_commentInput = new TextField();
-			_commentInput.selectable = true;
-			_commentInput.x = 46;
-			_commentInput.y = _commentPlaceholder.y;
-			_commentInput.width = 176;
-			_commentInput.height = 121;
-			_commentInput.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
-			_commentInput.maxChars = 127;
-			_commentInput.embedFonts = true;
-			_commentInput.antiAliasType = AntiAliasType.ADVANCED;
-			_commentInput.type = TextFieldType.INPUT;
-			_commentInput.wordWrap = true;
-			_commentInput.addEventListener(FocusEvent.FOCUS_OUT, onMouseOut);
-			_commentInput.addEventListener(FocusEvent.FOCUS_IN, onMouseIn);
-			addChild(_commentInput);
+			var commentLabel:TextField = Util.createLabel('Комментарий к фото:', 38, 0);
+			commentLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
+			commentLabel.embedFonts = true;
+			commentLabel.antiAliasType = AntiAliasType.ADVANCED;
+			commentLabel.autoSize = TextFieldAutoSize.LEFT;
+			_photoCommentArea.addChild(commentLabel);
 			
-			var photoListBck:Bitmap = Util.multiLoader.get(Images.MY_PHOTO_BACKGROUND);
-			photoListBck.y = 189;
-			photoListBck.x = 274;
-			addChild(photoListBck);
+			var commentForm:Bitmap = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_COMMENT_FORM);
+			commentForm.x = 37;
+			commentForm.y = 23;
+			_photoCommentArea.addChild(commentForm);
 			
-			var preview:LinkButton = new LinkButton(_scene, 'предпросмотр', 278, 459);
-			preview.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), CONTROL_STATE_NORMAL);
-			preview.textField.embedFonts = true;
-			preview.textField.antiAliasType = AntiAliasType.ADVANCED;
-			preview.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onPreviewClick);
-			addChild(preview);
+			_photoCommentPlaceholder = new TextField();
+			_photoCommentPlaceholder.x = COMMENT_TEXT_X;
+			_photoCommentPlaceholder.y = COMMENT_TEXT_Y;
+			_photoCommentPlaceholder.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
+			_photoCommentPlaceholder.text = 'Введите комментарий';
+			_photoCommentPlaceholder.embedFonts = true;
+			_photoCommentPlaceholder.selectable = false;
+			_photoCommentPlaceholder.antiAliasType = AntiAliasType.ADVANCED;
+			_photoCommentPlaceholder.autoSize = TextFieldAutoSize.LEFT;
+			_photoCommentArea.addChild(_photoCommentPlaceholder);
+			
+			_photoComment = new TextField();
+			_photoComment.selectable = true;
+			_photoComment.x = COMMENT_TEXT_X;
+			_photoComment.y = COMMENT_TEXT_Y;
+			_photoComment.width = 176;
+			_photoComment.height = 121;
+			_photoComment.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xcac4c8);
+			_photoComment.maxChars = 127;
+			_photoComment.embedFonts = true;
+			_photoComment.antiAliasType = AntiAliasType.ADVANCED;
+			_photoComment.type = TextFieldType.INPUT;
+			_photoComment.wordWrap = true;
+			_photoComment.addEventListener(FocusEvent.FOCUS_OUT, onMouseOut);
+			_photoComment.addEventListener(FocusEvent.FOCUS_IN, onMouseIn);
+			_photoCommentArea.addChild(_photoComment);
+			
+			var photoGridBackground:Bitmap = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_BACKGROUND);
+			photoGridBackground.y = 189;
+			photoGridBackground.x = 274;
+			addChild(photoGridBackground);
+			
+			var previewButton:LinkButton = new LinkButton(_scene, 'предпросмотр', 278, 459);
+			previewButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 11, 0xffb44a, null, null, true), CONTROL_STATE_NORMAL);
+			previewButton.textField.embedFonts = true;
+			previewButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			previewButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onPreviewClick);
+			addChild(previewButton);
 			
 			var markAsMain:Button = new Button(_scene, 264, 488);
 			markAsMain.setTitleForState('Сделать главной', CONTROL_STATE_NORMAL);
@@ -237,19 +250,19 @@ package com.facecontrol.forms
 			deletePhoto.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onDeletePhotoClick);
 			addChild(deletePhoto);
 			
-			_grid = new GridBox(_scene, 2, 3);
-			_grid.x = 281;
-			_grid.y = 203;
-			_grid.width = 290;
-			_grid.height = 225;
-			_grid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
-			_grid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
-			_grid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
-			_grid.verticalItemsAlign = View.ALIGN_VER_TOP;
-			_grid.indentBetweenRows = 0;
-			_grid.indentBetweenCols = 0;
-			_grid.setPaddings(3,3,3,3);
-			addChild(_grid);
+			_photoGrid = new GridBox(_scene, 2, 3);
+			_photoGrid.x = 281;
+			_photoGrid.y = 203;
+			_photoGrid.width = 290;
+			_photoGrid.height = 225;
+			_photoGrid.widthPolicy = GridBox.WIDTH_POLICY_ABSOLUTE;
+			_photoGrid.heightPolicy = GridBox.HEIGHT_POLICY_ABSOLUTE;
+			_photoGrid.horizontalItemsAlign = View.ALIGN_HOR_LEFT;
+			_photoGrid.verticalItemsAlign = View.ALIGN_VER_TOP;
+			_photoGrid.indentBetweenRows = 0;
+			_photoGrid.indentBetweenCols = 0;
+			_photoGrid.setPaddings(3,3,3,3);
+			addChild(_photoGrid);
 			
 			_pagination = new Pagination(_scene, 500, 462);
 			_pagination.width = 83;
@@ -264,7 +277,7 @@ package com.facecontrol.forms
 		}
 		
 		public function updateGrid():void {
-			_grid.removeAllItems();
+			_photoGrid.removeAllItems();
 			
 			var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 			var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _photos.length ? start + MAX_PHOTO_COUNT_IN_GRID : _photos.length;
@@ -273,31 +286,23 @@ package com.facecontrol.forms
 			for (var i:uint = start; i < end; ++i) {
 				p = new MyPhotoGridItem(_scene, _photos[i], _multiloader.get(_photos[i].pid), 140, 64);
 				p.setFocus(true, true, BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SELECTION));
-				_grid.addItem(p);
+				_photoGrid.addItem(p);
 			}
 		}
 		
 		private function update():void {
 			if (_main) {
-				_bigStar.y = _mainPhoto.y + _mainPhoto.photoHeight + 8;
-				_ratingAverageField.y = _mainPhoto.y + _mainPhoto.photoHeight + 3;
-				_votesCountField.y = _mainPhoto.y + _mainPhoto.photoHeight + 18;
-				_noVotesField.y = _votesCountField.y;
-				_commentLabel.y = _mainPhoto.y + _mainPhoto.photoHeight + 62;
-				_commentForm.y = _mainPhoto.y + _mainPhoto.photoHeight + 85;
-				_commentPlaceholder.y = _mainPhoto.y + _mainPhoto.photoHeight + 103;
-				_commentInput.y = _commentPlaceholder.y;
+				_mainPhotoNoVotesArea.y = _mainPhotoArea.y = _mainPhoto.y + _mainPhoto.photoHeight;
+				_photoCommentArea.y = _mainPhoto.y + _mainPhoto.photoHeight + INDENT_BETWEEN_MAIN_PHOTO_AND_COMMENT_AREA;
 				
-				_noVotesField.visible = (_main.votes_count == 0);
+				_mainPhotoNoVotesArea.visible = (_main.votes_count == 0);
+				_mainPhotoArea.visible = !_mainPhotoNoVotesArea.visible;
 				
-				_ratingAverageField.defaultTextFormat = _ratingAverageField.getTextFormat();
-				_ratingAverageField.text = (_main.rating_average) ? _main.rating_average : '';
-				_ratingAverageField.visible = !_noVotesField.visible;
+				_mainPhotoVotesCount.defaultTextFormat = _mainPhotoVotesCount.getTextFormat();
+				_mainPhotoVotesCount.text = Util.votesCount(_main.votes_count);
 				
-				
-				_votesCountField.defaultTextFormat = _votesCountField.getTextFormat();
-				_votesCountField.text = Util.votesCount(_main.votes_count);
-				_votesCountField.visible = _bigStar.visible = !_noVotesField.visible;
+				_mainPhotoRatingAverage.defaultTextFormat = _mainPhotoRatingAverage.getTextFormat();
+				_mainPhotoRatingAverage.text = (_main.rating_average) ? _main.rating_average : '';
 			}
 			
 			_pagination.pagesCount = Math.ceil(_photos.length / MAX_PHOTO_COUNT_IN_GRID);
@@ -312,34 +317,28 @@ package com.facecontrol.forms
 		public function set photos(value:Array):void {
 			if (value) {
 				_photos = value;
-				var photo:Object;
 				
 				_multiloader.addEventListener(ErrorEvent.ERROR, multiLoaderError);
-				for each (photo in _photos) {
-//					if (!Util.multiLoader.hasLoaded(photo.pid)) {
-//						Util.multiLoader.load(photo.src_big, photo.pid, 'Bitmap');
-//					}
+				for each (var photo:Object in _photos) {
 					if (!_multiloader.hasLoaded(photo.pid)) {
 						_multiloader.load(photo.src_big, photo.pid, 'Bitmap');
 					}
 					if (photo.main == 1) {
 						_main = photo;
-						_commentInput.defaultTextFormat = _commentInput.getTextFormat();
-						_commentInput.text = (_main.comment) ? _main.comment : '';
-						_commentPlaceholder.visible = (_commentInput.text == '');
+						_photoComment.defaultTextFormat = _photoComment.getTextFormat();
+						_photoComment.text = (_main.comment) ? _main.comment : '';
+						_photoCommentPlaceholder.visible = (_photoComment.text == '');
 					}
 				}
 				
 				if (_multiloader.isLoaded) {
 					_mainPhoto.photo = _multiloader.get(_main.pid);
-					
 					update();
 				}
 				else {
 					if (!PreloaderSplash.instance.isModal) {
 						Util.scene.showModal(PreloaderSplash.instance);
 					}
-					
 					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplite);
 				}
 			}
@@ -362,7 +361,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onMarkAsMainClick(event:GameObjectEvent):void {
-			var gridItem:MyPhotoGridItem = _grid.selectedItem;
+			var gridItem:MyPhotoGridItem = _photoGrid.selectedItem;
 			if (gridItem) Util.api.setMain(gridItem.photoData.pid);
 			else MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
 		}
@@ -373,7 +372,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onDeletePhotoClick(event:GameObjectEvent):void {
-			var gridItem:MyPhotoGridItem = _grid.selectedItem;
+			var gridItem:MyPhotoGridItem = _photoGrid.selectedItem;
 			if (gridItem) {
 				PreloaderSplash.instance.showModal();
 				Util.api.deletePhoto(gridItem.photoData.pid);
@@ -383,23 +382,19 @@ package com.facecontrol.forms
 			}
 		}
 		
-		public function onCommentChange(event:Event):void {
-			var text:String = _commentInput.text;
-		}
-		
 		public function onMouseIn(event:FocusEvent):void {
-			_commentPlaceholder.visible = false;
+			_photoCommentPlaceholder.visible = false;
 		}
 		
 		public function onMouseOut(event:FocusEvent):void {
-			_commentPlaceholder.visible = (_commentInput.text == '');
-			if (_main.comment != _commentInput.text) {
-				Util.api.setComment(_main.pid, _commentInput.text);
+			_photoCommentPlaceholder.visible = (_photoComment.text == '');
+			if (_main.comment != _photoComment.text) {
+				Util.api.setComment(_main.pid, _photoComment.text);
 			}
 		}
 		
 		public function onPreviewClick(event:GameObjectEvent):void {
-			var gridItem:MyPhotoGridItem = _grid.selectedItem;
+			var gridItem:MyPhotoGridItem = _photoGrid.selectedItem;
 			if (gridItem) {
 				_scene.showModal(new PhotoPreviewDialog(_scene, _multiloader.get(gridItem.photoData.pid)));
 			} else {
