@@ -83,6 +83,8 @@ package com.facecontrol.forms
 		private var _filter:Object;
 		private var _multiloader:MultiLoader;
 		
+		private var _toUnload:String = undefined;
+		
 		public function MainForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
@@ -348,12 +350,7 @@ package com.facecontrol.forms
 			}
 			else {
 				if (_currentUser && _currentUser.pid != obj.pid) {
-					if (_previousUser) {
-						try {
-							_multiloader.unload(_previousUser.pid);
-						}
-						catch (e:Error) {}
-					}
+					if (_previousUser) _toUnload = _previousUser.pid;
 					_previousUser = _currentUser;
 				}
 				
@@ -361,19 +358,20 @@ package com.facecontrol.forms
 					_multiloader.addEventListener(ErrorEvent.ERROR, multiloaderError);
 					_multiloader.load(obj.src_big, obj.pid, 'Bitmap');
 					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
+					_currentUser = obj;
+					return;
 				}
-				
-				_currentUser = obj;
-				_currentUserName.title = Util.fullName(_currentUser);
-				
-				if (_currentUserPhotoComment) {
+				else {
+					_currentUser = obj;
+					_currentUserName.title = Util.fullName(_currentUser);
+					
 					_currentUserPhotoComment.defaultTextFormat = _currentUserPhotoComment.getTextFormat();
 					_currentUserPhotoComment.text = _currentUser.comment ? _currentUser.comment : '';
 					_currentUserPhotoComment.visible = true;
+					
+					_rateBar.enabled = true;
+					_currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 				}
-				
-				_rateBar.enabled = true;
-				if (_currentUser) _currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
 		}
 		
@@ -395,7 +393,14 @@ package com.facecontrol.forms
 		private function multiLoaderComplete(event:MultiLoaderEvent):void {
 			if (_multiloader.hasLoaded(_currentUser.pid)) {
 				bigPhoto = _multiloader.get(_currentUser.pid);
+				nextPhoto(_currentUser);
 				previousPhoto();
+				
+				try {
+					if (_toUnload) _multiloader.unload(_toUnload);
+					_toUnload = null;
+				}
+				catch (e:Error) {}
 			}
 			
 			_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
