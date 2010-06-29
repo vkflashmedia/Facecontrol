@@ -332,6 +332,8 @@ package com.facecontrol.forms
 					}
 				}
 				
+				_mainPhoto.frameIndex = _main.frame;
+				
 				if (_multiloader.isLoaded) {
 					_mainPhoto.photo = _multiloader.get(_main.pid);
 					update();

@@ -64,6 +64,10 @@ package com.facecontrol.gui
 				addChild(invite);
 			}
 			
+			if (userRaw.hasOwnProperty('frame')) {
+				photo.frameIndex = userRaw.frame;
+			}
+			
 			if (userRaw.votes_count && userRaw.votes_count > 0) {
 				var star:Bitmap = BitmapUtil.cloneImageNamed(Images.RATING_ON);
 				star.x = 89;

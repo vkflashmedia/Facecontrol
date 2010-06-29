@@ -2,6 +2,7 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
@@ -252,6 +253,7 @@ package {
 						Background.instance.updateAccount();
 						Util.user.city_name = response.city_name;
 						Util.user.country_name = response.country_name;
+						Util.inviteCount = response.invite_count;
 						if (response.photo_count == 0) {
 							Util.api.addPhoto(Util.viewer_id,
 												Util.user.photo,
@@ -282,6 +284,12 @@ package {
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 						PreloaderSplash.instance.resetModal();
+						
+						if (Util.inviteCount > 0) {
+							MessageDialog.dialog('Поздравляем:', 'Вами было приглашено ' + Util.inviteCount + ' новых пользователя.\n'+
+								'За это тебе начислено '+Util.inviteCount*5 + ' монет.');
+							Util.inviteCount = 0;
+						}
 					break;
 					
 					case 'main_photo':

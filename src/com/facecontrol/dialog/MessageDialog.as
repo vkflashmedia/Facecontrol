@@ -35,16 +35,13 @@ package com.facecontrol.dialog
 			label.autoSize = TextFieldAutoSize.CENTER;
 			addChild(label);
 			
-			label = Util.createLabel(message, 193, 271, 250, 35);
+			label = Util.createLabel(message, 193, 271, 250, 50);
 			label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.multiline = true;
 			label.wordWrap = true;
 			switch (label.numLines) {
-				case 3:
-					label.height = 50;
-				break;
 				case 4:
 					label.height = 70;
 				break;

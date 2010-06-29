@@ -3,6 +3,9 @@ package com.facecontrol.forms
 	import com.efnx.events.MultiLoaderEvent;
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.MessageDialogEvent;
+	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -23,11 +26,44 @@ package com.facecontrol.forms
 
 	public class FramesForm extends Form
 	{
-		private const THUMB_X: int = 12;
-		private const THUMB_WIDTH: int = 60;
-		private const THUMB_HEIGHT: int = 60;
-		private const THUMB_BETWEEN_INDENT: int = 14;
-		private const THUMB_VISIBLE_COUNT: int = 5;
+		private const THUMB_X: int				= 12;
+		private const THUMB_WIDTH: int			= 60;
+		private const THUMB_HEIGHT: int			= 60;
+		private const THUMB_BETWEEN_INDENT: int	= 14;
+		private const THUMB_VISIBLE_COUNT: int	= 5;
+		
+		private static const FRAMES_NAMES:Array = new Array(
+			'Дракон',
+			'Цветы',
+			'Графити',
+			'Сердца',
+			'Музыка',
+			'Розовая',
+			'Аквариум',
+			'Стразы'
+		);
+		
+		private static const FRAMES_PRICES:Array = new Array(
+			'(10 монет)',
+			'(10 монет)',
+			'(10 монет)',
+			'(10 монет)',
+			'(10 монет)',
+			'(10 монет)',
+			'(10 монет)',
+			'(10 монет)'
+		);
+		
+		private static const PRICES:Array = new Array(
+			10,
+			10,
+			10,
+			10,
+			10,
+			10,
+			10,
+			10
+		);
 		
 		private static var _instance:FramesForm = null;
 		public static function get instance():FramesForm {
@@ -35,7 +71,7 @@ package com.facecontrol.forms
 			return _instance;
 		}
 		
-		private var _frameName:TextField;
+		private var _framePrice:TextField;
 		private var _api:Api;
 		
 		private var _main:Object;
@@ -44,6 +80,8 @@ package com.facecontrol.forms
 		private var _currentFrameIndex:int;
 		private var _frames:Array;
 		private var _framesLayer: GameLayer;
+		
+		private var _frameName:TextField;
 		
 		public function FramesForm(value:GameScene, x:int, y:int, width:int, height:int)
 		{
@@ -60,6 +98,11 @@ package com.facecontrol.forms
 						update();
 						show();
 					break;
+					
+					case 'set_frame':
+						Util.user.frame = response.frame;
+						Util.api.getPhotos(Util.viewer_id);
+					break;
 				}
 			});
 			
@@ -70,19 +113,19 @@ package com.facecontrol.forms
 			smileIco.y = 93;
 			addChild(smileIco);
 			
-			var label:TextField = Util.createLabel('Стразы ', 136, 88);
-			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
-			label.embedFonts = true;
-			label.antiAliasType = AntiAliasType.ADVANCED;
-			label.autoSize = TextFieldAutoSize.LEFT;
-			addChild(label);
-			
-			_frameName = Util.createLabel('(10 монет)', label.x + label.width, 88);
-			_frameName.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff));
+			_frameName = Util.createLabel('Стразы ', 136, 88);
+			_frameName.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
 			_frameName.embedFonts = true;
 			_frameName.antiAliasType = AntiAliasType.ADVANCED;
 			_frameName.autoSize = TextFieldAutoSize.LEFT;
 			addChild(_frameName);
+			
+			_framePrice = Util.createLabel('(10 монет)', _frameName.x + _frameName.width, 88);
+			_framePrice.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff));
+			_framePrice.embedFonts = true;
+			_framePrice.antiAliasType = AntiAliasType.ADVANCED;
+			_framePrice.autoSize = TextFieldAutoSize.LEFT;
+			addChild(_framePrice);
 			
 			var labelDesc: TextField = Util.createLabel('Здесь ты можешь приобрести рамку для главной фотографии', 145, 119);
 			labelDesc.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
@@ -150,7 +193,21 @@ package com.facecontrol.forms
 			buyButton.textField.antiAliasType = AntiAliasType.ADVANCED;
 			buyButton.setTextPosition(49, 11);
 			buyButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
-				
+				if (Util.user.account >= PRICES[_currentFrameIndex]) {
+					Util.api.writeOff(PRICES[_currentFrameIndex]);
+					Util.user.account -= PRICES[_currentFrameIndex];
+					Background.instance.updateAccount();
+					_api.setFrame(_currentFrameIndex + 1);
+					PreloaderSplash.instance.showModal();
+				}
+				else {
+					var message:MessageDialog = new MessageDialog(Util.scene, 'Сообщение', 'На вашем счету недостаточно' + 
+							' монет. Пополнить счет?', 'Да', 'Нет');
+					message.addEventListener(MessageDialogEvent.CANCEL_BUTTON_CLICKED, function(event:MessageDialogEvent):void {
+						PaymentDialog.showPayment();
+					});
+					Util.scene.showModal(message);
+				}
 			});
 			addChild(buyButton);
 		}
@@ -221,12 +278,20 @@ package com.facecontrol.forms
 		}
 		
 		private function scrollToIndex(index:int):void {
-			if (index >= 0 && index < _frames.length) {
-				var frame:Photo = _frames[index];
-				_framesLayer.scroll(frame.x - 189 - _framesLayer.scrollRect.x, 0);
-				_mainPhoto.frameIndex = frame.index;
-				_currentFrameIndex = index;
-			}
+			if (index < 0) index = 0;
+			if (index > _frames.length - 1) index = _frames.length - 1;
+			
+			_frameName.defaultTextFormat = _frameName.getTextFormat();
+			_frameName.text = FRAMES_NAMES[index];
+			
+			_framePrice.defaultTextFormat = _framePrice.getTextFormat();
+			_framePrice.text = FRAMES_PRICES[index];
+			_framePrice.x = _frameName.x + _frameName.width + 10;
+			
+			var frame:Photo = _frames[index];
+			_framesLayer.scroll(frame.x - 189 - _framesLayer.scrollRect.x, 0);
+			_mainPhoto.frameIndex = frame.index;
+			_currentFrameIndex = index;
 		}
 	}
 }

@@ -343,12 +343,10 @@ package com.facecontrol.forms
 					}
 				}
 				
-				_currentUser = null;
 				_rateBar.enabled = false;
-				
+				_currentUser = null;
 				_currentUserName.title = '';
 				_currentUserPhotoComment.text = '';
-//				_commentField.setTextFormat(_commentTextFormat);
 				
 				MessageDialog.dialog('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
 						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.');
@@ -366,17 +364,16 @@ package com.facecontrol.forms
 					_currentUser = obj;
 					return;
 				}
-				else {
-					_currentUser = obj;
-					_currentUserName.title = Util.fullName(_currentUser);
-					
-					_currentUserPhotoComment.defaultTextFormat = _currentUserPhotoComment.getTextFormat();
-					_currentUserPhotoComment.text = _currentUser.comment ? _currentUser.comment : '';
-					_currentUserPhotoComment.visible = true;
-					
-					_rateBar.enabled = true;
-					_currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
-				}
+				
+				_currentUser = obj;
+				_currentUserName.title = Util.fullName(_currentUser);
+				
+				_currentUserPhotoComment.defaultTextFormat = _currentUserPhotoComment.getTextFormat();
+				_currentUserPhotoComment.text = _currentUser.comment ? _currentUser.comment : '';
+				_currentUserPhotoComment.visible = true;
+				
+				_rateBar.enabled = true;
+				_currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
 		}
 		
@@ -526,6 +523,7 @@ package com.facecontrol.forms
 		
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
+				_currentUserPhoto.frameIndex = _currentUser.frame;
 				_currentUserPhoto.photo = image;
 				_currentUserMorePhotosButton.title = Util.getMorePhotoString(_currentUser.sex);
 				_currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' :
