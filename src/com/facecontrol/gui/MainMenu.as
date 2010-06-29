@@ -49,9 +49,6 @@ package com.facecontrol.gui
 					menuEvent = new MainMenuEvent(MainMenuEvent.FIRST_BUTTON_CLICK);
 				break;
 				case _buttons[1]:
-//					menuEvent = new MainMenuEvent(MainMenuEvent.SECOND_BUTTON_CLICK);
-//					if (contains(_context)) removeChild(_context);
-//					else addChild(_context);
 					_context.visible = !_context.visible;
 				break;
 				case _buttons[2]:

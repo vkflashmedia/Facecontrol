@@ -44,7 +44,7 @@ package com.facecontrol.gui
 				morePhotos.textField.antiAliasType = AntiAliasType.ADVANCED;
 				morePhotos.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function (event: GameObjectEvent): void {
 					scene.showModal(PreloaderSplash.instance);
-					AllUserPhotoForm.instance.user = userRaw;
+					AllUserPhotoForm.instance._user = userRaw;
 					AllUserPhotoForm.instance.returnForm = ownerForm;
 					AllUserPhotoForm.instance.show();
 				});
@@ -118,7 +118,6 @@ package com.facecontrol.gui
 			);
 			addChild(name);
 			
-			
 			var label:TextField = Util.createLabel(null, 89, 60);
 			label.autoSize = TextFieldAutoSize.LEFT;
 			label.embedFonts = true;
@@ -154,7 +153,8 @@ package com.facecontrol.gui
 			}
 			
 			if (userRaw.hasOwnProperty('favorite') && showFavoriteLink) {
-				var favorite:LinkButton = new LinkButton(value, (userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 214, 75, TextFieldAutoSize.RIGHT);
+				var favorite:LinkButton = new LinkButton(value,
+					(userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 214, 75, TextFieldAutoSize.RIGHT);
 				favorite.width = 100;
 				favorite.height = favorite.textField.height;
 				favorite.update();

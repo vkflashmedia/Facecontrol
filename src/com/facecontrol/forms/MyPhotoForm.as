@@ -3,6 +3,7 @@ package com.facecontrol.forms
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.dialog.PhotoPreviewDialog;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
@@ -367,8 +368,8 @@ package com.facecontrol.forms
 		}
 		
 		public function onAddPhotoClick(event:GameObjectEvent):void {
-			PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
-			_scene.showModal(PhotoAlbumForm.instance);
+			PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+			_scene.showModal(PhotoAlbumDialog.instance);
 		}
 		
 		public function onDeletePhotoClick(event:GameObjectEvent):void {

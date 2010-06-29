@@ -73,7 +73,7 @@ package com.facecontrol.forms
 			
 			var b5:Button = new Button(scene, 483, 0);
 			b5.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON5), CONTROL_STATE_NORMAL);
-			b5.setTitleForState('друзья', CONTROL_STATE_NORMAL);
+			b5.setTitleForState('рамки', CONTROL_STATE_NORMAL);
 			b5.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b5.textField.embedFonts = true;
 			b5.textField.antiAliasType = AntiAliasType.ADVANCED;

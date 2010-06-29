@@ -1,7 +1,9 @@
-package com.facecontrol.forms
+package com.facecontrol.dialog
 {
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.forms.MyPhotoForm;
+	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.gui.VKPhotoAlbum;
 	import com.facecontrol.gui.VKPhotoAlbumEvent;
 	import com.facecontrol.util.Images;
@@ -19,11 +21,11 @@ package com.facecontrol.forms
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class PhotoAlbumForm extends GameLayer
+	public class PhotoAlbumDialog extends GameLayer
 	{
-		private static var _instance: PhotoAlbumForm = null;
-		public static function get instance(): PhotoAlbumForm {
-			if (!_instance) _instance = new PhotoAlbumForm(Util.scene);
+		private static var _instance: PhotoAlbumDialog = null;
+		public static function get instance(): PhotoAlbumDialog {
+			if (!_instance) _instance = new PhotoAlbumDialog(Util.scene);
 			return _instance;
 		}
 		
@@ -36,7 +38,7 @@ package com.facecontrol.forms
 		private var newPhotos: Array;
 		private var delPhotos: Array;
 		
-		public function PhotoAlbumForm(value:GameScene)
+		public function PhotoAlbumDialog(value:GameScene)
 		{
 			super(value);
 			_api = new Api();

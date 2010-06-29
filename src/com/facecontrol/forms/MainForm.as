@@ -255,9 +255,14 @@ package com.facecontrol.forms
 				TextFieldAutoSize.CENTER);
 			_currentUserName.width = _currentUserPhoto.width;
 			_currentUserName.height = CURRENT_USER_NAME_HEIGHT;
-			_currentUserName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be), CONTROL_STATE_NORMAL);
+			_currentUserName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 16, 0xffe6be, null, null, true), CONTROL_STATE_NORMAL);
 			_currentUserName.textField.embedFonts = true;
 			_currentUserName.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_currentUserName.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+				function(event:GameObjectEvent):void {
+					Util.gotoUserProfile(_currentUser.uid);
+				}
+			);
 			_currentUserArea.addChild(_currentUserName);
 			
 			_currentUserPhotoComment = Util.createLabel(null, 180, _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_COMMENT,
@@ -636,7 +641,7 @@ package com.facecontrol.forms
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
 			AllUserPhotoForm.instance.returnForm = this;
-			AllUserPhotoForm.instance.user = _currentUser;
+			AllUserPhotoForm.instance._user = _currentUser;
 			AllUserPhotoForm.instance.show();
 			if (!PreloaderSplash.instance.isModal) {
 				scene.showModal(PreloaderSplash.instance);

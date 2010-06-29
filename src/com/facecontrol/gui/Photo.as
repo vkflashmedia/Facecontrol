@@ -250,7 +250,7 @@ package com.facecontrol.gui
 				_thumbnail.mask = _squareMask;
 			}
 			
-			_frameIndex = randomNumber(1, 8);
+//			_frameIndex = randomNumber(1, 8);
 			if (_frameIndex > 0) {
 				var bottomFrame:Bitmap;
 				switch (_frameIndex) {
@@ -410,6 +410,11 @@ package com.facecontrol.gui
 				}
 				addChild(bottomFrame);
 			}
+		}
+		
+		public function set frameIndex(value:int):void {
+			_frameIndex = value;
+			update();
 		}
 		
 		public function get photoWidth():int {

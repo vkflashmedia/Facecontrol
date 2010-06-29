@@ -2,18 +2,18 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.FavoritesForm;
+	import com.facecontrol.forms.FramesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MyPhotoForm;
-	import com.facecontrol.forms.PhotoAlbumForm;
 	import com.facecontrol.forms.PreloaderForm;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.forms.Top100;
 	import com.facecontrol.gui.MainMenuEvent;
-	import com.facecontrol.gui.ProfileContextMenu;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -104,6 +104,7 @@ package {
 					addChild(Top100.instance);
 					addChild(FavoritesForm.instance);
 					addChild(FriendsForm.instance);
+					addChild(FramesForm.instance);
 					addChild(AllUserPhotoForm.instance);
 					
 					addChild(Background.instance.menu);
@@ -146,7 +147,7 @@ package {
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			PreloaderSplash.instance.showModal();
-			FriendsForm.instance.requestFriends();
+			FramesForm.instance.getMainPhoto();
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -159,7 +160,8 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						Util.user = response[0];
-						Util.api.registerUser(Util.user);
+						Util.api.login(Util.user);
+//						Util.api.registerUser(Util.user);
 					break;
 					
 					case 'getAppFriends':
@@ -196,7 +198,8 @@ package {
 							if (api_result) {
 								var json:Object = JSON.deserialize(api_result);
 								Util.user = json.response[0];
-								Util.api.registerUser(Util.user);
+								Util.api.login(Util.user);
+//								Util.api.registerUser(Util.user);
 							}
 							else {
 								Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
@@ -281,13 +284,20 @@ package {
 						PreloaderSplash.instance.resetModal();
 					break;
 					
+					case 'main_photo':
+						Background.instance.visible = true;
+						MainForm.instance.show();
+						MainForm.instance.nextPhoto(response);
+						PreloaderSplash.instance.resetModal();
+					break;
+					
 					case 'vote':
 						MainForm.instance.vote(response);
 					break;
 					
 					case 'get_photos':
 						MyPhotoForm.instance.photos = response.photos;
-						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+						PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						MyPhotoForm.instance.show();
 						PreloaderSplash.instance.resetModal();
 					break;
@@ -297,7 +307,7 @@ package {
 							Util.multiLoader.unload(response.pid);
 						}
 						catch (e:Error) {}
-						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+						PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						PreloaderSplash.instance.resetModal();
 					case 'set_main':
 					case 'edit_photo':
@@ -325,13 +335,6 @@ package {
 								}
 							} 
 						}
-					break;
-					
-					case 'main_photo':
-						Background.instance.visible = true;
-						MainForm.instance.show();
-						MainForm.instance.nextPhoto(response);
-						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'write_in':
