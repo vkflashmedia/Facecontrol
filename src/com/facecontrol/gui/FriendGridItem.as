@@ -7,6 +7,7 @@ package com.facecontrol.gui
 	import com.flashmedia.basics.GameObject;
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
+	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
@@ -111,10 +112,14 @@ package com.facecontrol.gui
 				addChild(noVotes);
 			}
 			
-			var icon:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
-			icon.x = 90;
-			icon.y = 41;
-			addChild(icon);
+			var vkButton:Button = new Button(_scene, 90, 41);
+			vkButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.VK_ICON), CONTROL_STATE_NORMAL);
+			vkButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+				function(event:GameObjectEvent):void {
+					Util.gotoUserProfile(userRaw.uid);
+				}
+			);
+			addChild(vkButton);
 			
 			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 30), 113, 39);
 			name.textField.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e, false, false, true));
