@@ -28,8 +28,8 @@ package com.facecontrol.util
 		public static var inviteCount:int;
 		
 		public static var requestVotes:int = 0;
-		public static var user_id:uint = 11854430;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
-		public static var viewer_id:uint = 11854430;//77625236;//57856825;//11854430;
+		public static var user_id:uint = 57856825;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
+		public static var viewer_id:uint = 57856825;//77625236;//57856825;//11854430;
 		public static var scene:GameScene;
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var api:Api = new Api();

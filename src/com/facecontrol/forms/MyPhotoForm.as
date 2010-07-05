@@ -134,10 +134,12 @@ package com.facecontrol.forms
 			
 			_mainPhotoNoVotesArea = new Sprite();
 			_mainPhotoNoVotesArea.y = _mainPhoto.y + _mainPhoto.photoHeight;
+			_mainPhotoNoVotesArea.visible = false;
 			addChild(_mainPhotoNoVotesArea);
 			
 			_mainPhotoArea = new Sprite();
 			_mainPhotoArea.y = _mainPhoto.y + _mainPhoto.photoHeight;
+			_mainPhotoArea.visible = false;
 			addChild(_mainPhotoArea);
 			
 			var mainPhotoMetaStarIcon:Bitmap = BitmapUtil.cloneImageNamed(Images.BIG_STAR);
@@ -168,6 +170,7 @@ package com.facecontrol.forms
 			
 			_photoCommentArea = new Sprite();
 			_photoCommentArea.y = _mainPhoto.y + _mainPhoto.photoHeight + INDENT_BETWEEN_MAIN_PHOTO_AND_COMMENT_AREA;
+			_photoCommentArea.visible = false;
 			addChild(_photoCommentArea);
 			
 			var commentLabel:TextField = Util.createLabel('Комментарий к фото:', 38, 0);
@@ -295,6 +298,7 @@ package com.facecontrol.forms
 			if (_main) {
 				_mainPhotoNoVotesArea.y = _mainPhotoArea.y = _mainPhoto.y + _mainPhoto.photoHeight;
 				_photoCommentArea.y = _mainPhoto.y + _mainPhoto.photoHeight + INDENT_BETWEEN_MAIN_PHOTO_AND_COMMENT_AREA;
+				_photoCommentArea.visible = true;
 				
 				_mainPhotoNoVotesArea.visible = (_main.votes_count == 0);
 				_mainPhotoArea.visible = !_mainPhotoNoVotesArea.visible;

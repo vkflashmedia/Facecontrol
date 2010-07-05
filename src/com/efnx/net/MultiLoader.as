@@ -376,6 +376,7 @@ package com.efnx.net
 				
 			dispatchEvent(m_event);
 		}
+		
 		private function errorLoad(event:IOErrorEvent):void
 		{
 //			throw new Error("MultiLoader::ERROR #4: loading error: " + event);

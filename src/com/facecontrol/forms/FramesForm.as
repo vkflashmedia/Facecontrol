@@ -33,11 +33,11 @@ package com.facecontrol.forms
 		private const THUMB_VISIBLE_COUNT: int	= 5;
 		
 		private static const FRAMES_NAMES:Array = new Array(
-			'Дракон',
-			'Цветы',
+			'Тибетский Дракон',
+			'Цветочный Рай',
 			'Графити',
-			'Сердца',
-			'Музыка',
+			'L\'Amour',
+			'Меломан',
 			'Розовая',
 			'Аквариум',
 			'Стразы'
@@ -47,22 +47,22 @@ package com.facecontrol.forms
 			'(10 монет)',
 			'(10 монет)',
 			'(10 монет)',
+			'(15 монет)',
 			'(10 монет)',
-			'(10 монет)',
-			'(10 монет)',
-			'(10 монет)',
-			'(10 монет)'
+			'(15 монет)',
+			'(20 монет)',
+			'(20 монет)'
 		);
 		
 		private static const PRICES:Array = new Array(
 			10,
 			10,
 			10,
+			15,
 			10,
-			10,
-			10,
-			10,
-			10
+			15,
+			20,
+			20
 		);
 		
 		private static var _instance:FramesForm = null;

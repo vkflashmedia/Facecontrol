@@ -2,6 +2,7 @@ package com.facecontrol.forms
 {
 	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.gui.MainMenu;
+	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameLayer;
@@ -11,6 +12,9 @@ package com.facecontrol.forms
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.util.BitmapUtil;
 	
+	import flash.display.Bitmap;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.text.AntiAliasType;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -102,15 +106,27 @@ package com.facecontrol.forms
 			});
 			addChild(_goldLinkButton);
 			
-//			var ad:Bitmap = Util.multiLoader.get(Images.ADVERTISING_FORM);
-//			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
-//			ad.y = Constants.APP_HEIGHT - ad.height;
-//			//ad.y = Constants.APP_HEIGHT - 2 * ad.height;
-//			addChild(ad);
+			var ad:Bitmap = BitmapUtil.cloneImageNamed(Images.ADVERTISING_FORM);
+			ad.x = (Constants.APP_WIDTH - ad.width) / 2;
+			ad.y = Constants.APP_HEIGHT - ad.height;
+			//ad.y = Constants.APP_HEIGHT - 2 * ad.height;
+			addChild(ad);
 			
 //			var advPanel: VkAdPanel = new VkAdPanel(Util.scene, ad.x + 10, ad.y + 10, ad.width - 20, ad.height - 20);
 ////			advPanel.debug = true;
 //			addChild(advPanel);
+
+			var errorsBoard:LinkButton = new LinkButton(_scene, 'Есть идеи? Не молчи! Самые интересные предложения ' + 
+					'будут реализованы, а автор - вознагражден!', ad.x + 20, ad.y + 20, TextFieldAutoSize.NONE);
+			errorsBoard.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 20, 0x45688e, null, null, true), CONTROL_STATE_NORMAL);
+			errorsBoard.width = ad.width - 40;
+			errorsBoard.textField.wordWrap = true;
+			errorsBoard.textField.embedFonts = true;
+			errorsBoard.textField.antiAliasType = AntiAliasType.ADVANCED;
+			errorsBoard.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function():void {
+				navigateToURL((new URLRequest('http://vkontakte.ru/topic-17556795_22792726')));
+			});
+			addChild(errorsBoard);
 		}
 		
 		public function updateAccount():void {

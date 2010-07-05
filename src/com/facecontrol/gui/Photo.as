@@ -1,11 +1,8 @@
 package com.facecontrol.gui
 {
 	import com.facecontrol.util.Images;
-	import com.facecontrol.util.Util;
 	import com.flashmedia.basics.GameObject;
-	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
-	import com.flashmedia.gui.Button;
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
@@ -231,7 +228,7 @@ package com.facecontrol.gui
 					break;
 					case VERTICAL_ALIGN_CENTER:
 						_thumbnail.y = yIndent + (_photoHeight - _thumbnail.height) / 2;
-						break;
+					break;
 				}
 				
 				switch (_halign) {
@@ -240,175 +237,178 @@ package com.facecontrol.gui
 					break;
 					case HORIZONTAL_ALIGN_CENTER:
 						_thumbnail.x = xIndent + (_photoWidth - _thumbnail.width) / 2;
-//						_thumbnail.x = xIndent + (width - _photoBorder*2 - _thumbnail.width) / 2;
-						break;
+					break;
 				}
 				
 				if (_thumbnail.x > xIndent + _photoBorder) _thumbnail.x = xIndent + _photoBorder;
 				if (_thumbnail.y > yIndent + _photoBorder) _thumbnail.y = yIndent + _photoBorder;
 				
 				_thumbnail.mask = _squareMask;
-			}
-			
-//			_frameIndex = randomNumber(1, 8);
-			if (_frameIndex > 0) {
-				var bottomFrame:Bitmap;
-				switch (_frameIndex) {
-					case 1:
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_DRAGON);
-						var bottomFrameScale:Number = 1;
-						if (bottomFrame.height > photoHeight - 50) {
-							bottomFrameScale = (photoHeight - 50) / bottomFrame.height;
-							var bottomFrameMatrix:Matrix = new Matrix();
-							bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
-							bottomFrame.transform.matrix = bottomFrameMatrix;
-						}
+				
+	//			_frameIndex = randomNumber(1, 8);
+	//			_frameIndex = 8;
+				if (_frameIndex > 0) {
+					var bottomFrame:Bitmap;
+					switch (_frameIndex) {
+						case 1:
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_DRAGON);
+							var bottomFrameScale:Number = 1;
+							var maxFrameHeight:Number = (2/3)*photoHeight;
+							if (bottomFrame.height > maxFrameHeight) {
+								bottomFrameScale = maxFrameHeight / bottomFrame.height;
+								var bottomFrameMatrix:Matrix = new Matrix();
+								bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
+								bottomFrame.transform.matrix = bottomFrameMatrix;
+							}
+							
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 27*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height - 6*bottomFrameScale;
+						break;
 						
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 27*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height - 6*bottomFrameScale;
-					break;
-					
-					case 2:
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_FLOWERS);
-						bottomFrameScale = 1;
-						if (bottomFrame.height > photoHeight - 30) {
-							bottomFrameScale = (photoHeight - 30) / bottomFrame.height;
+						case 2:
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_FLOWERS);
+							bottomFrameScale = 1;
+							maxFrameHeight = photoHeight;
+							if (bottomFrame.height > maxFrameHeight) {
+								bottomFrameScale = maxFrameHeight / bottomFrame.height;
+								bottomFrameMatrix = new Matrix();
+								bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
+								bottomFrame.transform.matrix = bottomFrameMatrix;
+							}
+							
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 45*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 28*bottomFrameScale;
+						break;
+						
+						case 3:
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_GRAFFITI);
+							bottomFrameScale = 1;
+							maxFrameHeight = (2/3)*photoHeight;
+							if (bottomFrame.height > maxFrameHeight) {
+								bottomFrameScale = maxFrameHeight / bottomFrame.height;
+								bottomFrameMatrix = new Matrix();
+								bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
+								bottomFrame.transform.matrix = bottomFrameMatrix;
+							}
+							
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 25*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 18*bottomFrameScale;
+						break;
+						
+						case 4:
+							var topFrame:Bitmap = BitmapUtil.cloneImageNamed(Images.FRAME_HEARTS1);
+							var topFrameScale:Number = 1;
+							maxFrameHeight = (1/5)*photoHeight;
+							if (topFrame.height > maxFrameHeight) {
+								topFrameScale = maxFrameHeight / topFrame.height;
+								var topFrameMatrix:Matrix = new Matrix();
+								topFrameMatrix.scale(topFrameScale, topFrameScale);
+								topFrame.transform.matrix = topFrameMatrix;
+							}
+							
+							topFrame.x = xIndent - 18*topFrameScale;
+							topFrame.y = yIndent - 5*topFrameScale;
+							addChild(topFrame);
+							
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_HEARTS2);
+							bottomFrameScale = topFrameScale;
 							bottomFrameMatrix = new Matrix();
 							bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
 							bottomFrame.transform.matrix = bottomFrameMatrix;
-						}
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 20*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 9*bottomFrameScale;
+						break;
 						
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 45*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 28*bottomFrameScale;
-					break;
-					
-					case 3:
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_GRAFFITI);
-						bottomFrameScale = 1;
-						if (bottomFrame.height > photoHeight - 30) {
-							bottomFrameScale = (photoHeight - 30) / bottomFrame.height;
+						case 5:
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_MUSIC);
+							bottomFrameScale = 1;
+							maxFrameHeight = (2/3)*photoHeight;
+							if (bottomFrame.height > maxFrameHeight) {
+								bottomFrameScale = maxFrameHeight / bottomFrame.height;
+								bottomFrameMatrix = new Matrix();
+								bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
+								bottomFrame.transform.matrix = bottomFrameMatrix;
+							}
+							
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 15*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 19*bottomFrameScale;
+						break;
+						
+						case 6:
+							topFrame = BitmapUtil.cloneImageNamed(Images.FRAME_PINK1);
+							topFrameScale = 1;
+							maxFrameHeight = (1/3)*photoHeight;
+							if (topFrame.height > maxFrameHeight) {
+								topFrameScale = maxFrameHeight / topFrame.height;
+								topFrameMatrix = new Matrix();
+								topFrameMatrix.scale(topFrameScale, topFrameScale);
+								topFrame.transform.matrix = topFrameMatrix;
+							}
+							
+							topFrame.x = xIndent - 11*topFrameScale;
+							topFrame.y = yIndent - 11*topFrameScale;
+							addChild(topFrame);
+							
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_PINK2);
+							bottomFrameScale = topFrameScale;
 							bottomFrameMatrix = new Matrix();
 							bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
 							bottomFrame.transform.matrix = bottomFrameMatrix;
-						}
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 10*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 8*bottomFrameScale;
+						break;
 						
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 25*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 18*bottomFrameScale;
-					break;
-					
-					case 4:
-						var topFrame:Bitmap = BitmapUtil.cloneImageNamed(Images.FRAME_HEARTS1);
-						var topFrameScale:Number = 1;
-						if (topFrame.height > photoHeight / 5) {
-							topFrameScale = (photoHeight / 5) / topFrame.height;
-							var topFrameMatrix:Matrix = new Matrix();
-							topFrameMatrix.scale(topFrameScale, topFrameScale);
-							topFrame.transform.matrix = topFrameMatrix;
-						}
-						
-						topFrame.x = xIndent - 18*topFrameScale;
-						topFrame.y = yIndent - 5*topFrameScale;
-						addChild(topFrame);
-						
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_HEARTS2);
-						bottomFrameScale = topFrameScale;
-						bottomFrameMatrix = new Matrix();
-						bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
-						bottomFrame.transform.matrix = bottomFrameMatrix;
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 20*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 9*bottomFrameScale;
-					break;
-					
-					case 5:
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_MUSIC);
-						bottomFrameScale = 1;
-						if (bottomFrame.height > photoHeight / 2) {
-							bottomFrameScale = (photoHeight / 2) / bottomFrame.height;
+						case 7:
+							topFrame = BitmapUtil.cloneImageNamed(Images.FRAME_SOM1);
+							topFrameScale = 1;
+							maxFrameHeight = (2/3)*photoHeight;
+							if (topFrame.height > maxFrameHeight) {
+								topFrameScale = maxFrameHeight / topFrame.height;
+								topFrameMatrix = new Matrix();
+								topFrameMatrix.scale(topFrameScale, topFrameScale);
+								topFrame.transform.matrix = topFrameMatrix;
+							}
+							
+							topFrame.x = xIndent - 40*topFrameScale;
+							topFrame.y = yIndent + photoHeight - topFrame.height;
+							addChild(topFrame);
+							
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_SOM2);
+							bottomFrameScale = topFrameScale;
 							bottomFrameMatrix = new Matrix();
 							bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
 							bottomFrame.transform.matrix = bottomFrameMatrix;
-						}
+							bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 68*bottomFrameScale;
+							bottomFrame.y = yIndent - 50*bottomFrameScale;
+						break;
 						
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 15*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 19*bottomFrameScale;
-					break;
+						case 8:
+							topFrame = BitmapUtil.cloneImageNamed(Images.FRAME_STR2);
+							topFrameScale = 1;
+							var maxFrameWidth:Number = (6/5)*photoWidth;
+							if (topFrame.width > maxFrameWidth) {
+								topFrameScale = maxFrameWidth / topFrame.width;
+								topFrameMatrix = new Matrix();
+								topFrameMatrix.scale(topFrameScale, topFrameScale);
+								topFrame.transform.matrix = topFrameMatrix;
+							}
+							
+							topFrame.x = xIndent + (photoWidth - topFrame.width) / 2 - 10*topFrameScale;
+							topFrame.y = yIndent - 46*topFrameScale;
+							addChild(topFrame);
+							
+							bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_STR1);
+							bottomFrameScale = topFrameScale;
+							bottomFrameMatrix = new Matrix();
+							bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
+							bottomFrame.transform.matrix = bottomFrameMatrix;
+							bottomFrame.x = xIndent + (photoWidth - bottomFrame.width) / 2 + 19*bottomFrameScale;
+							bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 6*bottomFrameScale;
+						break;
+					}
 					
-					case 6:
-						topFrame = BitmapUtil.cloneImageNamed(Images.FRAME_PINK1);
-						topFrameScale = 1;
-						if (topFrame.height > photoHeight / 3) {
-							topFrameScale = (photoHeight / 3) / topFrame.height;
-							topFrameMatrix = new Matrix();
-							topFrameMatrix.scale(topFrameScale, topFrameScale);
-							topFrame.transform.matrix = topFrameMatrix;
-						}
-						
-						topFrame.x = xIndent - 11*topFrameScale;
-						topFrame.y = yIndent - 11*topFrameScale;
-						addChild(topFrame);
-						
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_PINK2);
-						bottomFrameScale = topFrameScale;
-						bottomFrameMatrix = new Matrix();
-						bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
-						bottomFrame.transform.matrix = bottomFrameMatrix;
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 10*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 8*bottomFrameScale;
-					break;
-					
-					case 7:
-						topFrame = BitmapUtil.cloneImageNamed(Images.FRAME_SOM1);
-						topFrameScale = 1;
-						if (topFrame.height > (2/3)*photoHeight) {
-							topFrameScale = ((2/3)*photoHeight) / topFrame.height;
-							topFrameMatrix = new Matrix();
-							topFrameMatrix.scale(topFrameScale, topFrameScale);
-							topFrame.transform.matrix = topFrameMatrix;
-						}
-						
-						topFrame.x = xIndent - 40*topFrameScale;
-						topFrame.y = yIndent + photoHeight - topFrame.height;// - 1*topFrameScale;
-						addChild(topFrame);
-						
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_SOM2);
-						bottomFrameScale = topFrameScale;
-						bottomFrameMatrix = new Matrix();
-						bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
-						bottomFrame.transform.matrix = bottomFrameMatrix;
-						bottomFrame.x = xIndent + photoWidth - bottomFrame.width + 68*bottomFrameScale;
-						bottomFrame.y = yIndent - 50*bottomFrameScale;
-					break;
-					
-					case 8:
-						topFrame = BitmapUtil.cloneImageNamed(Images.FRAME_STR2);
-						topFrameScale = 1;
-						if (topFrame.width > (6/5)*photoWidth) {
-							topFrameScale = ((6/5)*photoWidth) / topFrame.width;
-							topFrameMatrix = new Matrix();
-							topFrameMatrix.scale(topFrameScale, topFrameScale);
-							topFrame.transform.matrix = topFrameMatrix;
-						}
-//						else if (topFrame.width < photoWidth) {
-//							topFrameScale = (photoWidth) / topFrame.width;
-//							topFrameMatrix = new Matrix();
-//							topFrameMatrix.scale(topFrameScale, topFrameScale);
-//							topFrame.transform.matrix = topFrameMatrix;
-//						}
-						
-						topFrame.x = xIndent + (photoWidth - topFrame.width) / 2 - 10*topFrameScale;
-						topFrame.y = yIndent - 46*topFrameScale;
-						addChild(topFrame);
-						
-						bottomFrame = BitmapUtil.cloneImageNamed(Images.FRAME_STR1);
-						bottomFrameScale = topFrameScale;
-						bottomFrameMatrix = new Matrix();
-						bottomFrameMatrix.scale(bottomFrameScale, bottomFrameScale);
-						bottomFrame.transform.matrix = bottomFrameMatrix;
-						bottomFrame.x = xIndent + (photoWidth - bottomFrame.width) / 2 + 19*bottomFrameScale;
-						bottomFrame.y = yIndent + photoHeight - bottomFrame.height + 6*bottomFrameScale;
-					break;
+					addChild(bottomFrame);
 				}
-				addChild(bottomFrame);
 			}
 		}
 		

@@ -172,7 +172,6 @@ package com.facecontrol.forms
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				for (i = start, j = 1; i < end; ++i, ++j) {
-//					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}

@@ -70,8 +70,8 @@ package com.facecontrol.forms
 			_pagination.textFormatForDefaultButton = new TextFormat(Util.tahoma.fontName, 9, 0xbcbcbc);
 			_pagination.textFormatForSelectedButton = new TextFormat(Util.tahomaBold.fontName, 9, 0x00ccff);
 			_pagination.addEventListener(Event.CHANGE, onPaginationChange);
+			_pagination.visible = false;
 			addChild(_pagination);
-			_pagination.pagesCount = 10;
 			
 			_grid = new GridBox(_scene, 1, 5);
 			_grid.x = 153;

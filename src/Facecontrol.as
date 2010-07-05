@@ -286,7 +286,30 @@ package {
 						PreloaderSplash.instance.resetModal();
 						
 						if (Util.inviteCount > 0) {
-							MessageDialog.dialog('Поздравляем:', 'Вами было приглашено ' + Util.inviteCount + ' новых пользователя.\n'+
+							var result:String = '';
+							switch (Util.inviteCount) {
+								case 11:
+								case 12:
+								case 13:
+								case 14:
+									result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователей';
+								break;
+								default:
+									var remainder:int = Util.inviteCount % 10;
+									switch (remainder) {
+										case 1:
+											result = 'Вами был приглашен ' + Util.inviteCount + ' новый пользователь';
+										break;
+										case 2:
+										case 3:
+										case 4:
+											result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователя';
+										break;
+										default:
+											result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователей';
+									}
+							}
+							MessageDialog.dialog('Поздравляем:', result +'.\n'+
 								'За это тебе начислено '+Util.inviteCount*5 + ' монет.');
 							Util.inviteCount = 0;
 						}

@@ -111,7 +111,12 @@ package com.facecontrol.gui
 				addChild(noVotes);
 			}
 			
-			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 30), 89, 39);
+			var icon:Bitmap = BitmapUtil.cloneImageNamed(Images.VK_ICON);
+			icon.x = 90;
+			icon.y = 41;
+			addChild(icon);
+			
+			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 30), 113, 39);
 			name.textField.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e, false, false, true));
 			name.textField.embedFonts = true;
 			name.textField.antiAliasType = AntiAliasType.ADVANCED;

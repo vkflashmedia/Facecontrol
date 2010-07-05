@@ -37,7 +37,7 @@ package com.facecontrol.dialog
 			
 			var buttonTextFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 10, 0xffffff);
 			var button:Button = new Button(_scene, bitmap.x + 30, bitmap.y + 65);
-			button.setTitleForState('5 монет', CONTROL_STATE_NORMAL);
+			button.setTitleForState('3 монеты', CONTROL_STATE_NORMAL);
 			button.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.ADD_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
 			button.setTextFormatForState(buttonTextFormat, CONTROL_STATE_NORMAL);
 			button.textField.embedFonts = true;
@@ -56,7 +56,7 @@ package com.facecontrol.dialog
 			addChild(label); 
 			
 			button = new Button(_scene, bitmap.x + 30, button.y + button.height);
-			button.setTitleForState('20 монет', CONTROL_STATE_NORMAL);
+			button.setTitleForState('12 монет', CONTROL_STATE_NORMAL);
 			button.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.ADD_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
 			button.setTextFormatForState(buttonTextFormat, CONTROL_STATE_NORMAL);
 			button.textField.embedFonts = true;
@@ -75,7 +75,7 @@ package com.facecontrol.dialog
 			addChild(label); 
 			
 			button = new Button(_scene, bitmap.x + 30, button.y + button.height);
-			button.setTitleForState('50 монет', CONTROL_STATE_NORMAL);
+			button.setTitleForState('25 монет', CONTROL_STATE_NORMAL);
 			button.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.ADD_PHOTO_BUTTON_ORANGE), CONTROL_STATE_NORMAL);
 			button.setTextFormatForState(buttonTextFormat, CONTROL_STATE_NORMAL);
 			button.textField.embedFonts = true;

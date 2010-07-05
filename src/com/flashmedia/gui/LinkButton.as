@@ -77,7 +77,7 @@ package com.flashmedia.gui
 		
 		public override function set width(value: Number):void {
 			super.width = value;
-			if (textField && (textField.autoSize == TextFieldAutoSize.CENTER || textField.autoSize == TextFieldAutoSize.RIGHT)) {
+			if (textField && (textField.autoSize != TextFieldAutoSize.LEFT)) {
 				textField.x = 0;
 				textField.y = 0;
 				textField.width = width;
