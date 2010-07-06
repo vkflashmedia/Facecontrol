@@ -103,17 +103,12 @@ package com.facecontrol.forms
 			var user:Object;
 			for each (user in _users) {
 				if (user.pid) {
-//					if (!Util.multiLoader.hasLoaded(user.pid)) {
-//						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-//					}
 					if (!_multiLoader.hasLoaded(user.pid)) {
 						if (user.src_big) _multiLoader.load(user.src_big, user.pid, 'Bitmap');
 					}
 				}
 			}
 			
-//			if (Util.multiLoader.isLoaded) updateGrid();
-//			else Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 			if (_multiLoader.isLoaded) updateGrid();
 			else _multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, multiloaderComplete);
 		}
@@ -144,6 +139,8 @@ package com.facecontrol.forms
 					_grid.addItem(item);
 				}
 			}
+			
+			PreloaderSplash.instance.resetModal();
 		}
 		
 		public function multiloaderError(event:ErrorEvent):void {
@@ -151,10 +148,6 @@ package com.facecontrol.forms
 		}
 		
 		public function multiloaderComplete(event:MultiLoaderEvent):void {
-//			if (Util.multiLoader.isLoaded) {
-//				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-//				updateGrid();
-//			}
 			if (_multiLoader.isLoaded) {
 				_multiLoader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
 				_multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiloaderComplete);

@@ -351,7 +351,6 @@ package {
 					case 'favorites':
 						FavoritesForm.instance.users = response.users;
 						FavoritesForm.instance.show();
-						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'add_favorite':
