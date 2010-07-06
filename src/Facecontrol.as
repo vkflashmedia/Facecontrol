@@ -55,10 +55,6 @@ package {
 	    		Util.viewer_id = appObject.parameters.viewer_id;
 	    		Util.user_id = appObject.parameters.user_id;
 	    		
-	    		if (Util.viewer_id != Util.user_id) {
-	    			Util.api.invite();
-	    		}
-	    		
 	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
 	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
 	    	}
@@ -283,7 +279,7 @@ package {
 						Background.instance.menu.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
-						PreloaderSplash.instance.resetModal();
+//						PreloaderSplash.instance.resetModal();
 						
 						if (Util.inviteCount > 0) {
 							var result:String = '';

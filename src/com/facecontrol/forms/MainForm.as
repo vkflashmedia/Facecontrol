@@ -375,6 +375,7 @@ package com.facecontrol.forms
 				_rateBar.enabled = true;
 				_currentUserSetFavoriteButton.title = (_currentUser.favorite) ? 'Удалить из избранных' : 'Добавить в избранные';
 			}
+			PreloaderSplash.instance.resetModal();
 		}
 		
 		public function get currentUser(): Object {
@@ -382,6 +383,7 @@ package com.facecontrol.forms
 		}
 		
 		public function vote(obj:Object):void {
+			PreloaderSplash.instance.showModal();
 			_currentUser.rating_average = obj.rating_average;
 			_currentUser.votes_count = obj.votes_count;
 			Util.api.nextPhoto(Util.viewer_id);
@@ -557,6 +559,7 @@ package com.facecontrol.forms
 		}
 		
 		public function onRateClicked(event:GameObjectEvent):void {
+			PreloaderSplash.instance.showModal();
 			Util.api.vote(Util.viewer_id, _currentUser.pid, _rateBar.rating);
 		}
 		
@@ -631,25 +634,20 @@ package com.facecontrol.forms
 			if (_countryBox.selectedItem != COUNTRY_DEFAULT) {
 				country = Util.user.country;
 			}
-			if (!PreloaderSplash.instance.isModal) {
-				scene.showModal(PreloaderSplash.instance);
-			}
+			
+			PreloaderSplash.instance.showModal();
 			Util.api.saveSettings(Util.viewer_id, sex, ageMin, ageMax, city, country);
 		}
 		
 		public function onOtherPhotosClick(event: GameObjectEvent): void {
+			PreloaderSplash.instance.showModal();
 			AllUserPhotoForm.instance.returnForm = this;
-			AllUserPhotoForm.instance._user = _currentUser;
+			AllUserPhotoForm.instance.user = _currentUser;
 			AllUserPhotoForm.instance.show();
-			if (!PreloaderSplash.instance.isModal) {
-				scene.showModal(PreloaderSplash.instance);
-			}
 		}
 		
 		public function onFavoriteClick(event: GameObjectEvent):void {
-			if (!PreloaderSplash.instance.isModal) {
-				scene.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.showModal();
 			if (_currentUser.favorite) {
 				Util.api.deleteFavorite(Util.viewer_id, _currentUser.uid);
 			}

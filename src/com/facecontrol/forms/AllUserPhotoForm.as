@@ -49,7 +49,7 @@ package com.facecontrol.forms
 		private var curPhotoIndex: int;
 		private var lastPhotoX: int;
 		
-		public var _user: Object;
+		public var user: Object;
 		public var returnForm: Form;
 		
 		private static var _instance: AllUserPhotoForm;
@@ -85,14 +85,14 @@ package com.facecontrol.forms
 			addChild(label);
 			
 			var labelNameFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff);
-			_userName = new LinkButton(_scene, Util.fullName(_user, 20), label.x + label.width, 88);
+			_userName = new LinkButton(_scene, Util.fullName(user, 20), label.x + label.width, 88);
 			_userName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff, null, null, true),
 				CONTROL_STATE_NORMAL);
 			_userName.textField.embedFonts = true;
 			_userName.textField.antiAliasType = AntiAliasType.ADVANCED;
 			_userName.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
 				function(event:GameObjectEvent):void {
-					Util.gotoUserProfile(_user.uid);
+					Util.gotoUserProfile(user.uid);
 				}
 			);
 			addChild(_userName);
@@ -145,14 +145,14 @@ package com.facecontrol.forms
 					removeChild(_userName);
 				}
 				
-				_userName = new LinkButton(_scene, Util.fullName(_user, 20), label.x + label.width, 88);
+				_userName = new LinkButton(_scene, Util.fullName(user, 20), label.x + label.width, 88);
 				_userName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff, null, null, true),
 					CONTROL_STATE_NORMAL);
 				_userName.textField.embedFonts = true;
 				_userName.textField.antiAliasType = AntiAliasType.ADVANCED;
 				_userName.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
 					function(event:GameObjectEvent):void {
-						Util.gotoUserProfile(_user.uid);
+						Util.gotoUserProfile(user.uid);
 					}
 				);
 				addChild(_userName);
@@ -173,13 +173,15 @@ package com.facecontrol.forms
 				curPhotoIndex = 0;
 				lastPhotoX = 0;
 				
+				PreloaderSplash.instance.showModal();
 				allPhotos = new Array();
-				api.getPhotos(_user['uid']);
+				api.getPhotos(user['uid']);
 			}
 			else {
 				if (multiloader) {
 					multiloader.unloadAll();
 				}
+				
 				if (curBigPhoto && contains(curBigPhoto)) {
 					removeChild(curBigPhoto);
 					curBigPhoto = null;
@@ -242,9 +244,7 @@ package com.facecontrol.forms
 					createBigPhoto(photo);
 					thumb.x = 189;//(thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
-					if (PreloaderSplash.instance.isModal) {
-						scene.resetModal(PreloaderSplash.instance);
-					}
+//					PreloaderSplash.instance.resetModal();
 				}
 				else {
 					thumb.x = lastPhotoX;
@@ -293,11 +293,11 @@ package com.facecontrol.forms
 		private function onRequestCompleted(event: ApiEvent): void {
 			switch (event.response.method) {
 				case 'get_photos':
-					multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 					for each (var photo: Object in event.response.photos) {
 						allPhotos.push({'src_big_path': photo['src_big']});
 						multiloader.load(photo['src_big'], photo['src_big'], 'Bitmap');
 					}
+					multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 				break;
 			}
 		}
@@ -309,6 +309,7 @@ package com.facecontrol.forms
 		public function multiLoaderCompliteListener(event: MultiLoaderEvent):void {
 			if (multiloader.isLoaded) {
 				multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+				PreloaderSplash.instance.resetModal();
 			}
 			for (var i: int = 0; i < allPhotos.length; i++) {
 				if (allPhotos[i]['src_big_path'] == event.entry) {

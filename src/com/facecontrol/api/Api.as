@@ -268,13 +268,13 @@ package com.facecontrol.api
 			request('main_photo', vars);
 		}
 		
-		public function invite():void {
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'invite';
-			vars['viewer_id'] = Util.viewer_id;
-			vars['user_id'] = Util.user_id;
-			request('invite', vars);
-		}
+//		public function invite():void {
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'invite';
+//			vars['viewer_id'] = Util.viewer_id;
+//			vars['user_id'] = Util.user_id;
+//			request('invite', vars);
+//		}
 		
 		public function writeIn(debt:int):void {
 			var vars: URLVariables = new URLVariables();

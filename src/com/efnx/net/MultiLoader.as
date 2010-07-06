@@ -171,11 +171,16 @@ package com.efnx.net
 						if(testing) trace("MultiLoader::unload() could not determine type, will delete content.");
 						break;
 				}
-			}else
-			{
-				throw new Error("MultiLoader::ERROR #7 resource " + entryName + " not loaded.");
 			}
-			if(unloader[entryName].numChildren > 0) unloader[entryName].unload();
+			else
+			{
+//				throw new Error("MultiLoader::ERROR #7 resource " + entryName + " not loaded.");
+				var error:MultiLoaderEvent = new MultiLoaderEvent(MultiLoaderEvent.ERROR);
+				error.errorMessage = "MultiLoader::ERROR #7 resource " + entryName + " not loaded.";
+				dispatchEvent(error);
+				return;
+			}
+			if (unloader[entryName].numChildren > 0) unloader[entryName].unload();
 			
 			count--;
 			loaded[entryName] = false;
