@@ -423,7 +423,7 @@ package {
 				if (api_result) {
 					var json:Object = JSON.deserialize(api_result);
 					Util.user = json.response[0];
-					Util.api.registerUser(Util.user);
+					Util.api.login(Util.user);
 				}
 				else {
 					Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));

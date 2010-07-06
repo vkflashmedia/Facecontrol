@@ -119,23 +119,23 @@ package com.net
 			request('getProfiles', vars);
 		}
 		
-//		public function isAppUser():void {
-//			var vars: URLVariables = new URLVariables();
-//			var sig:String = Util.viewer_id+'api_id='+appId+
-//				'format=json'+
-//				'method=isAppUser'+
-//				'test_mode='+testMode+
-//				'v=2.0'+appKey;
-//				
-//			vars['api_id'] = appId;
-//			vars['v'] = '2.0';
-//			vars['method'] = 'isAppUser';
-//			vars['format'] = 'json';
-//			vars['test_mode'] = testMode;
-//			vars['sig'] = MD5.encrypt(sig);
-//			
-//			request('isAppUser', vars);
-//		}
+		public function isAppUser():void {
+			var vars: URLVariables = new URLVariables();
+			var sig:String = Util.viewer_id+'api_id='+appId+
+				'format=json'+
+				'method=isAppUser'+
+				'test_mode='+testMode+
+				'v=2.0'+appKey;
+				
+			vars['api_id'] = appId;
+			vars['v'] = '2.0';
+			vars['method'] = 'isAppUser';
+			vars['format'] = 'json';
+			vars['test_mode'] = testMode;
+			vars['sig'] = MD5.encrypt(sig);
+			
+			request('isAppUser', vars);
+		}
 		
 //		public function getUserSettings():void {
 //			var vars: URLVariables = new URLVariables();
