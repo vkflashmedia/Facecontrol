@@ -85,11 +85,28 @@ package com.facecontrol.api
 			currentMethod = null;
 		}
 		
-		public function registerUser(user:Object):void
+//		public function registerUser(user:Object):void
+//		{
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'reg_user';
+//			vars['uid'] = user.uid;
+//			vars['fname'] = user.first_name;
+//			vars['lname'] = user.last_name;
+//			if (user.nickname) vars['nickname'] = user.nickname;
+//			vars['sex'] = user.sex;
+//			if (user.bdate) vars['bdate'] = user.bdate;
+//			vars['city'] = user.city;
+//			vars['country'] = user.country;
+//			
+//			request('reg_user', vars);
+//		}
+		
+		public function login(user:Object):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'reg_user';
-			vars['uid'] = user.uid;
+			vars['method'] = 'login';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['user_id'] = Util.user_id;
 			vars['fname'] = user.first_name;
 			vars['lname'] = user.last_name;
 			if (user.nickname) vars['nickname'] = user.nickname;
@@ -98,7 +115,7 @@ package com.facecontrol.api
 			vars['city'] = user.city;
 			vars['country'] = user.country;
 			
-			request('reg_user', vars);
+			request('login', vars);
 		}
 		
 		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null, country:String=null):void
@@ -251,12 +268,45 @@ package com.facecontrol.api
 			request('main_photo', vars);
 		}
 		
-		public function invite():void {
+//		public function invite():void {
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'invite';
+//			vars['viewer_id'] = Util.viewer_id;
+//			vars['user_id'] = Util.user_id;
+//			request('invite', vars);
+//		}
+		
+		public function writeIn(debt:int):void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'invite';
+			vars['method'] = 'write_in';
 			vars['viewer_id'] = Util.viewer_id;
-			vars['user_id'] = Util.user_id;
-			request('invite', vars);
+			vars['debt'] = debt;
+			request(vars['method'], vars);
+		}
+		
+		public function writeOff(debt:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'write_off';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['debt'] = debt;
+			request(vars['method'], vars);
+		}
+		
+		public function withdrawVotes(authKey:String, votes:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'withdraw_votes';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['auth_key'] = authKey;
+			vars['votes'] = votes;
+			request(vars['method'], vars);
+		}
+		
+		public function setFrame(frame:int):void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'set_frame';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['frame'] = frame;
+			request(vars['method'], vars);
 		}
 	}
 }

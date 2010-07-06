@@ -32,10 +32,12 @@ public class MultiLoaderEvent extends ProgressEvent {
 	 *	Defines the value of the type property of a MultiLoaderEvent event object.
 	 */
 	public static const COMPLETE:String = "complete";
+	public static const ERROR:String = "error";
 	/**
 	 *	The name of the entry that the event pertains to.
 	 */
 	public var entry:String = "";
+	public var errorMessage:String = "";
 	//--------------------------------------
 	//  CONSTRUCTOR
 	//--------------------------------------

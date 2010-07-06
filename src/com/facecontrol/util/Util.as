@@ -2,11 +2,16 @@ package com.facecontrol.util
 {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
-	import com.facecontrol.forms.MessageDialog;
+	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.MessageDialogEvent;
+	import com.facecontrol.dialog.PaymentDialog;
+	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.flashmedia.basics.GameScene;
 	import com.net.VKontakte;
 	
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.text.Font;
 	import flash.text.TextField;
 	
@@ -15,13 +20,16 @@ package com.facecontrol.util
 		public static const opiumBold:Font = new EmbeddedFonts_OpiumBold();
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
+		public static const university:Font = new EmbeddedFonts_University();
 		public static const DEBUG:Boolean = true;
 		
 		public static var wrapper:Object;
 		public static var user:Object;
+		public static var inviteCount:int;
 		
-		public static var user_id:uint = 11854430;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
-		public static var viewer_id:uint = 11854430;//77625236;//57856825;//11854430;
+		public static var requestVotes:int = 0;
+		public static var user_id:uint = 57856825;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
+		public static var viewer_id:uint = 57856825;//77625236;//57856825;//11854430;
 		public static var scene:GameScene;
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var api:Api = new Api();
@@ -42,7 +50,7 @@ package com.facecontrol.util
 			PreloaderSplash.instance.resetModal();
 			switch (errorCode) {
 				default:
-					scene.showModal(new MessageDialog(scene, 'Ошибка:', /*errorCode+': '+*/errorMessage));
+					MessageDialog.dialog('Ошибка:', errorMessage);
 			}
 		}
 		
@@ -106,6 +114,23 @@ package com.facecontrol.util
 		
 		public static function votesCount(value:int):String {
 			return value + ' ' + votes(value);
+		}
+		
+		public static function gotoUserProfile(uid:String):void {
+			if (Util.user.account > 0) {
+				Util.api.writeOff(1);
+				Util.user.account -= 1;
+				Background.instance.updateAccount();
+				navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
+			}
+			else {
+				var message:MessageDialog = new MessageDialog(Util.scene, 'Сообщение', 'На вашем счету недостаточно' + 
+						' монет. Пополнить счет?', 'Да', 'Нет');
+				message.addEventListener(MessageDialogEvent.CANCEL_BUTTON_CLICKED, function(event:MessageDialogEvent):void {
+					PaymentDialog.showPayment();
+				});
+				Util.scene.showModal(message);
+			}
 		}
 	}
 }

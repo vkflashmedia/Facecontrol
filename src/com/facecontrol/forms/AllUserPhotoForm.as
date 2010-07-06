@@ -13,6 +13,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.Form;
+	import com.flashmedia.gui.LinkButton;
 	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
@@ -30,7 +31,7 @@ package com.facecontrol.forms
 		private const THUMB_VISIBLE_COUNT: int = 5;
 		
 		private var label: TextField;
-		private var labelName: TextField;
+		private var _userName: LinkButton;
 		private var curBigPhoto: Photo;
 		private var api: Api;
 		private var multiloader: MultiLoader;
@@ -84,12 +85,17 @@ package com.facecontrol.forms
 			addChild(label);
 			
 			var labelNameFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff);
-			labelName = Util.createLabel(Util.fullName(user, 20), label.x + label.width, 88);
-			labelName.setTextFormat(labelNameFormat);
-			labelName.embedFonts = true;
-			labelName.antiAliasType = AntiAliasType.ADVANCED;
-			labelName.autoSize = TextFieldAutoSize.LEFT;
-			addChild(labelName);
+			_userName = new LinkButton(_scene, Util.fullName(user, 20), label.x + label.width, 88);
+			_userName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff, null, null, true),
+				CONTROL_STATE_NORMAL);
+			_userName.textField.embedFonts = true;
+			_userName.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_userName.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+				function(event:GameObjectEvent):void {
+					Util.gotoUserProfile(user.uid);
+				}
+			);
+			addChild(_userName);
 			
 			var labelDesc: TextField = Util.createLabel("Здесь ты можешь просмотреть все фото этого пользователя", 145, 119);
 			labelDesc.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xd3d96c));
@@ -135,22 +141,26 @@ package com.facecontrol.forms
 		public override function set visible(value: Boolean): void {
 			super.visible = value;
 			if (visible) {
-				if (contains(labelName)) {
-					removeChild(labelName);
+				if (contains(_userName)) {
+					removeChild(_userName);
 				}
-				var labelNameFormat:TextFormat = new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff);
-				labelName = Util.createLabel(Util.fullName(user, 20), label.x + label.width, 88);
-				labelName.setTextFormat(labelNameFormat);
-				labelName.embedFonts = true;
-				labelName.antiAliasType = AntiAliasType.ADVANCED;
-				labelName.autoSize = TextFieldAutoSize.LEFT;
-				addChild(labelName);
+				
+				_userName = new LinkButton(_scene, Util.fullName(user, 20), label.x + label.width, 88);
+				_userName.setTextFormatForState(new TextFormat(Util.opiumBold.fontName, 18, 0xf7ebff, null, null, true),
+					CONTROL_STATE_NORMAL);
+				_userName.textField.embedFonts = true;
+				_userName.textField.antiAliasType = AntiAliasType.ADVANCED;
+				_userName.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
+					function(event:GameObjectEvent):void {
+						Util.gotoUserProfile(user.uid);
+					}
+				);
+				addChild(_userName);
 				
 				if (thumbsLayer && contains(thumbsLayer)) {
 					removeChild(thumbsLayer);
 				}
 				thumbsLayer = new GameLayer(scene);
-//				thumbsLayer.debug = true;
 				thumbsLayer.smoothScroll = 0.7;
 				thumbsLayer.x = 99;
 				thumbsLayer.y = 498;
@@ -163,16 +173,15 @@ package com.facecontrol.forms
 				curPhotoIndex = 0;
 				lastPhotoX = 0;
 				
+				PreloaderSplash.instance.showModal();
 				allPhotos = new Array();
-				//todo fix
-				//api.getPhotos(Util.userId);//4136593);
-				//api.getPhotos(MainForm.instance.currentUser['uid']);
 				api.getPhotos(user['uid']);
 			}
 			else {
 				if (multiloader) {
 					multiloader.unloadAll();
 				}
+				
 				if (curBigPhoto && contains(curBigPhoto)) {
 					removeChild(curBigPhoto);
 					curBigPhoto = null;
@@ -183,7 +192,6 @@ package com.facecontrol.forms
 		private function createBigPhoto(photo:Object):void {
 			curBigPhoto = new Photo(scene, photo['src_big'], 85, 155, 470, 315, Photo.BORDER_TYPE_ROUND_RECT);
 			curBigPhoto.align = Photo.ALIGN_CENTER;
-//			curBigPhoto.verticalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			curBigPhoto.verticalAlign = Photo.VERTICAL_ALIGN_TOP;
 			curBigPhoto.horizontalAlign = Photo.HORIZONTAL_ALIGN_CENTER;
 			curBigPhoto.photoBorderColor = 0x3a2426;
@@ -236,9 +244,7 @@ package com.facecontrol.forms
 					createBigPhoto(photo);
 					thumb.x = 189;//(thumbsLayer.width - THUMB_WIDTH) / 2;
 					lastPhotoX = thumb.x + THUMB_BETWEEN_INDENT + THUMB_WIDTH;
-					if (PreloaderSplash.instance.isModal) {
-						scene.resetModal(PreloaderSplash.instance);
-					}
+//					PreloaderSplash.instance.resetModal();
 				}
 				else {
 					thumb.x = lastPhotoX;
@@ -287,11 +293,11 @@ package com.facecontrol.forms
 		private function onRequestCompleted(event: ApiEvent): void {
 			switch (event.response.method) {
 				case 'get_photos':
-					multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 					for each (var photo: Object in event.response.photos) {
 						allPhotos.push({'src_big_path': photo['src_big']});
 						multiloader.load(photo['src_big'], photo['src_big'], 'Bitmap');
 					}
+					multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
 				break;
 			}
 		}
@@ -303,23 +309,14 @@ package com.facecontrol.forms
 		public function multiLoaderCompliteListener(event: MultiLoaderEvent):void {
 			if (multiloader.isLoaded) {
 				multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+				PreloaderSplash.instance.resetModal();
 			}
 			for (var i: int = 0; i < allPhotos.length; i++) {
-//				if (allPhotos[i]['src_small_path'] == event.entry) {
-//					allPhotos[i]['src_small'] = multiloader.get(allPhotos[i]['src_small_path']);
-//					addPhoto(allPhotos[i]);
-//					break;
-//				}
 				if (allPhotos[i]['src_big_path'] == event.entry) {
 					allPhotos[i]['src_big'] = multiloader.get(allPhotos[i]['src_big_path']);
 					addPhoto(allPhotos[i]);
 					break;
 				}
-//				if (allPhotos[i]['src_path'] == event.entry) {
-//					allPhotos[i]['src'] = multiloader.get(allPhotos[i]['src_path']);
-//					addPhoto(allPhotos[i]);
-//					break;
-//				}
 			}
 		}
 		

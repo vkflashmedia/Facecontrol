@@ -2,6 +2,7 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.gui.FriendGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -69,8 +70,8 @@ package com.facecontrol.forms
 			_pagination.textFormatForDefaultButton = new TextFormat(Util.tahoma.fontName, 9, 0xbcbcbc);
 			_pagination.textFormatForSelectedButton = new TextFormat(Util.tahomaBold.fontName, 9, 0x00ccff);
 			_pagination.addEventListener(Event.CHANGE, onPaginationChange);
+			_pagination.visible = false;
 			addChild(_pagination);
-			_pagination.pagesCount = 10;
 			
 			_grid = new GridBox(_scene, 1, 5);
 			_grid.x = 153;
@@ -90,8 +91,8 @@ package com.facecontrol.forms
 		public override function set visible(value:Boolean):void {
 			super.visible = value;
 			if (value && _users && _users.length == 0) {
-				_scene.showModal(new MessageDialog(_scene,
-				'Сообщение:', 'У вас нет избранных пользователей. Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.'));
+				MessageDialog.dialog('Сообщение:', 'У вас нет избранных пользователей. ' + 
+						'Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.');
 			}
 		}
 		

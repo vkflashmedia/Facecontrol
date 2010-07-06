@@ -223,6 +223,12 @@ package com.flashmedia.gui
 			update();
 		}
 		
+		protected override function mouseOverListener(event: MouseEvent): void {
+			super.mouseOverListener(event);
+			_state = CONTROL_STATE_HIGHLIGHTED;
+			update();
+		}
+		
 		protected function mouseUpListener(event: MouseEvent): void {
 			_state = CONTROL_STATE_NORMAL;
 			update();

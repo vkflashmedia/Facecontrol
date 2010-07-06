@@ -30,6 +30,9 @@ package com.facecontrol.gui
 			photo.photoBorder = 1;
 			photo.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
 			photo.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
+			if (_photoData.hasOwnProperty('frame')) {
+				photo.frameIndex = _photoData.frame;
+			}
 			addChild(photo);
 			
 			if (_photoData.votes_count > 0) {

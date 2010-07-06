@@ -209,7 +209,7 @@ package com.facecontrol.gui
 					if (isAllPhotoOnPageLoaded(_curPhotoPageIndex)) {
 						for each (var p: Object in currentAlbum['photos']) {
 							if ((curPhoto >= (pageIndex * maxPhotosOnPage)) && (curPhoto < ((pageIndex + 1) * maxPhotosOnPage))) {
-								var pGo: Photo = new Photo(scene, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
+								var pGo: Photo = new Photo(scene, null, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
 								pGo.photoBorderColor = 0x453841;
 								p['marked'] = inMarkedPathes(p['src_big']);
 								if (p.hasOwnProperty('marked') && p['marked'] == true) {
@@ -288,7 +288,7 @@ package com.facecontrol.gui
 					p['marked'] = true;
 				}
 				if (p['marked'] == true) {
-					var pGo: Photo = new Photo(scene, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
+					var pGo: Photo = new Photo(scene, null, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
 					var icon: Bitmap = BitmapUtil.cloneBitmap(_markIcon);
 					icon.x = -6;
 					icon.y = 43;
@@ -296,7 +296,7 @@ package com.facecontrol.gui
 					changeItem(selectedItem, selectedItem, pGo);
 				}
 				else {
-					pGo = new Photo(scene, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
+					pGo = new Photo(scene, null, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
 					changeItem(selectedItem, selectedItem, pGo);
 				}
 			}
@@ -341,7 +341,7 @@ package com.facecontrol.gui
 			if (isAllPhotoOnPageLoaded(_curPhotoPageIndex)) {
 				for each (var p: Object in alb['photos']) {
 					if ((curPhoto >= (_curPhotoPageIndex * maxPhotosOnPage)) && (curPhoto < ((_curPhotoPageIndex + 1) * maxPhotosOnPage))) {
-						var pGo: Photo = new Photo(scene, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
+						var pGo: Photo = new Photo(scene, null, p['src_image'], 0, 0, 60, 60, Photo.BORDER_TYPE_RECT);
 						pGo.photoBorderColor = 0x453841;
 						p['marked'] = inMarkedPathes(p['src_big']);
 						if (p.hasOwnProperty('marked') && p['marked'] == true) {

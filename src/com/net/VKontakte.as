@@ -17,9 +17,9 @@ package com.net
 	{
 		private static const FC_API_SERVER:String = 'http://api.vkontakte.ru/api.php';
 		private static const APP_KEY:String = 'EqKl8Wg2be';
-		private static const APP_KEY_SAND_BOX:String = 'ZJEJl8y2Wl';
+//		private static const APP_KEY_SAND_BOX:String = 'ZJEJl8y2Wl';
 		private static const APP_ID:String = '1827403';
-		private static const APP_ID_SAND_BOX:String = '1882789';
+//		private static const APP_ID_SAND_BOX:String = '1882789';
 		
 		public static var apiUrl:String = FC_API_SERVER;
 //		public static var appId:String = APP_ID_SAND_BOX;

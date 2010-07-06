@@ -118,36 +118,7 @@ package com.facecontrol.forms
 				Util.scene.showModal(PreloaderSplash.instance);
 			}
 			_users = value;
-			/*
-			var user:Object;
-			for each (user in _users) {
-				if (user.pid) {
-					if (!Util.multiLoader.hasLoaded(user.pid)) {
-						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-					}
-				}
-				else if (user.photo_big) {
-					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
-					}
-				}
-			}
-			*/
-			
 			updateGrid();
-			/*
-//			if (Util.multiLoader.isLoaded) {
-			if (_multiloader.isLoaded) {
-				updateGrid();
-				if (PreloaderSplash.instance.isModal) {
-					Util.scene.resetModal(PreloaderSplash.instance);
-				}
-			}
-			else {
-//				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-				_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
-			}
-			*/
 		}
 		
 		public function loadError(event:ErrorEvent):void {
@@ -155,8 +126,6 @@ package com.facecontrol.forms
 		}
 		
 		public function loadComplete(event:MultiLoaderEvent):void {
-//			if (Util.multiLoader.isLoaded) {
-//				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 			if (_multiloader.isLoaded) {
 				_multiloader.removeEventListener(ErrorEvent.ERROR, loadError);
 				_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
@@ -194,16 +163,6 @@ package com.facecontrol.forms
 				var item:FriendGridItem;
 				for (i = start, j = 1; i < end; ++i, ++j) {
 					var user:Object = _users[i];
-//					if (user.pid) {
-//						if (!Util.multiLoader.hasLoaded(user.pid)) {
-//							if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-//						}
-//					}
-//					else if (user.photo_big) {
-//						if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-//							if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
-//						}
-//					}
 					if (user.pid) {
 						if (!_multiloader.hasLoaded(user.pid)) {
 							if (user.src_big) _multiloader.load(user.src_big, user.pid, 'Bitmap');
@@ -221,14 +180,11 @@ package com.facecontrol.forms
 					else if (_multiloader.hasLoaded(_users[i].photo_big)) {
 						photoBitmap = new Bitmap(_multiloader.get(_users[i].photo_big).bitmapData);
 					}
-//					item = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					item = new FriendGridItem(_scene, _users[i], photoBitmap, j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 				
-//				if (Util.multiLoader.isLoaded) {
 				if (_multiloader.isLoaded) {
-//					updateGrid();
 					if (PreloaderSplash.instance.isModal) {
 						Util.scene.resetModal(PreloaderSplash.instance);
 					}
@@ -237,7 +193,6 @@ package com.facecontrol.forms
 					if (!PreloaderSplash.instance.isModal) {
 						Util.scene.showModal(PreloaderSplash.instance);
 					}
-//					Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
 					_multiloader.addEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
 				}
 			}
@@ -248,9 +203,7 @@ package com.facecontrol.forms
 		}
 		
 		public function requestFriends():void {
-			if (!PreloaderSplash.instance.isModal) {
-				_scene.showModal(PreloaderSplash.instance);
-			}
+			PreloaderSplash.instance.showModal();
 			_vkontakte.getAppFriends();
 		}
 		
@@ -298,9 +251,6 @@ package com.facecontrol.forms
 						}
 					}
 					
-//					if (PreloaderSplash.instance.isModal) {
-//						_scene.resetModal(PreloaderSplash.instance);
-//					}
 					users = _friends;
 					show();
 				break;

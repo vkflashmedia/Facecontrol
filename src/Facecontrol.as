@@ -2,13 +2,15 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
 	import com.facecontrol.forms.FavoritesForm;
+	import com.facecontrol.forms.FramesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.MainForm;
 	import com.facecontrol.forms.MyPhotoForm;
-	import com.facecontrol.forms.PhotoAlbumForm;
 	import com.facecontrol.forms.PreloaderForm;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.forms.Top100;
@@ -31,7 +33,6 @@ package {
 		private static const SETTINGS_FRIENDS_ACCESS:int = 0x02;
 		private static const SETTINGS_PHOTO_ACCESS:int = 0x04;
 		
-		private var _background:Background;
 		private var _preloaderShown:Boolean;
 		private var api_result:String;
 		
@@ -53,10 +54,6 @@ package {
 	    		VKontakte.apiUrl = appObject.parameters.api_url;
 	    		Util.viewer_id = appObject.parameters.viewer_id;
 	    		Util.user_id = appObject.parameters.user_id;
-	    		
-	    		if (Util.viewer_id != Util.user_id) {
-	    			Util.api.invite();
-	    		}
 	    		
 	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
 	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
@@ -91,31 +88,25 @@ package {
 				Util.multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompleteListener);
 				
 				if (_preloaderShown) {
-					_background = new Background(this);
-					_background.visible = false;
-					_background.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.SECOND_BUTTON_CLICK, onSecondMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
-					_background.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
-					addChild(_background);
+					Background.instance.visible = false;
+					Background.instance.menu.addEventListener(MainMenuEvent.FIRST_BUTTON_CLICK, onFirstMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.THIRD_BUTTON_CLICK, onThirdMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.FOURTH_BUTTON_CLICK, onFourthMenuButtonClick);
+					Background.instance.menu.addEventListener(MainMenuEvent.FIFTH_BUTTON_CLICK, onFifthMenuButtonClick);
+					Background.instance.menu.visible = false;
+					addChild(Background.instance);
 					
 					addChild(MainForm.instance);
 					addChild(MyPhotoForm.instance);
 					addChild(Top100.instance);
 					addChild(FavoritesForm.instance);
 					addChild(FriendsForm.instance);
+					addChild(FramesForm.instance);
 					addChild(AllUserPhotoForm.instance);
 					
-					if (Util.wrapper.application) {
-						if (appObject.parameters.is_app_user) {
-							checkAppSettings();
-						}
-						else {
-							Util.wrapper.external.showInstallBox();
-						}
-					}
-//					if (Util.wrapper.application) Util.vkontakte.isAppUser();
+					addChild(Background.instance.menu);
+					
+					if (Util.wrapper.application) Util.vkontakte.isAppUser();
 					else Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
 				}
 				else {
@@ -141,11 +132,6 @@ package {
 			MainForm.instance.show();
 		}
 		
-		public function onSecondMenuButtonClick(event:MainMenuEvent):void {
-			PreloaderSplash.instance.showModal();
-			Util.api.getPhotos(Util.viewer_id);
-		}
-		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
 			PreloaderSplash.instance.showModal();
 			Util.api.getTop(Util.viewer_id);
@@ -158,7 +144,7 @@ package {
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
 			PreloaderSplash.instance.showModal();
-			FriendsForm.instance.requestFriends();
+			FramesForm.instance.getMainPhoto();
 		}
 		
 		private function onVkontakteRequestError(event:VKontakteEvent):void {
@@ -171,7 +157,8 @@ package {
 				switch (event.method) {
 					case 'getProfiles':
 						Util.user = response[0];
-						Util.api.registerUser(Util.user);
+						Util.api.login(Util.user);
+//						Util.api.registerUser(Util.user);
 					break;
 					
 					case 'getAppFriends':
@@ -191,30 +178,31 @@ package {
 //						}
 //					break;
 					
-//					case 'getUserSettings':
-//						var settings:int = response as int;
-//						
-//						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
-//							(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
-//							(settings & SETTINGS_PHOTO_ACCESS) == 0)
-//						{
-//							var installSettings:int = 0;
-//							installSettings |= SETTINGS_NOTICE_ACCEPT;
-//							installSettings |= SETTINGS_FRIENDS_ACCESS;
-//							installSettings |= SETTINGS_PHOTO_ACCESS;
-//							Util.wrapper.external.showSettingsBox(installSettings);
-//						}
-//						else {
-//							if (api_result) {
-//								var json:Object = JSON.deserialize(api_result);
-//								Util.user = json.response[0];
+					case 'getUserSettings':
+						var settings:int = response as int;
+						
+						if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+							(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+							(settings & SETTINGS_PHOTO_ACCESS) == 0)
+						{
+							var installSettings:int = 0;
+							installSettings |= SETTINGS_NOTICE_ACCEPT;
+							installSettings |= SETTINGS_FRIENDS_ACCESS;
+							installSettings |= SETTINGS_PHOTO_ACCESS;
+							Util.wrapper.external.showSettingsBox(installSettings);
+						}
+						else {
+							if (api_result) {
+								var json:Object = JSON.deserialize(api_result);
+								Util.user = json.response[0];
+								Util.api.login(Util.user);
 //								Util.api.registerUser(Util.user);
-//							}
-//							else {
-//								Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
-//							}
-//						}
-//					break;
+							}
+							else {
+								Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
+							}
+						}
+					break;
 				}
 			}
 			catch (e:Error) {
@@ -222,8 +210,34 @@ package {
 			}
 		}
 		
+		private function resetPaymentListeners():void {
+			Util.wrapper.removeEventListener('onMerchantPaymentCancel');
+			Util.wrapper.removeEventListener('onMerchantPaymentSuccess');
+			Util.wrapper.removeEventListener('onMerchantPaymentFail');
+		}
+		
 		public function onFacecontrolRequestError(event:ApiEvent):void {
-			Util.showError(event.errorCode, event.errorMessage);
+			switch (event.errorCode) {
+				case 502:
+					if (Util.wrapper.external) {
+						Util.wrapper.addEventListener('onMerchantPaymentCancel', function():void {
+							resetPaymentListeners();
+							Util.requestVotes = 0;
+						});
+	    				Util.wrapper.addEventListener('onMerchantPaymentSuccess', function(merchantOrderId: String):void {
+	    					resetPaymentListeners();
+	    					Util.api.withdrawVotes('', Util.requestVotes);
+	    				});
+	    				Util.wrapper.addEventListener('onMerchantPaymentFail', function():void {
+	    					resetPaymentListeners();
+	    					Util.requestVotes = 0;
+	    				});
+						Util.wrapper.external.showPaymentBox(Util.requestVotes);
+					}
+				break;
+				default:
+					Util.showError(event.errorCode, event.errorMessage);
+			}
 		}
 		
 		private function onFacecontrolRequestComplited(event:ApiEvent):void {
@@ -231,8 +245,11 @@ package {
 			try {
 				switch (response.method) {
 					case 'reg_user':
+						Util.user.account = response.account;
+						Background.instance.updateAccount();
 						Util.user.city_name = response.city_name;
 						Util.user.country_name = response.country_name;
+						Util.inviteCount = response.invite_count;
 						if (response.photo_count == 0) {
 							Util.api.addPhoto(Util.viewer_id,
 												Util.user.photo,
@@ -258,7 +275,44 @@ package {
 					break;
 					
 					case 'next_photo':
-						_background.visible = true;
+						Background.instance.visible = true;
+						Background.instance.menu.visible = true;
+						MainForm.instance.show();
+						MainForm.instance.nextPhoto(response);
+//						PreloaderSplash.instance.resetModal();
+						
+						if (Util.inviteCount > 0) {
+							var result:String = '';
+							switch (Util.inviteCount) {
+								case 11:
+								case 12:
+								case 13:
+								case 14:
+									result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователей';
+								break;
+								default:
+									var remainder:int = Util.inviteCount % 10;
+									switch (remainder) {
+										case 1:
+											result = 'Вами был приглашен ' + Util.inviteCount + ' новый пользователь';
+										break;
+										case 2:
+										case 3:
+										case 4:
+											result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователя';
+										break;
+										default:
+											result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователей';
+									}
+							}
+							MessageDialog.dialog('Поздравляем:', result +'.\n'+
+								'За это тебе начислено '+Util.inviteCount*5 + ' монет.');
+							Util.inviteCount = 0;
+						}
+					break;
+					
+					case 'main_photo':
+						Background.instance.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
 						PreloaderSplash.instance.resetModal();
@@ -270,11 +324,9 @@ package {
 					
 					case 'get_photos':
 						MyPhotoForm.instance.photos = response.photos;
-						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+						PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						MyPhotoForm.instance.show();
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'del_photo':
@@ -282,7 +334,7 @@ package {
 							Util.multiLoader.unload(response.pid);
 						}
 						catch (e:Error) {}
-						PhotoAlbumForm.instance.setAddedPhotos(MyPhotoForm.instance.photos);
+						PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						PreloaderSplash.instance.resetModal();
 					case 'set_main':
 					case 'edit_photo':
@@ -312,13 +364,16 @@ package {
 						}
 					break;
 					
-					case 'main_photo':
-						_background.visible = true;
-						MainForm.instance.show();
-						MainForm.instance.nextPhoto(response);
-						if (PreloaderSplash.instance.isModal) {
-							this.resetModal(PreloaderSplash.instance);
-						}
+					case 'write_in':
+					case 'write_off':
+						Util.user.account = response.account;
+						Background.instance.updateAccount();
+					break;
+					
+					case 'withdraw_votes':
+						Util.requestVotes = 0;
+						Util.user.account = response.account;
+						Background.instance.updateAccount();
 					break;
 				}
 			}

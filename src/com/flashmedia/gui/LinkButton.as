@@ -31,7 +31,7 @@ package com.flashmedia.gui
 			this.y = y;
 			this.width = textField.width;
 			this.height = textField.height;
-			this.label = text;
+			this.title = text;
 			
 			buttonMode = true;
 			useHandCursor = true;
@@ -65,8 +65,23 @@ package com.flashmedia.gui
 			return _enabled;
 		}
 		
+		public override function set x(value: Number):void {
+			super.x = value;
+			textField.x = 0;
+		}
+		
+		public override function set y(value: Number):void {
+			super.y = value;
+			textField.y = 0;
+		}
+		
 		public override function set width(value: Number):void {
 			super.width = value;
+			if (textField && (textField.autoSize != TextFieldAutoSize.LEFT)) {
+				textField.x = 0;
+				textField.y = 0;
+				textField.width = width;
+			}
 			if (textField && textField.wordWrap) update();
 		}
 		
@@ -75,15 +90,16 @@ package com.flashmedia.gui
 			update();
 		}
 		
-		public function get label():String {
+		public function get title():String {
 			return (textField) ? textField.text : '';
 		}
 		
-		public function set label(text:String):void {
-			var format:TextFormat = textField.getTextFormat();
-			textField.text = text;
-			textField.setTextFormat(format);
-			update();
+		public function set title(text:String):void {
+			if (text) {
+				textField.defaultTextFormat = textField.getTextFormat();
+				textField.text = text;
+				update();
+			}
 		}
 		
 		public function setTextFormatForState(format:TextFormat, state:uint):void {

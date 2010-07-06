@@ -2,6 +2,7 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.gui.FriendGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -171,13 +172,12 @@ package com.facecontrol.forms
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				for (i = start, j = 1; i < end; ++i, ++j) {
-//					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			} else {
-				_scene.showModal(new MessageDialog(_scene,
-				'Сообщение:', 'В приложении пока менее 100 человек с оцененными фотографиями. Приглашай друзей и оценивай больше фотографий.'));
+				MessageDialog.dialog('Сообщение:', 'В приложении пока менее 100 человек с ' + 
+						'оцененными фотографиями. Приглашай друзей и оценивай больше фотографий.');
 			}
 		}
 		
