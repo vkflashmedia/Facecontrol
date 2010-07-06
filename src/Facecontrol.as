@@ -165,18 +165,18 @@ package {
 						Util.api.friends(response as Array);
 					break;
 					
-//					case 'isAppUser':
-//						switch (response) {
-//							case '0':
-//								if (Util.wrapper.external) {
-//									Util.wrapper.external.showInstallBox();
-//								}
-//							break;
-//							case '1':
-//								Util.vkontakte.getUserSettings();
-//							break;
-//						}
-//					break;
+					case 'isAppUser':
+						switch (response) {
+							case '0':
+								if (Util.wrapper.external) {
+									Util.wrapper.external.showInstallBox();
+								}
+							break;
+							case '1':
+								Util.vkontakte.getUserSettings();
+							break;
+						}
+					break;
 					
 					case 'getUserSettings':
 						var settings:int = response as int;
@@ -279,7 +279,6 @@ package {
 						Background.instance.menu.visible = true;
 						MainForm.instance.show();
 						MainForm.instance.nextPhoto(response);
-//						PreloaderSplash.instance.resetModal();
 						
 						if (Util.inviteCount > 0) {
 							var result:String = '';
@@ -290,21 +289,25 @@ package {
 								case 14:
 									result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователей';
 								break;
+								
 								default:
 									var remainder:int = Util.inviteCount % 10;
 									switch (remainder) {
 										case 1:
 											result = 'Вами был приглашен ' + Util.inviteCount + ' новый пользователь';
 										break;
+										
 										case 2:
 										case 3:
 										case 4:
 											result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователя';
 										break;
+										
 										default:
 											result = 'Вами было приглашено ' + Util.inviteCount + ' новых пользователей';
 									}
 							}
+							
 							MessageDialog.dialog('Поздравляем:', result +'.\n'+
 								'За это тебе начислено '+Util.inviteCount*5 + ' монет.');
 							Util.inviteCount = 0;
