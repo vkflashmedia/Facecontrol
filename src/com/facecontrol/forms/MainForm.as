@@ -128,18 +128,18 @@ package com.facecontrol.forms
 			
 			var filterBackgruond:Bitmap = Util.multiLoader.get(Images.FILTER_BACKGROUND);
 			filterBackgruond.x = 452;
-			filterBackgruond.y = 313;
+			filterBackgruond.y = 176;
 			addChild(filterBackgruond);
 			
 			var filterLabelFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xf2c3ff);
-			var filterLabel:TextField = Util.createLabel('Я ищу:', 470, 315);
+			var filterLabel:TextField = Util.createLabel('Я ищу:', filterBackgruond.x + 18, filterBackgruond.y + 139);
 			filterLabel.embedFonts = true;
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_sexBox = createComboBox(472, 335, 113);
+			_sexBox = createComboBox(filterBackgruond.x + 20, 335, 113);
 			_sexBox.addItem(Constants.SEX_FEMALE);
 			_sexBox.addItem(Constants.SEX_MALE);
 			_sexBox.addItem(Constants.SEX_BOTH);
@@ -147,7 +147,7 @@ package com.facecontrol.forms
 			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_sexBox);
 			
-			filterLabel = Util.createLabel('От:', 470, 364);
+			filterLabel = Util.createLabel('От:', filterBackgruond.x + 18, 364);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.setTextFormat(filterLabelFormat);
@@ -156,13 +156,13 @@ package com.facecontrol.forms
 			
 			var spr: Sprite = new Sprite();
 			spr.graphics.beginFill(0xffffff);
-			spr.graphics.drawRoundRect(502, 367, 83, 15, 12);
+			spr.graphics.drawRoundRect(filterBackgruond.x + 50, 367, 83, 15, 12);
 			spr.graphics.endFill();
 			addChild(spr);
 			
 			_minAgeBox = new TextField();
 			_minAgeBox.selectable = true;
-			_minAgeBox.x = 480;
+			_minAgeBox.x = filterBackgruond.x + 28;
 			_minAgeBox.y = 367;
 			_minAgeBox.maxChars = 3;
 			_minAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
@@ -175,7 +175,7 @@ package com.facecontrol.forms
 			_minAgeBox.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 			addChild(_minAgeBox);
 			
-			filterLabel = Util.createLabel('До:', 470, 382);
+			filterLabel = Util.createLabel('До:', filterBackgruond.x + 18, 382);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -184,13 +184,13 @@ package com.facecontrol.forms
 			
 			spr = new Sprite();
 			spr.graphics.beginFill(0xffffff);
-			spr.graphics.drawRoundRect(502, 385, 83, 15, 12);
+			spr.graphics.drawRoundRect(filterBackgruond.x + 50, 385, 83, 15, 12);
 			spr.graphics.endFill();
 			addChild(spr);
 			
 			_maxAgeBox = new TextField();
 			_maxAgeBox.selectable = true;
-			_maxAgeBox.x = 479;
+			_maxAgeBox.x = filterBackgruond.x + 18;
 			_maxAgeBox.y = 385;
 			_maxAgeBox.maxChars = 3;
 			_maxAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
@@ -203,27 +203,27 @@ package com.facecontrol.forms
 			_maxAgeBox.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 			addChild(_maxAgeBox);
 			
-			filterLabel = Util.createLabel('Страна:', 470, 405);
+			filterLabel = Util.createLabel('Страна:', filterBackgruond.x + 18, 405);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_countryBox = createComboBox(472, 425, 113);
+			_countryBox = createComboBox(filterBackgruond.x + 20, 425, 113);
 			_countryBox.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
 			_countryBox.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			_countryBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_countryBox);
 			
-			filterLabel = Util.createLabel('Город:', 470, 445);
+			filterLabel = Util.createLabel('Город:', filterBackgruond.x + 18, 445);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_cityBox = createComboBox(472, 465, 113);
+			_cityBox = createComboBox(filterBackgruond.x + 20, 465, 113);
 			_cityBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_cityBox);
 		}
@@ -543,6 +543,7 @@ package com.facecontrol.forms
 		public function set smallPhoto(image:Bitmap):void {
 			if (image) {
 				_previousUserPhoto.photo = image;
+				_previousUserPhoto.frameIndex = _previousUser.frame;
 				var photoBottomY:int = _previousUserPhoto.y + _previousUserPhoto.photoHeight;
 				_previousUserStarIcon.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_STAR_ICON;
 				_previousUserDelimiterIcon.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_DELIMITER_ICON;

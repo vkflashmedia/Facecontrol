@@ -85,6 +85,11 @@ package com.facecontrol.forms
 			
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
 			
+//			var im:Bitmap = BitmapUtil.cloneImageNamed(Images.ADD_PHOTO_BUTTON_RED);
+//			im.x = 500;
+//			im.y = 60;
+//			addChild(im);
+			
 			var goldButton:Button = new Button(scene, 550, 75);
 			goldButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.GOLD), CONTROL_STATE_NORMAL);
 			goldButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
