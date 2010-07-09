@@ -3,6 +3,7 @@ package {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
@@ -138,8 +139,9 @@ package {
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-			PreloaderSplash.instance.showModal();
-			Util.api.favorites(Util.viewer_id);
+//			PreloaderSplash.instance.showModal();
+//			Util.api.favorites(Util.viewer_id);
+			showModal(new PaymentDialog(this));
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
