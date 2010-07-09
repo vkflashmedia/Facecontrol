@@ -72,7 +72,7 @@ package com.facecontrol.forms
 			var bitmapData:BitmapData = new BitmapData(bitmapBack.width, bitmapBack.height, true, 0);
 			bitmapData.draw(bitmapBack);
 			var matrix:Matrix = new Matrix();
-			matrix.translate(12, 20);
+			matrix.translate(12, 23);
 			bitmapData.draw(BitmapUtil.cloneImageNamed(Images.GOLD), matrix);
 			
 			var b4:Button = new Button(scene, 364, 0);
@@ -81,7 +81,7 @@ package com.facecontrol.forms
 			b4.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b4.textField.embedFonts = true;
 			b4.textField.antiAliasType = AntiAliasType.ADVANCED;
-			b4.textField.rotation = -3;
+			b4.textField.rotation = -2;
 //			b4.setTextPosition(23, 19);
 			b4.setTextPosition(35, 19);
 			

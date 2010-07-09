@@ -10,6 +10,7 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.ComboBoxEvent;
 	import com.flashmedia.gui.Form;
@@ -72,6 +73,10 @@ package com.facecontrol.forms
 		private var _previousUserStarIcon:Bitmap;
 		private var _previousUserDelimiterIcon:Bitmap;
 		
+		private var _inviteArea:Sprite;
+		private var _invitePhoto:Photo;
+		private var _inviteButton:Button;
+		
 		private var _rateBar:RatingBar;
 		
 		private var _sexBox:ComboBox;
@@ -125,6 +130,7 @@ package com.facecontrol.forms
 			
 			initCurrentUserArea();
 			initPreviousUserArea();
+			initInviteArea();
 			
 			var filterBackgruond:Bitmap = Util.multiLoader.get(Images.FILTER_BACKGROUND);
 			filterBackgruond.x = 452;
@@ -322,6 +328,32 @@ package com.facecontrol.forms
 			_previousUserPhotoVotesCount.antiAliasType = AntiAliasType.ADVANCED;
 			_previousUserPhotoVotesCount.autoSize = TextFieldAutoSize.CENTER;
 			_previousUserArea.addChild(_previousUserPhotoVotesCount);
+		}
+		
+		private function initInviteArea():void {
+			_inviteArea = new Sprite();
+//			_inviteArea.visible = false;
+			addChild(_inviteArea);
+			
+//			_invitePhoto = new Photo(_scene, null, _previousUserPhoto.x,
+//				_previousUserPhoto.y + _previousUserPhoto.height + 150, _previousUserPhoto.width, 100);
+//			x = 452;
+//			y = 176;
+			
+			_invitePhoto = new Photo(_scene, null, 452, 380, 90, 90);
+			_invitePhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			_inviteArea.addChild(_invitePhoto);
+			
+			_inviteButton = new Button(_scene, _invitePhoto.x, _invitePhoto.y + _invitePhoto.height);
+			_inviteButton.setTitleForState('пригласить', CONTROL_STATE_NORMAL);
+			_inviteButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			_inviteButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
+			_inviteButton.textField.embedFonts = true;
+			_inviteButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_inviteButton.setTextPosition(19, 17);
+			_inviteButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
+			});
+			_inviteArea.addChild(_inviteButton);
 		}
 		
 		public function nextPhoto(obj:Object):void {
@@ -525,6 +557,9 @@ package com.facecontrol.forms
 		
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
+				_invitePhoto.photo = image;
+				_inviteButton.y = _invitePhoto.y + _invitePhoto.height;
+				
 				_currentUserPhoto.frameIndex = _currentUser.frame;
 				_currentUserPhoto.photo = image;
 				_currentUserMorePhotosButton.title = Util.getMorePhotoString(_currentUser.sex);
