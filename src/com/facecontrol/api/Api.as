@@ -292,11 +292,11 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
-		public function withdrawVotes(authKey:String, votes:int):void {
+		public function withdrawVotes(votes:int):void {
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'withdraw_votes';
 			vars['viewer_id'] = Util.viewer_id;
-			vars['auth_key'] = authKey;
+			vars['auth_key'] = Util.auth_key;
 			vars['votes'] = votes;
 			request(vars['method'], vars);
 		}

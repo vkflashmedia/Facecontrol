@@ -21,7 +21,7 @@ package com.facecontrol.util
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
 		public static const university:Font = new EmbeddedFonts_University();
-		public static const DEBUG:Boolean = true;
+		public static const DEBUG:Boolean = false;
 		
 		public static var wrapper:Object;
 		public static var user:Object;
@@ -30,6 +30,8 @@ package com.facecontrol.util
 		public static var requestVotes:int = 0;
 		public static var user_id:uint = 57856825;//77625236;//57856825;//11854430;//9028622;//11757602;//9028622;//4136593;
 		public static var viewer_id:uint = 57856825;//77625236;//57856825;//11854430;
+		public static var auth_key:String;
+		
 		public static var scene:GameScene;
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var api:Api = new Api();

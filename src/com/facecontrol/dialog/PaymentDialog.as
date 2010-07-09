@@ -113,7 +113,7 @@ package com.facecontrol.dialog
 		
 		private function writeOff(votes:int):void {
 			Util.requestVotes = votes;
-			Util.api.withdrawVotes('', votes);
+			Util.api.withdrawVotes(votes);
 			_scene.resetModal(this);
 		}
 		

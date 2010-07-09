@@ -54,6 +54,7 @@ package {
 	    		VKontakte.apiUrl = appObject.parameters.api_url;
 	    		Util.viewer_id = appObject.parameters.viewer_id;
 	    		Util.user_id = appObject.parameters.user_id;
+	    		Util.auth_key = appObject.parameters.auth_key;
 	    		
 	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
 	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
@@ -226,7 +227,7 @@ package {
 						});
 	    				Util.wrapper.addEventListener('onMerchantPaymentSuccess', function(merchantOrderId: String):void {
 	    					resetPaymentListeners();
-	    					Util.api.withdrawVotes('', Util.requestVotes);
+	    					Util.api.withdrawVotes(Util.requestVotes);
 	    				});
 	    				Util.wrapper.addEventListener('onMerchantPaymentFail', function():void {
 	    					resetPaymentListeners();
