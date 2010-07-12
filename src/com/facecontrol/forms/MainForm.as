@@ -49,6 +49,9 @@ package com.facecontrol.forms
 		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT:int = 90;
 		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT_LABEL:int = 72;
 		
+		private static const INDENT_BETWEEN_INVITE_LABEL_AND_PHOTO:int = 5;
+		private static const INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON:int = 0;
+		
 		private static var _instance:MainForm = null;
 		public static function get instance():MainForm {
 			if (!_instance) _instance = new MainForm(Util.scene);
@@ -74,6 +77,7 @@ package com.facecontrol.forms
 		private var _previousUserDelimiterIcon:Bitmap;
 		
 		private var _inviteArea:Sprite;
+		private var _inviteLabel:TextField;
 		private var _invitePhoto:Photo;
 		private var _inviteButton:Button;
 		
@@ -132,7 +136,7 @@ package com.facecontrol.forms
 			initPreviousUserArea();
 			initInviteArea();
 			
-			var filterBackgruond:Bitmap = Util.multiLoader.get(Images.FILTER_BACKGROUND);
+			var filterBackgruond:Bitmap = BitmapUtil.cloneImageNamed(Images.FILTER_BACKGROUND);
 			filterBackgruond.x = 452;
 			filterBackgruond.y = 176;
 			addChild(filterBackgruond);
@@ -332,25 +336,32 @@ package com.facecontrol.forms
 		
 		private function initInviteArea():void {
 			_inviteArea = new Sprite();
-//			_inviteArea.visible = false;
 			addChild(_inviteArea);
 			
-//			_invitePhoto = new Photo(_scene, null, _previousUserPhoto.x,
-//				_previousUserPhoto.y + _previousUserPhoto.height + 150, _previousUserPhoto.width, 100);
-//			x = 452;
-//			y = 176;
+			var backgruond:Bitmap = BitmapUtil.cloneImageNamed(Images.INVITE_BACKGROUND);
+			backgruond.x = 452;
+			backgruond.y = 376;
+			_inviteArea.addChild(backgruond);
 			
-			_invitePhoto = new Photo(_scene, null, 452, 380, 90, 90);
+			_inviteLabel = Util.createLabel('Федя еще не прошел Фейсконтроль?', 465, 380, 140, 60);
+			_inviteLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 11, 0xd3d96c));
+			_inviteLabel.embedFonts = true;
+			_inviteLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_inviteLabel.wordWrap = true;
+			_inviteArea.addChild(_inviteLabel);
+			
+			_invitePhoto = new Photo(_scene, null, 481, _inviteLabel.y + _inviteLabel.height + INDENT_BETWEEN_INVITE_LABEL_AND_PHOTO, 100, 100);
 			_invitePhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			_invitePhoto.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
 			_inviteArea.addChild(_invitePhoto);
 			
-			_inviteButton = new Button(_scene, _invitePhoto.x, _invitePhoto.y + _invitePhoto.height);
+			_inviteButton = new Button(_scene, 469, _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON);
 			_inviteButton.setTitleForState('пригласить', CONTROL_STATE_NORMAL);
 			_inviteButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
 			_inviteButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			_inviteButton.textField.embedFonts = true;
 			_inviteButton.textField.antiAliasType = AntiAliasType.ADVANCED;
-			_inviteButton.setTextPosition(19, 17);
+			_inviteButton.setTextPosition(30, 17);
 			_inviteButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
 			});
 			_inviteArea.addChild(_inviteButton);
@@ -557,8 +568,19 @@ package com.facecontrol.forms
 		
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
+				_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
+				switch (_currentUser.sex) {
+					case '1':
+						_inviteLabel.text = _currentUser.first_name + ' еще не прошла Фейсконтроль?\nПригласи ее и получи 5 монет.';
+					break;
+					
+					case '2':
+						_inviteLabel.text = _currentUser.first_name + ' еще не прошел Фейсконтроль?\nПригласи его и получи 5 монет.';
+					break;
+				}
+				
 				_invitePhoto.photo = image;
-				_inviteButton.y = _invitePhoto.y + _invitePhoto.height;
+				_inviteButton.y = _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON;
 				
 				_currentUserPhoto.frameIndex = _currentUser.frame;
 				_currentUserPhoto.photo = image;
