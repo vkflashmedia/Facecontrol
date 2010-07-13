@@ -555,6 +555,7 @@ package com.facecontrol.forms
 		private function multiLoaderComplete(event:MultiLoaderEvent):void {
 			if (_multiloader.hasLoaded(_currentUser.pid)) {
 				bigPhoto = _multiloader.get(_currentUser.pid);
+//				bigPhoto = BitmapUtil.cloneImageNamed(_currentUser.pid);
 				nextPhoto(_currentUser);
 				previousPhoto();
 				
