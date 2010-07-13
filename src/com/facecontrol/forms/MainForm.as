@@ -1,5 +1,6 @@
 package com.facecontrol.forms
 {
+	import com.adobe.images.JPGEncoder;
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.dialog.MessageDialog;
@@ -17,18 +18,26 @@ package com.facecontrol.forms
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.util.BitmapUtil;
+	import com.net.VKontakte;
+	import com.net.VKontakteEvent;
+	import com.serialization.json.JSON;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.ErrorEvent;
+	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.TextEvent;
+	import flash.net.URLVariables;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
+	import flash.utils.ByteArray;
+	
+	import ru.inspirit.net.MultipartURLLoader;
 	
 	
 	public class MainForm extends Form
@@ -91,14 +100,85 @@ package com.facecontrol.forms
 		
 		private var _filter:Object;
 		private var _multiloader:MultiLoader;
-		
+		private var _vkontakte:VKontakte;
+		private var _friends:Array;
+		private var _friend:Object;
 		private var _toUnload:String = undefined;
+		
+		private var _friendPhotoLoader:MultiLoader;
+		private var _mpLoader:MultipartURLLoader;
+		private var _server:String;
+		private var _photo:String;
+		private var _hash:String;
 		
 		public function MainForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			
 			_multiloader = new MultiLoader();
+			
+			_mpLoader = new MultipartURLLoader();
+			_mpLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
+				var response:Object = JSON.deserialize(_mpLoader.loader.data);
+				_server = response.server;
+				_photo = response.photo;
+				_hash = response.hash;
+				_vkontakte.wallSavePost(_friend.uid, response.server, response.photo, response.hash);
+			});
+			
+			_friendPhotoLoader = new MultiLoader();
+			_friendPhotoLoader.addEventListener(MultiLoaderEvent.COMPLETE, function(event:MultiLoaderEvent):void {
+				var url:String = _friend.photo_big;
+				if (_friendPhotoLoader.hasLoaded(url)) {
+					showInviteArea();
+				}
+			});
+			
+			_vkontakte = new VKontakte();
+			_vkontakte.addEventListener(VKontakteEvent.COMPLETED, function(event:VKontakteEvent):void {
+				var response:Object = event.response;
+				try {
+					switch (event.method) {
+						case 'getFriends':
+							_friends = response as Array;
+							_vkontakte.getAppFriends();
+						break;
+						
+						case 'getAppFriends':
+							var appFriends:Array = response as Array;
+							_friends.filter(function(element:*, index:int, arr:Array):* {
+								for each (var uid:int in appFriends) {
+									if (element.uid == uid) {
+										return false;
+									}
+								}
+								return true;
+							});
+							randomizeFriend();
+						break;
+						
+						case 'getPhotoUploadServer':
+							var vars:URLVariables = new URLVariables();
+							var bitmap:Bitmap = Util.multiLoader.get(Images.INVITE_ICON);
+						    var myEncoder:JPGEncoder = new JPGEncoder(70);
+						    var myCapStream:ByteArray = myEncoder.encode(bitmap.bitmapData);
+							_mpLoader.addFile(myCapStream, 'file.jpg', 'photo', 'image/jpeg');
+							_mpLoader.load(response.upload_url);
+						break;
+						
+						case 'wallSavePost':
+							if (Util.wrapper.external) {
+								Util.wrapper.external.saveWallPost(response.post_hash);
+							}
+						break;
+					}
+				}
+				catch (e:Error) {
+					if (Util.DEBUG) trace(e.message);
+				}
+			});
+			_vkontakte.getFriends('first_name,sex,photo_big');
+			
 			visible = false;
 			
 			width = Constants.APP_WIDTH;
@@ -336,6 +416,7 @@ package com.facecontrol.forms
 		
 		private function initInviteArea():void {
 			_inviteArea = new Sprite();
+			_inviteArea.visible = false;
 			addChild(_inviteArea);
 			
 			var backgruond:Bitmap = BitmapUtil.cloneImageNamed(Images.INVITE_BACKGROUND);
@@ -363,8 +444,42 @@ package com.facecontrol.forms
 			_inviteButton.textField.antiAliasType = AntiAliasType.ADVANCED;
 			_inviteButton.setTextPosition(30, 17);
 			_inviteButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
+				if (_server && _photo && _hash) {
+					_vkontakte.wallSavePost(_friend.uid, _server, _photo, _hash);
+				}
+				else {
+					_vkontakte.getPhotoUploadServer();
+				}
 			});
 			_inviteArea.addChild(_inviteButton);
+		}
+		
+		public function randomizeFriend():void {
+			_friend = _friends[Util.random(0, _friends.length)];
+			showInviteArea();
+		}
+		
+		private function showInviteArea():void {
+			if (_friendPhotoLoader.hasLoaded(_friend.photo_big)) {
+				_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
+					switch (_friend.sex) {
+						case '1':
+							_inviteLabel.text = _friend.first_name + ' еще не прошла Фейсконтроль?\nПригласи ее и получи 5 монет.';
+						break;
+						
+						case '2':
+							_inviteLabel.text = _friend.first_name + ' еще не прошел Фейсконтроль?\nПригласи его и получи 5 монет.';
+						break;
+					}
+					
+				_invitePhoto.photo = _friendPhotoLoader.get(_friend.photo_big);
+				_inviteButton.y = _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON;
+				
+				_inviteArea.visible = true;
+			}
+			else {
+				_friendPhotoLoader.load(_friend.photo_big, _friend.photo_big, 'Bitmap');
+			}
 		}
 		
 		public function nextPhoto(obj:Object):void {
@@ -448,10 +563,10 @@ package com.facecontrol.forms
 					_toUnload = null;
 				}
 				catch (e:Error) {}
+				
+				_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
+				_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
 			}
-			
-			_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
-			_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
 		}
 		
 		private function previousPhoto():void {
@@ -568,20 +683,6 @@ package com.facecontrol.forms
 		
 		public function set bigPhoto(image:Bitmap):void {
 			if (image) {
-				_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
-				switch (_currentUser.sex) {
-					case '1':
-						_inviteLabel.text = _currentUser.first_name + ' еще не прошла Фейсконтроль?\nПригласи ее и получи 5 монет.';
-					break;
-					
-					case '2':
-						_inviteLabel.text = _currentUser.first_name + ' еще не прошел Фейсконтроль?\nПригласи его и получи 5 монет.';
-					break;
-				}
-				
-				_invitePhoto.photo = image;
-				_inviteButton.y = _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON;
-				
 				_currentUserPhoto.frameIndex = _currentUser.frame;
 				_currentUserPhoto.photo = image;
 				_currentUserMorePhotosButton.title = Util.getMorePhotoString(_currentUser.sex);
@@ -591,6 +692,8 @@ package com.facecontrol.forms
 				_currentUserPhotoComment.y = _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_COMMENT;
 				
 				_currentUserArea.visible = true;
+				
+				randomizeFriend();
 			} else {
 				_currentUserArea.visible = false;
 				_currentUserPhoto.photo = null;

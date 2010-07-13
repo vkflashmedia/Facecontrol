@@ -17,11 +17,13 @@ package com.facecontrol.util
 	
 	public class Util
 	{
+		public static const WALL_POST_COMPENSATION:int = 5;
+		
 		public static const opiumBold:Font = new EmbeddedFonts_OpiumBold();
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
 		public static const university:Font = new EmbeddedFonts_University();
-		public static const DEBUG:Boolean = true;
+		public static const DEBUG:Boolean = false;
 		
 		public static var wrapper:Object;
 		public static var user:Object;
@@ -30,6 +32,8 @@ package com.facecontrol.util
 		public static var requestVotes:int = 0;
 		public static var user_id:uint = 57856825;
 		public static var viewer_id:uint = 57856825;
+		public static var wall_id:String;
+		
 		public static var scene:GameScene;
 		public static var multiLoader: MultiLoader = new MultiLoader();
 		public static var api:Api = new Api();
@@ -131,6 +135,23 @@ package com.facecontrol.util
 				});
 				Util.scene.showModal(message);
 			}
+		}
+		
+		public static function random(low:Number=NaN, high:Number=NaN):Number
+		{
+			var low:Number = low;
+			var high:Number = high;
+		
+			if(isNaN(low))
+			{
+				throw new Error("low must be defined");
+			}
+			if(isNaN(high))
+			{
+				throw new Error("high must be defined");
+			}
+		
+			return Math.round(Math.random() * (high - low)) + low;
 		}
 	}
 }

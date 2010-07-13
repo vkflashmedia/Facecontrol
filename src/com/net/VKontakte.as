@@ -23,14 +23,14 @@ package com.net
 		private static const APP_ID_SANDBOX:String = '1882789';
 		
 		public static var apiUrl:String = FC_API_SERVER;
-		public static var appId:String = APP_ID_SANDBOX;
-		public static var appKey:String = APP_KEY_SANDBOX;
-//		public static var appId:String = APP_ID;
-//		public static var appKey:String = APP_KEY;
+//		public static var appId:String = APP_ID_SANDBOX;
+//		public static var appKey:String = APP_KEY_SANDBOX;
+		public static var appId:String = APP_ID;
+		public static var appKey:String = APP_KEY;
 		
 		private const loader:URLLoader = new URLLoader();
 		
-		public var testMode:uint = 0;
+		private var testMode:uint = 0;
 		private var requestQueue: Array;
 		private var timer: Timer;
 		private var currentMethod: String;
@@ -156,14 +156,18 @@ package com.net
 			request('getUserSettings', vars);
 		}
 		
-		public function getFriends():void {
+		public function getFriends(fields:String=null):void {
 			var vars: URLVariables = new URLVariables();
 			var sig:String = Util.viewer_id+'api_id='+appId+
+				((fields) ? 'fields='+fields : '') +
 				'format=json'+
 				'method=getFriends'+
 				'test_mode='+testMode+
 				'v=2.0'+appKey;
 				
+			if (fields) {
+				vars['fields'] = fields;
+			}
 			vars['api_id'] = appId;
 			vars['v'] = '2.0';
 			vars['method'] = 'getFriends';
@@ -298,5 +302,56 @@ package com.net
 			
 			request('getCountries', vars);
 		}
+		
+		public function getPhotoUploadServer():void {
+			var vars: URLVariables = new URLVariables();
+			var sig:String = Util.viewer_id+
+				'api_id='+appId+
+				'format=json'+
+				'method=wall.getPhotoUploadServer'+
+				'test_mode='+ testMode +
+				'v=2.0'+appKey;
+				
+			vars['api_id'] = appId;
+			vars['method'] = 'wall.getPhotoUploadServer';
+			vars['v'] = '2.0';
+			vars['format'] = 'json';
+			vars['test_mode'] = testMode;
+			vars['sig'] = MD5.encrypt(sig);
+			
+			request('getPhotoUploadServer', vars);
+		}
+		
+		public function wallSavePost(wallId:String, server:String, photo:String, hash:String):void {
+			Util.wall_id = wallId;
+			if (Util.DEBUG) wallId = '57856825';
+			
+			var vars: URLVariables = new URLVariables();
+			var sig:String = Util.viewer_id+
+				'api_id='+appId+
+				'format=json'+
+				'hash='+hash+
+				'method=wall.savePost'+
+				'photo='+photo +
+				'server='+server +
+				'test_mode='+ testMode +
+				'v=2.0'+
+				'wall_id='+ wallId +
+				appKey;
+				
+			vars['api_id'] = appId;
+			vars['method'] = 'wall.savePost';
+			vars['hash'] = hash;
+			vars['photo'] = photo;
+			vars['server'] = server;
+			vars['v'] = '2.0';
+			vars['format'] = 'json';
+			vars['test_mode'] = testMode;
+			vars['wall_id'] = wallId;
+			vars['sig'] = MD5.encrypt(sig);
+			
+			request('wallSavePost', vars);
+		}
+		
 	}
 }
