@@ -93,6 +93,9 @@ package com.facecontrol.util
 		public static const FRAME_SOM2:String = 'http://www.fcapi.ru/images/ramki/som02.png';
 		public static const FRAME_STR1:String = 'http://www.fcapi.ru/images/ramki/str01.png';
 		public static const FRAME_STR2:String = 'http://www.fcapi.ru/images/ramki/str02.png';
+		
+		public static const INVITE_BACKGROUND:String = 'http://www.fcapi.ru/images/invite_back.png';
+		public static const INVITE_ICON:String = 'http://www.fcapi.ru/images/invite_icon.png';
 
 		public static const PRE_IMAGES: Array = new Array(
 			SPLASH,
@@ -188,7 +191,10 @@ package com.facecontrol.util
 			FRAME_SOM1,
 			FRAME_SOM2,
 			FRAME_STR1,
-			FRAME_STR2
+			FRAME_STR2,
+			
+			INVITE_BACKGROUND,
+			INVITE_ICON
 		);
 	}
 }

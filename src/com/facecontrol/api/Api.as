@@ -308,5 +308,13 @@ package com.facecontrol.api
 			vars['frame'] = frame;
 			request(vars['method'], vars);
 		}
+		
+		public function wallPost():void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'wall_post';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['wall_id'] = Util.wall_id;
+			request(vars['method'], vars);
+		}
 	}
 }

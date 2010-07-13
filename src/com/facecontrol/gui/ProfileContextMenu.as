@@ -1,5 +1,6 @@
 package com.facecontrol.gui
 {
+	import com.facecontrol.forms.FavoritesForm;
 	import com.facecontrol.forms.FriendsForm;
 	import com.facecontrol.forms.PreloaderSplash;
 	import com.facecontrol.util.Constants;
@@ -27,7 +28,7 @@ package com.facecontrol.gui
 			
 			var back:Sprite = new Sprite();
 			back.graphics.beginFill(0xfaf8f9);
-			back.graphics.drawRoundRect(148, 45, 122, 79, 10, 10);
+			back.graphics.drawRoundRect(148, 45, 122, 108, 10, 10);
 			back.graphics.endFill();
 			addChild(back);
 			
@@ -57,7 +58,7 @@ package com.facecontrol.gui
 			profileButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onProfileButtonClicked);
 			addChild(profileButton);
 			
-			var friendsButton:Button = new Button(_scene, 149, 65 + profileButton.height);
+			var friendsButton:Button = new Button(_scene, profileButton.x, profileButton.y + profileButton.height);
 			friendsButton.setBackgroundImageForState(new Bitmap(bitmapData), CONTROL_STATE_NORMAL);
 			friendsButton.setBackgroundImageForState(new Bitmap(highlightedBitmapData), CONTROL_STATE_HIGHLIGHTED);
 			friendsButton.setTitleForState('друзья', CONTROL_STATE_NORMAL);
@@ -68,6 +69,18 @@ package com.facecontrol.gui
 			friendsButton.setTextPosition(23, 1);
 			friendsButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFriendsButtonClicked);
 			addChild(friendsButton);
+			
+			var favoritesButton:Button = new Button(_scene, profileButton.x, friendsButton.y + friendsButton.height);
+			favoritesButton.setBackgroundImageForState(new Bitmap(bitmapData), CONTROL_STATE_NORMAL);
+			favoritesButton.setBackgroundImageForState(new Bitmap(highlightedBitmapData), CONTROL_STATE_HIGHLIGHTED);
+			favoritesButton.setTitleForState('избранные', CONTROL_STATE_NORMAL);
+			favoritesButton.setTextFormatForState(new TextFormat(Util.university.fontName, 21), CONTROL_STATE_NORMAL);
+			favoritesButton.setTextFormatForState(new TextFormat(Util.university.fontName, 21, 0xfaf8f9), CONTROL_STATE_HIGHLIGHTED);
+			favoritesButton.textField.embedFonts = true;
+			favoritesButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			favoritesButton.setTextPosition(23, 1);
+			favoritesButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, onFavoritesButtonClicked);
+			addChild(favoritesButton);
 		}
 		
 		public function onProfileButtonClicked(event:GameObjectEvent):void {
@@ -81,5 +94,12 @@ package com.facecontrol.gui
 			FriendsForm.instance.requestFriends();
 			visible = false;
 		}
+		
+		public function onFavoritesButtonClicked(event:GameObjectEvent):void {
+			PreloaderSplash.instance.showModal();
+			Util.api.favorites(Util.viewer_id);
+			visible = false;
+		}
+		
 	}
 }

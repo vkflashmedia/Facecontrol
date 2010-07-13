@@ -201,6 +201,8 @@ package com.flashmedia.gui
 					break;
 				}
 				setTextField(tf, View.ALIGN_HOR_NONE | View.ALIGN_VER_CENTER);
+//				FIXME: заточка
+				textField.y = -1;
 			}
 			_dropList.horizontalItemsAlign = _horizontalAlign;
 			
@@ -236,6 +238,8 @@ package com.flashmedia.gui
 			else {
 				zOrder = _savedZOrder;
 			}
+//			FIXME: заточка
+			textField.y = -1;
 		}
 		
 		private function onItemClickListener(event: GridBoxEvent): void {

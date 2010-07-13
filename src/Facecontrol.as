@@ -3,6 +3,7 @@ package {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.forms.AllUserPhotoForm;
 	import com.facecontrol.forms.Background;
@@ -56,8 +57,40 @@ package {
 	    		Util.user_id = appObject.parameters.user_id;
 	    		Util.auth_key = appObject.parameters.auth_key;
 	    		
-	    		Util.wrapper.addEventListener('onApplicationAdded', onApplicationAdded);
-	    		Util.wrapper.addEventListener('onSettingsChanged', onSettingsChanged);
+	    		Util.wrapper.addEventListener('onApplicationAdded', function(event:Object):void {
+	    			checkAppSettings();
+	    		});
+	    		Util.wrapper.addEventListener('onSettingsChanged', function(event:Object):void {
+	    			if (appObject.parameters) {
+						appObject.parameters.api_settings = event.settings;
+					}
+		//			var settings:Number = e.settings;
+		//			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
+		//				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
+		//				(settings & SETTINGS_PHOTO_ACCESS) == 0) {
+		//				if (Util.wrapper.external) {
+		//					var installSettings:int = 0;
+		//					installSettings |= SETTINGS_NOTICE_ACCEPT;
+		//					installSettings |= SETTINGS_FRIENDS_ACCESS;
+		//					installSettings |= SETTINGS_PHOTO_ACCESS;
+		//					Util.wrapper.external.showSettingsBox(installSettings);
+		//				}
+		//			}
+		//			else {
+						Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
+		//			}
+	    		});
+	    		
+	    		Util.wrapper.addEventListener('onWallPostSave', function(event:Object):void {
+	    			Util.api.writeIn(Util.WALL_POST_COMPENSATION);
+	    			Util.user.account -= Util.WALL_POST_COMPENSATION;
+	    			Util.api.wallPost();
+	    			MainForm.instance.randomizeFriend();
+	    		});
+	    		
+	    		Util.wrapper.addEventListener('onWallPostCancel', function(event:Object):void {
+	    		
+	    		});
 	    	}
 	    	loadPreloader();
 	  	}
@@ -139,8 +172,9 @@ package {
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-			PreloaderSplash.instance.showModal();
-			Util.api.favorites(Util.viewer_id);
+//			PreloaderSplash.instance.showModal();
+//			Util.api.favorites(Util.viewer_id);
+			showModal(new PaymentDialog(this));
 		}
 		
 		public function onFifthMenuButtonClick(event:MainMenuEvent):void {
@@ -383,32 +417,6 @@ package {
 			catch (e:Error) {
 				if (Util.DEBUG) trace(e.message);
 			}
-		}
-		
-		public function onApplicationAdded(e:Object):void {
-//			Util.vkontakte.getUserSettings();
-			checkAppSettings();
-		}
-		
-		public function onSettingsChanged(e:Object):void {
-			if (appObject.parameters) {
-				appObject.parameters.api_settings = e.settings;
-			}
-//			var settings:Number = e.settings;
-//			if ((settings & SETTINGS_NOTICE_ACCEPT) == 0 ||
-//				(settings & SETTINGS_FRIENDS_ACCESS) == 0 ||
-//				(settings & SETTINGS_PHOTO_ACCESS) == 0) {
-//				if (Util.wrapper.external) {
-//					var installSettings:int = 0;
-//					installSettings |= SETTINGS_NOTICE_ACCEPT;
-//					installSettings |= SETTINGS_FRIENDS_ACCESS;
-//					installSettings |= SETTINGS_PHOTO_ACCESS;
-//					Util.wrapper.external.showSettingsBox(installSettings);
-//				}
-//			}
-//			else {
-				Util.vkontakte.getProfiles(new Array(''+Util.viewer_id));
-//			}
 		}
 		
 		public function checkAppSettings():void {

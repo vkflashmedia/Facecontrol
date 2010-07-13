@@ -13,6 +13,8 @@ package com.facecontrol.forms
 	import com.flashmedia.util.BitmapUtil;
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.geom.Matrix;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.text.AntiAliasType;
@@ -66,14 +68,22 @@ package com.facecontrol.forms
 			b3.textField.rotation = 3
 			b3.setTextPosition(30, 11);
 			
+			var bitmapBack:Bitmap = BitmapUtil.cloneImageNamed(Images.HEAD_BUTTON4);
+			var bitmapData:BitmapData = new BitmapData(bitmapBack.width, bitmapBack.height, true, 0);
+			bitmapData.draw(bitmapBack);
+			var matrix:Matrix = new Matrix();
+			matrix.translate(12, 23);
+			bitmapData.draw(BitmapUtil.cloneImageNamed(Images.GOLD), matrix);
+			
 			var b4:Button = new Button(scene, 364, 0);
-			b4.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON4), CONTROL_STATE_NORMAL);
-			b4.setTitleForState('избранные', CONTROL_STATE_NORMAL);
+			b4.setBackgroundImageForState(new Bitmap(bitmapData), CONTROL_STATE_NORMAL);
+			b4.setTitleForState('пополнить', CONTROL_STATE_NORMAL);
 			b4.setTextFormatForState(format, CONTROL_STATE_NORMAL);
 			b4.textField.embedFonts = true;
 			b4.textField.antiAliasType = AntiAliasType.ADVANCED;
-			b4.textField.rotation = -3;
-			b4.setTextPosition(23, 19);
+			b4.textField.rotation = -2;
+//			b4.setTextPosition(23, 19);
+			b4.setTextPosition(35, 19);
 			
 			var b5:Button = new Button(scene, 483, 0);
 			b5.setBackgroundImageForState(Util.multiLoader.get(Images.HEAD_BUTTON5), CONTROL_STATE_NORMAL);
@@ -85,7 +95,18 @@ package com.facecontrol.forms
 			
 			menu.buttons = new Array(b1, b2, b3, b4, b5);
 			
-			var goldButton:Button = new Button(scene, 550, 75);
+//			var addLinkButton:LinkButton = new LinkButton(value, 'Пополнить', 490, 81);
+//			addLinkButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 12, 0xffffff, null, null, true),
+//				CONTROL_STATE_NORMAL);
+//			addLinkButton.textField.embedFonts = true;
+//			addLinkButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+//			addLinkButton.textField.autoSize = TextFieldAutoSize.LEFT;
+//			addLinkButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
+//				_scene.showModal(new PaymentDialog(_scene));
+//			});
+//			addChild(addLinkButton);
+			
+			var goldButton:Button = new Button(scene, 560, 82);
 			goldButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.GOLD), CONTROL_STATE_NORMAL);
 			goldButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
 				_scene.showModal(new PaymentDialog(_scene));
@@ -96,7 +117,7 @@ package com.facecontrol.forms
 			if (Util.user && Util.user.hasOwnProperty('account')) {
 				account = Util.user.account;
 			}
-			_goldLinkButton = new LinkButton(value, account, 572, 72);
+			_goldLinkButton = new LinkButton(value, account, 580, 79);
 			_goldLinkButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 15, 0xb0dee6), CONTROL_STATE_NORMAL);
 			_goldLinkButton.textField.embedFonts = true;
 			_goldLinkButton.textField.antiAliasType = AntiAliasType.ADVANCED;

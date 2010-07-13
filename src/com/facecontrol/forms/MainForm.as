@@ -1,5 +1,6 @@
 package com.facecontrol.forms
 {
+	import com.adobe.images.JPGEncoder;
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.dialog.MessageDialog;
@@ -10,24 +11,33 @@ package com.facecontrol.forms
 	import com.flashmedia.basics.GameObjectEvent;
 	import com.flashmedia.basics.GameScene;
 	import com.flashmedia.basics.View;
+	import com.flashmedia.gui.Button;
 	import com.flashmedia.gui.ComboBox;
 	import com.flashmedia.gui.ComboBoxEvent;
 	import com.flashmedia.gui.Form;
 	import com.flashmedia.gui.LinkButton;
 	import com.flashmedia.gui.RatingBar;
 	import com.flashmedia.util.BitmapUtil;
+	import com.net.VKontakte;
+	import com.net.VKontakteEvent;
+	import com.serialization.json.JSON;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.ErrorEvent;
+	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.TextEvent;
+	import flash.net.URLVariables;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
+	import flash.utils.ByteArray;
+	
+	import ru.inspirit.net.MultipartURLLoader;
 	
 	
 	public class MainForm extends Form
@@ -47,6 +57,9 @@ package com.facecontrol.forms
 		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_RATING_AVERAGE_LABEL:int = 43;
 		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT:int = 90;
 		private static const INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_VOTES_COUNT_LABEL:int = 72;
+		
+		private static const INDENT_BETWEEN_INVITE_LABEL_AND_PHOTO:int = 5;
+		private static const INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON:int = 0;
 		
 		private static var _instance:MainForm = null;
 		public static function get instance():MainForm {
@@ -72,6 +85,11 @@ package com.facecontrol.forms
 		private var _previousUserStarIcon:Bitmap;
 		private var _previousUserDelimiterIcon:Bitmap;
 		
+		private var _inviteArea:Sprite;
+		private var _inviteLabel:TextField;
+		private var _invitePhoto:Photo;
+		private var _inviteButton:Button;
+		
 		private var _rateBar:RatingBar;
 		
 		private var _sexBox:ComboBox;
@@ -82,14 +100,85 @@ package com.facecontrol.forms
 		
 		private var _filter:Object;
 		private var _multiloader:MultiLoader;
-		
+		private var _vkontakte:VKontakte;
+		private var _friends:Array;
+		private var _friend:Object;
 		private var _toUnload:String = undefined;
+		
+		private var _friendPhotoLoader:MultiLoader;
+		private var _mpLoader:MultipartURLLoader;
+		private var _server:String;
+		private var _photo:String;
+		private var _hash:String;
 		
 		public function MainForm(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
 			
 			_multiloader = new MultiLoader();
+			
+			_mpLoader = new MultipartURLLoader();
+			_mpLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
+				var response:Object = JSON.deserialize(_mpLoader.loader.data);
+				_server = response.server;
+				_photo = response.photo;
+				_hash = response.hash;
+				_vkontakte.wallSavePost(_friend.uid, response.server, response.photo, response.hash);
+			});
+			
+			_friendPhotoLoader = new MultiLoader();
+			_friendPhotoLoader.addEventListener(MultiLoaderEvent.COMPLETE, function(event:MultiLoaderEvent):void {
+				var url:String = _friend.photo_big;
+				if (_friendPhotoLoader.hasLoaded(url)) {
+					showInviteArea();
+				}
+			});
+			
+			_vkontakte = new VKontakte();
+			_vkontakte.addEventListener(VKontakteEvent.COMPLETED, function(event:VKontakteEvent):void {
+				var response:Object = event.response;
+				try {
+					switch (event.method) {
+						case 'getFriends':
+							_friends = response as Array;
+							_vkontakte.getAppFriends();
+						break;
+						
+						case 'getAppFriends':
+							var appFriends:Array = response as Array;
+							_friends.filter(function(element:*, index:int, arr:Array):* {
+								for each (var uid:int in appFriends) {
+									if (element.uid == uid) {
+										return false;
+									}
+								}
+								return true;
+							});
+							randomizeFriend();
+						break;
+						
+						case 'getPhotoUploadServer':
+							var vars:URLVariables = new URLVariables();
+							var bitmap:Bitmap = Util.multiLoader.get(Images.INVITE_ICON);
+						    var myEncoder:JPGEncoder = new JPGEncoder(70);
+						    var myCapStream:ByteArray = myEncoder.encode(bitmap.bitmapData);
+							_mpLoader.addFile(myCapStream, 'file.jpg', 'photo', 'image/jpeg');
+							_mpLoader.load(response.upload_url);
+						break;
+						
+						case 'wallSavePost':
+							if (Util.wrapper.external) {
+								Util.wrapper.external.saveWallPost(response.post_hash);
+							}
+						break;
+					}
+				}
+				catch (e:Error) {
+					if (Util.DEBUG) trace(e.message);
+				}
+			});
+			_vkontakte.getFriends('first_name,sex,photo_big');
+			
 			visible = false;
 			
 			width = Constants.APP_WIDTH;
@@ -125,21 +214,22 @@ package com.facecontrol.forms
 			
 			initCurrentUserArea();
 			initPreviousUserArea();
+			initInviteArea();
 			
-			var filterBackgruond:Bitmap = Util.multiLoader.get(Images.FILTER_BACKGROUND);
+			var filterBackgruond:Bitmap = BitmapUtil.cloneImageNamed(Images.FILTER_BACKGROUND);
 			filterBackgruond.x = 452;
-			filterBackgruond.y = 313;
+			filterBackgruond.y = 176;
 			addChild(filterBackgruond);
 			
 			var filterLabelFormat:TextFormat = new TextFormat(Util.tahoma.fontName, 12, 0xf2c3ff);
-			var filterLabel:TextField = Util.createLabel('Я ищу:', 470, 315);
+			var filterLabel:TextField = Util.createLabel('Я ищу:', filterBackgruond.x + 18, filterBackgruond.y + 2);
 			filterLabel.embedFonts = true;
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_sexBox = createComboBox(472, 335, 113);
+			_sexBox = createComboBox(filterBackgruond.x + 20, filterBackgruond.y + 22, 113);
 			_sexBox.addItem(Constants.SEX_FEMALE);
 			_sexBox.addItem(Constants.SEX_MALE);
 			_sexBox.addItem(Constants.SEX_BOTH);
@@ -147,7 +237,7 @@ package com.facecontrol.forms
 			_sexBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_sexBox);
 			
-			filterLabel = Util.createLabel('От:', 470, 364);
+			filterLabel = Util.createLabel('От:', filterBackgruond.x + 18, filterBackgruond.y + 51);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.setTextFormat(filterLabelFormat);
@@ -156,18 +246,18 @@ package com.facecontrol.forms
 			
 			var spr: Sprite = new Sprite();
 			spr.graphics.beginFill(0xffffff);
-			spr.graphics.drawRoundRect(502, 367, 83, 15, 12);
+			spr.graphics.drawRoundRect(filterBackgruond.x + 50, filterBackgruond.y + 54, 83, 15, 12);
 			spr.graphics.endFill();
 			addChild(spr);
 			
 			_minAgeBox = new TextField();
 			_minAgeBox.selectable = true;
-			_minAgeBox.x = 480;
-			_minAgeBox.y = 367;
+			_minAgeBox.x = filterBackgruond.x + 28;
+			_minAgeBox.y = filterBackgruond.y + 54;
 			_minAgeBox.maxChars = 3;
 			_minAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
-			_minAgeBox.autoSize = TextFieldAutoSize.RIGHT;
 			_minAgeBox.type = TextFieldType.INPUT;
+			_minAgeBox.autoSize = TextFieldAutoSize.RIGHT;
 			_minAgeBox.embedFonts = true;
 			_minAgeBox.antiAliasType = AntiAliasType.ADVANCED;
 			_minAgeBox.restrict = '0-9';
@@ -175,7 +265,7 @@ package com.facecontrol.forms
 			_minAgeBox.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 			addChild(_minAgeBox);
 			
-			filterLabel = Util.createLabel('До:', 470, 382);
+			filterLabel = Util.createLabel('До:', filterBackgruond.x + 18, filterBackgruond.y + 69);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
@@ -184,14 +274,14 @@ package com.facecontrol.forms
 			
 			spr = new Sprite();
 			spr.graphics.beginFill(0xffffff);
-			spr.graphics.drawRoundRect(502, 385, 83, 15, 12);
+			spr.graphics.drawRoundRect(filterBackgruond.x + 50, filterBackgruond.y + 72, 83, 15, 12);
 			spr.graphics.endFill();
 			addChild(spr);
 			
 			_maxAgeBox = new TextField();
 			_maxAgeBox.selectable = true;
-			_maxAgeBox.x = 479;
-			_maxAgeBox.y = 385;
+			_maxAgeBox.x = filterBackgruond.x + 28;
+			_maxAgeBox.y = filterBackgruond.y + 72;
 			_maxAgeBox.maxChars = 3;
 			_maxAgeBox.defaultTextFormat = new TextFormat(Util.tahoma.fontName, 11);
 			_maxAgeBox.autoSize = TextFieldAutoSize.RIGHT;
@@ -203,27 +293,27 @@ package com.facecontrol.forms
 			_maxAgeBox.addEventListener(TextEvent.TEXT_INPUT, onTextInput);
 			addChild(_maxAgeBox);
 			
-			filterLabel = Util.createLabel('Страна:', 470, 405);
+			filterLabel = Util.createLabel('Страна:', filterBackgruond.x + 18, filterBackgruond.y + 92);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_countryBox = createComboBox(472, 425, 113);
+			_countryBox = createComboBox(filterBackgruond.x + 20, filterBackgruond.y + 112, 113);
 			_countryBox.setTextFormat(new TextFormat(Util.tahoma.fontName, 11), true, AntiAliasType.ADVANCED);
 			_countryBox.horizontalAlign = View.ALIGN_HOR_RIGHT;
 			_countryBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_countryBox);
 			
-			filterLabel = Util.createLabel('Город:', 470, 445);
+			filterLabel = Util.createLabel('Город:', filterBackgruond.x + 18, filterBackgruond.y + 132);
 			filterLabel.setTextFormat(filterLabelFormat);
 			filterLabel.antiAliasType = AntiAliasType.ADVANCED;
 			filterLabel.embedFonts = true;
 			filterLabel.autoSize = TextFieldAutoSize.LEFT;
 			addChild(filterLabel);
 			
-			_cityBox = createComboBox(472, 465, 113);
+			_cityBox = createComboBox(filterBackgruond.x + 20, filterBackgruond.y + 152, 113);
 			_cityBox.addEventListener(ComboBoxEvent.ITEM_SELECT, onFilterChanged);
 			addChild(_cityBox);
 		}
@@ -324,6 +414,74 @@ package com.facecontrol.forms
 			_previousUserArea.addChild(_previousUserPhotoVotesCount);
 		}
 		
+		private function initInviteArea():void {
+			_inviteArea = new Sprite();
+			_inviteArea.visible = false;
+			addChild(_inviteArea);
+			
+			var backgruond:Bitmap = BitmapUtil.cloneImageNamed(Images.INVITE_BACKGROUND);
+			backgruond.x = 452;
+			backgruond.y = 376;
+			_inviteArea.addChild(backgruond);
+			
+			_inviteLabel = Util.createLabel('Федя еще не прошел Фейсконтроль?', 465, 380, 140, 60);
+			_inviteLabel.setTextFormat(new TextFormat(Util.tahoma.fontName, 11, 0xd3d96c));
+			_inviteLabel.embedFonts = true;
+			_inviteLabel.antiAliasType = AntiAliasType.ADVANCED;
+			_inviteLabel.wordWrap = true;
+			_inviteArea.addChild(_inviteLabel);
+			
+			_invitePhoto = new Photo(_scene, null, 481, _inviteLabel.y + _inviteLabel.height + INDENT_BETWEEN_INVITE_LABEL_AND_PHOTO, 100, 100);
+			_invitePhoto.horizontalScale = Photo.HORIZONTAL_SCALE_ALWAYS;
+			_invitePhoto.verticalScale = Photo.VERTICAL_SCALE_ALWAYS;
+			_inviteArea.addChild(_invitePhoto);
+			
+			_inviteButton = new Button(_scene, 469, _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON);
+			_inviteButton.setTitleForState('пригласить', CONTROL_STATE_NORMAL);
+			_inviteButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			_inviteButton.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
+			_inviteButton.textField.embedFonts = true;
+			_inviteButton.textField.antiAliasType = AntiAliasType.ADVANCED;
+			_inviteButton.setTextPosition(30, 17);
+			_inviteButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
+				if (_server && _photo && _hash) {
+					_vkontakte.wallSavePost(_friend.uid, _server, _photo, _hash);
+				}
+				else {
+					_vkontakte.getPhotoUploadServer();
+				}
+			});
+			_inviteArea.addChild(_inviteButton);
+		}
+		
+		public function randomizeFriend():void {
+			_friend = _friends[Util.random(0, _friends.length)];
+			showInviteArea();
+		}
+		
+		private function showInviteArea():void {
+			if (_friendPhotoLoader.hasLoaded(_friend.photo_big)) {
+				_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
+					switch (_friend.sex) {
+						case '1':
+							_inviteLabel.text = _friend.first_name + ' еще не прошла Фейсконтроль?\nПригласи ее и получи 5 монет.';
+						break;
+						
+						case '2':
+							_inviteLabel.text = _friend.first_name + ' еще не прошел Фейсконтроль?\nПригласи его и получи 5 монет.';
+						break;
+					}
+					
+				_invitePhoto.photo = _friendPhotoLoader.get(_friend.photo_big);
+				_inviteButton.y = _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON;
+				
+				_inviteArea.visible = true;
+			}
+			else {
+				_friendPhotoLoader.load(_friend.photo_big, _friend.photo_big, 'Bitmap');
+			}
+		}
+		
 		public function nextPhoto(obj:Object):void {
 			_rateBar.rating = 0;
 			
@@ -405,10 +563,10 @@ package com.facecontrol.forms
 					_toUnload = null;
 				}
 				catch (e:Error) {}
+				
+				_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
+				_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
 			}
-			
-			_multiloader.removeEventListener(ErrorEvent.ERROR, multiloaderError);
-			_multiloader.removeEventListener(MultiLoaderEvent.COMPLETE, multiLoaderComplete);
 		}
 		
 		private function previousPhoto():void {
@@ -534,6 +692,8 @@ package com.facecontrol.forms
 				_currentUserPhotoComment.y = _currentUserPhoto.y + _currentUserPhoto.photoHeight + INDENT_BETWEEN_CURRENT_PHOTO_AND_COMMENT;
 				
 				_currentUserArea.visible = true;
+				
+				randomizeFriend();
 			} else {
 				_currentUserArea.visible = false;
 				_currentUserPhoto.photo = null;
@@ -543,6 +703,7 @@ package com.facecontrol.forms
 		public function set smallPhoto(image:Bitmap):void {
 			if (image) {
 				_previousUserPhoto.photo = image;
+				_previousUserPhoto.frameIndex = _previousUser.frame;
 				var photoBottomY:int = _previousUserPhoto.y + _previousUserPhoto.photoHeight;
 				_previousUserStarIcon.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_STAR_ICON;
 				_previousUserDelimiterIcon.y = photoBottomY + INDENT_BETWEEN_PREVIOUS_USER_PHOTO_AND_DELIMITER_ICON;

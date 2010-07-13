@@ -226,7 +226,7 @@ package com.facecontrol.forms
 			
 			var markAsMain:Button = new Button(_scene, 264, 488);
 			markAsMain.setTitleForState('Сделать главной', CONTROL_STATE_NORMAL);
-			markAsMain.setBackgroundImageForState(Util.multiLoader.get(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
+			markAsMain.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.MY_PHOTO_BUTTON_RED), CONTROL_STATE_NORMAL);
 			markAsMain.setTextFormatForState(new TextFormat(Util.tahoma.fontName, 10, 0xffffff), CONTROL_STATE_NORMAL);
 			markAsMain.textField.embedFonts = true;
 			markAsMain.textField.antiAliasType = AntiAliasType.ADVANCED;
