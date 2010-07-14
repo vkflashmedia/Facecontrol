@@ -403,6 +403,7 @@ package {
 					
 					case 'write_in':
 					case 'write_off':
+					case 'wall_post':
 						Util.user.account = response.account;
 						Background.instance.updateAccount();
 					break;

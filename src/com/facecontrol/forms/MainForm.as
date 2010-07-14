@@ -455,30 +455,37 @@ package com.facecontrol.forms
 		}
 		
 		public function randomizeFriend():void {
-			_friend = _friends[Util.random(0, _friends.length)];
-			showInviteArea();
+			if (_friends.length > 0) {
+				_friend = _friends[Util.random(0, _friends.length)];
+				showInviteArea();
+			}
 		}
 		
 		private function showInviteArea():void {
-			if (_friend && _friendPhotoLoader.hasLoaded(_friend.photo_big)) {
-				_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
-					switch (_friend.sex) {
-						case '1':
-							_inviteLabel.text = _friend.first_name + ' еще не прошла Фейсконтроль?\nПригласи ее и получи 5 монет.';
-						break;
+			if (_friend) {
+				if (_friendPhotoLoader.hasLoaded(_friend.photo_big)) {
+					_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
+						switch (_friend.sex) {
+							case '1':
+								_inviteLabel.text = _friend.first_name + ' еще не прошла Фейсконтроль?\nПригласи ее и получи 5 монет.';
+							break;
+							
+							case '2':
+								_inviteLabel.text = _friend.first_name + ' еще не прошел Фейсконтроль?\nПригласи его и получи 5 монет.';
+							break;
+						}
 						
-						case '2':
-							_inviteLabel.text = _friend.first_name + ' еще не прошел Фейсконтроль?\nПригласи его и получи 5 монет.';
-						break;
-					}
+					_invitePhoto.photo = _friendPhotoLoader.get(_friend.photo_big);
+					_inviteButton.y = _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON;
 					
-				_invitePhoto.photo = _friendPhotoLoader.get(_friend.photo_big);
-				_inviteButton.y = _invitePhoto.y + _invitePhoto.photoHeight + INDENT_BETWEEN_INVITE_PHOTO_AND_BUTTON;
-				
-				_inviteArea.visible = true;
+					_inviteArea.visible = true;
+				}
+				else {
+					_friendPhotoLoader.load(_friend.photo_big, _friend.photo_big, 'Bitmap');
+				}
 			}
 			else {
-				_friendPhotoLoader.load(_friend.photo_big, _friend.photo_big, 'Bitmap');
+				randomizeFriend();
 			}
 		}
 		
