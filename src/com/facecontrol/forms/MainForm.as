@@ -460,7 +460,7 @@ package com.facecontrol.forms
 		}
 		
 		private function showInviteArea():void {
-			if (_friendPhotoLoader.hasLoaded(_friend.photo_big)) {
+			if (_friend && _friendPhotoLoader.hasLoaded(_friend.photo_big)) {
 				_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
 					switch (_friend.sex) {
 						case '1':
@@ -555,7 +555,6 @@ package com.facecontrol.forms
 		private function multiLoaderComplete(event:MultiLoaderEvent):void {
 			if (_multiloader.hasLoaded(_currentUser.pid)) {
 				bigPhoto = _multiloader.get(_currentUser.pid);
-//				bigPhoto = BitmapUtil.cloneImageNamed(_currentUser.pid);
 				nextPhoto(_currentUser);
 				previousPhoto();
 				
@@ -722,7 +721,7 @@ package com.facecontrol.forms
 		
 		public function onRateClicked(event:GameObjectEvent):void {
 			PreloaderSplash.instance.showModal();
-			Util.api.vote(Util.viewer_id, _currentUser.pid, _rateBar.rating);
+			Util.api.vote(_currentUser.pid, _rateBar.rating);
 		}
 		
 		public function onFilterChanged(event:ComboBoxEvent):void {

@@ -22,10 +22,10 @@ package com.net
 		private static const APP_ID_SANDBOX:String = '1882789';
 		
 		public static var apiUrl:String = FC_API_SERVER;
-//		public static var appId:String = APP_ID_SANDBOX;
-//		public static var appKey:String = APP_KEY_SANDBOX;
-		public static var appId:String = APP_ID;
-		public static var appKey:String = APP_KEY;
+		public static var appId:String = APP_ID_SANDBOX;
+		public static var appKey:String = APP_KEY_SANDBOX;
+//		public static var appId:String = APP_ID;
+//		public static var appKey:String = APP_KEY;
 		
 		private const loader:URLLoader = new URLLoader();
 		

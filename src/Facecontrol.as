@@ -82,8 +82,8 @@ package {
 	    		});
 	    		
 	    		Util.wrapper.addEventListener('onWallPostSave', function(event:Object):void {
-	    			Util.api.writeIn(Util.WALL_POST_COMPENSATION);
-	    			Util.user.account -= Util.WALL_POST_COMPENSATION;
+//	    			Util.api.writeIn(Util.WALL_POST_COMPENSATION);
+	    			Util.user.account += Util.WALL_POST_COMPENSATION;
 	    			Util.api.wallPost();
 	    			MainForm.instance.randomizeFriend();
 	    		});
