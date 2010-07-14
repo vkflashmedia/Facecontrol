@@ -82,7 +82,7 @@ package {
 	    		});
 	    		
 	    		Util.wrapper.addEventListener('onWallPostSave', function(event:Object):void {
-	    			Util.api.writeIn(Util.WALL_POST_COMPENSATION);
+//	    			Util.api.writeIn(Util.WALL_POST_COMPENSATION);
 	    			Util.user.account += Util.WALL_POST_COMPENSATION;
 	    			Util.api.wallPost();
 	    			MainForm.instance.randomizeFriend();
@@ -403,6 +403,7 @@ package {
 					
 					case 'write_in':
 					case 'write_off':
+					case 'wall_post':
 						Util.user.account = response.account;
 						Background.instance.updateAccount();
 					break;

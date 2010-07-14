@@ -276,13 +276,13 @@ package com.facecontrol.api
 //			request('invite', vars);
 //		}
 		
-		public function writeIn(debt:int):void {
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'write_in';
-			vars['viewer_id'] = Util.viewer_id;
-			vars['debt'] = debt;
-			request(vars['method'], vars);
-		}
+//		public function writeIn(debt:int):void {
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'write_in';
+//			vars['viewer_id'] = Util.viewer_id;
+//			vars['debt'] = debt;
+//			request(vars['method'], vars);
+//		}
 		
 		public function writeOff(debt:int):void {
 			var vars: URLVariables = new URLVariables();
