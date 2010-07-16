@@ -729,7 +729,7 @@ package com.facecontrol.forms
 		
 		public function onRateClicked(event:GameObjectEvent):void {
 			PreloaderSplash.instance.showModal();
-			Util.api.vote(Util.viewer_id, _currentUser.pid, _rateBar.rating);
+			Util.api.vote(_currentUser.pid, _rateBar.rating);
 		}
 		
 		public function onFilterChanged(event:ComboBoxEvent):void {

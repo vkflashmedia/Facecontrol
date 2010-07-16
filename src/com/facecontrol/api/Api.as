@@ -184,11 +184,11 @@ package com.facecontrol.api
 			request('set_comment', vars);
 		}
 		
-		public function vote(uid:int, pid:String, rating:int=1):void
+		public function vote(pid:String, rating:int=1):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'vote';
-			vars['uid'] = uid;
+			vars['viewer_id'] = Util.viewer_id;
 			vars['pid'] = pid;
 			vars['rating'] = rating;
 			
