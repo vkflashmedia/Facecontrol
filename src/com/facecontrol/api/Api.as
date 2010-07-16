@@ -139,11 +139,12 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
-		public function getPhotos(uid:int):void
+		public function getPhotos(uid:int, add_compensation:Boolean=false):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'get_photos';
 			vars['uid'] = uid;
+			if (add_compensation) vars['add_compensation'] = add_compensation;
 			
 			request(vars['method'], vars);
 		}
@@ -157,12 +158,10 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
-		public function setComment(pid:int, comment:String):void
-		{
+		public function setComment(pid:int, comment:String):void {
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'set_comment';
 			vars['pid'] = pid;
-			
 			vars['comment'] = comment;
 			
 			request(vars['method'], vars);
@@ -171,7 +170,7 @@ package com.facecontrol.api
 		public function vote(pid:String, rating:int=1):void
 		{
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'vote1';
+			vars['method'] = 'vote';
 			vars['viewer_id'] = Util.viewer_id;
 			vars['pid'] = pid;
 			vars['rating'] = rating;

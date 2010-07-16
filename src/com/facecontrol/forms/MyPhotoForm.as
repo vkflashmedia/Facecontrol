@@ -69,12 +69,24 @@ package com.facecontrol.forms
 			_multiloader = new MultiLoader();
 			visible = false;
 
-			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
+			var smileIco:Bitmap = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO);
 			smileIco.x = 38;
 			smileIco.y = 97;
 			addChild(smileIco);
 			
 			var label:TextField = Util.createLabel('Мои фото', 62, 92);
+			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
+			label.embedFonts = true;
+			label.antiAliasType = AntiAliasType.ADVANCED;
+			label.autoSize = TextFieldAutoSize.LEFT;
+			addChild(label);
+			
+			smileIco = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO);
+			smileIco.x = 276;
+			smileIco.y = 97;
+			addChild(smileIco);
+			
+			label = Util.createLabel('Мой рейтинг:', 300, 92);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;

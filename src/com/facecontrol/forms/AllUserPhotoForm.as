@@ -66,8 +66,20 @@ package com.facecontrol.forms
 			multiloader = new MultiLoader();
 						
 			api = new Api();
-			api.addEventListener(ApiEvent.COMPLETED, onRequestCompleted);
-			api.addEventListener(ApiEvent.ERROR, onRequestError);
+			api.addEventListener(ApiEvent.COMPLETED, function(event:ApiEvent):void {
+				switch (event.response.method) {
+					case 'get_photos':
+						for each (var photo: Object in event.response.photos) {
+							allPhotos.push({'src_big_path': photo['src_big']});
+							multiloader.load(photo['src_big'], photo['src_big'], 'Bitmap');
+						}
+						multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
+					break;
+				}
+			});
+			api.addEventListener(ApiEvent.ERROR, function(event:ApiEvent):void {
+				trace('onRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
+			});
 			
 			allPhotos = new Array();
 			
@@ -175,7 +187,7 @@ package com.facecontrol.forms
 				
 				PreloaderSplash.instance.showModal();
 				allPhotos = new Array();
-				api.getPhotos(user['uid']);
+				api.getPhotos(user['uid'], true);
 			}
 			else {
 				if (multiloader) {
@@ -288,22 +300,6 @@ package com.facecontrol.forms
 			if (returnForm) {
 				returnForm.show();
 			}
-		}
-		
-		private function onRequestCompleted(event: ApiEvent): void {
-			switch (event.response.method) {
-				case 'get_photos':
-					for each (var photo: Object in event.response.photos) {
-						allPhotos.push({'src_big_path': photo['src_big']});
-						multiloader.load(photo['src_big'], photo['src_big'], 'Bitmap');
-					}
-					multiloader.addEventListener(MultiLoaderEvent.COMPLETE, multiLoaderCompliteListener);
-				break;
-			}
-		}
-		
-		private function onRequestError(event: ApiEvent): void {
-			trace('onRequestError: ' + event.errorCode + " (" + event.errorMessage+")");
 		}
 		
 		public function multiLoaderCompliteListener(event: MultiLoaderEvent):void {
