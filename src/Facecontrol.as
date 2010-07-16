@@ -168,7 +168,8 @@ package {
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
 			PreloaderSplash.instance.showModal();
-			Util.api.getTop(Util.viewer_id);
+//			Util.api.getTop(Util.viewer_id);
+			Top100.instance.initRequest();
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
@@ -401,9 +402,10 @@ package {
 						}
 					break;
 					
-					case 'write_in':
-					case 'write_off':
+//					case 'write_in':
+//					case 'write_off':
 					case 'wall_post':
+					case 'goto_profile':
 						Util.user.account = response.account;
 						Background.instance.updateAccount();
 					break;

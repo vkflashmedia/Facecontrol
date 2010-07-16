@@ -123,7 +123,7 @@ package com.facecontrol.util
 		
 		public static function gotoUserProfile(uid:String):void {
 			if (Util.user.account > 0) {
-				Util.api.writeOff(1);
+				Util.api.gotoProfile();
 				Util.user.account -= 1;
 				Background.instance.updateAccount();
 				navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
@@ -138,19 +138,12 @@ package com.facecontrol.util
 			}
 		}
 		
-		public static function random(low:Number=NaN, high:Number=NaN):Number
-		{
+		public static function random(low:Number=NaN, high:Number=NaN):Number {
 			var low:Number = low;
 			var high:Number = high;
 		
-			if(isNaN(low))
-			{
-				throw new Error("low must be defined");
-			}
-			if(isNaN(high))
-			{
-				throw new Error("high must be defined");
-			}
+			if(isNaN(low)) throw new Error("low must be defined");
+			if(isNaN(high)) throw new Error("high must be defined");
 		
 			return Math.round(Math.random() * (high - low)) + low;
 		}

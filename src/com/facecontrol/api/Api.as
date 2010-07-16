@@ -236,10 +236,19 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
-		public function getTop(uid:uint):void {
+//		public function getTop(uid:uint):void {
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'top100';
+//			vars['uid'] = uid;
+//			request(vars['method'], vars);
+//		}
+		
+		public function top100(offset: uint, count: uint): void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'top100';
-			vars['uid'] = uid;
+			vars['method'] = 'getTop100';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['offset'] = offset;
+			vars['count'] = count;
 			request(vars['method'], vars);
 		}
 		
@@ -267,13 +276,13 @@ package com.facecontrol.api
 //			request(vars['method'], vars);
 //		}
 		
-		public function writeOff(debt:int):void {
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'write_off';
-			vars['viewer_id'] = Util.viewer_id;
-			vars['debt'] = debt;
-			request(vars['method'], vars);
-		}
+//		public function writeOff(debt:int):void {
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'write_off';
+//			vars['viewer_id'] = Util.viewer_id;
+//			vars['debt'] = debt;
+//			request(vars['method'], vars);
+//		}
 		
 		public function withdrawVotes(votes:int):void {
 			var vars: URLVariables = new URLVariables();
@@ -284,9 +293,16 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
+		public function gotoProfile():void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'goto_profile';
+			vars['viewer_id'] = Util.viewer_id;
+			request(vars['method'], vars);
+		}
+		
 		public function setFrame(frame:int):void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'set_frame';
+			vars['method'] = 'set_frame1';
 			vars['viewer_id'] = Util.viewer_id;
 			vars['frame'] = frame;
 			request(vars['method'], vars);

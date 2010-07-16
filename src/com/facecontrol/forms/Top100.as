@@ -2,6 +2,8 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
+	import com.facecontrol.api.Api;
+	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.gui.FriendGridItem;
 	import com.facecontrol.util.Constants;
@@ -37,11 +39,32 @@ package com.facecontrol.forms
 		private var _grid:GridBox;
 		private var _users:Array;
 		
+		private var _facecontrolApi:Api;
 		private var _multiLoader:MultiLoader;
 		
 		public function Top100(value:GameScene)
 		{
 			super(value, 0, 0, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+			
+			_facecontrolApi = new Api();
+			_facecontrolApi.addEventListener(ApiEvent.COMPLETED, function(event:ApiEvent): void {
+				var response:Object = event.response;
+				try {
+					switch (response.method) {
+						case 'getTop100':
+							PreloaderSplash.instance.resetModal();
+							this.users = response.users;
+							show();
+						break;
+					}
+				}
+				catch (e:Error) {
+					if (Util.DEBUG) trace(e.message);
+				}
+			});
+			_facecontrolApi.addEventListener(ApiEvent.ERROR, function(event:ApiEvent): void {
+				Util.showError(event.errorCode, event.errorMessage);
+			});
 			
 			_multiLoader = new MultiLoader();
 			visible = false;
@@ -76,6 +99,7 @@ package com.facecontrol.forms
 			_pagination.textFormatForDefaultButton = new TextFormat(Util.tahoma.fontName, 9, 0xbcbcbc);
 			_pagination.textFormatForSelectedButton = new TextFormat(Util.tahomaBold.fontName, 9, 0x00ccff);
 			_pagination.addEventListener(Event.CHANGE, onPaginationChange);
+			_pagination.pagesCount = 20;
 			addChild(_pagination);
 			
 			_grid = new GridBox(_scene, 1, 5);
@@ -94,30 +118,12 @@ package com.facecontrol.forms
 			addChild(_grid);
 		}
 		
+		public function initRequest(): void {
+			_facecontrolApi.top100(0, 5);
+		}
+		
 		public function set users(value:Array):void {
 			_users = value;
-			/*
-			for each (var user:Object in _users) {
-				if (user.pid) {
-					if (!Util.multiLoader.hasLoaded(user.pid)) {
-						if (user.src_big) Util.multiLoader.load(user.src_big, user.pid, 'Bitmap');
-					}
-				}
-				else if (user.photo_big) {
-					if (!Util.multiLoader.hasLoaded(user.photo_big)) {
-						if (user.photo_big) Util.multiLoader.load(user.photo_big, user.photo_big, 'Bitmap');
-					}
-				}
-			}
-			
-			if (Util.multiLoader.isLoaded) updateGrid();
-			else {
-				Util.multiLoader.addEventListener(MultiLoaderEvent.COMPLETE, loadCompleteListener);
-				if (!PreloaderSplash.instance.isModal) {
-					Util.scene.showModal(PreloaderSplash.instance);
-				}
-			}
-			*/
 			_multiLoader.addEventListener(ErrorEvent.ERROR, loadError);
 			for each (var user:Object in _users) {
 				if (user.pid) {
@@ -150,29 +156,33 @@ package com.facecontrol.forms
 				_multiLoader.removeEventListener(ErrorEvent.ERROR, loadError);
 				_multiLoader.removeEventListener(MultiLoaderEvent.COMPLETE, loadComplete);
 				updateGrid();
-				if (PreloaderSplash.instance.isModal) {
-					Util.scene.resetModal(PreloaderSplash.instance);
-				}
+				PreloaderSplash.instance.resetModal();
 			}
 		}
 		
 		public function onPaginationChange(event:Event):void {
-			updateGrid();
+//			updateGrid();
+			PreloaderSplash.instance.showModal();
+			_facecontrolApi.top100(_pagination.currentPage, 5);
 		}
 		
 		public function updateGrid():void {
 			var i:int = 0;
 			var j:int = 0;
 			var count:int = _users.length;
-			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
+//			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
 			_pagination.visible = _pagination.pagesCount > 1;
 			
 			_grid.removeAllItems();
 			if (_users && _users.length > 0) {
-				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
-				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
-				for (i = start, j = 1; i < end; ++i, ++j) {
-					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+//				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
+//				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
+//				for (i = start, j = 1; i < end; ++i, ++j) {
+//					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+//					_grid.addItem(item);
+//				}
+				for (i = 0; i < _users.length; ++i) {
+					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), i < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			} else {
@@ -182,7 +192,8 @@ package com.facecontrol.forms
 		}
 		
 		public override function refresh():void {
-			Util.api.getTop(Util.viewer_id);
+//			Util.api.getTop(Util.viewer_id);
+			initRequest();
 		}
 		
 		public override function show():void {
