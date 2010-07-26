@@ -236,16 +236,9 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
-//		public function getTop(uid:uint):void {
-//			var vars: URLVariables = new URLVariables();
-//			vars['method'] = 'top100';
-//			vars['uid'] = uid;
-//			request(vars['method'], vars);
-//		}
-		
-		public function top100(offset: uint, count: uint): void {
+		public function getTop(offset: uint, count: uint): void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'getTop100';
+			vars['method'] = 'getTop';
 			vars['viewer_id'] = Util.viewer_id;
 			vars['offset'] = offset;
 			vars['count'] = count;

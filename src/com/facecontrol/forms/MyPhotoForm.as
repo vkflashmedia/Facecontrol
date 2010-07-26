@@ -7,6 +7,7 @@ package com.facecontrol.forms
 	import com.facecontrol.dialog.PhotoPreviewDialog;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
+	import com.facecontrol.gui.RatingStatusBar;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -58,6 +59,9 @@ package com.facecontrol.forms
 		private var _photoCommentPlaceholder:TextField;
 		private var _photoComment:TextField;
 		
+//		private var _ratingLabel:TextField;
+		private var _ratingStatusBar:RatingStatusBar;
+		
 		private var _photoGrid:GridBox;
 		private var _pagination:Pagination;
 		private var _multiloader:MultiLoader;
@@ -81,17 +85,28 @@ package com.facecontrol.forms
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
 			
-			smileIco = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO);
-			smileIco.x = 276;
-			smileIco.y = 97;
-			addChild(smileIco);
+//			smileIco = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO);
+//			smileIco.x = 276;
+//			smileIco.y = 97;
+//			addChild(smileIco);
 			
-			label = Util.createLabel('Мой рейтинг:', 300, 92);
+//			label = Util.createLabel('Мой рейтинг:', 300, 92);
+			label = Util.createLabel('Мой рейтинг:', 274, 92);
 			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
 			label.embedFonts = true;
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
+			
+			_ratingStatusBar = new RatingStatusBar(value);
+			addChild(_ratingStatusBar);
+			
+//			_ratingLabel = Util.createLabel('123000', label.x + label.width + 10, label.y);
+//			_ratingLabel.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 18, 0xffffff));
+//			_ratingLabel.embedFonts = true;
+//			_ratingLabel.antiAliasType = AntiAliasType.ADVANCED;
+//			_ratingLabel.autoSize = TextFieldAutoSize.LEFT;
+//			addChild(_ratingLabel);
 			
 			var verticalBorder:Sprite = new Sprite();
 			verticalBorder.x = 41;
@@ -331,9 +346,12 @@ package com.facecontrol.forms
 			return _photos;
 		}
 		
-		public function set photos(value:Array):void {
-			if (value) {
-				_photos = value;
+		public function setProfile(response:Object):void {
+			if (response) {
+//				_ratingLabel.defaultTextFormat = _ratingLabel.getTextFormat();
+//				_ratingLabel.text = response['rating'];
+				_ratingStatusBar.rating = response['rating'];
+				_photos = response['photos'];
 				
 				_multiloader.addEventListener(ErrorEvent.ERROR, multiLoaderError);
 				for each (var photo:Object in _photos) {

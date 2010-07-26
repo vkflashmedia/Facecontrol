@@ -18,10 +18,10 @@ package com.facecontrol.gui
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 
-	public class FriendGridItem extends GameObject
+	public class UserGridItem extends GameObject
 	{
 		private var _user:Object;
-		public function FriendGridItem(value:GameScene, userRaw:Object, photoBitmap:Bitmap, drawLine:Boolean, showFavoriteLink:Boolean=true, ownerForm:Form=null)
+		public function UserGridItem(value:GameScene, userRaw:Object, photoBitmap:Bitmap, drawLine:Boolean, showFavoriteLink:Boolean=true, ownerForm:Form=null)
 		{
 			super(value);
 			_user = userRaw;
@@ -69,15 +69,34 @@ package com.facecontrol.gui
 				photo.frameIndex = userRaw.frame;
 			}
 			
+			var componentY: int = 12;
+			
+			if (userRaw.hasOwnProperty('rating')) {
+//				var label:TextField = Util.createLabel('Рейтинг: ', 89, 60);
+				var label:TextField = Util.createLabel('Рейтинг: ', 89, componentY + 4);
+				label.autoSize = TextFieldAutoSize.LEFT;
+				label.embedFonts = true;
+				label.antiAliasType = AntiAliasType.ADVANCED;
+				label.selectable = false;
+				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0x9a9a9a));
+				addChild(label);
+				
+				var index:int = label.length;
+				label.appendText(userRaw.rating);
+				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff), index, label.text.length);
+				
+				componentY += label.height;
+			}
+			
 			if (userRaw.votes_count && userRaw.votes_count > 0) {
 				var star:Bitmap = BitmapUtil.cloneImageNamed(Images.RATING_ON);
 				star.x = 89;
-				star.y = 17;
+				star.y = componentY + 5;
 				addChild(star);
 				
 				var rating:TextField = new TextField();
 				rating.x = 112;
-				rating.y = 12;
+				rating.y = componentY;
 				rating.autoSize = TextFieldAutoSize.LEFT;
 				rating.text = userRaw.rating_average;
 				rating.setTextFormat(new TextFormat(Util.tahoma.fontName, 17.7, 0xffffff));
@@ -89,7 +108,7 @@ package com.facecontrol.gui
 				var votesCount:String = userRaw.votes_count;
 				var votes:TextField = new TextField;
 				votes.x = 151;
-				votes.y = 17;
+				votes.y = componentY + 5;
 				votes.autoSize = TextFieldAutoSize.LEFT;
 				votes.text = '(' + votesCount + ' ' + votesString(userRaw.votes_count) + ')';
 				votes.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0x9a9a9a));
@@ -98,11 +117,13 @@ package com.facecontrol.gui
 				votes.antiAliasType = AntiAliasType.ADVANCED;
 				votes.selectable = false;
 				addChild(votes);
+				
+				componentY += 5 + star.height;
 			}
 			else {
 				var noVotes:TextField = new TextField();
 				noVotes.x = 89;
-				noVotes.y = 16;
+				noVotes.y = componentY + 4;
 				noVotes.autoSize = TextFieldAutoSize.LEFT;
 				noVotes.text = 'нет голосов';
 				noVotes.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xb0dee6));
@@ -110,9 +131,11 @@ package com.facecontrol.gui
 				noVotes.antiAliasType = AntiAliasType.ADVANCED;
 				noVotes.selectable = false;
 				addChild(noVotes);
+				componentY += 4 + noVotes.height;
 			}
 			
-			var vkButton:Button = new Button(_scene, 90, 41);
+//			var vkButton:Button = new Button(_scene, 90, 41);
+			var vkButton:Button = new Button(_scene, 90, componentY + 4);	
 			vkButton.setBackgroundImageForState(BitmapUtil.cloneImageNamed(Images.VK_ICON), CONTROL_STATE_NORMAL);
 			vkButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK,
 				function(event:GameObjectEvent):void {
@@ -121,7 +144,8 @@ package com.facecontrol.gui
 			);
 			addChild(vkButton);
 			
-			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 30), 113, 39);
+//			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 25), 113, 39);
+			var name:LinkButton = new LinkButton(value, Util.fullName(userRaw, 25), 113, componentY + 2);
 			name.textField.setTextFormat(new TextFormat(Util.tahomaBold.fontName, 12, 0xffa21e, false, false, true));
 			name.textField.embedFonts = true;
 			name.textField.antiAliasType = AntiAliasType.ADVANCED;
@@ -132,13 +156,7 @@ package com.facecontrol.gui
 			);
 			addChild(name);
 			
-			var label:TextField = Util.createLabel(null, 89, 60);
-			label.autoSize = TextFieldAutoSize.LEFT;
-			label.embedFonts = true;
-			label.antiAliasType = AntiAliasType.ADVANCED;
-			label.selectable = false;
-			addChild(label);
-			
+			/*
 			if (userRaw.age && userRaw.age > 0) {
 				label.text = userRaw.age + ' ' + ageString(userRaw.age);
 				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0xffffff), 0, label.text.length);
@@ -165,7 +183,7 @@ package com.facecontrol.gui
 				else label.text = userRaw.city;
 				label.setTextFormat(new TextFormat(Util.tahoma.fontName, 12, 0x9a9a9a), i, label.text.length);
 			}
-			
+			*/
 			if (userRaw.hasOwnProperty('favorite') && showFavoriteLink) {
 				var favorite:LinkButton = new LinkButton(value,
 					(userRaw.favorite) ? 'Удалить из избранных' : 'Добавить в избранные', 214, 75, TextFieldAutoSize.RIGHT);

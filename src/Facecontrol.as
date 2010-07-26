@@ -168,13 +168,10 @@ package {
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
 			PreloaderSplash.instance.showModal();
-//			Util.api.getTop(Util.viewer_id);
 			Top100.instance.initRequest();
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-//			PreloaderSplash.instance.showModal();
-//			Util.api.favorites(Util.viewer_id);
 			showModal(new PaymentDialog(this));
 		}
 		
@@ -295,12 +292,6 @@ package {
 						else Util.api.loadSettings(Util.viewer_id);
 					break;
 					
-					case 'top100':
-						PreloaderSplash.instance.resetModal();
-						Top100.instance.users = event.response.users;
-						Top100.instance.show();
-					break;
-					
 					case 'add_photo':
 						Util.api.loadSettings(Util.viewer_id);
 					break;
@@ -362,7 +353,7 @@ package {
 					break;
 					
 					case 'get_photos':
-						MyPhotoForm.instance.photos = response.photos;
+						MyPhotoForm.instance.setProfile(response);
 						PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						MyPhotoForm.instance.show();
 						PreloaderSplash.instance.resetModal();
@@ -387,6 +378,7 @@ package {
 					case 'favorites':
 						FavoritesForm.instance.users = response.users;
 						FavoritesForm.instance.show();
+						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'add_favorite':

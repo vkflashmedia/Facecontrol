@@ -5,7 +5,7 @@ package com.facecontrol.forms
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
 	import com.facecontrol.dialog.MessageDialog;
-	import com.facecontrol.gui.FriendGridItem;
+	import com.facecontrol.gui.UserGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -30,7 +30,7 @@ package com.facecontrol.forms
 		
 		private static var _instance:Top100 = null;
 		
-		public static function get instance():Top100 {
+		public static function get instance(): Top100 {
 			if (!_instance) _instance = new Top100(Util.scene);
 			return _instance;
 		}
@@ -51,9 +51,9 @@ package com.facecontrol.forms
 				var response:Object = event.response;
 				try {
 					switch (response.method) {
-						case 'getTop100':
+						case 'getTop':
 							PreloaderSplash.instance.resetModal();
-							this.users = response.users;
+							Top100.instance.users = response.users;
 							show();
 						break;
 					}
@@ -119,7 +119,12 @@ package com.facecontrol.forms
 		}
 		
 		public function initRequest(): void {
-			_facecontrolApi.top100(0, 5);
+			_pagination.currentPage = 0;
+			request();
+		}
+		
+		private function request(): void {
+			_facecontrolApi.getTop(_pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID, MAX_PHOTO_COUNT_IN_GRID);;
 		}
 		
 		public function set users(value:Array):void {
@@ -163,36 +168,19 @@ package com.facecontrol.forms
 		public function onPaginationChange(event:Event):void {
 //			updateGrid();
 			PreloaderSplash.instance.showModal();
-			_facecontrolApi.top100(_pagination.currentPage, 5);
+			request();
 		}
 		
 		public function updateGrid():void {
-			var i:int = 0;
-			var j:int = 0;
-			var count:int = _users.length;
-//			_pagination.pagesCount = Math.ceil(_users.length / MAX_PHOTO_COUNT_IN_GRID);
-			_pagination.visible = _pagination.pagesCount > 1;
-			
 			_grid.removeAllItems();
-			if (_users && _users.length > 0) {
-//				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
-//				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
-//				for (i = start, j = 1; i < end; ++i, ++j) {
-//					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
-//					_grid.addItem(item);
-//				}
-				for (i = 0; i < _users.length; ++i) {
-					var item:FriendGridItem = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), i < MAX_PHOTO_COUNT_IN_GRID, true, this);
-					_grid.addItem(item);
-				}
-			} else {
-				MessageDialog.dialog('Сообщение:', 'В приложении пока менее 100 человек с ' + 
-						'оцененными фотографиями. Приглашай друзей и оценивай больше фотографий.');
+			var usersCount:int = _users.length;
+			for (var i: uint = 0; i < usersCount; ++i) {
+				var item: UserGridItem = new UserGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), i < usersCount - 1, true, this);
+				_grid.addItem(item);
 			}
 		}
 		
 		public override function refresh():void {
-//			Util.api.getTop(Util.viewer_id);
 			initRequest();
 		}
 		

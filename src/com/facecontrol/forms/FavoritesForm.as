@@ -3,7 +3,7 @@ package com.facecontrol.forms
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.dialog.MessageDialog;
-	import com.facecontrol.gui.FriendGridItem;
+	import com.facecontrol.gui.UserGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -133,9 +133,9 @@ package com.facecontrol.forms
 				var start:int = _pagination.currentPage * MAX_PHOTO_COUNT_IN_GRID;
 				var end:int = start + MAX_PHOTO_COUNT_IN_GRID < _users.length ? start + MAX_PHOTO_COUNT_IN_GRID : _users.length;
 				
-				var item:FriendGridItem;
+				var item:UserGridItem;
 				for (i = start, j = 1; i < end; ++i, ++j) {
-					item = new FriendGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+					item = new UserGridItem(_scene, _users[i], _multiLoader.get(_users[i].pid), j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 			}

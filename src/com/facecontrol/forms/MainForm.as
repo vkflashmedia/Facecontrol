@@ -455,7 +455,7 @@ package com.facecontrol.forms
 		}
 		
 		public function randomizeFriend():void {
-			if (_friends.length > 0) {
+			if (_friends && _friends.length > 0) {
 				_friend = _friends[Util.random(0, _friends.length)];
 				showInviteArea();
 			}

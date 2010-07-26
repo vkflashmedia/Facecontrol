@@ -31,8 +31,8 @@ package com.facecontrol.util
 		
 		public static var auth_key:String;
 		public static var requestVotes:int = 0;
-		public static var user_id:uint = 57856825;
-		public static var viewer_id:uint = 57856825;
+		public static var user_id:uint = 90412585;
+		public static var viewer_id:uint = 90412585;
 		public static var wall_id:String;
 		
 		public static var scene:GameScene;
