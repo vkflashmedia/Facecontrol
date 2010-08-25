@@ -96,6 +96,10 @@ package com.facecontrol.util
 		
 		public static const INVITE_BACKGROUND:String = 'http://www.fcapi.ru/images/invite_back.png';
 		public static const INVITE_ICON:String = 'http://www.fcapi.ru/images/invite_icon.png';
+		
+		public static const MSG_DIALOG_BCK: String			= 'http://www.fcapi.ru/images/message dialog/msg_dialog_bck.png';
+		public static const MSG_DIALOG_TOP: String			= 'http://www.fcapi.ru/images/message dialog/msg_dialog_top.png';
+		public static const MSG_DIALOG_BOTTOM: String		= 'http://www.fcapi.ru/images/message dialog/msg_dialog_bottom.png';
 
 		public static const PRE_IMAGES: Array = new Array(
 			SPLASH,
@@ -194,7 +198,11 @@ package com.facecontrol.util
 			FRAME_STR2,
 			
 			INVITE_BACKGROUND,
-			INVITE_ICON
+			INVITE_ICON,
+			
+			MSG_DIALOG_BCK,
+			MSG_DIALOG_TOP,
+			MSG_DIALOG_BOTTOM
 		);
 	}
 }

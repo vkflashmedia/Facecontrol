@@ -2,6 +2,7 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.dialog.PhotoAlbumDialog;
@@ -335,10 +336,12 @@ package {
 									}
 							}
 							
-							MessageDialog.dialog('Поздравляем:', result +'.\n'+
-								'За это тебе начислено '+Util.inviteCount*5 + ' монет.');
+							Alert.show('Поздравляем:', result +'.\n'+
+								'За это тебе начислено '+Util.inviteCount*5 + ' монет.', 'Ok');
 							Util.inviteCount = 0;
 						}
+						
+//						Alert.show('Сообщение:', 'ТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекст', 'кнопка');
 					break;
 					
 					case 'main_photo':

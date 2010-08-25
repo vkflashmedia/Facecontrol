@@ -85,9 +85,9 @@ package com.facecontrol.dialog
 			dispatchEvent(new MessageDialogEvent(MessageDialogEvent.SECOND_BUTTON_CLICKED));
 		}
 		
-		public static function dialog(title:String, message:String):void {
-			var dialog:MessageDialog = new MessageDialog(Util.scene, title, message, 'Oк');
-			Util.scene.showModal(dialog);
-		}
+//		public static function dialog(title:String, message:String):void {
+//			var dialog:MessageDialog = new MessageDialog(Util.scene, title, message, 'Oк');
+//			Util.scene.showModal(dialog);
+//		}
 	}
 }

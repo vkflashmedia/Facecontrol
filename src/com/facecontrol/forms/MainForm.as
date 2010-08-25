@@ -3,7 +3,7 @@ package com.facecontrol.forms
 	import com.adobe.images.JPGEncoder;
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -513,8 +513,8 @@ package com.facecontrol.forms
 				_currentUserName.title = '';
 				_currentUserPhotoComment.text = '';
 				
-				MessageDialog.dialog('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
-						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.');
+				Alert.show('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
+						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.', 'Ок');
 			}
 			else {
 				if (_currentUser && _currentUser.pid != obj.pid) {

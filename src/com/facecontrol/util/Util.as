@@ -2,6 +2,7 @@ package com.facecontrol.util
 {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.dialog.MessageDialogEvent;
 	import com.facecontrol.dialog.PaymentDialog;
@@ -55,7 +56,7 @@ package com.facecontrol.util
 			PreloaderSplash.instance.resetModal();
 			switch (errorCode) {
 				default:
-					MessageDialog.dialog('Ошибка:', errorMessage);
+					Alert.show('Ошибка:', errorMessage, 'Ок');
 			}
 		}
 		

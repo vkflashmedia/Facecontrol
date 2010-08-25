@@ -2,7 +2,7 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.gui.UserGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -91,8 +91,8 @@ package com.facecontrol.forms
 		public override function set visible(value:Boolean):void {
 			super.visible = value;
 			if (value && _users && _users.length == 0) {
-				MessageDialog.dialog('Сообщение:', 'У вас нет избранных пользователей. ' + 
-						'Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.');
+				Alert.show('Сообщение:', 'У вас нет избранных пользователей. ' + 
+						'Добавить новых избранных пользователей вы можете на главной форме или в разделе Топ100.', 'Ок');
 			}
 		}
 		
