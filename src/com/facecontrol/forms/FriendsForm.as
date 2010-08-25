@@ -4,7 +4,7 @@ package com.facecontrol.forms
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
 	import com.facecontrol.api.ApiEvent;
-	import com.facecontrol.gui.FriendGridItem;
+	import com.facecontrol.gui.UserGridItem;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -160,7 +160,7 @@ package com.facecontrol.forms
 				
 				_multiloader.addEventListener(ErrorEvent.ERROR, loadError);
 				
-				var item:FriendGridItem;
+				var item:UserGridItem;
 				for (i = start, j = 1; i < end; ++i, ++j) {
 					var user:Object = _users[i];
 					if (user.pid) {
@@ -180,7 +180,7 @@ package com.facecontrol.forms
 					else if (_multiloader.hasLoaded(_users[i].photo_big)) {
 						photoBitmap = new Bitmap(_multiloader.get(_users[i].photo_big).bitmapData);
 					}
-					item = new FriendGridItem(_scene, _users[i], photoBitmap, j < MAX_PHOTO_COUNT_IN_GRID, true, this);
+					item = new UserGridItem(_scene, _users[i], photoBitmap, j < MAX_PHOTO_COUNT_IN_GRID, true, this);
 					_grid.addItem(item);
 				}
 				

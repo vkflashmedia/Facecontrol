@@ -2,11 +2,12 @@ package com.facecontrol.forms
 {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.dialog.PhotoAlbumDialog;
 	import com.facecontrol.dialog.PhotoPreviewDialog;
 	import com.facecontrol.gui.MyPhotoGridItem;
 	import com.facecontrol.gui.Photo;
+	import com.facecontrol.gui.RatingStatusBar;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
 	import com.facecontrol.util.Util;
@@ -58,6 +59,8 @@ package com.facecontrol.forms
 		private var _photoCommentPlaceholder:TextField;
 		private var _photoComment:TextField;
 		
+		private var _ratingStatusBar:RatingStatusBar;
+		
 		private var _photoGrid:GridBox;
 		private var _pagination:Pagination;
 		private var _multiloader:MultiLoader;
@@ -69,7 +72,7 @@ package com.facecontrol.forms
 			_multiloader = new MultiLoader();
 			visible = false;
 
-			var smileIco:Bitmap = new Bitmap(Util.multiLoader.get(Images.MY_PHOTO_SMILE_ICO).bitmapData);
+			var smileIco:Bitmap = BitmapUtil.cloneImageNamed(Images.MY_PHOTO_SMILE_ICO);
 			smileIco.x = 38;
 			smileIco.y = 97;
 			addChild(smileIco);
@@ -80,6 +83,16 @@ package com.facecontrol.forms
 			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.autoSize = TextFieldAutoSize.LEFT;
 			addChild(label);
+			
+			label = Util.createLabel('Мой рейтинг:', 274, 92);
+			label.setTextFormat(new TextFormat(Util.opiumBold.fontName, 18, 0xceb0ff));
+			label.embedFonts = true;
+			label.antiAliasType = AntiAliasType.ADVANCED;
+			label.autoSize = TextFieldAutoSize.LEFT;
+			addChild(label);
+			
+			_ratingStatusBar = new RatingStatusBar(value);
+			addChild(_ratingStatusBar);
 			
 			var verticalBorder:Sprite = new Sprite();
 			verticalBorder.x = 41;
@@ -319,9 +332,12 @@ package com.facecontrol.forms
 			return _photos;
 		}
 		
-		public function set photos(value:Array):void {
-			if (value) {
-				_photos = value;
+		public function setProfile(response:Object):void {
+			if (response) {
+//				_ratingLabel.defaultTextFormat = _ratingLabel.getTextFormat();
+//				_ratingLabel.text = response['rating'];
+				_ratingStatusBar.rating = response['rating'];
+				_photos = response['photos'];
 				
 				_multiloader.addEventListener(ErrorEvent.ERROR, multiLoaderError);
 				for each (var photo:Object in _photos) {
@@ -353,7 +369,7 @@ package com.facecontrol.forms
 		
 		public function multiLoaderError(event:ErrorEvent):void {
 			PreloaderSplash.instance.resetModal();
-			MessageDialog.dialog('Ошибка:', 'Не удалось загрузить фотографию.');
+			Alert.show('Ошибка:', 'Не удалось загрузить фотографию.', 'Ок');
 		}
 		
 		public function multiLoaderComplite(event:MultiLoaderEvent):void {
@@ -370,7 +386,7 @@ package com.facecontrol.forms
 		public function onMarkAsMainClick(event:GameObjectEvent):void {
 			var gridItem:MyPhotoGridItem = _photoGrid.selectedItem;
 			if (gridItem) Util.api.setMain(gridItem.photoData.pid);
-			else MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
+			else Alert.show('Сообщение:', 'Необходимо выбрать фотографию', 'Ок');
 		}
 		
 		public function onAddPhotoClick(event:GameObjectEvent):void {
@@ -385,7 +401,7 @@ package com.facecontrol.forms
 				Util.api.deletePhoto(gridItem.photoData.pid);
 			}
 			else {
-				MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
+				Alert.show('Сообщение:', 'Необходимо выбрать фотографию', 'Ок');
 			}
 		}
 		
@@ -405,7 +421,7 @@ package com.facecontrol.forms
 			if (gridItem) {
 				_scene.showModal(new PhotoPreviewDialog(_scene, _multiloader.get(gridItem.photoData.pid)));
 			} else {
-				MessageDialog.dialog('Сообщение:', 'Необходимо выбрать фотографию');
+				Alert.show('Сообщение:', 'Необходимо выбрать фотографию', 'Ок');
 			}
 		}
 		

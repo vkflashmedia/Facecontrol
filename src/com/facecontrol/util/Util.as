@@ -2,6 +2,7 @@ package com.facecontrol.util
 {
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.Api;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.dialog.MessageDialogEvent;
 	import com.facecontrol.dialog.PaymentDialog;
@@ -23,7 +24,7 @@ package com.facecontrol.util
 		public static const tahoma:Font = new EmbeddedFonts_TahomaEmbed();
 		public static const tahomaBold:Font = new EmbeddedFonts_TahomaBoldEmbed();
 		public static const university:Font = new EmbeddedFonts_University();
-		public static const DEBUG:Boolean = false;
+		public static const DEBUG:Boolean = true;
 		
 		public static var wrapper:Object;
 		public static var user:Object;
@@ -31,8 +32,8 @@ package com.facecontrol.util
 		
 		public static var auth_key:String;
 		public static var requestVotes:int = 0;
-		public static var user_id:uint = 57856825;
-		public static var viewer_id:uint = 57856825;
+		public static var user_id:uint = 90412585;
+		public static var viewer_id:uint = 90412585;
 		public static var wall_id:String;
 		
 		public static var scene:GameScene;
@@ -55,7 +56,7 @@ package com.facecontrol.util
 			PreloaderSplash.instance.resetModal();
 			switch (errorCode) {
 				default:
-					MessageDialog.dialog('Ошибка:', errorMessage);
+					Alert.show('Ошибка:', errorMessage, 'Ок');
 			}
 		}
 		
@@ -123,7 +124,7 @@ package com.facecontrol.util
 		
 		public static function gotoUserProfile(uid:String):void {
 			if (Util.user.account > 0) {
-				Util.api.writeOff(1);
+				Util.api.gotoProfile();
 				Util.user.account -= 1;
 				Background.instance.updateAccount();
 				navigateToURL(new URLRequest('http://vkontakte.ru/id'+uid));
@@ -138,19 +139,12 @@ package com.facecontrol.util
 			}
 		}
 		
-		public static function random(low:Number=NaN, high:Number=NaN):Number
-		{
+		public static function random(low:Number=NaN, high:Number=NaN):Number {
 			var low:Number = low;
 			var high:Number = high;
 		
-			if(isNaN(low))
-			{
-				throw new Error("low must be defined");
-			}
-			if(isNaN(high))
-			{
-				throw new Error("high must be defined");
-			}
+			if(isNaN(low)) throw new Error("low must be defined");
+			if(isNaN(high)) throw new Error("high must be defined");
 		
 			return Math.round(Math.random() * (high - low)) + low;
 		}

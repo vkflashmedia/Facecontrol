@@ -100,6 +100,9 @@ package com.facecontrol.forms
 					break;
 					
 					case 'set_frame':
+						Util.user.account = response.account;
+						Background.instance.updateAccount();
+						
 						Util.user.frame = response.frame;
 						Util.api.getPhotos(Util.viewer_id);
 					break;
@@ -194,7 +197,7 @@ package com.facecontrol.forms
 			buyButton.setTextPosition(49, 11);
 			buyButton.addEventListener(GameObjectEvent.TYPE_MOUSE_CLICK, function(event:GameObjectEvent):void {
 				if (Util.user.account >= PRICES[_currentFrameIndex]) {
-					Util.api.writeOff(PRICES[_currentFrameIndex]);
+//					Util.api.writeOff(PRICES[_currentFrameIndex]);
 					Util.user.account -= PRICES[_currentFrameIndex];
 					Background.instance.updateAccount();
 					_api.setFrame(_currentFrameIndex + 1);

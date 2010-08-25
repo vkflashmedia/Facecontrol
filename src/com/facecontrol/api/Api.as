@@ -85,22 +85,6 @@ package com.facecontrol.api
 			currentMethod = null;
 		}
 		
-//		public function registerUser(user:Object):void
-//		{
-//			var vars: URLVariables = new URLVariables();
-//			vars['method'] = 'reg_user';
-//			vars['uid'] = user.uid;
-//			vars['fname'] = user.first_name;
-//			vars['lname'] = user.last_name;
-//			if (user.nickname) vars['nickname'] = user.nickname;
-//			vars['sex'] = user.sex;
-//			if (user.bdate) vars['bdate'] = user.bdate;
-//			vars['city'] = user.city;
-//			vars['country'] = user.country;
-//			
-//			request('reg_user', vars);
-//		}
-		
 		public function login(user:Object):void
 		{
 			var vars: URLVariables = new URLVariables();
@@ -115,7 +99,7 @@ package com.facecontrol.api
 			vars['city'] = user.city;
 			vars['country'] = user.country;
 			
-			request('login', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function saveSettings(uid:int, sex:int=0, minAge:int=8, maxAge:int=99, city:String=null, country:String=null):void
@@ -129,7 +113,7 @@ package com.facecontrol.api
 			if (city) vars['city'] = city;
 			if (country) vars['country'] = country;
 			
-			request('save_settings', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function loadSettings(uid:int):void
@@ -138,7 +122,7 @@ package com.facecontrol.api
 			vars['method'] = 'load_settings';
 			vars['uid'] = uid;
 			
-			request('load_settings', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function addPhoto(uid:int, src:String, src_small:String, src_big:String, comment:String=null, vkPid:String=null):void
@@ -152,16 +136,17 @@ package com.facecontrol.api
 			if (comment) vars['comment'] = comment;
 			if (vkPid) vars['vk_pid'] = vkPid;
 			
-			request('add_photo', vars);
+			request(vars['method'], vars);
 		}
 		
-		public function getPhotos(uid:int):void
+		public function getPhotos(uid:int, add_compensation:Boolean=false):void
 		{
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'get_photos';
 			vars['uid'] = uid;
+			if (add_compensation) vars['add_compensation'] = add_compensation;
 			
-			request('get_photos', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function deletePhoto(pid:int):void
@@ -170,18 +155,16 @@ package com.facecontrol.api
 			vars['method'] = 'del_photo';
 			vars['pid'] = pid;
 			
-			request('del_photo', vars);
+			request(vars['method'], vars);
 		}
 		
-		public function setComment(pid:int, comment:String):void
-		{
+		public function setComment(pid:int, comment:String):void {
 			var vars: URLVariables = new URLVariables();
 			vars['method'] = 'set_comment';
 			vars['pid'] = pid;
-			
 			vars['comment'] = comment;
 			
-			request('set_comment', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function vote(pid:String, rating:int=1):void
@@ -192,7 +175,7 @@ package com.facecontrol.api
 			vars['pid'] = pid;
 			vars['rating'] = rating;
 			
-			request('vote', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function setMain(pid:String):void
@@ -201,7 +184,7 @@ package com.facecontrol.api
 			vars['method'] = 'set_main';
 			vars['pid'] = pid;
 			
-			request('set_main', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function nextPhoto(uid:int):void
@@ -210,7 +193,7 @@ package com.facecontrol.api
 			vars['method'] = 'next_photo';
 			vars['uid'] = uid;
 			
-			request('next_photo', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function friends(uids:Array):void {
@@ -224,7 +207,7 @@ package com.facecontrol.api
 			vars['viewer_id'] = Util.viewer_id;
 			vars['uids'] = uidsString;
 			
-			request('friends', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function favorites(uid:int):void {
@@ -232,7 +215,7 @@ package com.facecontrol.api
 			vars['method'] = 'favorites';
 			vars['uid'] = uid;
 			
-			request('favorites', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function addFavorite(uid:int, favoriteUid:int):void {
@@ -241,7 +224,7 @@ package com.facecontrol.api
 			vars['uid'] = uid;
 			vars['favorite_uid'] = favoriteUid;
 			
-			request('add_favorite', vars);
+			request(vars['method'], vars);
 		}
 		
 		public function deleteFavorite(uid:int, favoriteUid:int):void {
@@ -250,14 +233,16 @@ package com.facecontrol.api
 			vars['uid'] = uid;
 			vars['favorite_uid'] = favoriteUid;
 			
-			request('del_favorite', vars);
+			request(vars['method'], vars);
 		}
 		
-		public function getTop(uid:uint):void {
+		public function getTop(offset: uint, count: uint): void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'top100';
-			vars['uid'] = uid;
-			request('top100', vars);
+			vars['method'] = 'getTop';
+			vars['viewer_id'] = Util.viewer_id;
+			vars['offset'] = offset;
+			vars['count'] = count;
+			request(vars['method'], vars);
 		}
 		
 		public function mainPhoto(uid:uint):void {
@@ -265,7 +250,7 @@ package com.facecontrol.api
 			vars['method'] = 'main_photo';
 			vars['viewer_id'] = Util.viewer_id;
 			vars['uid'] = uid;
-			request('main_photo', vars);
+			request(vars['method'], vars);
 		}
 		
 //		public function invite():void {
@@ -273,7 +258,7 @@ package com.facecontrol.api
 //			vars['method'] = 'invite';
 //			vars['viewer_id'] = Util.viewer_id;
 //			vars['user_id'] = Util.user_id;
-//			request('invite', vars);
+//			request(vars['method'], vars);
 //		}
 		
 //		public function writeIn(debt:int):void {
@@ -284,13 +269,13 @@ package com.facecontrol.api
 //			request(vars['method'], vars);
 //		}
 		
-		public function writeOff(debt:int):void {
-			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'write_off';
-			vars['viewer_id'] = Util.viewer_id;
-			vars['debt'] = debt;
-			request(vars['method'], vars);
-		}
+//		public function writeOff(debt:int):void {
+//			var vars: URLVariables = new URLVariables();
+//			vars['method'] = 'write_off';
+//			vars['viewer_id'] = Util.viewer_id;
+//			vars['debt'] = debt;
+//			request(vars['method'], vars);
+//		}
 		
 		public function withdrawVotes(votes:int):void {
 			var vars: URLVariables = new URLVariables();
@@ -301,9 +286,16 @@ package com.facecontrol.api
 			request(vars['method'], vars);
 		}
 		
+		public function gotoProfile():void {
+			var vars: URLVariables = new URLVariables();
+			vars['method'] = 'goto_profile';
+			vars['viewer_id'] = Util.viewer_id;
+			request(vars['method'], vars);
+		}
+		
 		public function setFrame(frame:int):void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'set_frame';
+			vars['method'] = 'set_frame1';
 			vars['viewer_id'] = Util.viewer_id;
 			vars['frame'] = frame;
 			request(vars['method'], vars);

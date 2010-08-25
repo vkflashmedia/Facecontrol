@@ -2,6 +2,7 @@ package {
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
 	import com.facecontrol.api.ApiEvent;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.dialog.MessageDialog;
 	import com.facecontrol.dialog.PaymentDialog;
 	import com.facecontrol.dialog.PhotoAlbumDialog;
@@ -168,12 +169,10 @@ package {
 		
 		public function onThirdMenuButtonClick(event:MainMenuEvent):void {
 			PreloaderSplash.instance.showModal();
-			Util.api.getTop(Util.viewer_id);
+			Top100.instance.initRequest();
 		}
 		
 		public function onFourthMenuButtonClick(event:MainMenuEvent):void {
-//			PreloaderSplash.instance.showModal();
-//			Util.api.favorites(Util.viewer_id);
 			showModal(new PaymentDialog(this));
 		}
 		
@@ -294,12 +293,6 @@ package {
 						else Util.api.loadSettings(Util.viewer_id);
 					break;
 					
-					case 'top100':
-						PreloaderSplash.instance.resetModal();
-						Top100.instance.users = event.response.users;
-						Top100.instance.show();
-					break;
-					
 					case 'add_photo':
 						Util.api.loadSettings(Util.viewer_id);
 					break;
@@ -343,10 +336,12 @@ package {
 									}
 							}
 							
-							MessageDialog.dialog('Поздравляем:', result +'.\n'+
-								'За это тебе начислено '+Util.inviteCount*5 + ' монет.');
+							Alert.show('Поздравляем:', result +'.\n'+
+								'За это тебе начислено '+Util.inviteCount*5 + ' монет.', 'Ok');
 							Util.inviteCount = 0;
 						}
+						
+//						Alert.show('Сообщение:', 'ТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекстТекст', 'кнопка');
 					break;
 					
 					case 'main_photo':
@@ -361,7 +356,7 @@ package {
 					break;
 					
 					case 'get_photos':
-						MyPhotoForm.instance.photos = response.photos;
+						MyPhotoForm.instance.setProfile(response);
 						PhotoAlbumDialog.instance.setAddedPhotos(MyPhotoForm.instance.photos);
 						MyPhotoForm.instance.show();
 						PreloaderSplash.instance.resetModal();
@@ -386,6 +381,7 @@ package {
 					case 'favorites':
 						FavoritesForm.instance.users = response.users;
 						FavoritesForm.instance.show();
+						PreloaderSplash.instance.resetModal();
 					break;
 					
 					case 'add_favorite':
@@ -401,9 +397,10 @@ package {
 						}
 					break;
 					
-					case 'write_in':
-					case 'write_off':
+//					case 'write_in':
+//					case 'write_off':
 					case 'wall_post':
+					case 'goto_profile':
 						Util.user.account = response.account;
 						Background.instance.updateAccount();
 					break;

@@ -3,7 +3,7 @@ package com.facecontrol.forms
 	import com.adobe.images.JPGEncoder;
 	import com.efnx.events.MultiLoaderEvent;
 	import com.efnx.net.MultiLoader;
-	import com.facecontrol.dialog.MessageDialog;
+	import com.facecontrol.dialog.Alert;
 	import com.facecontrol.gui.Photo;
 	import com.facecontrol.util.Constants;
 	import com.facecontrol.util.Images;
@@ -455,17 +455,14 @@ package com.facecontrol.forms
 		}
 		
 		public function randomizeFriend():void {
-			if (_friends.length > 0) {
+			if (_friends && _friends.length > 0) {
 				_friend = _friends[Util.random(0, _friends.length)];
 				showInviteArea();
 			}
 		}
 		
 		private function showInviteArea():void {
-			if (!_friend) {
-				randomizeFriend();
-			}
-			else {
+			if (_friend) {
 				if (_friendPhotoLoader.hasLoaded(_friend.photo_big)) {
 					_inviteLabel.defaultTextFormat = _inviteLabel.getTextFormat();
 						switch (_friend.sex) {
@@ -486,6 +483,9 @@ package com.facecontrol.forms
 				else {
 					_friendPhotoLoader.load(_friend.photo_big, _friend.photo_big, 'Bitmap');
 				}
+			}
+			else {
+				randomizeFriend();
 			}
 		}
 		
@@ -513,8 +513,8 @@ package com.facecontrol.forms
 				_currentUserName.title = '';
 				_currentUserPhotoComment.text = '';
 				
-				MessageDialog.dialog('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
-						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.');
+				Alert.show('Сообщение:', 'Ты проголосовал за всех пользователей. ' + 
+						'Попробуй изменить фильтр "Я ищу" или пригласи больше друзей.', 'Ок');
 			}
 			else {
 				if (_currentUser && _currentUser.pid != obj.pid) {
@@ -562,7 +562,6 @@ package com.facecontrol.forms
 		private function multiLoaderComplete(event:MultiLoaderEvent):void {
 			if (_multiloader.hasLoaded(_currentUser.pid)) {
 				bigPhoto = _multiloader.get(_currentUser.pid);
-//				bigPhoto = BitmapUtil.cloneImageNamed(_currentUser.pid);
 				nextPhoto(_currentUser);
 				previousPhoto();
 				
