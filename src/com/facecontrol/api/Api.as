@@ -295,7 +295,7 @@ package com.facecontrol.api
 		
 		public function setFrame(frame:int):void {
 			var vars: URLVariables = new URLVariables();
-			vars['method'] = 'set_frame1';
+			vars['method'] = 'set_frame';
 			vars['viewer_id'] = Util.viewer_id;
 			vars['frame'] = frame;
 			request(vars['method'], vars);
